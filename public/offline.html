@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MamaTrack - Hors ligne</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(to bottom, #fdf2f8, #ffffff, #f3e8ff);
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 400px;
+    }
+    .icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 24px;
+      color: #1f2937;
+      margin-bottom: 12px;
+    }
+    p {
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .btn {
+      display: inline-block;
+      background: linear-gradient(to right, #f472b6, #ec4899);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+    .btn:hover {
+      transform: scale(1.02);
+    }
+    .note {
+      margin-top: 32px;
+      font-size: 14px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">📱</div>
+    <h1>Vous êtes hors ligne</h1>
+    <p>
+      Pas de connexion internet détectée. 
+      Vos données sont enregistrées localement et seront synchronisées dès que vous serez reconnectée.
+    </p>
+    <a href="/" class="btn" onclick="window.location.reload(); return false;">
+      Réessayer
+    </a>
+    <p class="note">
+      💡 MamaTrack fonctionne aussi hors ligne !<br>
+      Rechargez la page une fois connectée.
+    </p>
+  </div>
+</body>
+</html>

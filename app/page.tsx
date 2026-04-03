@@ -1,65 +1,366 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useStore } from "@/lib/store";
+import {
+  getCurrentWeek,
+  getDaysRemaining,
+  getProgressPercent,
+  getWeekData,
+} from "@/lib/pregnancy-data";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { Scale, Activity, Calendar, Droplets, Settings } from "lucide-react";
+
+export default function DashboardPage() {
+  const store = useStore();
+  const [showSetup, setShowSetup] = useState(false);
+  const [dateInput, setDateInput] = useState(store.dueDate ?? "");
+
+  const dueDate = store.dueDate ? new Date(store.dueDate) : null;
+  const week = dueDate ? getCurrentWeek(dueDate) : 20;
+  const days = dueDate ? getDaysRemaining(dueDate) : null;
+  const progress = dueDate ? getProgressPercent(dueDate) : 50;
+  const weekData = getWeekData(week);
+
+  const today = format(new Date(), "yyyy-MM-dd");
+  const waterToday = store.waterIntake[today] ?? 0;
+  const waterGoal = 2000;
+
+  const lastWeight =
+    store.weightEntries.length > 0
+      ? store.weightEntries[store.weightEntries.length - 1]
+      : null;
+
+  const upcomingAppts = store.appointments
+    .filter((a) => !a.done && new Date(a.date) >= new Date())
+    .slice(0, 2);
+
+  const recentSymptoms = store.symptomEntries.slice(-3);
+
+  const handleSaveDueDate = () => {
+    if (dateInput) {
+      store.setDueDate(dateInput);
+      setShowSetup(false);
+    }
+  };
+
+  // Circumference for the SVG circle progress
+  const radius = 56;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
+      {/* Setup DPA */}
+      {(!store.dueDate || showSetup) && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100"
+        >
+          <h2 className="font-semibold text-[#3d2b2b] mb-3">
+            📅 {store.dueDate ? "Modifier" : "Définir"} votre Date Prévue d&apos;Accouchement
+          </h2>
+          <div className="flex gap-2">
+            <input
+              type="date"
+              value={dateInput}
+              onChange={(e) => setDateInput(e.target.value)}
+              className="flex-1 border border-pink-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <button
+              onClick={handleSaveDueDate}
+              className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 transition-colors"
+            >
+              OK
+            </button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Hero Card — Semaine + Fruit */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gradient-to-br from-pink-100 via-purple-50 to-mint-50 rounded-3xl p-6 shadow-sm border border-pink-100 relative overflow-hidden"
+        style={{ background: "linear-gradient(135deg, #fce7f3 0%, #ede9fe 50%, #d1fae5 100%)" }}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-medium text-pink-400 uppercase tracking-wider mb-1">
+              Semaine de grossesse
+            </p>
+            <h1 className="text-6xl font-bold text-[#3d2b2b]">
+              {week}
+              <span className="text-2xl text-pink-400 ml-1">SA</span>
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              {weekData.fruit}
+            </p>
+            {dueDate && (
+              <p className="text-xs text-gray-400 mt-1">
+                DPA : {format(dueDate, "d MMMM yyyy", { locale: fr })}
+              </p>
+            )}
+          </div>
+
+          <div className="relative flex items-center justify-center">
+            <svg width="140" height="140" className="-rotate-90">
+              <circle
+                cx="70"
+                cy="70"
+                r={radius}
+                fill="none"
+                stroke="#fce7f3"
+                strokeWidth="10"
+              />
+              <motion.circle
+                cx="70"
+                cy="70"
+                r={radius}
+                fill="none"
+                stroke="#F9A8D4"
+                strokeWidth="10"
+                strokeLinecap="round"
+                strokeDasharray={circumference}
+                initial={{ strokeDashoffset: circumference }}
+                animate={{ strokeDashoffset }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+              />
+            </svg>
+            <motion.div
+              className="absolute text-5xl"
+              animate={{
+                scale: [1, 1.08, 1],
+                rotate: [0, 5, -5, 0],
+              }}
+              transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+            >
+              {weekData.fruitEmoji}
+            </motion.div>
+          </div>
         </div>
-      </main>
+
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-xs text-gray-500">
+            Progression : <span className="font-semibold text-pink-500">{progress}%</span>
+          </div>
+          {days !== null && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.5, type: "spring" }}
+              className="bg-white rounded-2xl px-3 py-1.5 shadow-sm"
+            >
+              <span className="text-2xl font-bold text-purple-500">{days}</span>
+              <span className="text-xs text-gray-400 ml-1">jours restants</span>
+            </motion.div>
+          )}
+        </div>
+
+        {!store.dueDate && (
+          <button
+            onClick={() => setShowSetup(true)}
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+          >
+            <Settings className="w-4 h-4" />
+          </button>
+        )}
+        {store.dueDate && (
+          <button
+            onClick={() => setShowSetup(true)}
+            className="absolute top-3 right-3 text-gray-300 hover:text-gray-500"
+          >
+            <Settings className="w-4 h-4" />
+          </button>
+        )}
+      </motion.div>
+
+      {/* Trimestre badge */}
+      <div className="flex gap-2">
+        {[1, 2, 3].map((t) => (
+          <div
+            key={t}
+            className={`flex-1 text-center py-2 rounded-2xl text-xs font-semibold transition-all ${
+              weekData.trimester === t
+                ? "bg-pink-400 text-white shadow-sm"
+                : "bg-white text-gray-400 border border-pink-100"
+            }`}
+          >
+            {t === 1 ? "1er trimestre" : t === 2 ? "2ème trimestre" : "3ème trimestre"}
+          </div>
+        ))}
+      </div>
+
+      {/* Cards résumé */}
+      <div className="grid grid-cols-2 gap-3">
+        {/* Poids */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-3xl p-4 shadow-sm border border-pink-100"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
+              <Scale className="w-4 h-4 text-pink-500" />
+            </div>
+            <span className="text-xs font-medium text-gray-500">Poids</span>
+          </div>
+          {lastWeight ? (
+            <>
+              <p className="text-2xl font-bold text-[#3d2b2b]">
+                {lastWeight.weight} <span className="text-sm font-normal text-gray-400">kg</span>
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                {format(new Date(lastWeight.date), "d MMM", { locale: fr })}
+              </p>
+            </>
+          ) : (
+            <p className="text-sm text-gray-400">Aucune mesure</p>
+          )}
+        </motion.div>
+
+        {/* Eau */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.25 }}
+          className="bg-white rounded-3xl p-4 shadow-sm border border-purple-100"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+              <Droplets className="w-4 h-4 text-purple-500" />
+            </div>
+            <span className="text-xs font-medium text-gray-500">Hydratation</span>
+          </div>
+          <p className="text-2xl font-bold text-[#3d2b2b]">
+            {waterToday} <span className="text-sm font-normal text-gray-400">ml</span>
+          </p>
+          <div className="w-full bg-purple-100 rounded-full h-1.5 mt-2">
+            <div
+              className="bg-purple-400 h-1.5 rounded-full transition-all"
+              style={{ width: `${Math.min(100, (waterToday / waterGoal) * 100)}%` }}
+            />
+          </div>
+          <p className="text-xs text-gray-400 mt-1">objectif {waterGoal} ml</p>
+        </motion.div>
+
+        {/* Symptômes */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white rounded-3xl p-4 shadow-sm border border-green-100"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+              <Activity className="w-4 h-4 text-green-500" />
+            </div>
+            <span className="text-xs font-medium text-gray-500">Symptômes</span>
+          </div>
+          {recentSymptoms.length > 0 ? (
+            <div className="space-y-1">
+              {recentSymptoms.slice(-1).map((s) => (
+                <div key={s.id} className="flex flex-wrap gap-1">
+                  {s.symptoms.slice(0, 2).map((sym) => (
+                    <span key={sym} className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
+                      {sym}
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400">Aucun récent</p>
+          )}
+        </motion.div>
+
+        {/* RDV */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.35 }}
+          className="bg-white rounded-3xl p-4 shadow-sm border border-orange-100"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+              <Calendar className="w-4 h-4 text-orange-500" />
+            </div>
+            <span className="text-xs font-medium text-gray-500">Prochain RDV</span>
+          </div>
+          {upcomingAppts.length > 0 ? (
+            <div>
+              <p className="text-sm font-semibold text-[#3d2b2b] truncate">
+                {upcomingAppts[0].title}
+              </p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {format(new Date(upcomingAppts[0].date), "d MMM", { locale: fr })} à {upcomingAppts[0].time}
+              </p>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400">Aucun RDV</p>
+          )}
+        </motion.div>
+      </div>
+
+      {/* Conseil de la semaine */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100"
+      >
+        <div className="flex items-start gap-3">
+          <span className="text-2xl">💡</span>
+          <div>
+            <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Conseil de la semaine</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">{weekData.momTips}</p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* Développement bébé aperçu */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45 }}
+        className="bg-white rounded-3xl p-5 shadow-sm border border-mint-100"
+        style={{ borderColor: "#d1fae5" }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xl">👶</span>
+          <h3 className="font-semibold text-[#3d2b2b]">Bébé cette semaine</h3>
+        </div>
+        <div className="flex gap-4 mb-3">
+          <div className="text-center">
+            <p className="text-lg font-bold text-[#3d2b2b]">
+              {weekData.sizeMm >= 100
+                ? `${(weekData.sizeMm / 10).toFixed(0)} cm`
+                : `${weekData.sizeMm} mm`}
+            </p>
+            <p className="text-xs text-gray-400">Taille</p>
+          </div>
+          <div className="text-center">
+            <p className="text-lg font-bold text-[#3d2b2b]">
+              {weekData.weightG >= 1000
+                ? `${(weekData.weightG / 1000).toFixed(1)} kg`
+                : `${weekData.weightG} g`}
+            </p>
+            <p className="text-xs text-gray-400">Poids</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl">{weekData.fruitEmoji}</p>
+            <p className="text-xs text-gray-400 truncate max-w-16">{weekData.fruit}</p>
+          </div>
+        </div>
+        <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
+          {weekData.babyDevelopment}
+        </p>
+      </motion.div>
     </div>
   );
 }
