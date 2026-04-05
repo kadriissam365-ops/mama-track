@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Baby, Activity, CheckSquare, Calendar, Users, BookOpen, Camera } from "lucide-react";
+import { Home, Baby, Activity, CheckSquare, Calendar, Users, BookOpen, Camera, MessageCircle } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Accueil", icon: Home },
@@ -11,6 +11,7 @@ const navItems = [
   { href: "/agenda", label: "Agenda", icon: Calendar },
   { href: "/checklist", label: "Ma liste", icon: CheckSquare },
   { href: "/duo", label: "Duo", icon: Users },
+  { href: "/communaute", label: "Communauté", icon: MessageCircle },
   { href: "/conseils", label: "Conseils", icon: BookOpen },
   { href: "/journal", label: "Journal", icon: Camera },
 ];

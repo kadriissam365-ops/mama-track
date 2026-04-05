@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/lib/toast";
@@ -13,6 +13,7 @@ import {
   type DuoInvitation,
   type DuoAccess,
 } from "@/lib/duo-api";
+import { createClient } from "@/lib/supabase";
 import {
   Users,
   Mail,
@@ -24,8 +25,8 @@ import {
   Trash2,
   Heart,
   Stethoscope,
-  User,
   Loader2,
+  MessageCircle,
 } from "lucide-react";
 
 type Role = "papa" | "sagefemme" | "famille";
@@ -35,6 +36,197 @@ const ROLE_LABELS: Record<Role, { label: string; icon: React.ElementType; color:
   sagefemme: { label: "Sage-femme", icon: Stethoscope, color: "purple" },
   famille: { label: "Famille", icon: Users, color: "green" },
 };
+
+interface DuoMessage {
+  id: string;
+  senderId: string;
+  content: string;
+  createdAt: string;
+  isOwn: boolean;
+}
+
+const EMOJI_SHORTCUTS = ["❤️", "🤰", "👶", "💪", "😊", "🌸"];
+
+function ChatSection({ userId, partnerName }: { userId: string; partnerName: string | null }) {
+  const [messages, setMessages] = useState<DuoMessage[]>([]);
+  const [input, setInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const storageKey = `duo-messages-${userId}`;
+
+  useEffect(() => {
+    // Load from localStorage
+    try {
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        setMessages(JSON.parse(stored));
+      }
+    } catch {
+      // ignore
+    }
+
+    // Try Supabase Realtime
+    try {
+      const supabase = createClient();
+      const channel = supabase
+        .channel("duo-chat")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "duo_messages" },
+          (payload) => {
+            const row = payload.new as { id: string; sender_id: string; content: string; created_at: string };
+            const msg: DuoMessage = {
+              id: row.id,
+              senderId: row.sender_id,
+              content: row.content,
+              createdAt: row.created_at,
+              isOwn: row.sender_id === userId,
+            };
+            setMessages((prev) => {
+              const updated = [...prev, msg];
+              try { localStorage.setItem(storageKey, JSON.stringify(updated)); } catch { /* ignore */ }
+              return updated;
+            });
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    } catch {
+      // fallback localStorage only
+    }
+  }, [userId, storageKey]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const saveMessage = (msg: DuoMessage) => {
+    setMessages((prev) => {
+      const updated = [...prev, msg];
+      try { localStorage.setItem(storageKey, JSON.stringify(updated)); } catch { /* ignore */ }
+      return updated;
+    });
+
+    // Try to save to Supabase
+    try {
+      const supabase = createClient();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase.from as any)("duo_messages").insert({
+        id: msg.id,
+        sender_id: msg.senderId,
+        content: msg.content,
+        created_at: msg.createdAt,
+      }).then(() => {}).catch(() => {});
+    } catch {
+      // ignore
+    }
+  };
+
+  const sendMessage = (text: string) => {
+    const content = text.trim();
+    if (!content) return;
+    const msg: DuoMessage = {
+      id: crypto.randomUUID(),
+      senderId: userId,
+      content,
+      createdAt: new Date().toISOString(),
+      isOwn: true,
+    };
+    saveMessage(msg);
+    setInput("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") sendMessage(input);
+  };
+
+  const formatTime = (iso: string) => {
+    return new Date(iso).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  };
+
+  if (!partnerName) {
+    return (
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-100 text-center">
+        <MessageCircle className="w-10 h-10 text-pink-200 mx-auto mb-2" />
+        <p className="text-sm text-gray-500">
+          Invitez votre partenaire pour activer le chat
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-3xl shadow-sm border border-pink-100 overflow-hidden">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-pink-100 bg-gradient-to-r from-pink-50 to-purple-50">
+        <h2 className="font-semibold text-[#3d2b2b] flex items-center gap-2">
+          <MessageCircle className="w-4 h-4 text-pink-400" />
+          💬 Chat avec {partnerName}
+        </h2>
+      </div>
+
+      {/* Messages */}
+      <div className="h-64 overflow-y-auto px-4 py-3 flex flex-col gap-2 bg-gray-50">
+        {messages.length === 0 && (
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-xs text-gray-400">Commencez la conversation ✨</p>
+          </div>
+        )}
+        {messages.map((msg) => (
+          <div key={msg.id} className={`flex ${msg.isOwn ? "justify-end" : "justify-start"}`}>
+            <div
+              className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
+                msg.isOwn
+                  ? "bg-pink-400 text-white rounded-br-sm"
+                  : "bg-gray-100 text-gray-800 rounded-bl-sm"
+              }`}
+            >
+              <p>{msg.content}</p>
+              <p className={`text-[10px] mt-0.5 ${msg.isOwn ? "text-pink-100" : "text-gray-400"}`}>
+                {formatTime(msg.createdAt)}
+              </p>
+            </div>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Emoji shortcuts */}
+      <div className="flex gap-1.5 px-4 py-2 border-t border-pink-50">
+        {EMOJI_SHORTCUTS.map((emoji) => (
+          <button
+            key={emoji}
+            onClick={() => sendMessage(emoji)}
+            className="text-lg hover:scale-125 transition-transform"
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
+
+      {/* Input */}
+      <div className="flex gap-2 px-4 py-3 border-t border-pink-100">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Votre message..."
+          className="flex-1 px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+        />
+        <button
+          onClick={() => sendMessage(input)}
+          disabled={!input.trim()}
+          className="bg-pink-400 text-white px-3 py-2 rounded-xl hover:bg-pink-500 transition-colors disabled:opacity-40"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function DuoPage() {
   const { user } = useAuth();
@@ -89,7 +281,6 @@ export default function DuoPage() {
         setEmail("");
         setShowForm(false);
         
-        // Show share URL
         if (result.shareUrl) {
           setCopiedUrl(result.shareUrl);
           await navigator.clipboard.writeText(result.shareUrl);
@@ -132,6 +323,11 @@ export default function DuoPage() {
     toast.success("Lien copié !");
     setTimeout(() => setCopiedUrl(null), 3000);
   };
+
+  const activePartner = partners[0] ?? null;
+  const partnerLabel = activePartner
+    ? (ROLE_LABELS[activePartner.role as Role]?.label ?? "Partenaire")
+    : null;
 
   if (loading) {
     return (
@@ -345,6 +541,14 @@ export default function DuoPage() {
             Créer une invitation
           </button>
         </div>
+      )}
+
+      {/* Chat Section */}
+      {user && (
+        <ChatSection
+          userId={user.id}
+          partnerName={partnerLabel}
+        />
       )}
     </div>
   );

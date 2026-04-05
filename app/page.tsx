@@ -25,6 +25,14 @@ export default function DashboardPage() {
   const router = useRouter();
   const [showSetup, setShowSetup] = useState(false);
   const [dateInput, setDateInput] = useState(store.dueDate ?? "");
+  const [prenomFavorisCount, setPrenomFavorisCount] = useState(0);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('prenom-favoris');
+    if (stored) {
+      try { setPrenomFavorisCount(JSON.parse(stored).length); } catch {}
+    }
+  }, []);
 
   // Initialize notifications when component mounts
   useEffect(() => {
@@ -346,6 +354,24 @@ export default function DashboardPage() {
           <p className="text-xs text-purple-400">Chronomètre & suivi</p>
         </div>
         <span className="ml-auto text-purple-300 text-lg">›</span>
+      </motion.button>
+
+      {/* Prénoms shortcut */}
+      <motion.button
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.41 }}
+        onClick={() => router.push("/prenoms")}
+        className="w-full flex items-center gap-3 bg-yellow-50 border border-yellow-100 rounded-3xl px-4 py-3 hover:bg-yellow-100 transition-colors"
+      >
+        <div className="w-9 h-9 bg-yellow-300 rounded-xl flex items-center justify-center flex-shrink-0">
+          <span className="text-lg">💛</span>
+        </div>
+        <div className="text-left">
+          <p className="text-sm font-semibold text-yellow-700">Choisir un prénom</p>
+          <p className="text-xs text-yellow-500">{prenomFavorisCount} favori(s) sauvegardé(s)</p>
+        </div>
+        <span className="ml-auto text-yellow-300 text-lg">›</span>
       </motion.button>
 
       {/* Conseil de la semaine */}
