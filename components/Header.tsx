@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { getCurrentWeek, getDaysRemaining } from "@/lib/pregnancy-data";
-import { Heart, LogOut, User, ChevronDown } from "lucide-react";
+import { Heart, LogOut, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ExportPDF from "./ExportPDF";
 
@@ -27,6 +27,11 @@ export default function Header() {
   const handleSignOut = async () => {
     await signOut();
     router.push('/auth/login');
+  };
+
+  const handleSettings = () => {
+    setShowMenu(false);
+    router.push('/settings');
   };
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || '?';
@@ -91,6 +96,13 @@ export default function Header() {
                       </div>
 
                       <div className="py-1">
+                        <button
+                          onClick={handleSettings}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                        >
+                          <Settings className="w-4 h-4" />
+                          Paramètres
+                        </button>
                         <button
                           onClick={handleSignOut}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"

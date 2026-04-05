@@ -224,6 +224,7 @@ export default function ChecklistPage() {
                           <button
                             onClick={() => store.removeChecklistItem(item.id)}
                             className="text-gray-300 hover:text-red-400 transition-colors"
+                            aria-label="Supprimer l'élément"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>

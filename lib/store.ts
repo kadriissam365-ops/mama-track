@@ -1,69 +1,36 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
+import { captureError } from "./monitoring";
+import { useAuth } from "./auth";
+import * as api from "./supabase-api";
 
-export interface WeightEntry {
-  id: string;
-  date: string;
-  weight: number;
-  note?: string;
-}
+// Re-export types
+export type {
+  WeightEntry,
+  SymptomEntry,
+  KickSession,
+  ContractionEntry,
+  ContractionSession,
+  Appointment,
+  WaterIntakeDay,
+  ChecklistItem,
+} from "./supabase-api";
 
-export interface SymptomEntry {
-  id: string;
-  date: string;
-  symptoms: string[];
-  severity: number; // 1-5
-  note?: string;
-}
-
-export interface KickSession {
-  id: string;
-  date: string;
-  startTime: string;
-  count: number;
-  duration: number; // minutes
-}
-
-export interface ContractionEntry {
-  id: string;
-  startTime: number; // timestamp
-  endTime?: number;
-  duration?: number; // seconds
-  interval?: number; // seconds depuis la dernière contraction
-}
-
-export interface ContractionSession {
-  id: string;
-  date: string;
-  contractions: ContractionEntry[];
-}
-
-export interface Appointment {
-  id: string;
-  date: string;
-  time: string;
-  title: string;
-  doctor?: string;
-  location?: string;
-  notes?: string;
-  done: boolean;
-}
-
-export interface WaterIntakeDay {
-  [date: string]: number; // ml
-}
-
-export interface ChecklistItem {
-  id: string;
-  category: string;
-  label: string;
-  done: boolean;
-  custom: boolean;
-}
+import type {
+  WeightEntry,
+  SymptomEntry,
+  KickSession,
+  ContractionSession,
+  Appointment,
+  WaterIntakeDay,
+  ChecklistItem,
+} from "./supabase-api";
 
 export interface StoreState {
   dueDate: string | null;
+  mamaName: string | null;
+  babyName: string | null;
   weightEntries: WeightEntry[];
   symptomEntries: SymptomEntry[];
   kickSessions: KickSession[];
@@ -71,27 +38,31 @@ export interface StoreState {
   appointments: Appointment[];
   waterIntake: WaterIntakeDay;
   checklistItems: ChecklistItem[];
+  loading: boolean;
+  synced: boolean;
 }
 
 export interface StoreActions {
-  setDueDate: (date: string) => void;
-  addWeightEntry: (entry: Omit<WeightEntry, "id">) => void;
-  removeWeightEntry: (id: string) => void;
-  addSymptomEntry: (entry: Omit<SymptomEntry, "id">) => void;
-  removeSymptomEntry: (id: string) => void;
-  addKickSession: (session: Omit<KickSession, "id">) => void;
-  removeKickSession: (id: string) => void;
-  addContractionSession: (session: Omit<ContractionSession, "id">) => void;
-  updateContractionSession: (id: string, session: Partial<ContractionSession>) => void;
-  removeContractionSession: (id: string) => void;
-  addAppointment: (appt: Omit<Appointment, "id">) => void;
-  updateAppointment: (id: string, appt: Partial<Appointment>) => void;
-  removeAppointment: (id: string) => void;
-  addWater: (date: string, ml: number) => void;
-  removeWater: (date: string, ml: number) => void;
-  toggleChecklistItem: (id: string) => void;
-  addChecklistItem: (item: Omit<ChecklistItem, "id">) => void;
-  removeChecklistItem: (id: string) => void;
+  setDueDate: (date: string) => Promise<void>;
+  setProfile: (profile: { dueDate?: string; mamaName?: string; babyName?: string }) => Promise<void>;
+  addWeightEntry: (entry: Omit<WeightEntry, "id">) => Promise<void>;
+  removeWeightEntry: (id: string) => Promise<void>;
+  addSymptomEntry: (entry: Omit<SymptomEntry, "id">) => Promise<void>;
+  removeSymptomEntry: (id: string) => Promise<void>;
+  addKickSession: (session: Omit<KickSession, "id">) => Promise<void>;
+  removeKickSession: (id: string) => Promise<void>;
+  addContractionSession: (session: Omit<ContractionSession, "id">) => Promise<void>;
+  updateContractionSession: (id: string, session: Partial<ContractionSession>) => Promise<void>;
+  removeContractionSession: (id: string) => Promise<void>;
+  addAppointment: (appt: Omit<Appointment, "id">) => Promise<void>;
+  updateAppointment: (id: string, appt: Partial<Appointment>) => Promise<void>;
+  removeAppointment: (id: string) => Promise<void>;
+  addWater: (date: string, ml: number) => Promise<void>;
+  removeWater: (date: string, ml: number) => Promise<void>;
+  toggleChecklistItem: (id: string) => Promise<void>;
+  addChecklistItem: (item: Omit<ChecklistItem, "id">) => Promise<void>;
+  removeChecklistItem: (id: string) => Promise<void>;
+  refreshData: () => Promise<void>;
 }
 
 const DEFAULT_CHECKLIST: Omit<ChecklistItem, "id">[] = [
@@ -123,180 +94,554 @@ const DEFAULT_CHECKLIST: Omit<ChecklistItem, "id">[] = [
   { category: "Valise maternité", label: "Coussin d'allaitement", done: false, custom: false },
 ];
 
+const DEFAULT_CHECKLIST_ITEMS = DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` }));
+
 const initialState: StoreState = {
   dueDate: null,
+  mamaName: null,
+  babyName: null,
   weightEntries: [],
   symptomEntries: [],
   kickSessions: [],
   contractionSessions: [],
   appointments: [],
   waterIntake: {},
-  checklistItems: DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` })),
+  checklistItems: DEFAULT_CHECKLIST_ITEMS,
+  loading: true,
+  synced: false,
 };
 
 const StoreContext = createContext<(StoreState & StoreActions) | null>(null);
 
+// Helper to generate local ID (cryptographically secure)
 function generateId(): string {
-  return Math.random().toString(36).slice(2) + Date.now().toString(36);
+  return crypto.randomUUID();
 }
 
-function loadFromStorage(): StoreState {
-  if (typeof window === "undefined") return initialState;
+// localStorage helpers for offline support
+function loadFromStorage(): Partial<StoreState> {
+  if (typeof window === "undefined") return {};
   try {
     const stored = localStorage.getItem("pregnancy-tracker");
-    if (!stored) return initialState;
-    const parsed = JSON.parse(stored) as Partial<StoreState>;
-    return {
-      ...initialState,
-      ...parsed,
-      checklistItems:
-        parsed.checklistItems && parsed.checklistItems.length > 0
-          ? parsed.checklistItems
-          : initialState.checklistItems,
-    };
+    if (!stored) return {};
+    return JSON.parse(stored);
   } catch {
-    return initialState;
+    return {};
+  }
+}
+
+function saveToStorage(state: Partial<StoreState>) {
+  if (typeof window === "undefined") return;
+  try {
+    const current = loadFromStorage();
+    localStorage.setItem("pregnancy-tracker", JSON.stringify({ ...current, ...state }));
+  } catch {
+    // Ignore storage errors
   }
 }
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
+  const { user, loading: authLoading } = useAuth();
   const [state, setState] = useState<StoreState>(initialState);
   const [mounted, setMounted] = useState(false);
+  const loadingRef = useRef(false);
 
-  useEffect(() => {
-    setState(loadFromStorage());
-    setMounted(true);
-  }, []);
+  // Load data from Supabase when user is available
+  const loadData = useCallback(async () => {
+    if (!user || loadingRef.current) return;
+    
+    loadingRef.current = true;
+    setState(s => ({ ...s, loading: true }));
 
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("pregnancy-tracker", JSON.stringify(state));
+    try {
+      const data = await api.loadAllUserData(user.id);
+      
+      // Initialize checklist if empty
+      if (data.checklistItems.length === 0) {
+        // Check if we have local state to preserve (e.g. checked items)
+        const localData = loadFromStorage();
+        const localItems = localData.checklistItems ?? [];
+        
+        // Build defaults, merging done state from localStorage if IDs match
+        const localMap = new Map(localItems.map(i => [i.id, i]));
+        data.checklistItems = DEFAULT_CHECKLIST.map((item, i) => {
+          const localItem = localMap.get(`default-${i}`);
+          return { ...item, id: `default-${i}`, done: localItem?.done ?? false };
+        });
+        
+        // Try to persist defaults to Supabase in background (non-blocking)
+        api.initializeChecklist(user.id, DEFAULT_CHECKLIST).then(async (initialized) => {
+          if (initialized) {
+            const items = await api.getChecklistItems(user.id);
+            if (items.length > 0) {
+              setState(s => ({ ...s, checklistItems: items }));
+              saveToStorage({ checklistItems: items });
+            }
+          }
+        }).catch(() => {
+          // Supabase init failed, defaults remain in state — no action needed
+        });
+      }
+
+      setState({
+        dueDate: data.profile?.dueDate ?? null,
+        mamaName: data.profile?.mamaName ?? null,
+        babyName: data.profile?.babyName ?? null,
+        weightEntries: data.weightEntries,
+        symptomEntries: data.symptomEntries,
+        kickSessions: data.kickSessions,
+        contractionSessions: data.contractionSessions,
+        appointments: data.appointments,
+        waterIntake: data.waterIntake,
+        checklistItems: data.checklistItems,
+        loading: false,
+        synced: true,
+      });
+
+      // Save to localStorage as backup
+      saveToStorage({
+        dueDate: data.profile?.dueDate ?? null,
+        mamaName: data.profile?.mamaName ?? null,
+        babyName: data.profile?.babyName ?? null,
+        weightEntries: data.weightEntries,
+        symptomEntries: data.symptomEntries,
+        kickSessions: data.kickSessions,
+        contractionSessions: data.contractionSessions,
+        appointments: data.appointments,
+        waterIntake: data.waterIntake,
+        checklistItems: data.checklistItems,
+      });
+    } catch (error) {
+      captureError(error, { context: "loadFromSupabase" });
+      // Fallback to localStorage
+      const localData = loadFromStorage();
+      setState(s => ({
+        ...s,
+        ...localData,
+        checklistItems: localData.checklistItems?.length 
+          ? localData.checklistItems 
+          : DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` })),
+        loading: false,
+        synced: false,
+      }));
+    } finally {
+      loadingRef.current = false;
     }
-  }, [state, mounted]);
+  }, [user]);
 
-  const setDueDate = useCallback((date: string) => {
-    setState((s) => ({ ...s, dueDate: date }));
+  useEffect(() => {
+    setMounted(true);
+    
+    // Load from localStorage first for immediate display
+    const localData = loadFromStorage();
+    if (Object.keys(localData).length > 0) {
+      setState(s => ({
+        ...s,
+        ...localData,
+        checklistItems: localData.checklistItems?.length 
+          ? localData.checklistItems 
+          : DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` })),
+      }));
+    } else {
+      // Set default checklist
+      setState(s => ({
+        ...s,
+        checklistItems: DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` })),
+      }));
+    }
   }, []);
 
-  const addWeightEntry = useCallback((entry: Omit<WeightEntry, "id">) => {
-    setState((s) => ({
+  useEffect(() => {
+    if (mounted && !authLoading && user) {
+      loadData();
+    } else if (mounted && !authLoading && !user) {
+      setState(s => ({ ...s, loading: false }));
+    }
+  }, [mounted, authLoading, user, loadData]);
+
+  // ============== ACTIONS ==============
+
+  const setDueDate = useCallback(async (date: string) => {
+    setState(s => ({ ...s, dueDate: date }));
+    saveToStorage({ dueDate: date });
+    
+    if (user) {
+      await api.upsertProfile(user.id, { dueDate: date });
+    }
+  }, [user]);
+
+  const setProfile = useCallback(async (profile: { dueDate?: string; mamaName?: string; babyName?: string }) => {
+    setState(s => ({
       ...s,
-      weightEntries: [...s.weightEntries, { ...entry, id: generateId() }],
+      dueDate: profile.dueDate ?? s.dueDate,
+      mamaName: profile.mamaName ?? s.mamaName,
+      babyName: profile.babyName ?? s.babyName,
     }));
-  }, []);
+    saveToStorage(profile);
+    
+    if (user) {
+      await api.upsertProfile(user.id, profile);
+    }
+  }, [user]);
 
-  const removeWeightEntry = useCallback((id: string) => {
-    setState((s) => ({ ...s, weightEntries: s.weightEntries.filter((e) => e.id !== id) }));
-  }, []);
-
-  const addSymptomEntry = useCallback((entry: Omit<SymptomEntry, "id">) => {
-    setState((s) => ({
+  const addWeightEntry = useCallback(async (entry: Omit<WeightEntry, "id">) => {
+    const tempId = generateId();
+    const newEntry = { ...entry, id: tempId };
+    
+    setState(s => ({
       ...s,
-      symptomEntries: [...s.symptomEntries, { ...entry, id: generateId() }],
+      weightEntries: [...s.weightEntries, newEntry],
     }));
-  }, []);
+    
+    if (user) {
+      const result = await api.addWeightEntry(user.id, entry);
+      if (result) {
+        setState(s => ({
+          ...s,
+          weightEntries: s.weightEntries.map(e => e.id === tempId ? result : e),
+        }));
+      }
+    }
+    
+    setState(s => {
+      saveToStorage({ weightEntries: s.weightEntries });
+      return s;
+    });
+  }, [user]);
 
-  const removeSymptomEntry = useCallback((id: string) => {
-    setState((s) => ({ ...s, symptomEntries: s.symptomEntries.filter((e) => e.id !== id) }));
-  }, []);
-
-  const addKickSession = useCallback((session: Omit<KickSession, "id">) => {
-    setState((s) => ({
+  const removeWeightEntry = useCallback(async (id: string) => {
+    setState(s => ({
       ...s,
-      kickSessions: [...s.kickSessions, { ...session, id: generateId() }],
+      weightEntries: s.weightEntries.filter(e => e.id !== id),
     }));
-  }, []);
+    
+    if (user) {
+      await api.deleteWeightEntry(id);
+    }
+    
+    setState(s => {
+      saveToStorage({ weightEntries: s.weightEntries });
+      return s;
+    });
+  }, [user]);
 
-  const removeKickSession = useCallback((id: string) => {
-    setState((s) => ({ ...s, kickSessions: s.kickSessions.filter((k) => k.id !== id) }));
-  }, []);
-
-  const addContractionSession = useCallback((session: Omit<ContractionSession, "id">) => {
-    setState((s) => ({
+  const addSymptomEntry = useCallback(async (entry: Omit<SymptomEntry, "id">) => {
+    const tempId = generateId();
+    const newEntry = { ...entry, id: tempId };
+    
+    setState(s => ({
       ...s,
-      contractionSessions: [...s.contractionSessions, { ...session, id: generateId() }],
+      symptomEntries: [...s.symptomEntries, newEntry],
     }));
-  }, []);
+    
+    if (user) {
+      const result = await api.addSymptomEntry(user.id, entry);
+      if (result) {
+        setState(s => ({
+          ...s,
+          symptomEntries: s.symptomEntries.map(e => e.id === tempId ? result : e),
+        }));
+      }
+    }
+    
+    setState(s => {
+      saveToStorage({ symptomEntries: s.symptomEntries });
+      return s;
+    });
+  }, [user]);
 
-  const updateContractionSession = useCallback((id: string, update: Partial<ContractionSession>) => {
-    setState((s) => ({
+  const removeSymptomEntry = useCallback(async (id: string) => {
+    setState(s => ({
       ...s,
-      contractionSessions: s.contractionSessions.map((cs) =>
-        cs.id === id ? { ...cs, ...update } : cs
+      symptomEntries: s.symptomEntries.filter(e => e.id !== id),
+    }));
+    
+    if (user) {
+      await api.deleteSymptomEntry(id);
+    }
+    
+    setState(s => {
+      saveToStorage({ symptomEntries: s.symptomEntries });
+      return s;
+    });
+  }, [user]);
+
+  const addKickSession = useCallback(async (session: Omit<KickSession, "id">) => {
+    const tempId = generateId();
+    const newSession = { ...session, id: tempId };
+    
+    setState(s => ({
+      ...s,
+      kickSessions: [...s.kickSessions, newSession],
+    }));
+    
+    if (user) {
+      const result = await api.addKickSession(user.id, session);
+      if (result) {
+        setState(s => ({
+          ...s,
+          kickSessions: s.kickSessions.map(k => k.id === tempId ? result : k),
+        }));
+      }
+    }
+    
+    setState(s => {
+      saveToStorage({ kickSessions: s.kickSessions });
+      return s;
+    });
+  }, [user]);
+
+  const removeKickSession = useCallback(async (id: string) => {
+    setState(s => ({
+      ...s,
+      kickSessions: s.kickSessions.filter(k => k.id !== id),
+    }));
+    
+    if (user) {
+      await api.deleteKickSession(id);
+    }
+    
+    setState(s => {
+      saveToStorage({ kickSessions: s.kickSessions });
+      return s;
+    });
+  }, [user]);
+
+  const addContractionSession = useCallback(async (session: Omit<ContractionSession, "id">) => {
+    const tempId = generateId();
+    const newSession = { ...session, id: tempId };
+    
+    setState(s => ({
+      ...s,
+      contractionSessions: [...s.contractionSessions, newSession],
+    }));
+    
+    if (user) {
+      const result = await api.addContractionSession(user.id, session);
+      if (result) {
+        setState(s => ({
+          ...s,
+          contractionSessions: s.contractionSessions.map(c => c.id === tempId ? result : c),
+        }));
+      }
+    }
+    
+    setState(s => {
+      saveToStorage({ contractionSessions: s.contractionSessions });
+      return s;
+    });
+  }, [user]);
+
+  const updateContractionSession = useCallback(async (id: string, update: Partial<ContractionSession>) => {
+    setState(s => ({
+      ...s,
+      contractionSessions: s.contractionSessions.map(c =>
+        c.id === id ? { ...c, ...update } : c
       ),
     }));
-  }, []);
+    
+    if (user) {
+      await api.updateContractionSession(id, update);
+    }
+    
+    setState(s => {
+      saveToStorage({ contractionSessions: s.contractionSessions });
+      return s;
+    });
+  }, [user]);
 
-  const removeContractionSession = useCallback((id: string) => {
-    setState((s) => ({
+  const removeContractionSession = useCallback(async (id: string) => {
+    setState(s => ({
       ...s,
-      contractionSessions: s.contractionSessions.filter((cs) => cs.id !== id),
+      contractionSessions: s.contractionSessions.filter(c => c.id !== id),
     }));
-  }, []);
+    
+    if (user) {
+      await api.deleteContractionSession(id);
+    }
+    
+    setState(s => {
+      saveToStorage({ contractionSessions: s.contractionSessions });
+      return s;
+    });
+  }, [user]);
 
-  const addAppointment = useCallback((appt: Omit<Appointment, "id">) => {
-    setState((s) => ({
+  const addAppointment = useCallback(async (appt: Omit<Appointment, "id">) => {
+    const tempId = generateId();
+    const newAppt = { ...appt, id: tempId };
+    
+    setState(s => ({
       ...s,
-      appointments: [...s.appointments, { ...appt, id: generateId() }].sort(
+      appointments: [...s.appointments, newAppt].sort(
         (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       ),
     }));
-  }, []);
+    
+    if (user) {
+      const result = await api.addAppointment(user.id, appt);
+      if (result) {
+        setState(s => ({
+          ...s,
+          appointments: s.appointments.map(a => a.id === tempId ? result : a),
+        }));
+      }
+    }
+    
+    setState(s => {
+      saveToStorage({ appointments: s.appointments });
+      return s;
+    });
+  }, [user]);
 
-  const updateAppointment = useCallback((id: string, update: Partial<Appointment>) => {
-    setState((s) => ({
+  const updateAppointment = useCallback(async (id: string, update: Partial<Appointment>) => {
+    setState(s => ({
       ...s,
-      appointments: s.appointments.map((a) => (a.id === id ? { ...a, ...update } : a)),
+      appointments: s.appointments.map(a => (a.id === id ? { ...a, ...update } : a)),
     }));
-  }, []);
+    
+    if (user) {
+      await api.updateAppointment(id, update);
+    }
+    
+    setState(s => {
+      saveToStorage({ appointments: s.appointments });
+      return s;
+    });
+  }, [user]);
 
-  const removeAppointment = useCallback((id: string) => {
-    setState((s) => ({ ...s, appointments: s.appointments.filter((a) => a.id !== id) }));
-  }, []);
-
-  const addWater = useCallback((date: string, ml: number) => {
-    setState((s) => ({
+  const removeAppointment = useCallback(async (id: string) => {
+    setState(s => ({
       ...s,
-      waterIntake: { ...s.waterIntake, [date]: (s.waterIntake[date] ?? 0) + ml },
+      appointments: s.appointments.filter(a => a.id !== id),
     }));
-  }, []);
+    
+    if (user) {
+      await api.deleteAppointment(id);
+    }
+    
+    setState(s => {
+      saveToStorage({ appointments: s.appointments });
+      return s;
+    });
+  }, [user]);
 
-  const removeWater = useCallback((date: string, ml: number) => {
-    setState((s) => ({
-      ...s,
-      waterIntake: {
-        ...s.waterIntake,
-        [date]: Math.max(0, (s.waterIntake[date] ?? 0) - ml),
-      },
-    }));
-  }, []);
+  const addWater = useCallback(async (date: string, ml: number) => {
+    let newTotal = 0;
+    setState(s => {
+      newTotal = (s.waterIntake[date] ?? 0) + ml;
+      return {
+        ...s,
+        waterIntake: { ...s.waterIntake, [date]: newTotal },
+      };
+    });
 
-  const toggleChecklistItem = useCallback((id: string) => {
-    setState((s) => ({
+    // We need a brief tick to let state settle before reading newTotal
+    await Promise.resolve();
+
+    if (user) {
+      await api.upsertWaterIntake(user.id, date, newTotal);
+    }
+
+    setState(s => {
+      saveToStorage({ waterIntake: s.waterIntake });
+      return s;
+    });
+  }, [user]);
+
+  const removeWater = useCallback(async (date: string, ml: number) => {
+    let newTotal = 0;
+    setState(s => {
+      newTotal = Math.max(0, (s.waterIntake[date] ?? 0) - ml);
+      return {
+        ...s,
+        waterIntake: { ...s.waterIntake, [date]: newTotal },
+      };
+    });
+
+    await Promise.resolve();
+
+    if (user) {
+      await api.upsertWaterIntake(user.id, date, newTotal);
+    }
+
+    setState(s => {
+      saveToStorage({ waterIntake: s.waterIntake });
+      return s;
+    });
+  }, [user]);
+
+  const toggleChecklistItem = useCallback(async (id: string) => {
+    const item = state.checklistItems.find(i => i.id === id);
+    if (!item) return;
+    
+    const newDone = !item.done;
+    
+    setState(s => ({
       ...s,
-      checklistItems: s.checklistItems.map((item) =>
-        item.id === id ? { ...item, done: !item.done } : item
+      checklistItems: s.checklistItems.map(i =>
+        i.id === id ? { ...i, done: newDone } : i
       ),
     }));
-  }, []);
+    
+    if (user) {
+      await api.toggleChecklistItem(id, newDone);
+    }
+    
+    setState(s => {
+      saveToStorage({ checklistItems: s.checklistItems });
+      return s;
+    });
+  }, [user, state.checklistItems]);
 
-  const addChecklistItem = useCallback((item: Omit<ChecklistItem, "id">) => {
-    setState((s) => ({
+  const addChecklistItem = useCallback(async (item: Omit<ChecklistItem, "id">) => {
+    const tempId = generateId();
+    const newItem = { ...item, id: tempId };
+    
+    setState(s => ({
       ...s,
-      checklistItems: [...s.checklistItems, { ...item, id: generateId() }],
+      checklistItems: [...s.checklistItems, newItem],
     }));
-  }, []);
+    
+    if (user) {
+      const result = await api.addChecklistItem(user.id, item);
+      if (result) {
+        setState(s => ({
+          ...s,
+          checklistItems: s.checklistItems.map(c => c.id === tempId ? result : c),
+        }));
+      }
+    }
+    
+    setState(s => {
+      saveToStorage({ checklistItems: s.checklistItems });
+      return s;
+    });
+  }, [user]);
 
-  const removeChecklistItem = useCallback((id: string) => {
-    setState((s) => ({
+  const removeChecklistItem = useCallback(async (id: string) => {
+    setState(s => ({
       ...s,
-      checklistItems: s.checklistItems.filter((item) => item.id !== id),
+      checklistItems: s.checklistItems.filter(c => c.id !== id),
     }));
-  }, []);
+    
+    if (user) {
+      await api.deleteChecklistItem(id);
+    }
+    
+    setState(s => {
+      saveToStorage({ checklistItems: s.checklistItems });
+      return s;
+    });
+  }, [user]);
+
+  const refreshData = useCallback(async () => {
+    await loadData();
+  }, [loadData]);
 
   const value: StoreState & StoreActions = {
     ...state,
     setDueDate,
+    setProfile,
     addWeightEntry,
     removeWeightEntry,
     addSymptomEntry,
@@ -314,6 +659,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     toggleChecklistItem,
     addChecklistItem,
     removeChecklistItem,
+    refreshData,
   };
 
   return React.createElement(StoreContext.Provider, { value }, children);

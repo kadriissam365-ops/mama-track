@@ -3,8 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/lib/store";
 import { AuthProvider } from "@/lib/auth";
-import BottomNav from "@/components/BottomNav";
-import Header from "@/components/Header";
+import { ToastProvider } from "@/lib/toast";
+import ConditionalNav from "@/components/ConditionalNav";
+import InstallBanner from "@/components/InstallBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,8 +38,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   themeColor: "#f472b6",
   colorScheme: "light",
 };
@@ -71,13 +70,15 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-[#fdf6f0]">
         <AuthProvider>
-          <StoreProvider>
-            <Header />
-            <main className="flex-1 pb-24 overflow-y-auto">
-              {children}
-            </main>
-            <BottomNav />
-          </StoreProvider>
+          <ToastProvider>
+            <StoreProvider>
+              <ConditionalNav />
+              <InstallBanner />
+              <main className="flex-1 pb-24 overflow-y-auto">
+                {children}
+              </main>
+            </StoreProvider>
+          </ToastProvider>
         </AuthProvider>
         
         {/* Service Worker Registration */}

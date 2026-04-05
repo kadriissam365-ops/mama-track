@@ -2,11 +2,10 @@
 
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
 import { createClient } from "./supabase";
-import type { User, Session, AuthError } from "@supabase/supabase-js";
+import type { User, AuthError } from "@supabase/supabase-js";
 
 interface AuthContextType {
   user: User | null;
-  session: Session | null;
   loading: boolean;
   signInWithEmail: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signUpWithEmail: (email: string, password: string) => Promise<{ error: AuthError | null }>;
@@ -19,16 +18,14 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const supabase = createClient();
 
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    // Get initial user (validates JWT server-side)
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user ?? null);
       setLoading(false);
     });
 
@@ -36,7 +33,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
@@ -77,12 +73,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
-    setSession(null);
   }, []);
 
   const value: AuthContextType = {
     user,
-    session,
     loading,
     signInWithEmail,
     signUpWithEmail,

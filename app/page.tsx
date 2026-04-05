@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
+import { useAuth } from "@/lib/auth";
 import {
   getCurrentWeek,
   getDaysRemaining,
@@ -11,12 +12,30 @@ import {
 } from "@/lib/pregnancy-data";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Scale, Activity, Calendar, Droplets, Settings } from "lucide-react";
+import { Scale, Activity, Calendar, Droplets, Settings, Loader2, Timer } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { DashboardSkeleton } from "@/components/Skeleton";
+import { initializeNotifications } from "@/lib/notifications";
+import { WATER_GOAL_ML } from "@/lib/constants";
 
 export default function DashboardPage() {
   const store = useStore();
+  const { user } = useAuth();
+  const router = useRouter();
   const [showSetup, setShowSetup] = useState(false);
   const [dateInput, setDateInput] = useState(store.dueDate ?? "");
+
+  // Initialize notifications when component mounts
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      initializeNotifications();
+    }
+  }, []);
+
+  // Show loading skeleton while data is being fetched
+  if (store.loading) {
+    return <DashboardSkeleton />;
+  }
 
   const dueDate = store.dueDate ? new Date(store.dueDate) : null;
   const week = dueDate ? getCurrentWeek(dueDate) : 20;
@@ -26,7 +45,7 @@ export default function DashboardPage() {
 
   const today = format(new Date(), "yyyy-MM-dd");
   const waterToday = store.waterIntake[today] ?? 0;
-  const waterGoal = 2000;
+  const waterGoal = WATER_GOAL_ML;
 
   const lastWeight =
     store.weightEntries.length > 0
@@ -306,6 +325,24 @@ export default function DashboardPage() {
           )}
         </motion.div>
       </div>
+
+      {/* Contractions shortcut */}
+      <motion.button
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.38 }}
+        onClick={() => router.push("/contractions")}
+        className="w-full flex items-center gap-3 bg-purple-50 border border-purple-100 rounded-3xl px-4 py-3 hover:bg-purple-100 transition-colors"
+      >
+        <div className="w-9 h-9 bg-purple-400 rounded-xl flex items-center justify-center flex-shrink-0">
+          <Timer className="w-5 h-5 text-white" />
+        </div>
+        <div className="text-left">
+          <p className="text-sm font-semibold text-purple-700">Contractions</p>
+          <p className="text-xs text-purple-400">Chronomètre & suivi</p>
+        </div>
+        <span className="ml-auto text-purple-300 text-lg">›</span>
+      </motion.button>
 
       {/* Conseil de la semaine */}
       <motion.div

@@ -28,16 +28,30 @@ export async function GET(request: Request) {
       }
     )
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     
     if (!error) {
-      // Check if user has profile data, if not redirect to onboarding
+      // Password recovery flow → redirect to reset page
+      if (data?.session && next === '/auth/reset-password') {
+        return NextResponse.redirect(`${origin}/auth/reset-password`)
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
       
       if (user) {
-        // Always redirect to onboarding for new users - they'll be redirected to home if data exists in localStorage
-        // This is a simplified approach since the Supabase schema may not have MamaTrack fields
-        return NextResponse.redirect(`${origin}/onboarding`)
+        // Check if user already has a profile (existing user) → go home
+        // New user (no profile) → go to onboarding
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', user.id)
+          .single()
+        
+        if (profile) {
+          return NextResponse.redirect(`${origin}/`)
+        } else {
+          return NextResponse.redirect(`${origin}/onboarding`)
+        }
       }
       
       return NextResponse.redirect(`${origin}${next}`)

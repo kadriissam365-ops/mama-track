@@ -337,6 +337,7 @@ export default function ContractionsPage() {
                   <button
                     onClick={() => store.removeContractionSession(session.id)}
                     className="text-gray-300 hover:text-red-400"
+                    aria-label="Supprimer la session"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

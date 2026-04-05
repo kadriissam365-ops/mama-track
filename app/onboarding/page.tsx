@@ -41,17 +41,28 @@ export default function OnboardingPage() {
   };
 
   const handleComplete = async () => {
-    if (!user) return;
-    
     setLoading(true);
     setError(null);
 
     try {
-      // For now, we only use localStorage since the Supabase schema
-      // would need migration for MamaTrack-specific fields
-      // This ensures the app works immediately while we can add Supabase sync later
+      const { createClient } = await import('@/lib/supabase');
+      const supabase = createClient();
+      
+      // Récupérer l'utilisateur actuel (peut ne pas être dans le contexte encore)
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      if (currentUser) {
+        // Sauvegarder le profil en Supabase
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (supabase.from('profiles') as any).upsert({
+          id: currentUser.id,
+          due_date: dueDate || null,
+          baby_name: babyName.trim() || null,
+          mama_name: mamaName.trim(),
+        });
+      }
 
-      // Also save to localStorage for offline support
+      // Toujours sauvegarder en localStorage pour le mode offline
       const existingData = localStorage.getItem('pregnancy-tracker');
       const data = existingData ? JSON.parse(existingData) : {};
       data.dueDate = dueDate;
@@ -62,8 +73,14 @@ export default function OnboardingPage() {
       router.push('/');
     } catch (err) {
       console.error('Onboarding error:', err);
-      setError("Une erreur est survenue. Réessayez.");
-      setLoading(false);
+      // Même en cas d'erreur Supabase, on redirige quand même
+      const existingData = localStorage.getItem('pregnancy-tracker');
+      const data = existingData ? JSON.parse(existingData) : {};
+      data.dueDate = dueDate;
+      data.mamaName = mamaName.trim();
+      data.babyName = babyName.trim() || null;
+      localStorage.setItem('pregnancy-tracker', JSON.stringify(data));
+      router.push('/');
     }
   };
 

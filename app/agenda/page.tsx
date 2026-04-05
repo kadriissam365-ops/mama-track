@@ -6,6 +6,7 @@ import { useStore } from "@/lib/store";
 import { format, isPast, isToday, isFuture } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Plus, Calendar, Check, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 interface ChecklistExam {
   trimester: 1 | 2 | 3;
@@ -39,6 +40,7 @@ export default function AgendaPage() {
   const store = useStore();
   const [showForm, setShowForm] = useState(false);
   const [expandedExam, setExpandedExam] = useState<1 | 2 | 3 | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [form, setForm] = useState({
     title: "",
     date: "",
@@ -204,12 +206,14 @@ export default function AgendaPage() {
                     <button
                       onClick={() => store.updateAppointment(appt.id, { done: true })}
                       className="w-8 h-8 flex items-center justify-center rounded-full bg-green-100 text-green-500 hover:bg-green-200 transition-colors"
+                      aria-label="Marquer comme fait"
                     >
                       <Check className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => store.removeAppointment(appt.id)}
+                      onClick={() => setConfirmDelete(appt.id)}
                       className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-red-100 hover:text-red-400 transition-colors"
+                      aria-label="Supprimer le rendez-vous"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -314,8 +318,9 @@ export default function AgendaPage() {
                   </p>
                 </div>
                 <button
-                  onClick={() => store.removeAppointment(appt.id)}
+                  onClick={() => setConfirmDelete(appt.id)}
                   className="text-gray-300 hover:text-red-400"
+                  aria-label="Supprimer le rendez-vous"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -324,6 +329,14 @@ export default function AgendaPage() {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={confirmDelete !== null}
+        title="Supprimer ce rendez-vous ?"
+        message="Cette action est irréversible."
+        onConfirm={() => { store.removeAppointment(confirmDelete!); setConfirmDelete(null); }}
+        onCancel={() => setConfirmDelete(null)}
+      />
     </div>
   );
 }

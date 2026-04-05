@@ -1,84 +1,84 @@
-const CACHE_NAME = 'mamatrack-v1';
-const OFFLINE_URL = '/offline.html';
+const CACHE_VERSION = 'v2';
+const STATIC_CACHE = `mamatrack-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `mamatrack-dynamic-${CACHE_VERSION}`;
 
-// Assets to cache immediately
-const PRECACHE_ASSETS = [
+// Au install : pre-cache les assets critiques
+const PRECACHE_URLS = [
   '/',
-  '/offline.html',
+  '/tracking',
+  '/agenda',
   '/manifest.json',
+  '/icons/icon-192x192.png',
 ];
 
-// Install event - cache essential assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Precaching app shell');
-      return cache.addAll(PRECACHE_ASSETS);
-    })
+    caches.open(STATIC_CACHE).then(cache => cache.addAll(PRECACHE_URLS))
   );
   self.skipWaiting();
 });
 
-// Activate event - clean old caches
+// Au activate : nettoyer les vieux caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => {
-            console.log('[SW] Deleting old cache:', name);
-            return caches.delete(name);
-          })
-      );
-    })
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.filter(k => k !== STATIC_CACHE && k !== DYNAMIC_CACHE)
+            .map(k => caches.delete(k))
+      )
+    )
   );
   self.clients.claim();
 });
 
-// Fetch event - network first, fallback to cache
+// Stratégie fetch différenciée
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
+  const { request } = event;
+  const url = new URL(request.url);
 
-  // Skip cross-origin requests
-  if (!event.request.url.startsWith(self.location.origin)) return;
+  // API Supabase : network only (jamais cacher les données)
+  if (url.hostname.includes('supabase.co')) {
+    return; // laisser passer sans cache
+  }
 
-  // Skip Supabase API requests
-  if (event.request.url.includes('supabase.co')) return;
+  // Navigation HTML : network first, fallback cache
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const clone = response.clone();
+          caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, clone));
+          return response;
+        })
+        .catch(() => caches.match(request).then(r => r || caches.match('/')))
+    );
+    return;
+  }
 
+  // JS/CSS chunks Next.js : cache first (content-addressable)
+  if (url.pathname.includes('/_next/static/')) {
+    event.respondWith(
+      caches.match(request).then(cached => {
+        if (cached) return cached;
+        return fetch(request).then(response => {
+          caches.open(STATIC_CACHE).then(cache => cache.put(request, response.clone()));
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // Reste : network first avec fallback cache
   event.respondWith(
-    (async () => {
-      try {
-        // Try network first
-        const networkResponse = await fetch(event.request);
-        
-        // Cache successful responses
-        if (networkResponse.ok) {
-          const cache = await caches.open(CACHE_NAME);
-          cache.put(event.request, networkResponse.clone());
+    fetch(request)
+      .then(response => {
+        if (response.ok) {
+          caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, response.clone()));
         }
-        
-        return networkResponse;
-      } catch (error) {
-        // Network failed, try cache
-        const cachedResponse = await caches.match(event.request);
-        
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        // If it's a navigation request, show offline page
-        if (event.request.mode === 'navigate') {
-          const offlineResponse = await caches.match(OFFLINE_URL);
-          if (offlineResponse) {
-            return offlineResponse;
-          }
-        }
-
-        throw error;
-      }
-    })()
+        return response;
+      })
+      .catch(() => caches.match(request))
   );
 });
 

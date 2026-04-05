@@ -57,7 +57,7 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Public paths that don't require authentication
-  const publicPaths = ['/auth/login', '/auth/signup', '/auth/callback']
+  const publicPaths = ['/auth/login', '/auth/signup', '/auth/callback', '/onboarding', '/invite']
   const isPublicPath = publicPaths.some(path => request.nextUrl.pathname.startsWith(path))
 
   // If user is not authenticated and trying to access protected route
