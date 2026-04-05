@@ -12,7 +12,8 @@ import {
 } from "@/lib/pregnancy-data";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Scale, Activity, Calendar, Droplets, Settings, Loader2, Timer, Share2 } from "lucide-react";
+import { Scale, Activity, Calendar, Droplets, Settings, Loader2, Timer, Share2, BarChart3 } from "lucide-react";
+import WeeklyReport from "@/components/WeeklyReport";
 import ShareCard from "@/components/ShareCard";
 import { useRouter } from "next/navigation";
 import { DashboardSkeleton } from "@/components/Skeleton";
@@ -28,6 +29,7 @@ export default function DashboardPage() {
   const [dateInput, setDateInput] = useState(store.dueDate ?? "");
   const [prenomFavorisCount, setPrenomFavorisCount] = useState(0);
   const [showShare, setShowShare] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('prenom-favoris');
@@ -376,6 +378,13 @@ export default function DashboardPage() {
         <span className="ml-auto text-yellow-300 text-lg">›</span>
       </motion.button>
 
+      {/* Bilan semaine */}
+      <button onClick={() => setShowReport(true)} className="w-full flex items-center gap-3 bg-white border border-purple-100 rounded-3xl px-4 py-3 hover:bg-purple-50 transition-colors">
+        <BarChart3 className="w-5 h-5 text-purple-400" />
+        <span className="text-sm font-semibold text-purple-700">Mon bilan de la semaine</span>
+        <span className="ml-auto text-purple-300 text-lg">›</span>
+      </button>
+
       {/* Conseil de la semaine */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -438,6 +447,7 @@ export default function DashboardPage() {
         <Share2 className="w-5 h-5 text-white" />
       </button>
       {showShare && <ShareCard onClose={() => setShowShare(false)} />}
+      {showReport && <WeeklyReport onClose={() => setShowReport(false)} />}
     </div>
   );
 }

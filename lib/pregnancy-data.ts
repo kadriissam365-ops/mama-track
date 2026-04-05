@@ -371,10 +371,7 @@ export const pregnancyData: WeekData[] = [
     babyDevelopment: "Le bébé peut rêver (phase REM). Les poumons sont presque matures. La peau se lisse grâce à la graisse sous-cutanée.",
     momTips: "Bienvenue au 3ème trimestre ! Troisième échographie prévue. Commencez à compter les mouvements quotidiennement.",
     trimester: 3,
-    testimonials: [
-      "3ème trimestre, le ventre est lourd mais chaque coup de pied me rappelle que c'est bientôt ! Je tiens le coup 💪 — Clara, 34 ans",
-      "L'écho du 3ème trim. était émotionnelle, j'ai failli craquer. Voir son visage, c'est indicible 😍 — Emilie, maman de Tom"
-    ],
+    testimonials: ["3ème trimestre ! La ligne d'arrivée se dessine, courage à toutes 💪", "Les nuits se compliquent mais chaque coup de pied me rappelle pourquoi 👶❤️"],
     weeklyTip: "Augmentez votre apport en vitamine D (soleil, poissons gras, œufs). Elle est essentielle pour les os de bébé en cette phase de croissance rapide.",
     weeklySymptoms: ["Essoufflement plus marqué", "Contractions de Braxton-Hicks", "Insomnie"],
     weeklyMilestone: "Entrée dans le 3ème trimestre ! 🌟",
@@ -427,6 +424,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Pratiquez la respiration abdominale et la relaxation pour gérer les contractions. La sophrologie ou l'hypnobirthing peuvent vraiment aider.",
     weeklySymptoms: ["Contractions d'entraînement", "Difficulté à respirer profondément", "Mouvements de bébé très perceptibles"],
     weeklyMilestone: "Bébé se met souvent en position tête en bas 👶",
+    testimonials: ["Le congé maternité commence dans 2 semaines, je compte les jours ! 🥳", "Le sac de maternité est prêt depuis une semaine, je suis peut-être un peu trop préparée 😅"],
   },
   {
     week: 33,
@@ -476,6 +474,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Avec l'engagement de bébé, vous respirez mieux mais courez plus souvent aux toilettes. Profitez de ce soulagement !",
     weeklySymptoms: ["Engagement de bébé (descente)", "Facilité à respirer", "Envies urinaires très fréquentes"],
     weeklyMilestone: "Bébé est en position d'engagement ! ⬇️",
+    testimonials: ["Chaque matin je me demande si c'est le jour J... l'attente est insupportable ! 😅", "J'ai des contractions de Braxton-Hicks toute la journée, mon corps se prépare 💪"],
   },
   {
     week: 37,
@@ -501,6 +500,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 3,
     weeklyTip: "Continuez la marche douce, elle aide bébé à s'engager. Reposez-vous aussi : vous aurez besoin de toute votre énergie pour l'accouchement.",
     weeklySymptoms: ["Bouchon muqueux possible", "Fausse route possible", "Anxiété avant accouchement"],
+    testimonials: ["Les médecins disent que tout est en place, plus qu'à attendre ! 🤞", "Je parle à mon ventre depuis des mois, j'ai hâte de voir son visage pour de vrai 😭💕"],
   },
   {
     week: 39,
@@ -527,6 +527,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Soyez patiente si bébé n'est pas encore là : moins de 5% des bébés naissent à leur terme exact. Bébé choisit son moment !",
     weeklySymptoms: ["Contractions régulières", "Pression pelvienne maximale", "Anxiété et excitation"],
     weeklyMilestone: "Terme officiel ! Bébé arrive bientôt 🎉",
+    testimonials: ["Terme dépassé mais bébé n'est pas pressé... patience ! 🌸", "Mon gynéco dit que c'est pour bientôt, je suis prête !! 🎉👶"],
   },
   {
     week: 41,

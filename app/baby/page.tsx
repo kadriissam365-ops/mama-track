@@ -165,6 +165,29 @@ export default function BabyPage() {
         </motion.div>
       </AnimatePresence>
 
+      {/* Témoignages de la semaine */}
+      {weekData.testimonials && weekData.testimonials.length > 0 && (
+        <motion.div
+          key={`testimonials-${selectedWeek}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
+          className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100"
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xl">💬</span>
+            <h3 className="font-semibold text-[#3d2b2b]">Mamans à la semaine {selectedWeek}</h3>
+          </div>
+          <div className="space-y-3">
+            {weekData.testimonials.map((t: string, i: number) => (
+              <div key={i} className="bg-pink-50 rounded-2xl p-3 border border-pink-100">
+                <p className="text-sm text-gray-600 italic leading-relaxed">&quot;{t}&quot;</p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
       {/* Timeline trimestres */}
       <div className="bg-white rounded-3xl p-4 shadow-sm border border-pink-100">
         <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Toutes les semaines</h3>
