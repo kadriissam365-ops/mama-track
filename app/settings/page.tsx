@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import NotificationSettings from "@/components/NotificationSettings";
+import AppleHealthSync from "@/components/AppleHealthSync";
 import { Settings, User, Bell, LogOut, Calendar, Baby, Loader2, Lock, Eye, EyeOff, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { createClient } from "@/lib/supabase";
@@ -258,6 +259,9 @@ export default function SettingsPage() {
               </button>
             </div>
           )}
+
+          {/* Apple Health Sync */}
+          <AppleHealthSync />
 
           {/* Sign out */}
           <button

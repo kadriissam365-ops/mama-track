@@ -27,7 +27,9 @@ import {
   Stethoscope,
   Loader2,
   MessageCircle,
+  Eye,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Role = "papa" | "sagefemme" | "famille";
 
@@ -238,6 +240,7 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
 
 export default function DuoPage() {
   const { user } = useAuth();
+  const router = useRouter();
   const toast = useToast();
   
   const [loading, setLoading] = useState(true);
@@ -372,8 +375,19 @@ export default function DuoPage() {
     );
   }
 
+
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
+      {/* Partner view button */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => router.push('/partner')}
+          className="flex items-center gap-2 bg-gradient-to-r from-pink-100 to-purple-100 text-purple-700 px-4 py-2 rounded-xl text-sm font-medium hover:from-pink-200 hover:to-purple-200 transition-colors border border-purple-100"
+        >
+          <Eye className="w-4 h-4" /> Voir la vue partenaire
+        </button>
+      </div>
+
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-[#3d2b2b] flex items-center gap-2">
           <Users className="w-6 h-6 text-pink-400" />

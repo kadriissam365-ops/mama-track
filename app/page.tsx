@@ -12,7 +12,8 @@ import {
 } from "@/lib/pregnancy-data";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Scale, Activity, Calendar, Droplets, Settings, Loader2, Timer } from "lucide-react";
+import { Scale, Activity, Calendar, Droplets, Settings, Loader2, Timer, Share2 } from "lucide-react";
+import ShareCard from "@/components/ShareCard";
 import { useRouter } from "next/navigation";
 import { DashboardSkeleton } from "@/components/Skeleton";
 import { initializeNotifications } from "@/lib/notifications";
@@ -26,6 +27,7 @@ export default function DashboardPage() {
   const [showSetup, setShowSetup] = useState(false);
   const [dateInput, setDateInput] = useState(store.dueDate ?? "");
   const [prenomFavorisCount, setPrenomFavorisCount] = useState(0);
+  const [showShare, setShowShare] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('prenom-favoris');
@@ -428,6 +430,14 @@ export default function DashboardPage() {
           {weekData.babyDevelopment}
         </p>
       </motion.div>
+      {/* Floating share button */}
+      <button
+        onClick={() => setShowShare(true)}
+        className="fixed bottom-24 right-4 z-40 w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+      >
+        <Share2 className="w-5 h-5 text-white" />
+      </button>
+      {showShare && <ShareCard onClose={() => setShowShare(false)} />}
     </div>
   );
 }

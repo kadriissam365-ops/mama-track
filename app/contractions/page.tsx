@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Timer, Trash2, AlertCircle, CheckCircle } from "lucide-react";
+import { Timer, Trash2, AlertCircle, CheckCircle, MessageCircle } from "lucide-react";
+import { useToast } from "@/lib/toast";
 import type { ContractionEntry } from "@/lib/store";
 
 function formatDuration(seconds: number): string {
@@ -57,6 +58,7 @@ function analyzeContractions(contractions: ContractionEntry[]): {
 
 export default function ContractionsPage() {
   const store = useStore();
+  const toast = useToast();
   const [isActive, setIsActive] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
@@ -68,6 +70,7 @@ export default function ContractionsPage() {
   const sessionStartRef = useRef<number | null>(null);
   const lastContractionEndRef = useRef<number | null>(null);
   const [localContractions, setLocalContractions] = useState<ContractionEntry[]>([]);
+  const [lastContraction, setLastContraction] = useState<ContractionEntry | null>(null);
 
   useEffect(() => {
     return () => {
@@ -146,6 +149,7 @@ export default function ContractionsPage() {
     };
 
     setLocalContractions((prev) => [...prev, newEntry]);
+    setLastContraction(newEntry);
     setInContraction(false);
     setCurrentContractionStart(null);
     setContractionElapsed(0);
@@ -233,6 +237,32 @@ export default function ContractionsPage() {
             >
               Terminer la session
             </button>
+
+            {/* Notification partenaire */}
+            {lastContraction && (
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                onClick={() => {
+                  const msg = {
+                    id: Date.now().toString(),
+                    content: `🤰 Contraction enregistrée ! Durée : ${formatDuration(lastContraction.duration || 0)}. Je vais bien 💪`,
+                    isOwn: true,
+                    createdAt: new Date().toISOString(),
+                  };
+                  const saved = JSON.parse(localStorage.getItem('duo-messages') || '[]');
+                  localStorage.setItem('duo-messages', JSON.stringify([...saved, msg]));
+                  toast.success('Message envoyé à votre partenaire 💬');
+                }}
+                className="w-full flex items-center gap-3 bg-pink-50 border border-pink-200 rounded-2xl px-4 py-3 hover:bg-pink-100 transition-colors"
+              >
+                <MessageCircle className="w-5 h-5 text-pink-500" />
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-pink-700">Prévenir mon partenaire</p>
+                  <p className="text-xs text-pink-400">Envoie un message automatique au Duo</p>
+                </div>
+              </motion.button>
+            )}
           </div>
         )}
       </div>

@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Baby, Trash2 } from "lucide-react";
+import { Baby, Trash2, MessageCircle } from "lucide-react";
+import { useToast } from "@/lib/toast";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
 interface KicksTabProps {
@@ -14,7 +15,9 @@ interface KicksTabProps {
 
 export default function KicksTab({ today }: KicksTabProps) {
   const store = useStore();
+  const toast = useToast();
   const [counting, setCounting] = useState(false);
+  const [lastSessionCount, setLastSessionCount] = useState<number | null>(null);
   const [count, setCount] = useState(0);
   const [startTime, setStartTime] = useState<string | null>(null);
   const [startTs, setStartTs] = useState<number | null>(null);
@@ -42,6 +45,7 @@ export default function KicksTab({ today }: KicksTabProps) {
       count,
       duration: Math.max(1, duration),
     });
+    setLastSessionCount(count);
     setCounting(false);
     setCount(0);
     setStartTime(null);
@@ -88,13 +92,37 @@ export default function KicksTab({ today }: KicksTabProps) {
         )}
 
         {!counting && (
-          <div className="mt-4">
+          <div className="mt-4 space-y-3">
             <p className="text-sm text-gray-500">
               Total aujourd&apos;hui :{" "}
               <span className="font-bold text-green-600">
                 {totalToday} mouvements
               </span>
             </p>
+            {lastSessionCount !== null && (
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                onClick={() => {
+                  const msg = {
+                    id: Date.now().toString(),
+                    content: `👶 Bébé vient de bouger ! ${totalToday} mouvements enregistrés aujourd'hui 🥰`,
+                    isOwn: true,
+                    createdAt: new Date().toISOString(),
+                  };
+                  const saved = JSON.parse(localStorage.getItem('duo-messages') || '[]');
+                  localStorage.setItem('duo-messages', JSON.stringify([...saved, msg]));
+                  toast.success('Message envoyé à votre partenaire 💬');
+                }}
+                className="w-full flex items-center gap-3 bg-green-50 border border-green-200 rounded-2xl px-4 py-3 hover:bg-green-100 transition-colors"
+              >
+                <MessageCircle className="w-5 h-5 text-green-600" />
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-green-700">Partager avec papa 👶</p>
+                  <p className="text-xs text-green-400">Envoie un message automatique au Duo</p>
+                </div>
+              </motion.button>
+            )}
           </div>
         )}
       </div>

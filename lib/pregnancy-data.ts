@@ -64,6 +64,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Un test de grossesse positif ? Félicitations ! Prenez rendez-vous rapidement avec votre médecin ou sage-femme.",
     weeklySymptoms: ["Test de grossesse positif", "Nausées légères le matin", "Envies fréquentes d'uriner"],
     weeklyMilestone: "Grossesse confirmée ! 🎉",
+    testimonials: ["Je viens de voir le test positif, je n'en reviens pas encore ! 🥹", "Mon ventre est tout plat mais je sais que tu es là 💕"],
   },
   {
     week: 5,
@@ -89,6 +90,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 1,
     weeklyTip: "Le gingembre (tisane, biscuits au gingembre) est votre allié contre les nausées. Gardez toujours un en-cas à portée de main.",
     weeklySymptoms: ["Nausées et vomissements", "Hypersensibilité aux odeurs", "Poitrine très sensible"],
+    testimonials: ["Les nausées ont commencé... gingembre et crackers sont mes meilleurs amis 😅", "Fatiguée mais tellement heureuse malgré tout 🌸"],
   },
   {
     week: 7,
@@ -114,6 +116,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Évitez tout médicament sans avis médical. Même l'ibuprofène est contre-indiqué ; préférez le paracétamol si nécessaire.",
     weeklySymptoms: ["Fatigue intense", "Nausées persistantes", "Envies et aversions alimentaires"],
     weeklyMilestone: "Première échographie possible 🖤",
+    testimonials: ["Premier écho prévu la semaine prochaine, j'ai tellement hâte d'entendre son cœur ❤️", "Je mange des choses bizarres à 3h du matin, grossesse quand tu nous tiens 😂"],
   },
   {
     week: 9,
@@ -164,6 +167,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Fin du 1er trimestre ! Vous pouvez commencer à masser votre ventre avec de l'huile de calendula pour prévenir les vergetures.",
     weeklySymptoms: ["Nausées qui s'atténuent", "Seins moins douloureux", "Légère rondeur abdominale"],
     weeklyMilestone: "Fin du 1er trimestre ! 🎊",
+    testimonials: ["Le risque de fausse couche diminue, je commence enfin à y croire vraiment 🙏", "On a annoncé la nouvelle aux grands-parents, leurs visages... inoubliable 😭❤️"],
   },
   {
     week: 13,
@@ -214,6 +218,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Bébé entend ! Parlez-lui, lisez-lui des histoires, mettez de la musique douce. Votre voix le rassure déjà.",
     weeklySymptoms: ["Rondeurs de grossesse visibles", "Légères douleurs ligamentaires", "Peau plus lumineuse"],
     weeklyMilestone: "Bébé vous entend ! 👂",
+    testimonials: ["J'ai senti quelque chose comme des petites bulles... premiers mouvements ? 🤔💕", "Mon ventre commence à se voir, j'adore ! Je le caresse tout le temps 🥰"],
   },
   {
     week: 17,
@@ -264,6 +269,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Mi-parcours ! L'échographie morphologique va tout vérifier. C'est normal d'être émue – profitez pleinement de ce moment.",
     weeklySymptoms: ["Ventre bien arrondi", "Essoufflement léger", "Brûlures d'estomac"],
     weeklyMilestone: "Mi-grossesse ! Échographie morphologique 🔬",
+    testimonials: ["L'écho morphologique est passé, tout va bien ! On a vu son petit visage 👶✨", "À mi-chemin ! Je n'arrive pas à croire qu'on en est déjà là 🎉"],
   },
   {
     week: 21,
@@ -313,6 +319,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Inscrivez-vous aux cours de préparation à la naissance (haptonomioe, yoga prénatal, sophrologie). Les places partent vite !",
     weeklySymptoms: ["Fond utérin à hauteur du nombril", "Gêne respiratoire légère", "Troubles du sommeil"],
     weeklyMilestone: "Seuil de viabilité foetale atteint 💪",
+    testimonials: ["Les coups de pied sont de plus en plus forts, papa peut les sentir maintenant ! 🥹", "Mon ventre a doublé en 2 semaines on dirait... je roule plutôt que je marche 😂"],
   },
   {
     week: 25,
