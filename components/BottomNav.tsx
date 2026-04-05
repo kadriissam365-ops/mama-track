@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Baby, Activity, CheckSquare, Calendar, Users, BookOpen } from "lucide-react";
+import { Home, Baby, Activity, CheckSquare, Calendar, Users, BookOpen, Camera } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Accueil", icon: Home },
@@ -12,6 +12,7 @@ const navItems = [
   { href: "/checklist", label: "Ma liste", icon: CheckSquare },
   { href: "/duo", label: "Duo", icon: Users },
   { href: "/conseils", label: "Conseils", icon: BookOpen },
+  { href: "/journal", label: "Journal", icon: Camera },
 ];
 
 export default function BottomNav() {
