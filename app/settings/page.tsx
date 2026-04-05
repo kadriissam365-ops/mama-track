@@ -6,7 +6,8 @@ import { useAuth } from "@/lib/auth";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import NotificationSettings from "@/components/NotificationSettings";
-import { Settings, User, Bell, LogOut, Calendar, Baby, Loader2, Lock, Eye, EyeOff } from "lucide-react";
+import { Settings, User, Bell, LogOut, Calendar, Baby, Loader2, Lock, Eye, EyeOff, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 import { createClient } from "@/lib/supabase";
 
 export default function SettingsPage() {
@@ -15,6 +16,7 @@ export default function SettingsPage() {
   const toast = useToast();
   const [activeTab, setActiveTab] = useState<"profile" | "notifications">("profile");
   const [saving, setSaving] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   const [mamaName, setMamaName] = useState(store.mamaName ?? "");
   const [babyName, setBabyName] = useState(store.babyName ?? "");
@@ -180,6 +182,24 @@ export default function SettingsPage() {
               ) : (
                 "Enregistrer"
               )}
+            </button>
+          </div>
+
+          {/* Dark mode toggle */}
+          <div className="bg-white dark:bg-[#1a1a2e] rounded-2xl p-4 border border-pink-100 dark:border-pink-900 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {theme === 'dark' ? <Moon className="w-4 h-4 text-purple-400" /> : <Sun className="w-4 h-4 text-yellow-400" />}
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Mode sombre</span>
+            </div>
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className={`relative w-12 h-6 rounded-full transition-colors ${
+                theme === 'dark' ? 'bg-purple-400' : 'bg-gray-200'
+              }`}
+            >
+              <span className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-all ${
+                theme === 'dark' ? 'left-7' : 'left-1'
+              }`} />
             </button>
           </div>
 

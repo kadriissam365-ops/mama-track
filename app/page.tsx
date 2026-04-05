@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { DashboardSkeleton } from "@/components/Skeleton";
 import { initializeNotifications } from "@/lib/notifications";
 import { WATER_GOAL_ML } from "@/lib/constants";
+import ReminderBanner from "@/components/ReminderBanner";
 
 export default function DashboardPage() {
   const store = useStore();
@@ -197,6 +198,9 @@ export default function DashboardPage() {
           </button>
         )}
       </motion.div>
+
+      {/* Smart Reminders */}
+      <ReminderBanner />
 
       {/* Trimestre badge */}
       <div className="flex gap-2">

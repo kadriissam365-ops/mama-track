@@ -128,3 +128,14 @@
 .bottom-nav-safe {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
+.dark body {
+  background-color: #0f0f1a;
+  color: #e2e8f0;
+}
+.dark .bg-white {
+  background-color: #1a1a2e !important;
+}
+.dark .border-pink-100 {
+  border-color: #2d2d4e !important;
+}
