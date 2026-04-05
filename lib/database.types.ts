@@ -282,6 +282,52 @@ export interface Database {
           role?: string
         }
       }
+      duo_messages: {
+        Row: {
+          id: string
+          sender_id: string
+          recipient_id: string
+          content: string
+          created_at: string
+          read_at: string | null
+        }
+        Insert: {
+          id?: string
+          sender_id: string
+          recipient_id: string
+          content: string
+          created_at?: string
+          read_at?: string | null
+        }
+        Update: {
+          read_at?: string | null
+        }
+      }
+      community_posts: {
+        Row: {
+          id: string
+          user_id: string | null
+          week: number
+          type: string
+          content: string
+          anonymous_name: string
+          reactions: { heart: number; hug: number; strong: number; laugh: number }
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          week: number
+          type?: string
+          content: string
+          anonymous_name: string
+          reactions?: { heart: number; hug: number; strong: number; laugh: number }
+          created_at?: string
+        }
+        Update: {
+          reactions?: { heart: number; hug: number; strong: number; laugh: number }
+        }
+      }
     }
     Functions: Record<string, never>
     Enums: Record<string, never>

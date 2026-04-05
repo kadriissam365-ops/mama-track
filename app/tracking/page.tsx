@@ -8,15 +8,23 @@ import WeightTab from "@/components/tracking/WeightTab";
 import SymptomTab from "@/components/tracking/SymptomTab";
 import WaterTab from "@/components/tracking/WaterTab";
 import KicksTab from "@/components/tracking/KicksTab";
+import NutritionTab from "@/components/tracking/NutritionTab";
+import BloodPressureTab from "@/components/tracking/BloodPressureTab";
+import AbdomenTab from "@/components/tracking/AbdomenTab";
+import MoodTab from "@/components/tracking/MoodTab";
 import { Timer } from "lucide-react";
 
-type Tab = "symptoms" | "weight" | "water" | "kicks";
+type Tab = "symptoms" | "weight" | "water" | "kicks" | "nutrition" | "bp" | "abdomen" | "mood";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "symptoms", label: "😣 Symptômes" },
   { id: "weight", label: "⚖️ Poids" },
   { id: "water", label: "💧 Eau" },
   { id: "kicks", label: "👶 Mouvements" },
+  { id: "bp", label: "🩺 Tension" },
+  { id: "abdomen", label: "📏 Ventre" },
+  { id: "mood", label: "💭 Humeur" },
+  { id: "nutrition", label: "🌿 Nutrition" },
 ];
 
 export default function TrackingPage() {
@@ -63,6 +71,10 @@ export default function TrackingPage() {
         {activeTab === "weight" && <WeightTab key="weight" />}
         {activeTab === "water" && <WaterTab key="water" today={today} />}
         {activeTab === "kicks" && <KicksTab key="kicks" today={today} />}
+        {activeTab === "nutrition" && <NutritionTab key="nutrition" />}
+        {activeTab === "bp" && <BloodPressureTab key="bp" />}
+        {activeTab === "abdomen" && <AbdomenTab key="abdomen" />}
+        {activeTab === "mood" && <MoodTab key="mood" />}
       </AnimatePresence>
     </div>
   );

@@ -94,6 +94,36 @@
   border-radius: 2px;
 }
 
+/* Dark mode */
+.dark {
+  --background: #0f0f1a;
+  --foreground: #e2e8f0;
+  --card: #1a1a2e;
+  --card-foreground: #e2e8f0;
+  --popover: #1a1a2e;
+  --popover-foreground: #e2e8f0;
+  --primary: #f472b6;
+  --primary-foreground: #0f0f1a;
+  --secondary: #a78bfa;
+  --secondary-foreground: #0f0f1a;
+  --muted: #2a2a3e;
+  --muted-foreground: #94a3b8;
+  --accent: #34d399;
+  --accent-foreground: #0f0f1a;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #2d2d45;
+  --input: #2a2a3e;
+  --ring: #f472b6;
+  --sidebar: #16162a;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #f472b6;
+  --sidebar-primary-foreground: #0f0f1a;
+  --sidebar-accent: #2a2a3e;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: #2d2d45;
+  --sidebar-ring: #f472b6;
+}
+
 /* Bottom nav safe area */
 .bottom-nav-safe {
   padding-bottom: env(safe-area-inset-bottom);

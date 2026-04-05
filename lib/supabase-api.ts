@@ -664,3 +664,175 @@ export async function loadAllUserData(userId: string): Promise<AllUserData> {
     checklistItems,
   };
 }
+
+// ============== BUMP PHOTOS ==============
+
+export interface BumpPhoto {
+  id: string;
+  user_id: string;
+  week: number;
+  storage_path: string;
+  note?: string | null;
+  captured_at: string;
+  created_at: string;
+  signedUrl?: string;
+}
+
+export interface JournalNote {
+  id: string;
+  user_id: string;
+  week: number;
+  title?: string | null;
+  body: string;
+  mood_emoji?: string | null;
+  created_at: string;
+}
+
+export async function getBumpPhotos(userId: string): Promise<BumpPhoto[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('bump_photos')
+    .select('*')
+    .eq('user_id', userId)
+    .order('week', { ascending: true });
+
+  if (error || !data) return [];
+  return data as BumpPhoto[];
+}
+
+export async function getBumpPhotoSignedUrl(storagePath: string): Promise<string | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase.storage
+    .from('bump-photos')
+    .createSignedUrl(storagePath, 3600);
+  if (error || !data) return null;
+  return data.signedUrl;
+}
+
+export async function upsertBumpPhoto(
+  userId: string,
+  week: number,
+  file: Blob,
+  note?: string
+): Promise<BumpPhoto | null> {
+  const supabase = getSupabase();
+  const storagePath = `${userId}/week-${week}.jpg`;
+
+  // Upload to storage
+  const { error: uploadError } = await supabase.storage
+    .from('bump-photos')
+    .upload(storagePath, file, {
+      contentType: 'image/jpeg',
+      upsert: true,
+    });
+
+  if (uploadError) {
+    console.error('Upload error:', uploadError);
+    return null;
+  }
+
+  // Upsert to DB
+  const { data, error } = await supabase
+    .from('bump_photos')
+    .upsert({
+      user_id: userId,
+      week,
+      storage_path: storagePath,
+      note: note || null,
+      captured_at: new Date().toISOString().split('T')[0],
+    }, { onConflict: 'user_id,week' })
+    .select()
+    .single();
+
+  if (error || !data) return null;
+  return data as BumpPhoto;
+}
+
+export async function updateBumpPhotoNote(
+  userId: string,
+  week: number,
+  note: string
+): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('bump_photos')
+    .update({ note })
+    .eq('user_id', userId)
+    .eq('week', week);
+  return !error;
+}
+
+export async function deleteBumpPhoto(userId: string, week: number, storagePath: string): Promise<boolean> {
+  const supabase = getSupabase();
+
+  // Delete from storage
+  await supabase.storage.from('bump-photos').remove([storagePath]);
+
+  // Delete from DB
+  const { error } = await supabase
+    .from('bump_photos')
+    .delete()
+    .eq('user_id', userId)
+    .eq('week', week);
+
+  return !error;
+}
+
+// ============== JOURNAL NOTES ==============
+
+export async function getJournalNotes(userId: string): Promise<JournalNote[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('journal_notes')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error || !data) return [];
+  return data as JournalNote[];
+}
+
+export async function createJournalNote(
+  userId: string,
+  note: Omit<JournalNote, 'id' | 'user_id' | 'created_at'>
+): Promise<JournalNote | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('journal_notes')
+    .insert({
+      user_id: userId,
+      week: note.week,
+      title: note.title || null,
+      body: note.body,
+      mood_emoji: note.mood_emoji || null,
+    })
+    .select()
+    .single();
+
+  if (error || !data) return null;
+  return data as JournalNote;
+}
+
+export async function updateJournalNote(
+  noteId: string,
+  userId: string,
+  updates: Partial<Pick<JournalNote, 'title' | 'body' | 'mood_emoji'>>
+): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('journal_notes')
+    .update(updates)
+    .eq('id', noteId)
+    .eq('user_id', userId);
+  return !error;
+}
+
+export async function deleteJournalNote(noteId: string, userId: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('journal_notes')
+    .delete()
+    .eq('id', noteId)
+    .eq('user_id', userId);
+  return !error;
+}

@@ -6,6 +6,8 @@ import { AuthProvider } from "@/lib/auth";
 import { ToastProvider } from "@/lib/toast";
 import ConditionalNav from "@/components/ConditionalNav";
 import InstallBanner from "@/components/InstallBanner";
+import OfflineBanner from "@/components/OfflineBanner";
+import { ThemeProvider } from "next-themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,7 +41,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#f472b6",
-  colorScheme: "light",
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({
@@ -51,6 +53,7 @@ export default function RootLayout({
     <html
       lang="fr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
         {/* PWA meta tags */}
@@ -69,9 +72,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="min-h-full flex flex-col bg-[#fdf6f0]">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <AuthProvider>
           <ToastProvider>
             <StoreProvider>
+              <OfflineBanner />
               <ConditionalNav />
               <InstallBanner />
               <main className="flex-1 pb-24 overflow-y-auto">
@@ -80,6 +85,7 @@ export default function RootLayout({
             </StoreProvider>
           </ToastProvider>
         </AuthProvider>
+        </ThemeProvider>
         
         {/* Service Worker Registration */}
         <script
