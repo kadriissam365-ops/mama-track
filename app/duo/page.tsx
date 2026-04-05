@@ -47,6 +47,14 @@ interface DuoMessage {
 
 const EMOJI_SHORTCUTS = ["❤️", "🤰", "👶", "💪", "😊", "🌸"];
 
+const SUPPORT_MESSAGES = [
+  { emoji: "❤️", text: "Je pense à toi" },
+  { emoji: "💪", text: "Tu gères !" },
+  { emoji: "🤗", text: "Câlin virtuel" },
+  { emoji: "👶", text: "Hâte de vous voir !" },
+  { emoji: "🌸", text: "Je t'aime" },
+];
+
 function ChatSection({ userId, partnerName }: { userId: string; partnerName: string | null }) {
   const [messages, setMessages] = useState<DuoMessage[]>([]);
   const [input, setInput] = useState("");
@@ -236,6 +244,9 @@ export default function DuoPage() {
   const [invitations, setInvitations] = useState<DuoInvitation[]>([]);
   const [partners, setPartners] = useState<DuoAccess[]>([]);
   
+  const [supportMessages, setSupportMessages] = useState<DuoMessage[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+
   const [showForm, setShowForm] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<Role>("papa");
@@ -247,6 +258,30 @@ export default function DuoPage() {
       loadData();
     }
   }, [user]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('duo-support-messages');
+      if (saved) setSupportMessages(JSON.parse(saved));
+    } catch { /* ignore */ }
+  }, []);
+
+  const sendSupportMessage = (content: string) => {
+    if (!content.trim()) return;
+    const msg: DuoMessage = {
+      id: Date.now().toString(),
+      senderId: user?.id || 'local',
+      content: content.trim(),
+      isOwn: true,
+      createdAt: new Date().toISOString(),
+    };
+    const updated = [...supportMessages, msg];
+    setSupportMessages(updated);
+    try { localStorage.setItem('duo-support-messages', JSON.stringify(updated)); } catch { /* ignore */ }
+    setNewMessage('');
+  };
+
+  const formatSupportTime = (iso: string) => new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
   const loadData = async () => {
     if (!user) return;
@@ -550,6 +585,56 @@ export default function DuoPage() {
           partnerName={partnerLabel}
         />
       )}
+
+      {/* Messages de soutien */}
+      <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100">
+        <h3 className="font-semibold text-[#3d2b2b] mb-3 flex items-center gap-2">
+          <MessageCircle className="w-5 h-5 text-pink-400" />
+          Messages de soutien
+        </h3>
+
+        {/* Messages rapides */}
+        <div className="flex gap-2 flex-wrap mb-3">
+          {SUPPORT_MESSAGES.map(msg => (
+            <button key={msg.text} onClick={() => sendSupportMessage(msg.text)}
+              className="text-xs bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-full px-3 py-1.5 transition-colors">
+              {msg.emoji} {msg.text}
+            </button>
+          ))}
+        </div>
+
+        {/* Liste messages */}
+        <div className="space-y-2 max-h-48 overflow-y-auto mb-3">
+          {supportMessages.map(msg => (
+            <div key={msg.id} className={`flex ${msg.isOwn ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
+                msg.isOwn ? 'bg-pink-400 text-white' : 'bg-gray-100 text-gray-700'
+              }`}>
+                {msg.content}
+                <div className="text-xs opacity-60 mt-0.5">{formatSupportTime(msg.createdAt)}</div>
+              </div>
+            </div>
+          ))}
+          {supportMessages.length === 0 && (
+            <p className="text-center text-sm text-gray-400 py-4">
+              Envoyez un premier message de soutien 💕
+            </p>
+          )}
+        </div>
+
+        {/* Input */}
+        <div className="flex gap-2">
+          <input value={newMessage} onChange={e => setNewMessage(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && sendSupportMessage(newMessage)}
+            placeholder="Écrire un message..."
+            className="flex-1 border border-pink-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300" />
+          <button onClick={() => sendSupportMessage(newMessage)}
+            disabled={!newMessage.trim()}
+            className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-40">
+            Envoyer
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
