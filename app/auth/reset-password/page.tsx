@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase";
 import { Lock, Eye, EyeOff, Heart, Loader2, CheckCircle } from "lucide-react";
@@ -16,18 +16,36 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
+  const searchParams = useSearchParams();
+
   useEffect(() => {
-    // Supabase injects the session from the reset link hash
     const supabase = createClient();
+
+    // Enregistrer le listener AVANT getSession pour éviter la race condition
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") && session) {
+        setReady(true);
+      }
+    });
+
+    // Cas 1 : session déjà établie (via /auth/callback → cookies)
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setReady(true);
-      else {
-        // Try to get session from URL hash (Supabase magic link)
-        supabase.auth.onAuthStateChange((event, session) => {
-          if (event === "PASSWORD_RECOVERY" && session) setReady(true);
+      if (session) {
+        setReady(true);
+        return;
+      }
+
+      // Cas 2 : fallback — code dans l'URL (lien direct sans passer par callback)
+      const code = searchParams.get("code");
+      if (code) {
+        supabase.auth.exchangeCodeForSession(code).catch(() => {
+          setError("Le lien de réinitialisation est invalide ou a expiré.");
         });
       }
     });
+
+    return () => subscription.unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

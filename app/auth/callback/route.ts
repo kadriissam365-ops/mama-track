@@ -31,8 +31,8 @@ export async function GET(request: Request) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     
     if (!error) {
-      // Password recovery flow → redirect to reset page
-      if (data?.session && next === '/auth/reset-password') {
+      // Password recovery flow → redirect to reset page (session established via cookies)
+      if (next === '/auth/reset-password') {
         return NextResponse.redirect(`${origin}/auth/reset-password`)
       }
 
