@@ -60,12 +60,19 @@ export default function AgendaPage() {
     setShowForm(false);
   };
 
-  const upcoming = store.appointments.filter(
-    (a) => !a.done && (isToday(new Date(a.date)) || isFuture(new Date(a.date)))
-  );
-  const past = store.appointments.filter(
-    (a) => a.done || isPast(new Date(a.date + "T23:59"))
-  );
+  // Parse dates as local midnight to avoid UTC off-by-one in non-UTC timezones
+  const parseLocalDate = (dateStr: string) => new Date(dateStr + "T00:00:00");
+
+  const upcoming = store.appointments.filter((a) => {
+    if (a.done) return false;
+    const d = parseLocalDate(a.date);
+    return isToday(d) || isFuture(d);
+  });
+  const past = store.appointments.filter((a) => {
+    const d = parseLocalDate(a.date);
+    // Mutuellement exclusif avec upcoming : passé = done OU (date < aujourd'hui ET non aujourd'hui)
+    return a.done || (!isToday(d) && isPast(d));
+  });
 
   const trimesterColors: Record<1 | 2 | 3, string> = {
     1: "bg-pink-50 border-pink-200",
@@ -190,7 +197,7 @@ export default function AgendaPage() {
                       <h3 className="font-semibold text-[#3d2b2b]">{appt.title}</h3>
                     </div>
                     <p className="text-sm text-pink-500 font-medium">
-                      {format(new Date(appt.date), "EEEE d MMMM yyyy", { locale: fr })} à {appt.time}
+                      {format(new Date(appt.date + "T00:00:00"), "EEEE d MMMM yyyy", { locale: fr })} à {appt.time}
                     </p>
                     {appt.doctor && (
                       <p className="text-xs text-gray-500 mt-0.5">👨‍⚕️ {appt.doctor}</p>
@@ -314,7 +321,7 @@ export default function AgendaPage() {
                 <div>
                   <p className="text-sm text-gray-600 line-through">{appt.title}</p>
                   <p className="text-xs text-gray-400">
-                    {format(new Date(appt.date), "d MMM yyyy", { locale: fr })}
+                    {format(new Date(appt.date + "T00:00:00"), "d MMM yyyy", { locale: fr })}
                   </p>
                 </div>
                 <button

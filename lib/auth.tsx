@@ -22,18 +22,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const supabase = createClient();
+    let initialSessionReceived = false;
 
-    // Get initial user (validates JWT server-side)
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user ?? null);
+    // Listen for auth changes FIRST — INITIAL_SESSION fires synchronously
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "INITIAL_SESSION") {
+        // Let getUser() (server-validated) take priority — skip this
+        initialSessionReceived = true;
+        return;
+      }
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    // getUser() validates the JWT server-side — source of truth
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user ?? null);
+      setLoading(false);
+      initialSessionReceived = true;
+    }).catch(() => {
+      setUser(null);
       setLoading(false);
     });
 
