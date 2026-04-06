@@ -66,8 +66,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  // If user is authenticated and trying to access auth pages
-  if (user && isPublicPath && request.nextUrl.pathname !== '/auth/callback') {
+  // Si l'utilisateur est connecté et tente d'accéder aux pages auth
+  // Exceptions : callback, reset-password, forgot-password (accessibles même connecté)
+  const authOnlyRedirectExceptions = ['/auth/callback', '/auth/reset-password', '/auth/forgot-password']
+  if (
+    user &&
+    isPublicPath &&
+    !authOnlyRedirectExceptions.some(p => request.nextUrl.pathname.startsWith(p))
+  ) {
     const redirectUrl = new URL('/', request.url)
     return NextResponse.redirect(redirectUrl)
   }
