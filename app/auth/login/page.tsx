@@ -138,9 +138,13 @@ export default function LoginPage() {
             </div>
 
             <div className="flex justify-end">
-              <Link href="/auth/forgot-password" className="text-xs text-pink-500 hover:text-pink-600">
+              <a
+                href="/auth/forgot-password"
+                className="text-xs text-pink-500 hover:text-pink-600 cursor-pointer select-none"
+                onClick={(e) => { e.stopPropagation(); }}
+              >
                 Mot de passe oublié ?
-              </Link>
+              </a>
             </div>
 
             <button

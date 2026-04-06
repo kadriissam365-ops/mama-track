@@ -45,8 +45,9 @@ export default function SignupPage() {
       }
       setLoading(false);
     } else {
-      // Confirmation email désactivée — redirection directe vers l'onboarding
-      router.push("/onboarding");
+      // Afficher l'écran de confirmation d'email
+      setSuccess(true);
+      setLoading(false);
     }
   };
 

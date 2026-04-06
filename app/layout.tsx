@@ -21,6 +21,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "MamaTrack - Suivi de Grossesse 🌸",
+  icons: {
+    icon: [
+      { url: "/icons/icon-192x192.png", type: "image/png" },
+    ],
+    apple: "/icons/icon-192x192.png",
+  },
   description: "Suivez votre grossesse semaine par semaine avec MamaTrack. Poids, symptômes, contractions, rendez-vous médicaux et plus encore.",
   manifest: "/manifest.json",
   appleWebApp: {

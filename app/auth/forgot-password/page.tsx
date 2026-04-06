@@ -20,8 +20,9 @@ export default function ForgotPasswordPage() {
     const supabase = createClient();
     // Passe par /auth/callback pour que le code PKCE soit échangé côté serveur
     // puis redirigé vers /auth/reset-password avec la session déjà établie
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/auth/reset-password`,
+      redirectTo: `${appUrl}/auth/callback?next=/auth/reset-password`,
     });
 
     if (error) {
