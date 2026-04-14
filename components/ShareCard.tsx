@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useCallback } from "react";
 import { motion } from "framer-motion";
-import { X, Share2, Download } from "lucide-react";
+import { X } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek, getDaysRemaining, getWeekData } from "@/lib/pregnancy-data";
+import SocialShareButtons from "@/components/SocialShareButtons";
 
 interface ShareCardProps {
   onClose: () => void;
@@ -13,15 +14,14 @@ interface ShareCardProps {
 export default function ShareCard({ onClose }: ShareCardProps) {
   const store = useStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [sharing, setSharing] = useState(false);
 
   const dueDate = store.dueDate ? new Date(store.dueDate) : null;
   const week = dueDate ? getCurrentWeek(dueDate) : 20;
   const daysRemaining = dueDate ? getDaysRemaining(dueDate) : 0;
   const weekData = getWeekData(week);
-  const babyName = store.babyName || "votre bébé";
+  const babyName = store.babyName || "votre bebe";
 
-  const drawCard = (): Promise<Blob> => {
+  const drawCard = useCallback((): Promise<Blob> => {
     return new Promise((resolve) => {
       const canvas = canvasRef.current!;
       canvas.width = 1080;
@@ -86,7 +86,7 @@ export default function ShareCard({ onClose }: ShareCardProps) {
         resolve(blob!);
       }, "image/png");
     });
-  };
+  }, [week, weekData, daysRemaining, babyName]);
 
   function roundRect(
     ctx: CanvasRenderingContext2D,
@@ -109,32 +109,7 @@ export default function ShareCard({ onClose }: ShareCardProps) {
     ctx.closePath();
   }
 
-  const handleShare = async () => {
-    setSharing(true);
-    try {
-      const blob = await drawCard();
-      const file = new File([blob], `mamatrack-semaine-${week}.png`, { type: "image/png" });
-
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: `MamaTrack — Semaine ${week}`,
-        });
-      } else {
-        // Fallback: download
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `mamatrack-semaine-${week}.png`;
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-    } catch (err) {
-      console.error("Share error:", err);
-    } finally {
-      setSharing(false);
-    }
-  };
+  const shareText = `Semaine ${week} - Bebe fait la taille d'un(e) ${weekData?.fruit ?? "fruit"} ! ${weekData?.fruitEmoji ?? ""}\n${daysRemaining} jours avant l'arrivee de ${babyName} 💕\n#MamaTrack #Grossesse`;
 
   return (
     <motion.div
@@ -148,7 +123,7 @@ export default function ShareCard({ onClose }: ShareCardProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-[#1a1a2e] rounded-3xl p-6 w-full max-w-sm shadow-2xl"
+        className="bg-white dark:bg-[#1a1a2e] rounded-3xl p-6 w-full max-w-sm shadow-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -165,27 +140,21 @@ export default function ShareCard({ onClose }: ShareCardProps) {
           <p className="text-6xl my-2">{weekData?.fruitEmoji ?? "🍎"}</p>
           <p className="text-sm text-purple-600 font-medium">{weekData?.fruit ?? ""}</p>
           <p className="text-gray-600 text-sm mt-2">
-            {daysRemaining} jours avant l&apos;arrivée de <strong>{babyName}</strong>
+            {daysRemaining} jours avant l&apos;arrivee de <strong>{babyName}</strong>
           </p>
           <p className="text-xs text-gray-400 mt-2">MamaTrack 🌸</p>
         </div>
 
         <canvas ref={canvasRef} className="hidden" />
 
-        <div className="flex gap-3">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={handleShare}
-            disabled={sharing}
-            className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-semibold py-3 rounded-xl hover:from-pink-500 hover:to-purple-600 transition-all disabled:opacity-60"
-          >
-            {typeof navigator !== 'undefined' && 'share' in navigator ? (
-              <><Share2 className="w-4 h-4" /> Partager</>
-            ) : (
-              <><Download className="w-4 h-4" /> Télécharger</>
-            )}
-          </motion.button>
-        </div>
+        {/* Social share buttons */}
+        <SocialShareButtons
+          content={{
+            text: shareText,
+            fileName: `mamatrack-semaine-${week}.png`,
+          }}
+          onImageGenerate={drawCard}
+        />
       </motion.div>
     </motion.div>
   );

@@ -385,6 +385,35 @@ export default function DashboardPage() {
         <span className="ml-auto text-purple-300 text-lg">›</span>
       </button>
 
+      {/* Explorer — nouvelles sections */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.43 }}
+        className="space-y-3"
+      >
+        <h3 className="text-sm font-semibold text-gray-500 px-1">Explorer</h3>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { href: "/timeline", emoji: "📅", label: "Timeline", color: "bg-indigo-50 border-indigo-100" },
+            { href: "/bump", emoji: "📸", label: "Bump diary", color: "bg-rose-50 border-rose-100" },
+            { href: "/alimentation", emoji: "🥗", label: "Alimentation", color: "bg-green-50 border-green-100" },
+            { href: "/medicaments", emoji: "💊", label: "Médicaments", color: "bg-blue-50 border-blue-100" },
+            { href: "/respiration", emoji: "🌬️", label: "Respiration", color: "bg-cyan-50 border-cyan-100" },
+            { href: "/urgences", emoji: "🚨", label: "Urgences", color: "bg-red-50 border-red-100" },
+          ].map((item) => (
+            <button
+              key={item.href}
+              onClick={() => router.push(item.href)}
+              className={`${item.color} border rounded-2xl p-3 flex flex-col items-center gap-1.5 hover:scale-[1.03] transition-transform`}
+            >
+              <span className="text-2xl">{item.emoji}</span>
+              <span className="text-xs font-medium text-gray-600">{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </motion.div>
+
       {/* Conseil de la semaine */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

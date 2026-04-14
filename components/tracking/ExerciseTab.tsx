@@ -1,0 +1,310 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { createClient } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { Trash2 } from "lucide-react";
+import ConfirmDialog from "@/components/ConfirmDialog";
+
+interface ExerciseEntry {
+  id: string;
+  date: string;
+  activity: string;
+  duration_minutes: number;
+  intensity: string;
+  note?: string;
+}
+
+const ACTIVITIES = [
+  { emoji: "🚶‍♀️", label: "Marche", id: "marche" },
+  { emoji: "🧘", label: "Yoga prénatal", id: "yoga" },
+  { emoji: "🏊‍♀️", label: "Natation", id: "natation" },
+  { emoji: "🤸‍♀️", label: "Pilates", id: "pilates" },
+  { emoji: "🚴‍♀️", label: "Vélo", id: "velo" },
+  { emoji: "💃", label: "Danse", id: "danse" },
+  { emoji: "🏋️‍♀️", label: "Renforcement", id: "renforcement" },
+  { emoji: "🧘‍♀️", label: "Étirements", id: "etirements" },
+  { emoji: "🫁", label: "Respiration", id: "respiration" },
+  { emoji: "🏃‍♀️", label: "Jogging léger", id: "jogging" },
+  { emoji: "🧹", label: "Ménage actif", id: "menage" },
+  { emoji: "✨", label: "Autre", id: "autre" },
+];
+
+const INTENSITIES = [
+  { id: "leger", label: "Léger", emoji: "💚", color: "bg-green-100 border-green-300" },
+  { id: "modere", label: "Modéré", emoji: "💛", color: "bg-yellow-100 border-yellow-300" },
+  { id: "intense", label: "Intense", emoji: "🧡", color: "bg-orange-100 border-orange-300" },
+];
+
+export default function ExerciseTab() {
+  const { user } = useAuth();
+  const [entries, setEntries] = useState<ExerciseEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedActivity, setSelectedActivity] = useState<string | null>(null);
+  const [duration, setDuration] = useState("30");
+  const [intensity, setIntensity] = useState("modere");
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createClient() as any;
+
+  useEffect(() => {
+    if (user) loadEntries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  async function loadEntries() {
+    if (!user) return;
+    setLoading(true);
+    const { data } = await supabase
+      .from("exercise_entries")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("date", { ascending: false })
+      .limit(30);
+    setEntries(data ?? []);
+    setLoading(false);
+  }
+
+  async function handleSave() {
+    if (!user || !selectedActivity) return;
+    setSaving(true);
+    const today = format(new Date(), "yyyy-MM-dd");
+
+    const { data, error } = await supabase
+      .from("exercise_entries")
+      .insert({
+        user_id: user.id,
+        date: today,
+        activity: selectedActivity,
+        duration_minutes: parseInt(duration) || 30,
+        intensity,
+        note: note || null,
+      })
+      .select()
+      .single();
+
+    setSaving(false);
+    if (!error && data) {
+      setEntries((prev) => [data, ...prev]);
+      setSelectedActivity(null);
+      setNote("");
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 2000);
+    }
+  }
+
+  async function handleDelete(id: string) {
+    await supabase.from("exercise_entries").delete().eq("id", id);
+    setEntries((prev) => prev.filter((e) => e.id !== id));
+    setConfirmDelete(null);
+  }
+
+  const today = format(new Date(), "yyyy-MM-dd");
+  const todayEntries = entries.filter((e) => e.date === today);
+  const todayMinutes = todayEntries.reduce((sum, e) => sum + e.duration_minutes, 0);
+
+  const weekEntries = entries.filter((e) => {
+    const d = new Date(e.date);
+    const now = new Date();
+    const diff = (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24);
+    return diff < 7;
+  });
+  const weekMinutes = weekEntries.reduce((sum, e) => sum + e.duration_minutes, 0);
+  const weekGoal = 150;
+  const weekPct = Math.min(100, (weekMinutes / weekGoal) * 100);
+
+  const activityMap = new Map(ACTIVITIES.map((a) => [a.id, a]));
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      className="space-y-4"
+    >
+      {/* Weekly goal */}
+      <div className="bg-white rounded-3xl p-5 shadow-sm border border-emerald-100">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-semibold text-[#3d2b2b]">Objectif semaine</h3>
+          <span className="text-xs text-gray-400">{weekMinutes} / {weekGoal} min</span>
+        </div>
+        <div className="w-full bg-emerald-100 rounded-full h-3 mb-1">
+          <motion.div
+            className="h-3 rounded-full bg-emerald-400"
+            initial={{ width: 0 }}
+            animate={{ width: `${weekPct}%` }}
+            transition={{ duration: 0.8 }}
+          />
+        </div>
+        <p className="text-xs text-gray-400">
+          {weekPct >= 100
+            ? "🎉 Objectif atteint !"
+            : `Recommandation OMS : 150 min d'activité modérée/semaine`}
+        </p>
+
+        {todayMinutes > 0 && (
+          <div className="mt-2 bg-emerald-50 rounded-xl px-3 py-2 text-center">
+            <span className="text-sm font-semibold text-emerald-600">
+              Aujourd&apos;hui : {todayMinutes} min ({todayEntries.length} activité{todayEntries.length > 1 ? "s" : ""})
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Activity selector */}
+      <div className="bg-white rounded-3xl p-5 shadow-sm border border-emerald-100">
+        <h3 className="font-semibold text-[#3d2b2b] mb-3">Ajouter une activité</h3>
+
+        <div className="grid grid-cols-4 gap-2 mb-3">
+          {ACTIVITIES.map((act) => (
+            <button
+              key={act.id}
+              onClick={() => setSelectedActivity(act.id)}
+              className={`flex flex-col items-center py-2 px-1 rounded-2xl border-2 transition-all ${
+                selectedActivity === act.id
+                  ? "bg-emerald-100 border-emerald-300 scale-105 shadow-md"
+                  : "border-gray-100 hover:border-emerald-200 bg-gray-50"
+              }`}
+            >
+              <span className="text-xl">{act.emoji}</span>
+              <span className="text-[9px] text-gray-500 mt-0.5 text-center leading-tight">{act.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Duration + Intensity */}
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">Durée (min)</label>
+            <input
+              type="number"
+              min="5"
+              step="5"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              className="w-full border border-emerald-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">Intensité</label>
+            <div className="flex gap-1">
+              {INTENSITIES.map((int) => (
+                <button
+                  key={int.id}
+                  onClick={() => setIntensity(int.id)}
+                  className={`flex-1 py-2 rounded-xl border-2 text-center transition-all ${
+                    intensity === int.id
+                      ? `${int.color} shadow-sm`
+                      : "border-gray-100 bg-gray-50"
+                  }`}
+                >
+                  <span className="text-sm">{int.emoji}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Note */}
+        <textarea
+          placeholder="Notes (optionnel)"
+          value={note}
+          onChange={(e) => setNote(e.target.value.slice(0, 200))}
+          rows={2}
+          className="w-full border border-emerald-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none mb-2"
+        />
+
+        <button
+          onClick={handleSave}
+          disabled={!selectedActivity || saving}
+          className="w-full bg-emerald-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-emerald-500 transition-colors"
+        >
+          {saving ? "…" : success ? "✓ Ajoutée !" : "Ajouter l'activité"}
+        </button>
+      </div>
+
+      {/* Weekly chart */}
+      {weekEntries.length > 0 && (
+        <div className="bg-white rounded-3xl p-4 shadow-sm border border-emerald-100">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Cette semaine</h3>
+          <div className="flex gap-1.5 items-end justify-around">
+            {Array.from({ length: 7 }).map((_, i) => {
+              const d = new Date();
+              d.setDate(d.getDate() - (6 - i));
+              const dateStr = format(d, "yyyy-MM-dd");
+              const dayEntries = entries.filter((e) => e.date === dateStr);
+              const dayMins = dayEntries.reduce((sum, e) => sum + e.duration_minutes, 0);
+              const barH = Math.max(4, (dayMins / 60) * 80);
+              return (
+                <div key={i} className="flex flex-col items-center flex-1">
+                  {dayMins > 0 && (
+                    <span className="text-[9px] text-gray-500 mb-0.5">{dayMins}m</span>
+                  )}
+                  <div
+                    className={`w-full rounded-t-lg ${dayMins > 0 ? "bg-emerald-300" : "bg-gray-100"}`}
+                    style={{ height: `${barH}px` }}
+                  />
+                  <span className="text-[9px] text-gray-400 mt-0.5">
+                    {format(d, "EEE", { locale: fr }).slice(0, 2)}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Recent entries */}
+      {!loading && entries.length > 0 && (
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] px-1">Dernières activités</h3>
+          {entries.slice(0, 10).map((entry) => {
+            const act = activityMap.get(entry.activity);
+            const int = INTENSITIES.find((i) => i.id === entry.intensity);
+            return (
+              <div
+                key={entry.id}
+                className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-emerald-100 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{act?.emoji ?? "✨"}</span>
+                  <div>
+                    <p className="text-sm font-semibold text-[#3d2b2b]">
+                      {act?.label ?? entry.activity} · {entry.duration_minutes} min {int?.emoji}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      {format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}
+                      {entry.note && ` — ${entry.note}`}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setConfirmDelete(entry.id)}
+                  className="text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
+                  aria-label="Supprimer"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      <ConfirmDialog
+        isOpen={confirmDelete !== null}
+        title="Supprimer cette activité ?"
+        message="Cette action est irréversible."
+        onConfirm={() => confirmDelete && handleDelete(confirmDelete)}
+        onCancel={() => setConfirmDelete(null)}
+      />
+    </motion.div>
+  );
+}
