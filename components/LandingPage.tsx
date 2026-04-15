@@ -582,44 +582,67 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Comment ca marche */}
       <section className="px-4 py-20 max-w-3xl mx-auto">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={sectionVariants}
-          className="text-center mb-12"
+          className="text-center mb-14"
         >
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-3">
-            Prete en <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">3 etapes</span>
+            Comment ca <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">marche</span>
           </h2>
-          <p className="text-sm sm:text-base text-gray-500">
+          <p className="text-sm sm:text-base text-gray-500 max-w-md mx-auto">
             Commencez a suivre votre grossesse en moins d&apos;une minute.
           </p>
         </motion.div>
-        <div className="space-y-4">
-          {[
-            { step: "1", title: "Creez votre compte", desc: "Inscription gratuite en 30 secondes avec votre email. Aucune carte bancaire requise.", color: "from-pink-400 to-pink-500", icon: "✨" },
-            { step: "2", title: "Entrez votre DPA", desc: "Renseignez votre Date Prevue d'Accouchement ou votre date de debut de grossesse.", color: "from-purple-400 to-purple-500", icon: "📅" },
-            { step: "3", title: "Profitez de tout, gratuitement", desc: "Suivi bebe, trackers sante, mode duo, prenoms, projet naissance... tout est a vous !", color: "from-emerald-400 to-emerald-500", icon: "🎉" },
-          ].map((item, i) => (
+
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-0 sm:gap-0 relative">
+          {/* Connecting line (desktop) */}
+          <div className="hidden sm:block absolute top-10 left-[12.5%] right-[12.5%] h-0.5">
             <motion.div
-              key={item.step}
-              initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              className="h-full bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 rounded-full"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
-              className="flex items-center gap-5 bg-white rounded-2xl p-6 border border-pink-100 shadow-sm hover:shadow-md transition-all"
+              transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+              style={{ transformOrigin: "left" }}
+            />
+          </div>
+
+          {howItWorksSteps.map((step, i) => (
+            <motion.div
+              key={step.title}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 + i * 0.15 }}
+              className="flex flex-col items-center text-center px-3 py-4 relative"
             >
-              <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center flex-shrink-0 text-white font-bold text-xl shadow-sm`}>
-                {item.step}
+              {/* Connecting line (mobile) */}
+              {i < howItWorksSteps.length - 1 && (
+                <motion.div
+                  className="sm:hidden absolute left-1/2 top-[4.5rem] w-0.5 h-8 bg-gradient-to-b from-pink-200 to-purple-200 -translate-x-1/2"
+                  initial={{ scaleY: 0 }}
+                  whileInView={{ scaleY: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 + i * 0.15 }}
+                  style={{ transformOrigin: "top" }}
+                />
+              )}
+
+              {/* Numbered icon circle */}
+              <div className={`relative w-20 h-20 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center shadow-lg mb-4`}>
+                <step.icon className="w-8 h-8 text-white" />
+                <div className="absolute -top-2 -right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md border-2 border-pink-100">
+                  <span className="text-xs font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">{i + 1}</span>
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="text-sm sm:text-base font-bold text-[#3d2b2b] mb-1">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">{item.desc}</p>
-              </div>
-              <span className="text-2xl hidden sm:block">{item.icon}</span>
+
+              <h3 className="text-sm font-bold text-[#3d2b2b] mb-1">{step.title}</h3>
+              <p className="text-xs text-gray-500 leading-relaxed max-w-[180px]">{step.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -805,6 +828,47 @@ export default function LandingPage() {
           </Link>
           <p className="mt-5 text-xs text-gray-400 relative z-10">
             Aucune carte bancaire requise &middot; Gratuit pour toujours
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Newsletter / Early Access */}
+      <section className="px-4 py-16 max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="bg-white rounded-3xl border border-pink-100 shadow-lg shadow-pink-100/30 p-8 sm:p-10 text-center"
+        >
+          <div className="w-14 h-14 bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Mail className="w-7 h-7 text-pink-500" />
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#3d2b2b] mb-2">
+            Restez informee chaque semaine
+          </h2>
+          <p className="text-sm text-gray-500 mb-6 max-w-md mx-auto">
+            Recevez des conseils grossesse chaque semaine directement dans votre boite mail.
+          </p>
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
+          >
+            <input
+              type="email"
+              placeholder="votre@email.com"
+              className="flex-1 px-5 py-3.5 rounded-xl border border-pink-200 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-300 bg-pink-50/50 placeholder:text-gray-400"
+              required
+            />
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-pink-400 to-purple-500 text-white font-semibold py-3.5 px-7 rounded-xl hover:from-pink-500 hover:to-purple-600 transition-all shadow-md shadow-pink-200/30 text-sm whitespace-nowrap"
+            >
+              S&apos;inscrire
+            </button>
+          </form>
+          <p className="text-[11px] text-gray-400 mt-4">
+            Pas de spam, desabonnement en un clic. Vos donnees restent privees.
           </p>
         </motion.div>
       </section>
