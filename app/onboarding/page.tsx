@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth";
-import { Heart, Baby, Calendar, Sparkles, ArrowRight, ArrowLeft, Loader2, FlaskConical } from "lucide-react";
+import { Heart, Baby, Calendar, Sparkles, ArrowRight, ArrowLeft, Loader2, FlaskConical, Bell } from "lucide-react";
 import {
   calculateDueDateFromDDR,
   calculateDueDateFromConception,
@@ -12,7 +12,7 @@ import {
   calculateDueDateFromPonction,
 } from "@/lib/pregnancy-data";
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3 | 4 | 5;
 type ConceptionMode = "naturelle" | "fiv_frais" | "fiv_tec";
 type DpaMethod = "direct" | "ddr" | "conception" | "fiv";
 type FivStade = "J3" | "J5";
@@ -37,6 +37,10 @@ export default function OnboardingPage() {
   const [ponctionDate, setPonctionDate] = useState("");
   const [transfertDate, setTransfertDate] = useState("");
   const [fivStade, setFivStade] = useState<FivStade>("J5");
+
+  const [notifRdv, setNotifRdv] = useState(true);
+  const [notifDaily, setNotifDaily] = useState(true);
+  const [notifMeds, setNotifMeds] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,7 +82,7 @@ export default function OnboardingPage() {
         return;
       }
     }
-    if (step < 4) setStep((s) => (s + 1) as Step);
+    if (step < 5) setStep((s) => (s + 1) as Step);
   };
 
   const handleBack = () => {
@@ -115,6 +119,7 @@ export default function OnboardingPage() {
       data.mamaName = mamaName.trim();
       data.babyName = babyName.trim() || null;
       data.conceptionMode = conceptionMode;
+      data.notifications = { rdv: notifRdv, daily: notifDaily, meds: notifMeds };
       localStorage.setItem("pregnancy-tracker", JSON.stringify(data));
 
       router.push("/");
@@ -126,6 +131,7 @@ export default function OnboardingPage() {
       data.mamaName = mamaName.trim();
       data.babyName = babyName.trim() || null;
       data.conceptionMode = conceptionMode;
+      data.notifications = { rdv: notifRdv, daily: notifDaily, meds: notifMeds };
       localStorage.setItem("pregnancy-tracker", JSON.stringify(data));
       router.push("/");
     }
@@ -162,7 +168,7 @@ export default function OnboardingPage() {
       <div className="w-full max-w-md">
         {/* Progress indicator */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          {[1, 2, 3, 4].map((s) => (
+          {[1, 2, 3, 4, 5].map((s) => (
             <motion.div
               key={s}
               initial={false}
@@ -453,10 +459,71 @@ export default function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* Step 4: Confirmation */}
+          {/* Step 4: Notifications */}
           {step === 4 && (
             <motion.div
               key="step4"
+              variants={stepVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.3 }}
+              className="bg-white dark:bg-[#1a1a2e] rounded-3xl shadow-xl p-8 border border-pink-100 dark:border-pink-900"
+            >
+              <div className="text-center mb-6">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", delay: 0.1 }}
+                  className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl shadow-lg mb-4"
+                >
+                  <Bell className="w-8 h-8 text-white" />
+                </motion.div>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Notifications 🔔</h2>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">Choisissez ce que vous voulez recevoir</p>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { key: "rdv", label: "Rappels de rendez-vous", desc: "Notification avant chaque RDV medical", emoji: "📅", value: notifRdv, onChange: setNotifRdv },
+                  { key: "daily", label: "Suivi quotidien", desc: "Rappel pour noter vos symptomes et votre humeur", emoji: "✨", value: notifDaily, onChange: setNotifDaily },
+                  { key: "meds", label: "Medicaments & vitamines", desc: "Rappel pour prendre vos complements", emoji: "💊", value: notifMeds, onChange: setNotifMeds },
+                ].map((notif) => (
+                  <button
+                    key={notif.key}
+                    onClick={() => notif.onChange(!notif.value)}
+                    className={`w-full text-left p-4 rounded-2xl border-2 transition-all ${
+                      notif.value
+                        ? "border-orange-400 bg-orange-50 dark:bg-orange-950/30"
+                        : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0f0f1a]"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{notif.emoji}</span>
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-800 dark:text-gray-100">{notif.label}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{notif.desc}</p>
+                      </div>
+                      <div className={`w-12 h-7 rounded-full transition-colors flex items-center ${
+                        notif.value ? "bg-orange-400 justify-end" : "bg-gray-300 justify-start"
+                      }`}>
+                        <div className="w-5 h-5 bg-white rounded-full shadow mx-1" />
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <p className="text-xs text-gray-400 text-center mt-4">
+                Vous pourrez modifier ces preferences a tout moment dans les parametres.
+              </p>
+            </motion.div>
+          )}
+
+          {/* Step 5: Confirmation */}
+          {step === 5 && (
+            <motion.div
+              key="step5"
               variants={stepVariants}
               initial="enter"
               animate="center"
@@ -540,7 +607,7 @@ export default function OnboardingPage() {
             <div />
           )}
 
-          {step < 4 ? (
+          {step < 5 ? (
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

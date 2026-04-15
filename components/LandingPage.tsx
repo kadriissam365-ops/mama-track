@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Heart,
   Baby,
@@ -22,6 +22,10 @@ import {
   FileText,
   CheckCircle2,
   ArrowRight,
+  UserPlus,
+  Settings,
+  TrendingUp,
+  Mail,
 } from "lucide-react";
 
 const features = [
@@ -49,6 +53,8 @@ const testimonials = [
   { name: "Lea D.", week: "28 SA", text: "Le suivi semaine par semaine est top. J'adore les comparaisons fruits et les conseils personnalises. C'est devenu mon rituel du lundi !", avatar: "L", gradient: "from-purple-300 to-violet-400" },
   { name: "Amina K.", week: "Accouchee", text: "Le projet naissance en PDF m'a sauvee a la maternite. L'equipe medicale a adore. Merci MamaTrack !", avatar: "A", gradient: "from-emerald-300 to-teal-400" },
   { name: "Julie R.", week: "36 SA", text: "Le chrono contractions m'a rassuree pendant le pre-travail. Interface claire et simple, exactement ce qu'il faut quand on stresse.", avatar: "J", gradient: "from-amber-300 to-orange-400" },
+  { name: "Fatima B.", week: "22 SA", text: "En parcours PMA, j'ai galere a trouver une app qui comprend la FIV. MamaTrack est la seule a gerer le calcul TEC. Un vrai soulagement.", avatar: "F", gradient: "from-blue-300 to-cyan-400" },
+  { name: "Marine L.", week: "Accouchee", text: "J'ai utilise MamaTrack du debut a la fin. Le journal photo bump, c'est mon plus beau souvenir. Merci pour cette app gratuite et complete !", avatar: "M", gradient: "from-rose-300 to-pink-400" },
 ];
 
 const faqItems = [
@@ -98,6 +104,63 @@ const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
+
+const howItWorksSteps = [
+  { icon: UserPlus, title: "Inscrivez-vous", desc: "Creez votre compte en 30 secondes", color: "from-pink-400 to-rose-500" },
+  { icon: Settings, title: "Configurez votre profil", desc: "Entrez votre date prevue d'accouchement", color: "from-purple-400 to-violet-500" },
+  { icon: TrendingUp, title: "Suivez votre grossesse", desc: "Accedez a tous les outils de suivi", color: "from-emerald-400 to-teal-500" },
+  { icon: Users, title: "Partagez en duo", desc: "Invitez votre partenaire a suivre", color: "from-blue-400 to-indigo-500" },
+];
+
+function useAnimatedCounter(target: number, duration: number = 1500) {
+  const [count, setCount] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const startAnimation = useCallback(() => {
+    if (hasAnimated) return;
+    setHasAnimated(true);
+    const startTime = performance.now();
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(eased * target));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }, [target, duration, hasAnimated]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) startAnimation(); },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [startAnimation]);
+
+  return { count, ref };
+}
+
+function AnimatedStat({ value, label, icon }: { value: string; label: string; icon: string }) {
+  const numericMatch = value.match(/^(\d+)(.*)$/);
+  const target = numericMatch ? parseInt(numericMatch[1], 10) : 0;
+  const suffix = numericMatch ? numericMatch[2] : value;
+  const { count, ref } = useAnimatedCounter(target);
+
+  return (
+    <div ref={ref} className="text-center">
+      <p className="text-sm mb-1">{icon}</p>
+      <p className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+        {numericMatch ? `${count}${suffix}` : value}
+      </p>
+      <p className="text-xs text-gray-500 mt-1 font-medium">{label}</p>
+    </div>
+  );
+}
 
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -297,21 +360,8 @@ export default function LandingPage() {
               { value: "250+", label: "Prenoms a explorer", icon: "💛" },
               { value: "40", label: "Semaines couvertes", icon: "📅" },
               { value: "0\u00a0\u20ac", label: "Pour toujours", icon: "🎉" },
-            ].map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center"
-              >
-                <p className="text-sm mb-1">{stat.icon}</p>
-                <p className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-                  {stat.value}
-                </p>
-                <p className="text-xs text-gray-500 mt-1 font-medium">{stat.label}</p>
-              </motion.div>
+            ].map((stat) => (
+              <AnimatedStat key={stat.label} value={stat.value} label={stat.label} icon={stat.icon} />
             ))}
           </div>
         </motion.div>
@@ -668,6 +718,30 @@ export default function LandingPage() {
             }),
           }}
         />
+      </section>
+
+      {/* Trust badges */}
+      <section className="px-4 py-10 max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="flex flex-wrap items-center justify-center gap-4 sm:gap-8"
+        >
+          {[
+            { icon: "🇫🇷", text: "Fait en France" },
+            { icon: "🔒", text: "Donnees chiffrees" },
+            { icon: "🚫", text: "Zero publicite" },
+            { icon: "💶", text: "Gratuit pour toujours" },
+            { icon: "📱", text: "Fonctionne hors ligne" },
+          ].map((badge) => (
+            <div key={badge.text} className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
+              <span className="text-base">{badge.icon}</span>
+              {badge.text}
+            </div>
+          ))}
+        </motion.div>
       </section>
 
       {/* Final CTA */}
