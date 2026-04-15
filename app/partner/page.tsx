@@ -444,7 +444,7 @@ export default function PartnerViewPage() {
             <div className="flex flex-wrap gap-2">
               {todaySymptoms.map((s, i) => (
                 <span key={i} className="bg-violet-50 text-violet-600 text-xs px-3 py-1.5 rounded-full">
-                  {s.symptom}
+                  {Array.isArray(s.symptoms) ? (s.symptoms as string[]).join(', ') : String(s.symptoms)}
                 </span>
               ))}
             </div>
