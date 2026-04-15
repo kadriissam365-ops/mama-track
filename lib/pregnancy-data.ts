@@ -13,12 +13,12 @@ export interface WeekData {
   weeklySymptoms: string[];
   weeklyMilestone?: string;
   testimonials?: string[];
-  dailyTips: string[];
-  articleTitle: string;
-  articleContent: string;
-  partnerTip: string;
-  exerciseTip: string;
-  nutritionTip: string;
+  dailyTips?: string[];
+  articleTitle?: string;
+  articleContent?: string;
+  partnerTip?: string;
+  exerciseTip?: string;
+  nutritionTip?: string;
 }
 
 export const pregnancyData: WeekData[] = [
@@ -93,6 +93,20 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Évitez la charcuterie crue, les fromages à pâte molle et les œufs crus dès maintenant pour protéger bébé des infections.",
     weeklySymptoms: ["Fatigue inhabituelle", "Légères nausées", "Seins gonflés"],
     weeklyMilestone: "Le système nerveux se met en place !",
+    dailyTips: [
+      "Reposez-vous autant que possible, votre corps travaille énormément.",
+      "Continuez l'acide folique sans interruption.",
+      "Mangez équilibré avec des fruits et légumes variés.",
+      "Évitez le stress et prenez du temps pour vous détendre.",
+      "Gardez une bonne hydratation tout au long de la journée.",
+      "Notez vos premiers symptômes dans votre journal de grossesse.",
+      "Parlez de vos ressentis avec votre partenaire ou un proche de confiance.",
+    ],
+    articleTitle: "Les premières divisions cellulaires : le miracle de la vie",
+    articleContent: "À la semaine 3, l'embryon est constitué de quelques centaines de cellules qui se spécialisent rapidement. Trois couches germinales se forment : l'ectoderme (peau, système nerveux), le mésoderme (muscles, os, cœur) et l'endoderme (organes internes). C'est le tout début de la formation de votre bébé.\n\nVotre corps commence à produire davantage d'hormones, notamment la progestérone et l'hCG. Ces hormones peuvent provoquer les premiers symptômes de grossesse comme la fatigue et les nausées légères.\n\nContinuez à prendre soin de vous et à éviter les substances nocives. Chaque jour compte dans cette phase cruciale du développement.",
+    partnerTip: "Votre partenaire peut commencer à ressentir de la fatigue. Proposez de prendre en charge certaines tâches du quotidien.",
+    exerciseTip: "La marche douce reste l'activité idéale. Évitez les efforts intenses et les sports à risque de chute.",
+    nutritionTip: "Variez vos sources de protéines : poisson, œufs bien cuits, légumineuses. Continuez à éviter les aliments à risque (charcuterie crue, fromages non pasteurisés).",
   },
   {
     week: 4,
@@ -189,7 +203,7 @@ export const pregnancyData: WeekData[] = [
     sizeMm: 31,
     weightG: 4,
     fruit: "Kumquat",
-    fruitEmoji: "🍊",
+    fruitEmoji: "🍑",
     funComparison: "une pile AA",
     funComparisonEmoji: "🔋",
     babyDevelopment: "Le bébé commence à bouger librement dans le liquide amniotique. Tous les organes sont formés. Les ongles apparaissent.",
@@ -203,7 +217,7 @@ export const pregnancyData: WeekData[] = [
     sizeMm: 41,
     weightG: 7,
     fruit: "Figue",
-    fruitEmoji: "🫐",
+    fruitEmoji: "🟤",
     funComparison: "un bouchon de liège",
     funComparisonEmoji: "🍷",
     babyDevelopment: "Les dents de lait se forment. Le bébé peut sucer son pouce. Son corps se redresse et il commence à ressembler à un bébé.",
@@ -218,7 +232,7 @@ export const pregnancyData: WeekData[] = [
     sizeMm: 54,
     weightG: 14,
     fruit: "Lime",
-    fruitEmoji: "🍋",
+    fruitEmoji: "🍏",
     funComparison: "une balle de golf",
     funComparisonEmoji: "⛳",
     babyDevelopment: "Les réflexes apparaissent. Le bébé peut ouvrir et fermer les poings. Son sexe commence à se différencier.",

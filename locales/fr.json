@@ -11,23 +11,23 @@
     "no": "Non",
     "loading": "Chargement...",
     "error": "Erreur",
-    "success": "Succes",
+    "success": "Succès",
     "optional": "Optionnel",
     "back": "Retour",
     "next": "Suivant",
     "language": "Langue",
-    "french": "Francais",
+    "french": "Français",
     "english": "Anglais"
   },
   "nav": {
     "home": "Accueil",
     "tracking": "Suivi",
-    "baby": "Bebe",
+    "baby": "Bébé",
     "journal": "Journal",
     "more": "Plus"
   },
   "landing": {
-    "badge": "100% gratuit \u00b7 Sans pub \u00b7 Sans abonnement",
+    "badge": "100% gratuit · Sans pub · Sans abonnement",
     "heroTitle1": "Suivez votre grossesse",
     "heroTitle2": "semaine par semaine",
     "heroSubtitle": "Votre compagnon de grossesse complet, gratuit et sans pub.",

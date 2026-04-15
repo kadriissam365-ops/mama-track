@@ -23,17 +23,30 @@ function formatWeight(g: number): string {
   return `${g} g`;
 }
 
+/** Pluralize a French noun: singular if count <= 1, else plural */
+function pluralize(count: number, singular: string, plural: string): string {
+  return count <= 1 ? singular : plural;
+}
+
+/** Contract "de" before a vowel/h: "de une" -> "d'une", "de un" -> "d'un" */
+function deContraction(word: string): string {
+  if (/^[aeéèêiîoôuûhAEÉÈÊIÎOÔUÛH]/.test(word)) {
+    return `d'${word}`;
+  }
+  return `de ${word}`;
+}
+
 /** Fun weight equivalences */
 function weightEquivalent(g: number): { count: number; label: string; emoji: string } {
   if (g <= 0) return { count: 0, label: "presque rien", emoji: "✨" };
-  if (g < 5) return { count: Math.max(1, Math.round(g / 1)), label: "grain(s) de riz", emoji: "🍚" };
-  if (g < 30) return { count: Math.round(g / 4), label: "sucre(s) en morceaux", emoji: "🧊" };
-  if (g < 100) return { count: Math.round(g / 10), label: "fraise(s)", emoji: "🍓" };
-  if (g < 300) return { count: Math.round(g / 50), label: "oeuf(s)", emoji: "🥚" };
-  if (g < 800) return { count: Math.round(g / 100), label: "pomme(s)", emoji: "🍎" };
-  if (g < 1500) return { count: Math.round(g / 250), label: "paquet(s) de beurre", emoji: "🧈" };
-  if (g < 3000) return { count: Math.round(g / 500), label: "bouteille(s) d'eau", emoji: "💧" };
-  return { count: Math.round(g / 1000), label: "melon(s)", emoji: "🍈" };
+  if (g < 5) { const c = Math.max(1, Math.round(g / 1)); return { count: c, label: pluralize(c, "grain de riz", "grains de riz"), emoji: "🍚" }; }
+  if (g < 30) { const c = Math.round(g / 4); return { count: c, label: pluralize(c, "sucre en morceaux", "sucres en morceaux"), emoji: "🧊" }; }
+  if (g < 100) { const c = Math.round(g / 10); return { count: c, label: pluralize(c, "fraise", "fraises"), emoji: "🍓" }; }
+  if (g < 300) { const c = Math.round(g / 50); return { count: c, label: pluralize(c, "œuf", "œufs"), emoji: "🥚" }; }
+  if (g < 800) { const c = Math.round(g / 100); return { count: c, label: pluralize(c, "pomme", "pommes"), emoji: "🍎" }; }
+  if (g < 1500) { const c = Math.round(g / 250); return { count: c, label: pluralize(c, "paquet de beurre", "paquets de beurre"), emoji: "🧈" }; }
+  if (g < 3000) { const c = Math.round(g / 500); return { count: c, label: pluralize(c, "bouteille d'eau", "bouteilles d'eau"), emoji: "💧" }; }
+  { const c = Math.round(g / 1000); return { count: c, label: pluralize(c, "melon", "melons"), emoji: "🍈" }; }
 }
 
 /* ------------------------------------------------------------------ */
@@ -274,7 +287,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
         style={{ transformStyle: "preserve-3d" }}
-        className="relative"
+        className="relative min-h-[280px]"
       >
         {/* Front face */}
         <div
@@ -286,7 +299,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
           <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
 
           <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider text-center mb-2 z-10">
-            Taille comparable a
+            Taille comparable à
           </p>
 
           {/* Fruit emoji with bounce */}
@@ -352,8 +365,8 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
             Le saviez-vous ?
           </p>
           <p className="text-center text-sm text-[#3d2b2b] leading-relaxed max-w-[240px]">
-            Votre bebe fait environ la taille de{" "}
-            <span className="font-bold text-pink-500">{weekData.funComparison}</span>{" "}
+            Votre bébé fait environ la taille{" "}
+            <span className="font-bold text-pink-500">{deContraction(weekData.funComparison)}</span>{" "}
             {weekData.funComparisonEmoji}
           </p>
           <div className="mt-3 text-center">
@@ -409,7 +422,7 @@ function SideBySide({ weekData }: { weekData: WeekData }) {
           >
             👶
           </motion.span>
-          <span className="text-[10px] font-medium text-gray-500 mt-1">Bebe</span>
+          <span className="text-[10px] font-medium text-gray-500 mt-1">Bébé</span>
           <span className="text-[10px] text-pink-500 font-bold">{formatSize(weekData.sizeMm)}</span>
         </div>
 
@@ -470,7 +483,7 @@ function SizeGallery({ currentWeek }: { currentWeek: number }) {
         <div className="flex items-center gap-2">
           <span className="text-lg">📏</span>
           <h3 className="text-sm font-semibold text-[#3d2b2b]">
-            Evolution de la taille
+            Évolution de la taille
           </h3>
         </div>
         {weeks.length > 4 && (
@@ -549,31 +562,52 @@ export default function SizeComparison({
   currentWeek,
   weekData,
 }: SizeComparisonProps) {
+  const isEarlyWeek = weekData.week <= 3;
+
   return (
-    <div className="space-y-4">
-      {/* Main flip card */}
-      <FlipCard weekData={weekData} />
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={`size-comparison-${currentWeek}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        className="space-y-4"
+      >
+        {/* Main flip card */}
+        {isEarlyWeek ? (
+          <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 rounded-3xl border border-pink-100 shadow-sm p-6 flex flex-col items-center justify-center min-h-[280px]">
+            <span className="text-6xl mb-4">🌱</span>
+            <p className="text-sm text-[#3d2b2b] text-center leading-relaxed max-w-[260px]">
+              Votre bébé est encore trop petit pour être comparé à un fruit. Il mesure à peine {formatSize(weekData.sizeMm)} !
+            </p>
+            <p className="text-xs text-gray-400 mt-2">Les comparaisons commencent à la semaine 4</p>
+          </div>
+        ) : (
+          <FlipCard weekData={weekData} />
+        )}
 
-      {/* Side-by-side comparison */}
-      <SideBySide weekData={weekData} />
+        {/* Side-by-side comparison */}
+        {!isEarlyWeek && <SideBySide weekData={weekData} />}
 
-      {/* Visual ruler */}
-      <div className="bg-white rounded-2xl border border-pink-100 p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Ruler className="w-4 h-4 text-pink-400" />
-          <span className="text-xs font-semibold text-[#3d2b2b]">Taille reelle</span>
+        {/* Visual ruler */}
+        <div className="bg-white rounded-2xl border border-pink-100 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Ruler className="w-4 h-4 text-pink-400" />
+            <span className="text-xs font-semibold text-[#3d2b2b]">Taille réelle</span>
+          </div>
+          <SizeRuler sizeMm={weekData.sizeMm} week={weekData.week} />
         </div>
-        <SizeRuler sizeMm={weekData.sizeMm} week={weekData.week} />
-      </div>
 
-      {/* Weight visualization */}
-      <WeightViz weightG={weekData.weightG} week={weekData.week} />
+        {/* Weight visualization */}
+        <WeightViz weightG={weekData.weightG} week={weekData.week} />
 
-      {/* Growth sparkline */}
-      <GrowthSparkline currentWeek={currentWeek} />
+        {/* Growth sparkline */}
+        <GrowthSparkline currentWeek={currentWeek} />
 
-      {/* Size gallery */}
-      <SizeGallery currentWeek={currentWeek} />
-    </div>
+        {/* Size gallery */}
+        <SizeGallery currentWeek={currentWeek} />
+      </motion.div>
+    </AnimatePresence>
   );
 }

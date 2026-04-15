@@ -66,6 +66,8 @@ export default function BabyPage() {
         <button
           onClick={() => goTo(selectedWeek - 1)}
           disabled={selectedWeek <= 1}
+          aria-label="Semaine précédente"
+          title="Semaine précédente"
           className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-pink-200 text-pink-400 disabled:opacity-30 hover:bg-pink-50 transition-colors shadow-sm"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -82,6 +84,8 @@ export default function BabyPage() {
         <button
           onClick={() => goTo(selectedWeek + 1)}
           disabled={selectedWeek >= 42}
+          aria-label="Semaine suivante"
+          title="Semaine suivante"
           className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-pink-200 text-pink-400 disabled:opacity-30 hover:bg-pink-50 transition-colors shadow-sm"
         >
           <ChevronRight className="w-5 h-5" />
@@ -120,11 +124,11 @@ export default function BabyPage() {
             className="overflow-hidden"
           >
             <div className="bg-white dark:bg-[#1a1a2e] rounded-3xl p-4 shadow-sm border border-pink-100">
-              <p className="text-xs text-gray-500 text-center mb-3">Partager sur vos reseaux</p>
+              <p className="text-xs text-gray-500 text-center mb-3">Partager sur vos réseaux</p>
               <SocialShareButtons
                 compact
                 content={{
-                  text: `Semaine ${selectedWeek} - Bebe fait la taille d'un(e) ${weekData.fruit} ! ${weekData.fruitEmoji}\n#MamaTrack #Grossesse`,
+                  text: `Semaine ${selectedWeek} - Bébé fait la taille d'un(e) ${weekData.fruit} ! ${weekData.fruitEmoji}\n#MamaTrack #Grossesse`,
                   fileName: `mamatrack-bebe-semaine-${selectedWeek}.png`,
                 }}
               />
