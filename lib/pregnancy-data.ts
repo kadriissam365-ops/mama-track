@@ -232,7 +232,7 @@ export const pregnancyData: WeekData[] = [
     sizeMm: 54,
     weightG: 14,
     fruit: "Lime",
-    fruitEmoji: "🍏",
+    fruitEmoji: "🟢",
     funComparison: "une balle de golf",
     funComparisonEmoji: "⛳",
     babyDevelopment: "Les réflexes apparaissent. Le bébé peut ouvrir et fermer les poings. Son sexe commence à se différencier.",

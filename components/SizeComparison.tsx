@@ -92,7 +92,7 @@ function SizeRuler({ sizeMm, week }: { sizeMm: number; week: number }) {
           key={`ruler-${week}`}
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-pink-400 via-purple-400 to-pink-300"
         />
         {/* Glow dot at end */}
@@ -100,7 +100,7 @@ function SizeRuler({ sizeMm, week }: { sizeMm: number; week: number }) {
           key={`dot-${week}`}
           initial={{ left: "0%" }}
           animate={{ left: `${pct}%` }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-2 border-pink-400 shadow-md shadow-pink-200"
         />
       </div>
@@ -108,15 +108,9 @@ function SizeRuler({ sizeMm, week }: { sizeMm: number; week: number }) {
       {/* Labels */}
       <div className="flex justify-between mt-1.5">
         <span className="text-[10px] text-gray-400">0 cm</span>
-        <motion.span
-          key={`label-${week}`}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-[11px] font-bold text-pink-500"
-        >
+        <span className="text-[11px] font-bold text-pink-500">
           {formatSize(sizeMm)}
-        </motion.span>
+        </span>
         <span className="text-[10px] text-gray-400">52 cm</span>
       </div>
     </div>
@@ -218,36 +212,25 @@ function GrowthSparkline({ currentWeek }: { currentWeek: number }) {
           </linearGradient>
         </defs>
         {/* Area fill */}
-        <motion.path
+        <path
           d={areaD}
           fill="url(#sparkGrad)"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
         />
-        {/* Line */}
-        <motion.path
+        <path
           d={pathD}
           fill="none"
           stroke="#ec4899"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
         />
-        {/* Current week dot */}
-        <motion.circle
+        <circle
           cx={lastPt.x}
           cy={lastPt.y}
           r="4"
           fill="#ec4899"
           stroke="white"
           strokeWidth="2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.3 }}
         />
       </svg>
       <div className="flex justify-between text-[9px] text-gray-400 mt-1">
