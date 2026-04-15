@@ -22,6 +22,7 @@ import {
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { WATER_GOAL_ML } from "@/lib/constants";
+import { useTranslation } from "@/lib/i18n";
 
 // ---------- partner tips (unchanged) ----------
 
@@ -84,6 +85,7 @@ export default function PartnerViewPage() {
   const { user } = useAuth();
   const router = useRouter();
 
+  const { t } = useTranslation();
   const [supportSent, setSupportSent] = useState<string | null>(null);
   const [journalNotes, setJournalNotes] = useState<JournalNote[]>([]);
   const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([]);
@@ -98,8 +100,14 @@ export default function PartnerViewPage() {
   const progress = dueDate ? getProgressPercent(dueDate) : 50;
 
   const category = getTipCategory(week);
-  const tips = partnerTips[category];
-  const tipOfDay = tips[new Date().getDate() % tips.length];
+  const tipKeys: Record<string, string[]> = {
+    early: ["partner.earlyTip1", "partner.earlyTip2", "partner.earlyTip3", "partner.earlyTip4"],
+    mid: ["partner.midTip1", "partner.midTip2", "partner.midTip3", "partner.midTip4"],
+    late: ["partner.lateTip1", "partner.lateTip2", "partner.lateTip3", "partner.lateTip4"],
+    final: ["partner.finalTip1", "partner.finalTip2", "partner.finalTip3", "partner.finalTip4"],
+  };
+  const keys = tipKeys[category];
+  const tipOfDay = t(keys[new Date().getDate() % keys.length]);
 
   // Today helpers
   const todayStr = new Date().toISOString().slice(0, 10);
@@ -206,7 +214,7 @@ export default function PartnerViewPage() {
         onClick={() => router.back()}
         className="flex items-center gap-1.5 text-sm text-teal-600 hover:text-teal-800 transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" /> Retour
+        <ArrowLeft className="w-4 h-4" /> {t("common.back")}
       </button>
 
       {/* Header */}
@@ -214,10 +222,10 @@ export default function PartnerViewPage() {
         <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-3 shadow-lg">
           <Heart className="w-8 h-8 text-white fill-white" />
         </div>
-        <h1 className="text-2xl font-bold text-[#2b3d3d]">Tableau de bord Partenaire</h1>
+        <h1 className="text-2xl font-bold text-[#2b3d3d]">{t("partner.title")}</h1>
         {store.mamaName && (
           <p className="text-gray-500 mt-1">
-            La grossesse de <span className="font-semibold text-teal-600">{store.mamaName}</span>
+            {t("partner.pregnancyOf")} <span className="font-semibold text-teal-600">{store.mamaName}</span>
           </p>
         )}
       </div>
@@ -235,10 +243,10 @@ export default function PartnerViewPage() {
           {weekData.fruitEmoji}
         </motion.div>
         <h2 className="text-5xl font-bold text-[#2b3d3d]">
-          {week} <span className="text-2xl text-teal-500">SA</span>
+          {week} <span className="text-2xl text-teal-500">{t("partner.week")}</span>
         </h2>
         <p className="text-gray-500 mt-1">
-          Taille de {store.babyName || "bébé"} : comme {weekData.fruit}
+          {store.babyName || "Baby"} : {t("partner.likeFruit")} {weekData.fruit}
         </p>
         <div className="flex justify-center gap-4 mt-2 text-xs text-gray-400">
           <span>📏 {weekData.sizeMm} mm</span>
@@ -248,16 +256,16 @@ export default function PartnerViewPage() {
           <div className="mt-3 bg-white rounded-2xl px-4 py-2 inline-block shadow-sm">
             <span className="text-2xl font-bold text-teal-600">{days}</span>
             <span className="text-sm text-gray-400 ml-1">
-              jours avant l&apos;arrivée{store.babyName ? ` de ${store.babyName}` : ""}
+              {t("partner.daysBefore")}{store.babyName ? ` ${store.babyName}` : ""}
             </span>
           </div>
         )}
         {/* Progress bar */}
         <div className="mt-4 mx-auto max-w-xs">
           <div className="flex justify-between text-xs text-gray-400 mb-1">
-            <span>Début</span>
+            <span>{t("partner.start")}</span>
             <span>{Math.round(progress)}%</span>
-            <span>Naissance</span>
+            <span>{t("partner.birth")}</span>
           </div>
           <div className="h-2.5 bg-white rounded-full overflow-hidden">
             <motion.div
@@ -277,7 +285,7 @@ export default function PartnerViewPage() {
         className="bg-white rounded-3xl p-5 shadow-sm border border-teal-100"
       >
         <h3 className="font-semibold text-[#2b3d3d] mb-2 flex items-center gap-2">
-          <Baby className="w-5 h-5 text-teal-500" /> Ce qui se passe cette semaine
+          <Baby className="w-5 h-5 text-teal-500" /> {t("partner.babyDev")}
         </h3>
         <p className="text-sm text-gray-600 leading-relaxed">{weekData.babyDevelopment}</p>
       </motion.div>
@@ -285,7 +293,7 @@ export default function PartnerViewPage() {
       {/* Upcoming Appointments */}
       <motion.div {...anim} transition={{ delay: 0.15 }} className="bg-white rounded-3xl p-5 shadow-sm border border-blue-100">
         <h3 className="font-semibold text-[#2b3d3d] mb-3 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-blue-500" /> Prochains rendez-vous
+          <Calendar className="w-5 h-5 text-blue-500" /> {t("partner.nextAppt")}
         </h3>
         {upcomingAppointments.length > 0 ? (
           <div className="space-y-2">
@@ -304,7 +312,7 @@ export default function PartnerViewPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-400 text-center py-3">Aucun rendez-vous à venir</p>
+          <p className="text-sm text-gray-400 text-center py-3">{t("dashboard.noAppt")}</p>
         )}
       </motion.div>
 
@@ -318,7 +326,7 @@ export default function PartnerViewPage() {
         >
           <Droplets className="w-5 h-5 text-cyan-500 mx-auto mb-1" />
           <p className="text-lg font-bold text-[#2b3d3d]">{waterPercent}%</p>
-          <p className="text-[10px] text-gray-400">Hydratation</p>
+          <p className="text-[10px] text-gray-400">{t("partner.hydration")}</p>
           <div className="h-1 bg-cyan-50 rounded-full mt-1.5 overflow-hidden">
             <div className="h-full bg-cyan-400 rounded-full transition-all" style={{ width: `${waterPercent}%` }} />
           </div>
@@ -334,7 +342,7 @@ export default function PartnerViewPage() {
           <p className="text-lg font-bold text-[#2b3d3d]">
             {lastKick ? lastKick.count : "—"}
           </p>
-          <p className="text-[10px] text-gray-400">Mouvements</p>
+          <p className="text-[10px] text-gray-400">{t("partner.movements")}</p>
         </motion.div>
 
         {/* Checklist */}
