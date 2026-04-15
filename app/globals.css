@@ -149,8 +149,8 @@
   50% { opacity: 0.6; }
 }
 @keyframes heartbeat {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 0.3; }
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.4; }
 }
 .animate-gentle-float {
   animation: gentle-float 3s ease-in-out infinite;
@@ -159,5 +159,5 @@
   animation: gentle-pulse 4s ease-in-out infinite;
 }
 .animate-heartbeat {
-  animation: heartbeat 0.8s ease-in-out infinite;
+  animation: heartbeat 1.5s ease-in-out infinite;
 }

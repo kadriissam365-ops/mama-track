@@ -60,7 +60,7 @@ export default function BabyPage() {
       : `${weekData.weightG} g`;
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
+    <div className="max-w-lg mx-auto px-4 py-6 space-y-5 overflow-hidden">
       {/* Navigation semaine */}
       <div className="flex items-center gap-3">
         <button
@@ -88,23 +88,13 @@ export default function BabyPage() {
         </button>
       </div>
 
-      {/* Illustration animée du bébé */}
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
-          key={`visual-${selectedWeek}`}
-          custom={direction}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 rounded-3xl border border-pink-100 shadow-sm overflow-hidden"
-        >
-          <BabyVisual week={selectedWeek} />
-          <p className="text-center text-xs text-gray-400 pb-3 -mt-2">
-            Illustration de votre bébé
-          </p>
-        </motion.div>
-      </AnimatePresence>
+      {/* Illustration du bébé */}
+      <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 rounded-3xl border border-pink-100 shadow-sm overflow-hidden">
+        <BabyVisual week={selectedWeek} />
+        <p className="text-center text-xs text-gray-400 pb-3 -mt-2">
+          Illustration de votre bébé
+        </p>
+      </div>
 
       {/* Comparaisons de taille visuelles */}
       <SizeComparison currentWeek={selectedWeek} weekData={weekData} />
@@ -145,82 +135,49 @@ export default function BabyPage() {
 
       {/* Taille et poids */}
       <div className="grid grid-cols-2 gap-3">
-        <motion.div
-          key={`size-${selectedWeek}`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 text-center"
-        >
+        <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 text-center">
           <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <Ruler className="w-6 h-6 text-pink-500" />
           </div>
           <p className="text-2xl font-bold text-[#3d2b2b]">{sizeDisplay}</p>
           <p className="text-xs text-gray-400 mt-1">Taille (CR)</p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          key={`weight-${selectedWeek}`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-purple-100 text-center"
-        >
+        <div className="bg-white rounded-3xl p-5 shadow-sm border border-purple-100 text-center">
           <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
             <Weight className="w-6 h-6 text-purple-500" />
           </div>
           <p className="text-2xl font-bold text-[#3d2b2b]">{weightDisplay}</p>
           <p className="text-xs text-gray-400 mt-1">Poids estimé</p>
-        </motion.div>
+        </div>
       </div>
 
       {/* Développement bébé */}
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
-          key={`dev-${selectedWeek}`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-green-100"
-          style={{ borderColor: "#d1fae5" }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xl">🧬</span>
-            <h3 className="font-semibold text-[#3d2b2b]">Développement de bébé</h3>
-          </div>
-          <p className="text-sm text-gray-600 leading-relaxed">{weekData.babyDevelopment}</p>
-        </motion.div>
-      </AnimatePresence>
+      <div
+        className="bg-white rounded-3xl p-5 shadow-sm border border-green-100"
+        style={{ borderColor: "#d1fae5" }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xl">🧬</span>
+          <h3 className="font-semibold text-[#3d2b2b]">Développement de bébé</h3>
+        </div>
+        <p className="text-sm text-gray-600 leading-relaxed">{weekData.babyDevelopment}</p>
+      </div>
 
       {/* Conseil maman */}
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
-          key={`tip-${selectedWeek}`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100"
-        >
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">💝</span>
-            <div>
-              <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Conseil pour maman</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">{weekData.momTips}</p>
-            </div>
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100">
+        <div className="flex items-start gap-3">
+          <span className="text-2xl">💝</span>
+          <div>
+            <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Conseil pour maman</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">{weekData.momTips}</p>
           </div>
-        </motion.div>
-      </AnimatePresence>
+        </div>
+      </div>
 
       {/* Témoignages de la semaine */}
       {weekData.testimonials && weekData.testimonials.length > 0 && (
-        <motion.div
-          key={`testimonials-${selectedWeek}`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100"
-        >
+        <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-xl">💬</span>
             <h3 className="font-semibold text-[#3d2b2b]">Mamans à la semaine {selectedWeek}</h3>
@@ -232,7 +189,7 @@ export default function BabyPage() {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Timeline trimestres */}

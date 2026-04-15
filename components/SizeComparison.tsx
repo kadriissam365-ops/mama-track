@@ -263,7 +263,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
   return (
     <div
       className="relative w-full cursor-pointer select-none"
-      style={{ perspective: "1000px", height: "280px" }}
+      style={{ perspective: "1000px", minHeight: "260px" }}
       onClick={() => setFlipped((f) => !f)}
       role="button"
       tabIndex={0}
@@ -555,61 +555,22 @@ export default function SizeComparison({
   return (
     <div className="space-y-4">
       {/* Main flip card */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`flip-${weekData.week}`}
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -40 }}
-          transition={{ duration: 0.35, ease: "easeOut" }}
-        >
-          <FlipCard weekData={weekData} />
-        </motion.div>
-      </AnimatePresence>
+      <FlipCard weekData={weekData} />
 
       {/* Side-by-side comparison */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`sbs-wrap-${weekData.week}`}
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -40 }}
-          transition={{ duration: 0.35, ease: "easeOut", delay: 0.05 }}
-        >
-          <SideBySide weekData={weekData} />
-        </motion.div>
-      </AnimatePresence>
+      <SideBySide weekData={weekData} />
 
       {/* Visual ruler */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`ruler-wrap-${weekData.week}`}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="bg-white rounded-2xl border border-pink-100 p-4"
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <Ruler className="w-4 h-4 text-pink-400" />
-            <span className="text-xs font-semibold text-[#3d2b2b]">Taille reelle</span>
-          </div>
-          <SizeRuler sizeMm={weekData.sizeMm} week={weekData.week} />
-        </motion.div>
-      </AnimatePresence>
+      <div className="bg-white rounded-2xl border border-pink-100 p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Ruler className="w-4 h-4 text-pink-400" />
+          <span className="text-xs font-semibold text-[#3d2b2b]">Taille reelle</span>
+        </div>
+        <SizeRuler sizeMm={weekData.sizeMm} week={weekData.week} />
+      </div>
 
       {/* Weight visualization */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`weight-wrap-${weekData.week}`}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.3, delay: 0.15 }}
-        >
-          <WeightViz weightG={weekData.weightG} week={weekData.week} />
-        </motion.div>
-      </AnimatePresence>
+      <WeightViz weightG={weekData.weightG} week={weekData.week} />
 
       {/* Growth sparkline */}
       <GrowthSparkline currentWeek={currentWeek} />

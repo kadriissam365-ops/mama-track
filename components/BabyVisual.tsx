@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+// No framer-motion needed - pure SVG + CSS animations
 
 interface BabyVisualProps {
   week: number;
@@ -35,21 +35,14 @@ export default function BabyVisual({ week }: BabyVisualProps) {
           />
         </svg>
 
-        {/* Animated baby SVG overlay */}
-        <motion.div
-          key={week}
-          className="absolute inset-0 flex items-center justify-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
+        {/* Baby SVG overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
           <svg
             viewBox="0 0 200 200"
             className="w-full h-full"
           >
             <g
               transform={`translate(100, 100) scale(${scale})`}
-              style={{ transformOrigin: "center" }}
             >
               {week <= 4 && <CellStage week={week} />}
               {week >= 5 && week <= 8 && <EarlyCellStage week={week} />}
@@ -58,7 +51,7 @@ export default function BabyVisual({ week }: BabyVisualProps) {
               {week >= 29 && <FetalStage week={week} />}
             </g>
           </svg>
-        </motion.div>
+        </div>
 
         {/* Subtle pulsing ring */}
         <div className="absolute inset-0 animate-gentle-pulse">
