@@ -3,13 +3,19 @@ import { createServerClientFromCookies } from "@/lib/supabase";
 import { cookies } from "next/headers";
 import webpush from "web-push";
 
-// Configure VAPID keys from environment variables
-const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!;
-const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY!;
-const VAPID_SUBJECT = process.env.VAPID_SUBJECT || "mailto:contact@mamatrack.app";
+let vapidConfigured = false;
 
-if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
-  webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+function ensureVapidConfigured() {
+  if (vapidConfigured) return true;
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
+  const subject = process.env.VAPID_SUBJECT || "mailto:contact@mamatrack.app";
+  if (publicKey && privateKey) {
+    webpush.setVapidDetails(subject, publicKey, privateKey);
+    vapidConfigured = true;
+    return true;
+  }
+  return false;
 }
 
 export interface PushPayload {
@@ -33,7 +39,7 @@ export interface PushPayload {
  */
 export async function POST(request: NextRequest) {
   try {
-    if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
+    if (!ensureVapidConfigured()) {
       return NextResponse.json(
         { error: "VAPID keys not configured" },
         { status: 500 }
