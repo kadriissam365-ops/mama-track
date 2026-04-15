@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { Mail, Lock, Eye, EyeOff, Heart, Loader2 } from "lucide-react";
 
@@ -55,44 +54,26 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-b from-pink-50 via-white to-purple-50">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
+      <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", delay: 0.1 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-pink-400 to-purple-400 rounded-3xl shadow-lg mb-4"
-          >
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-pink-400 to-purple-400 rounded-3xl shadow-lg mb-4">
             <Heart className="w-10 h-10 text-white fill-white" />
-          </motion.div>
+          </div>
           <h1 className="text-3xl font-bold text-gray-800">MamaTrack</h1>
           <p className="text-gray-500 mt-2">Suivez votre grossesse en toute sérénité</p>
         </div>
 
         {/* Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl shadow-xl p-8 border border-pink-100"
-        >
+        <div className="bg-white rounded-3xl shadow-xl p-8 border border-pink-100">
           <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
             Connexion
           </h2>
 
           {error && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-red-50 text-red-600 text-sm p-3 rounded-xl mb-4 text-center"
-            >
+            <div className="bg-red-50 text-red-600 text-sm p-3 rounded-xl mb-4 text-center">
               {error}
-            </motion.div>
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -174,12 +155,12 @@ export default function LoginPage() {
               Créer un compte
             </Link>
           </p>
-        </motion.div>
+        </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
           En vous connectant, vous acceptez nos conditions d&apos;utilisation
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 }
