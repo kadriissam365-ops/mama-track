@@ -13,17 +13,24 @@ import {
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Scale, Activity, Calendar, Droplets, Settings, Loader2, Timer, Share2, BarChart3 } from "lucide-react";
-import WeeklyReport from "@/components/WeeklyReport";
-import ShareCard from "@/components/ShareCard";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { DashboardSkeleton } from "@/components/Skeleton";
 import { initializeNotifications } from "@/lib/notifications";
 import { WATER_GOAL_ML } from "@/lib/constants";
 import ReminderBanner from "@/components/ReminderBanner";
+import LandingPage from "@/components/LandingPage";
+
+const WeeklyReport = dynamic(() => import("@/components/WeeklyReport"), { ssr: false });
+const ShareCard = dynamic(() => import("@/components/ShareCard"), { ssr: false });
 
 export default function DashboardPage() {
   const store = useStore();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <LandingPage />;
+  }
   const router = useRouter();
   const [showSetup, setShowSetup] = useState(false);
   const [dateInput, setDateInput] = useState(store.dueDate ?? "");

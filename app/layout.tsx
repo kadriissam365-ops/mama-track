@@ -20,26 +20,56 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MamaTrack - Suivi de Grossesse 🌸",
+  title: {
+    default: "MamaTrack — Suivi de grossesse gratuit et complet",
+    template: "%s | MamaTrack",
+  },
   icons: {
     icon: [
       { url: "/icons/icon-192x192.png", type: "image/png" },
     ],
     apple: "/icons/icon-192x192.png",
   },
-  description: "Suivez votre grossesse semaine par semaine avec MamaTrack. Poids, symptômes, contractions, rendez-vous médicaux et plus encore.",
+  description: "L'app gratuite pour suivre votre grossesse semaine par semaine. Poids, symptômes, contractions, mode duo, prénoms, projet naissance et plus. Sans pub, sans abonnement.",
   manifest: "/manifest.json",
+  metadataBase: new URL("https://mamatrack.fr"),
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    url: "https://mamatrack.fr",
+    siteName: "MamaTrack",
+    title: "MamaTrack — Suivi de grossesse gratuit et complet",
+    description: "Suivez votre grossesse semaine par semaine. 10 trackers, mode duo, prénoms, projet naissance PDF. 100% gratuit, sans pub.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "MamaTrack — Votre compagnon de grossesse",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MamaTrack — Suivi de grossesse gratuit",
+    description: "L'app gratuite pour suivre votre grossesse. Mode duo, 250+ prénoms, projet naissance PDF.",
+    images: ["/og-image.png"],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "MamaTrack",
   },
   applicationName: "MamaTrack",
-  keywords: ["grossesse", "suivi", "bébé", "maternité", "santé", "femme enceinte"],
+  keywords: ["grossesse", "suivi grossesse", "bébé", "maternité", "santé", "femme enceinte", "suivi semaine", "contractions", "prénoms bébé", "projet naissance", "app grossesse gratuite"],
   authors: [{ name: "MamaTrack" }],
   creator: "MamaTrack",
   formatDetection: {
     telephone: false,
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

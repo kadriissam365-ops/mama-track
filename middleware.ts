@@ -59,9 +59,11 @@ export async function middleware(request: NextRequest) {
   // Public paths that don't require authentication
   const publicPaths = ['/auth/login', '/auth/signup', '/auth/callback', '/auth/forgot-password', '/auth/reset-password', '/onboarding', '/invite']
   const isPublicPath = publicPaths.some(path => request.nextUrl.pathname.startsWith(path))
+  const isHomePage = request.nextUrl.pathname === '/'
 
   // If user is not authenticated and trying to access protected route
-  if (!user && !isPublicPath) {
+  // Homepage is public (shows landing page for unauthenticated users)
+  if (!user && !isPublicPath && !isHomePage) {
     const redirectUrl = new URL('/auth/login', request.url)
     return NextResponse.redirect(redirectUrl)
   }
