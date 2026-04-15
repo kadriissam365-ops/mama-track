@@ -8,6 +8,7 @@ import ConditionalNav from "@/components/ConditionalNav";
 import InstallBanner from "@/components/InstallBanner";
 import OfflineBanner from "@/components/OfflineBanner";
 import { ThemeProvider } from "next-themes";
+import { I18nProvider } from "@/lib/i18n";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -148,6 +149,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-[#fdf6f0]">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <I18nProvider>
         <AuthProvider>
           <ToastProvider>
             <StoreProvider>
@@ -160,6 +162,7 @@ export default function RootLayout({
             </StoreProvider>
           </ToastProvider>
         </AuthProvider>
+        </I18nProvider>
         </ThemeProvider>
         
         {/* Service Worker Registration */}

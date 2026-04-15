@@ -485,13 +485,36 @@ export default function LandingPage() {
 
             {/* Mini phone mockup */}
             <div className="flex-shrink-0">
-              <div className="w-56 bg-white rounded-[2rem] shadow-2xl shadow-pink-200/40 border border-pink-100 p-4 relative">
-                <div className="w-20 h-1.5 bg-gray-200 rounded-full mx-auto mb-4" />
-                <div className="space-y-3">
-                  <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-4 text-center">
-                    <p className="text-[10px] text-pink-400 font-semibold uppercase">Semaine</p>
-                    <p className="text-3xl font-bold text-[#3d2b2b]">24 <span className="text-base text-pink-400">SA</span></p>
-                    <p className="text-xs text-gray-400 mt-1">🌽 Epi de mais</p>
+              <div className="w-64 bg-[#0d0d1a] rounded-[2.5rem] shadow-2xl shadow-pink-200/40 border-[3px] border-gray-700 p-3 relative">
+                {/* Phone notch */}
+                <div className="w-24 h-5 bg-[#0d0d1a] rounded-b-2xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-10 flex items-center justify-center">
+                  <div className="w-12 h-1.5 bg-gray-700 rounded-full" />
+                </div>
+                {/* Screen */}
+                <div className="bg-gradient-to-b from-pink-50 to-white rounded-[2rem] p-4 pt-6 space-y-3">
+                  {/* Progress ring + week */}
+                  <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-4 text-center relative">
+                    <div className="flex items-center justify-center mb-2">
+                      <svg className="w-20 h-20" viewBox="0 0 80 80">
+                        <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" strokeWidth="5" />
+                        <circle
+                          cx="40" cy="40" r="34" fill="none" stroke="url(#progressGrad)" strokeWidth="5"
+                          strokeLinecap="round" strokeDasharray={`${2 * Math.PI * 34 * 0.6} ${2 * Math.PI * 34 * 0.4}`}
+                          transform="rotate(-90 40 40)"
+                        />
+                        <defs>
+                          <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#f472b6" />
+                            <stop offset="100%" stopColor="#a78bfa" />
+                          </linearGradient>
+                        </defs>
+                        <text x="40" y="36" textAnchor="middle" className="text-[11px] font-bold fill-[#3d2b2b]">24 SA</text>
+                        <text x="40" y="48" textAnchor="middle" className="text-[8px] fill-gray-400">60%</text>
+                      </svg>
+                    </div>
+                    <p className="text-3xl mb-0.5">🍌</p>
+                    <p className="text-[10px] text-pink-500 font-semibold">Banane</p>
+                    <p className="text-[9px] text-gray-400 mt-0.5">112 jours restants</p>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-pink-50 rounded-xl p-2.5 text-center">
@@ -513,6 +536,8 @@ export default function LandingPage() {
                     <div className="w-8 h-1 bg-gray-200 rounded-full" />
                   </div>
                 </div>
+                {/* Home indicator */}
+                <div className="w-28 h-1 bg-gray-600 rounded-full mx-auto mt-2" />
               </div>
             </div>
           </div>
