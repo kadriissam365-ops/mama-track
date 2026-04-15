@@ -5,8 +5,17 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";
-import NotificationSettings from "@/components/NotificationSettings";
-import AppleHealthSync from "@/components/AppleHealthSync";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/Skeleton";
+
+const NotificationSettings = dynamic(() => import("@/components/NotificationSettings"), {
+  ssr: false,
+  loading: () => <div className="space-y-3"><Skeleton className="h-20 w-full rounded-2xl" /><Skeleton className="h-20 w-full rounded-2xl" /><Skeleton className="h-20 w-full rounded-2xl" /></div>,
+});
+const AppleHealthSync = dynamic(() => import("@/components/AppleHealthSync"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-48 w-full rounded-3xl" />,
+});
 import { Settings, User, Bell, LogOut, Calendar, Baby, Loader2, Lock, Eye, EyeOff, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { createClient } from "@/lib/supabase";

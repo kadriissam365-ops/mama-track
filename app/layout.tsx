@@ -33,6 +33,9 @@ export const metadata: Metadata = {
   description: "L'app gratuite pour suivre votre grossesse semaine par semaine. Poids, symptômes, contractions, mode duo, prénoms, projet naissance et plus. Sans pub, sans abonnement.",
   manifest: "/manifest.json",
   metadataBase: new URL("https://mamatrack.fr"),
+  alternates: {
+    canonical: "https://mamatrack.fr",
+  },
   openGraph: {
     type: "website",
     locale: "fr_FR",
@@ -42,7 +45,7 @@ export const metadata: Metadata = {
     description: "Suivez votre grossesse semaine par semaine. 10 trackers, mode duo, prénoms, projet naissance PDF. 100% gratuit, sans pub.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "MamaTrack — Votre compagnon de grossesse",
@@ -53,7 +56,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MamaTrack — Suivi de grossesse gratuit",
     description: "L'app gratuite pour suivre votre grossesse. Mode duo, 250+ prénoms, projet naissance PDF.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
   appleWebApp: {
     capable: true,

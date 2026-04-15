@@ -6,17 +6,20 @@ import { AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { Timer } from "lucide-react";
+import { TrackingSkeleton } from "@/components/Skeleton";
 
-const SymptomTab = dynamic(() => import("@/components/tracking/SymptomTab"));
-const WeightTab = dynamic(() => import("@/components/tracking/WeightTab"));
-const WaterTab = dynamic(() => import("@/components/tracking/WaterTab"));
-const KicksTab = dynamic(() => import("@/components/tracking/KicksTab"));
-const NutritionTab = dynamic(() => import("@/components/tracking/NutritionTab"));
-const BloodPressureTab = dynamic(() => import("@/components/tracking/BloodPressureTab"));
-const AbdomenTab = dynamic(() => import("@/components/tracking/AbdomenTab"));
-const MoodTab = dynamic(() => import("@/components/tracking/MoodTab"));
-const SleepTab = dynamic(() => import("@/components/tracking/SleepTab"));
-const ExerciseTab = dynamic(() => import("@/components/tracking/ExerciseTab"));
+const loadOpts = { loading: () => <TrackingSkeleton />, ssr: false };
+
+const SymptomTab = dynamic(() => import("@/components/tracking/SymptomTab"), loadOpts);
+const WeightTab = dynamic(() => import("@/components/tracking/WeightTab"), loadOpts);
+const WaterTab = dynamic(() => import("@/components/tracking/WaterTab"), loadOpts);
+const KicksTab = dynamic(() => import("@/components/tracking/KicksTab"), loadOpts);
+const NutritionTab = dynamic(() => import("@/components/tracking/NutritionTab"), loadOpts);
+const BloodPressureTab = dynamic(() => import("@/components/tracking/BloodPressureTab"), loadOpts);
+const AbdomenTab = dynamic(() => import("@/components/tracking/AbdomenTab"), loadOpts);
+const MoodTab = dynamic(() => import("@/components/tracking/MoodTab"), loadOpts);
+const SleepTab = dynamic(() => import("@/components/tracking/SleepTab"), loadOpts);
+const ExerciseTab = dynamic(() => import("@/components/tracking/ExerciseTab"), loadOpts);
 
 type Tab = "symptoms" | "weight" | "water" | "kicks" | "nutrition" | "bp" | "abdomen" | "mood" | "sleep" | "exercise";
 

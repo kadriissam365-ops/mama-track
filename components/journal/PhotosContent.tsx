@@ -2,8 +2,9 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Camera, X, Trash2, ChevronLeft, ZoomIn, ZoomOut, Edit3, Check } from "lucide-react";
+import { Camera, X, Trash2, ChevronLeft, Edit3, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAuth } from "@/lib/auth";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek } from "@/lib/pregnancy-data";
@@ -23,7 +24,7 @@ interface WeekSlot {
   signedUrl: string | null;
 }
 
-export default function PhotosPage() {
+export default function PhotosContent() {
   const router = useRouter();
   const { user } = useAuth();
   const store = useStore();
@@ -44,7 +45,6 @@ export default function PhotosPage() {
     setLoading(true);
     const photos = await getBumpPhotos(user.id);
 
-    // Build slots from week 4 to currentWeek
     const photoMap = new Map(photos.map((p) => [p.week, p]));
     const newSlots: WeekSlot[] = [];
 
@@ -57,7 +57,7 @@ export default function PhotosPage() {
       newSlots.push({ week: w, photo, signedUrl });
     }
 
-    setSlots(newSlots.reverse()); // Most recent first
+    setSlots(newSlots.reverse());
     setLoading(false);
   }, [user, currentWeek]);
 
@@ -116,7 +116,9 @@ export default function PhotosPage() {
           </button>
           <div>
             <h1 className="text-lg font-bold text-gray-800">Photos ventre</h1>
-            <p className="text-xs text-rose-500">📸 {photoCount} photo{photoCount !== 1 ? "s" : ""} capturée{photoCount !== 1 ? "s" : ""}</p>
+            <p className="text-xs text-rose-500">
+              {photoCount} photo{photoCount !== 1 ? "s" : ""} capturee{photoCount !== 1 ? "s" : ""}
+            </p>
           </div>
         </div>
       </div>
@@ -142,7 +144,11 @@ export default function PhotosPage() {
                 >
                   {/* Week dot */}
                   <div className="flex flex-col items-center flex-shrink-0 z-10">
-                    <div className={`w-4 h-4 rounded-full border-2 mt-3 ${slot.photo ? "bg-rose-400 border-rose-400" : "bg-white border-pink-300"}`} />
+                    <div
+                      className={`w-4 h-4 rounded-full border-2 mt-3 ${
+                        slot.photo ? "bg-rose-400 border-rose-400" : "bg-white border-pink-300"
+                      }`}
+                    />
                   </div>
 
                   {/* Card */}
@@ -150,23 +156,25 @@ export default function PhotosPage() {
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xs font-semibold text-gray-500">Semaine {slot.week}</span>
                       {slot.week === currentWeek && (
-                        <span className="text-[10px] bg-pink-100 text-pink-600 rounded-full px-2 py-0.5">Actuelle</span>
+                        <span className="text-[10px] bg-pink-100 text-pink-600 rounded-full px-2 py-0.5">
+                          Actuelle
+                        </span>
                       )}
                     </div>
 
                     {slot.photo && slot.signedUrl ? (
                       <div className="bg-white rounded-2xl p-3 shadow-sm border border-pink-100">
-                        {/* Polaroid photo */}
-                        <button
-                          onClick={() => setModalSlot(slot)}
-                          className="w-full relative"
-                        >
-                          <div className="bg-gray-100 rounded-xl overflow-hidden" style={{ aspectRatio: "1/1" }}>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
+                        <button onClick={() => setModalSlot(slot)} className="w-full relative">
+                          <div
+                            className="bg-gray-100 rounded-xl overflow-hidden relative"
+                            style={{ aspectRatio: "1/1" }}
+                          >
+                            <Image
                               src={slot.signedUrl}
                               alt={`Semaine ${slot.week}`}
-                              className="w-full h-full object-cover"
+                              fill
+                              className="object-cover"
+                              sizes="(max-width: 512px) 100vw, 512px"
                             />
                           </div>
                         </button>
@@ -190,10 +198,14 @@ export default function PhotosPage() {
                         ) : (
                           <div className="mt-2 flex items-start justify-between gap-2">
                             <p className="text-xs text-gray-500 flex-1">
-                              {slot.photo.note || <span className="italic text-gray-300">Ajouter une note...</span>}
+                              {slot.photo.note || (
+                                <span className="italic text-gray-300">Ajouter une note...</span>
+                              )}
                             </p>
                             <button
-                              onClick={() => setEditNote({ week: slot.week, value: slot.photo?.note || "" })}
+                              onClick={() =>
+                                setEditNote({ week: slot.week, value: slot.photo?.note || "" })
+                              }
                               className="flex-shrink-0 p-1 hover:bg-pink-50 rounded-lg"
                             >
                               <Edit3 className="w-3.5 h-3.5 text-gray-400" />
@@ -271,12 +283,16 @@ export default function PhotosPage() {
                     <X className="w-5 h-5 text-gray-500" />
                   </button>
                 </div>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={modalSlot.signedUrl}
-                  alt={`Semaine ${modalSlot.week}`}
-                  className="w-full rounded-xl"
-                />
+                <div className="relative w-full" style={{ aspectRatio: "3/4" }}>
+                  <Image
+                    src={modalSlot.signedUrl}
+                    alt={`Semaine ${modalSlot.week}`}
+                    fill
+                    className="object-contain rounded-xl"
+                    sizes="(max-width: 400px) 100vw, 400px"
+                    priority
+                  />
+                </div>
                 {modalSlot.photo?.note && (
                   <p className="mt-3 text-sm text-gray-600">{modalSlot.photo.note}</p>
                 )}
@@ -302,7 +318,7 @@ export default function PhotosPage() {
               className="bg-white rounded-t-3xl p-6 w-full max-w-lg"
             >
               <p className="text-center font-semibold text-gray-800 mb-2">Supprimer cette photo ?</p>
-              <p className="text-center text-sm text-gray-500 mb-6">Cette action est irréversible</p>
+              <p className="text-center text-sm text-gray-500 mb-6">Cette action est irreversible</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}

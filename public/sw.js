@@ -99,8 +99,56 @@ self.addEventListener('push', (event) => {
     badge: '/icons/icon-72x72.png',
     tag: data.tag || 'mamatrack-push',
     data: { url: data.url || '/' },
+    vibrate: [100, 50, 100],
+    actions: data.actions || [],
   };
   event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Periodic sync for automatic reminders (hydration, medication)
+// Only fires when the browser supports periodic background sync
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'hydration-reminder') {
+    event.waitUntil(
+      (async () => {
+        const hour = new Date().getHours();
+        // Only remind between 8am and 10pm
+        if (hour >= 8 && hour < 22) {
+          await self.registration.showNotification('Hydratation !', {
+            body: "N'oubliez pas de boire de l'eau. Votre corps et bebe en ont besoin !",
+            icon: '/icons/icon-192x192.png',
+            badge: '/icons/icon-72x72.png',
+            tag: 'water-reminder',
+            data: { url: '/tracking' },
+          });
+        }
+      })()
+    );
+  }
+
+  if (event.tag === 'medication-morning') {
+    event.waitUntil(
+      self.registration.showNotification('Medicaments du matin', {
+        body: "N'oubliez pas de prendre vos vitamines/medicaments du matin !",
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/icon-72x72.png',
+        tag: 'medication-morning',
+        data: { url: '/tracking' },
+      })
+    );
+  }
+
+  if (event.tag === 'medication-evening') {
+    event.waitUntil(
+      self.registration.showNotification('Medicaments du soir', {
+        body: "N'oubliez pas de prendre vos vitamines/medicaments du soir !",
+        icon: '/icons/icon-192x192.png',
+        badge: '/icons/icon-72x72.png',
+        tag: 'medication-evening',
+        data: { url: '/tracking' },
+      })
+    );
+  }
 });
 
 // Notification click handler

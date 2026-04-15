@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Bell, BellOff, Droplets, Pill, Calendar, Check } from "lucide-react";
+import { Bell, BellOff, Droplets, Pill, Calendar, Check, Send } from "lucide-react";
 import {
   isNotificationSupported,
   getNotificationPermission,
   requestNotificationPermission,
   initializeNotifications,
+  subscribeToPush,
+  unsubscribeFromPush,
+  getPushSubscription,
   type NotificationSettings as Settings,
 } from "@/lib/notifications";
 import {
@@ -22,6 +25,7 @@ interface NotificationSettingsProps {
 export default function NotificationSettings({ userId }: NotificationSettingsProps) {
   const [supported, setSupported] = useState(true);
   const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('default');
+  const [pushSubscribed, setPushSubscribed] = useState(false);
   const [settings, setSettings] = useState<Settings>({
     waterReminders: true,
     medicationMorning: false,
@@ -34,6 +38,9 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
   useEffect(() => {
     setSupported(isNotificationSupported());
     setPermission(getNotificationPermission());
+
+    // Check if push is already subscribed
+    getPushSubscription().then((sub) => setPushSubscribed(!!sub));
 
     if (userId) {
       // Load from Supabase (with localStorage fallback built-in)
@@ -129,6 +136,44 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
       <div className="flex items-center gap-2 text-green-500 text-sm mb-4">
         <Check className="w-4 h-4" />
         <span>Notifications activées</span>
+      </div>
+
+      {/* Push notifications toggle */}
+      <div className="bg-white rounded-2xl p-4 border border-indigo-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+              <Send className="w-5 h-5 text-indigo-500" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-800">Notifications push</p>
+              <p className="text-xs text-gray-500">
+                {pushSubscribed
+                  ? "Recevez des rappels même en arrière-plan"
+                  : "Activez pour recevoir des rappels en arrière-plan"}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={async () => {
+              if (pushSubscribed) {
+                const ok = await unsubscribeFromPush();
+                if (ok) setPushSubscribed(false);
+              } else {
+                const ok = await subscribeToPush();
+                if (ok) setPushSubscribed(true);
+              }
+            }}
+            className={`relative w-12 h-7 rounded-full transition-colors ${
+              pushSubscribed ? "bg-indigo-400" : "bg-gray-200"
+            }`}
+          >
+            <motion.div
+              animate={{ x: pushSubscribed ? 20 : 2 }}
+              className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
+            />
+          </button>
+        </div>
       </div>
 
       {/* Water reminders */}

@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
+  Calendar,
   CheckSquare,
   Users,
   MessageCircle,
@@ -25,49 +26,48 @@ const sections = [
   {
     title: "Suivi & Outils",
     items: [
-      { href: "/checklist", label: "Ma liste", icon: CheckSquare, color: "bg-pink-100 text-pink-600" },
-      { href: "/contractions", label: "Contractions", icon: Timer, color: "bg-purple-100 text-purple-600" },
-      { href: "/journal", label: "Journal", icon: Camera, color: "bg-violet-100 text-violet-600" },
-      { href: "/timeline", label: "Timeline", icon: Clock, color: "bg-indigo-100 text-indigo-600" },
-      { href: "/bump", label: "Bump diary", icon: ImageIcon, color: "bg-rose-100 text-rose-600" },
+      { href: "/agenda", label: "Agenda", icon: Calendar, color: "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400" },
+      { href: "/checklist", label: "Ma liste", icon: CheckSquare, color: "bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400" },
+      { href: "/contractions", label: "Contractions", icon: Timer, color: "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400" },
+      { href: "/journal", label: "Journal", icon: Camera, color: "bg-violet-100 text-violet-600 dark:bg-violet-900/30 dark:text-violet-400" },
+      { href: "/timeline", label: "Timeline", icon: Clock, color: "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400" },
+      { href: "/bump", label: "Bump diary", icon: ImageIcon, color: "bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400" },
     ],
   },
   {
     title: "Préparer l'arrivée",
     items: [
-      { href: "/prenoms", label: "Prénoms", icon: Heart, color: "bg-yellow-100 text-yellow-600" },
-      { href: "/naissance", label: "Projet naissance", icon: Baby, color: "bg-teal-100 text-teal-600" },
-      { href: "/achats", label: "Liste achats", icon: ShoppingBag, color: "bg-orange-100 text-orange-600" },
+      { href: "/prenoms", label: "Prénoms", icon: Heart, color: "bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400" },
+      { href: "/naissance", label: "Projet naissance", icon: Baby, color: "bg-teal-100 text-teal-600 dark:bg-teal-900/30 dark:text-teal-400" },
+      { href: "/achats", label: "Liste achats", icon: ShoppingBag, color: "bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400" },
     ],
   },
   {
     title: "Santé & Bien-être",
     items: [
-      { href: "/alimentation", label: "Alimentation", icon: Salad, color: "bg-green-100 text-green-600" },
-      { href: "/medicaments", label: "Médicaments", icon: Pill, color: "bg-blue-100 text-blue-600" },
-      { href: "/respiration", label: "Respiration", icon: Wind, color: "bg-cyan-100 text-cyan-600" },
-      { href: "/urgences", label: "Urgences", icon: AlertTriangle, color: "bg-red-100 text-red-600" },
+      { href: "/alimentation", label: "Alimentation", icon: Salad, color: "bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400" },
+      { href: "/medicaments", label: "Médicaments", icon: Pill, color: "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400" },
+      { href: "/respiration", label: "Respiration", icon: Wind, color: "bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400" },
+      { href: "/urgences", label: "Urgences", icon: AlertTriangle, color: "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400" },
     ],
   },
   {
     title: "Communauté & Conseils",
     items: [
-      { href: "/duo", label: "Mode duo", icon: Users, color: "bg-pink-100 text-pink-600" },
-      { href: "/communaute", label: "Communauté", icon: MessageCircle, color: "bg-purple-100 text-purple-600" },
-      { href: "/conseils", label: "Guides & Conseils", icon: BookOpen, color: "bg-emerald-100 text-emerald-600" },
+      { href: "/duo", label: "Mode duo", icon: Users, color: "bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400" },
+      { href: "/communaute", label: "Communauté", icon: MessageCircle, color: "bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400" },
+      { href: "/conseils", label: "Guides", icon: BookOpen, color: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400" },
     ],
   },
   {
     title: "Paramètres",
     items: [
-      { href: "/settings", label: "Paramètres", icon: Settings, color: "bg-gray-100 text-gray-600" },
+      { href: "/settings", label: "Paramètres", icon: Settings, color: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400" },
     ],
   },
 ];
 
 export default function PlusPage() {
-  const router = useRouter();
-
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
       <h1 className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">Plus</h1>
@@ -77,25 +77,26 @@ export default function PlusPage() {
           key={section.title}
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: si * 0.08 }}
-          className="space-y-2"
+          transition={{ delay: si * 0.06 }}
+          className="space-y-3"
         >
           <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-1">
             {section.title}
           </h2>
-          <div className="bg-white dark:bg-gray-800 rounded-3xl border border-pink-100 dark:border-gray-700 overflow-hidden divide-y divide-pink-50 dark:divide-gray-700">
+          <div className="grid grid-cols-3 gap-3">
             {section.items.map(({ href, label, icon: Icon, color }) => (
-              <button
+              <Link
                 key={href}
-                onClick={() => router.push(href)}
-                className="w-full flex items-center gap-3 px-4 py-3.5 hover:bg-pink-50/50 dark:hover:bg-gray-700/50 transition-colors"
+                href={href}
+                className="flex flex-col items-center gap-2 p-4 bg-white dark:bg-gray-800 rounded-2xl border border-pink-100/60 dark:border-gray-700 hover:border-pink-200 dark:hover:border-pink-800 hover:shadow-sm transition-all duration-200 active:scale-95"
               >
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}>
-                  <Icon className="w-4.5 h-4.5" />
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${color}`}>
+                  <Icon className="w-5 h-5" />
                 </div>
-                <span className="text-sm font-medium text-[#3d2b2b] dark:text-gray-200">{label}</span>
-                <span className="ml-auto text-gray-300 text-lg">›</span>
-              </button>
+                <span className="text-xs font-medium text-[#3d2b2b] dark:text-gray-200 text-center leading-tight">
+                  {label}
+                </span>
+              </Link>
             ))}
           </div>
         </motion.div>

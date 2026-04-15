@@ -5,8 +5,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek, getWeekData, pregnancyData } from "@/lib/pregnancy-data";
 import { ChevronLeft, ChevronRight, Ruler, Weight, Share2 } from "lucide-react";
-import SocialShareButtons from "@/components/SocialShareButtons";
-import BabyVisual from "@/components/BabyVisual";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/Skeleton";
+
+const BabyVisual = dynamic(() => import("@/components/BabyVisual"), {
+  ssr: false,
+  loading: () => <div className="flex items-center justify-center py-5"><Skeleton className="w-52 h-52 rounded-full" /></div>,
+});
+const SizeComparison = dynamic(() => import("@/components/SizeComparison"), {
+  ssr: false,
+  loading: () => <div className="space-y-4"><Skeleton className="h-64 w-full rounded-3xl" /><Skeleton className="h-32 w-full rounded-3xl" /></div>,
+});
+const SocialShareButtons = dynamic(() => import("@/components/SocialShareButtons"), {
+  ssr: false,
+});
 
 export default function BabyPage() {
   const { dueDate } = useStore();
@@ -94,44 +106,8 @@ export default function BabyPage() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Comparaisons de taille */}
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
-          key={selectedWeek}
-          custom={direction}
-          initial={{ opacity: 0, x: direction * 60 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -direction * 60 }}
-          transition={{ duration: 0.3 }}
-          className="grid grid-cols-2 gap-3"
-        >
-          {/* Fruit */}
-          <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-3xl p-5 text-center border border-pink-100 shadow-sm">
-            <motion.div
-              animate={{ scale: [1, 1.1, 1], rotate: [0, 3, -3, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="text-5xl mb-2 inline-block"
-            >
-              {weekData.fruitEmoji}
-            </motion.div>
-            <h2 className="text-sm font-bold text-[#3d2b2b] mb-0.5">{weekData.fruit}</h2>
-            <p className="text-xs text-gray-400">Fruit</p>
-          </div>
-
-          {/* Objet du quotidien */}
-          <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-5 text-center border border-purple-100 shadow-sm">
-            <motion.div
-              animate={{ scale: [1, 1.1, 1], rotate: [0, -3, 3, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut", delay: 0.5 }}
-              className="text-5xl mb-2 inline-block"
-            >
-              {weekData.funComparisonEmoji}
-            </motion.div>
-            <h2 className="text-sm font-bold text-[#3d2b2b] mb-0.5">{weekData.funComparison}</h2>
-            <p className="text-xs text-gray-400">Objet</p>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+      {/* Comparaisons de taille visuelles */}
+      <SizeComparison currentWeek={selectedWeek} weekData={weekData} />
 
       {/* Bouton partager */}
       <div className="flex justify-center">

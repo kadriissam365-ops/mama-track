@@ -19,10 +19,24 @@ import { DashboardSkeleton } from "@/components/Skeleton";
 import { initializeNotifications } from "@/lib/notifications";
 import { WATER_GOAL_ML } from "@/lib/constants";
 import ReminderBanner from "@/components/ReminderBanner";
-import LandingPage from "@/components/LandingPage";
 
-const WeeklyReport = dynamic(() => import("@/components/WeeklyReport"), { ssr: false });
-const ShareCard = dynamic(() => import("@/components/ShareCard"), { ssr: false });
+const LandingPage = dynamic(() => import("@/components/LandingPage"), {
+  ssr: false,
+  loading: () => <div className="min-h-screen flex items-center justify-center"><DashboardSkeleton /></div>,
+});
+
+const WeeklyReport = dynamic(() => import("@/components/WeeklyReport"), {
+  ssr: false,
+  loading: () => <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center"><div className="bg-white rounded-t-3xl p-6 w-full max-w-lg h-[60vh] animate-pulse" /></div>,
+});
+const ShareCard = dynamic(() => import("@/components/ShareCard"), {
+  ssr: false,
+  loading: () => <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center"><div className="bg-white rounded-3xl p-6 w-full max-w-sm h-96 animate-pulse" /></div>,
+});
+const BabyIllustration = dynamic(() => import("@/components/BabyIllustration"), {
+  ssr: false,
+  loading: () => <div className="flex items-center justify-center py-2"><div className="w-32 h-32 rounded-full bg-pink-50 animate-pulse" /></div>,
+});
 
 export default function DashboardPage() {
   const store = useStore();

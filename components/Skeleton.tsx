@@ -102,6 +102,122 @@ export function TrackingSkeleton() {
   );
 }
 
+export function PhotosSkeleton() {
+  return (
+    <div className="max-w-lg mx-auto" style={{ background: "#fdfaf6", minHeight: "100vh" }}>
+      <div className="px-4 py-3">
+        <div className="flex items-center gap-3 mb-6">
+          <Skeleton className="w-9 h-9 rounded-xl" />
+          <div className="space-y-1">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-3 w-24" />
+          </div>
+        </div>
+        <div className="space-y-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex gap-4 items-start">
+              <Skeleton className="w-4 h-4 rounded-full mt-3 flex-shrink-0" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-3 w-20" />
+                <Skeleton className="h-48 w-full rounded-2xl" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function GalerieSkeleton() {
+  return (
+    <div className="max-w-lg mx-auto" style={{ background: "#fdfaf6", minHeight: "100vh" }}>
+      <div className="px-4 py-3">
+        <div className="flex items-center gap-3 mb-6">
+          <Skeleton className="w-9 h-9 rounded-xl" />
+          <div className="space-y-1">
+            <Skeleton className="h-5 w-28" />
+            <Skeleton className="h-3 w-36" />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="w-full rounded-2xl" style={{ aspectRatio: "1/1" }} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function NotesSkeleton() {
+  return (
+    <div className="max-w-lg mx-auto" style={{ background: "#fdfaf6", minHeight: "100vh" }}>
+      <div className="px-4 py-3">
+        <div className="flex items-center gap-3 mb-6">
+          <Skeleton className="w-9 h-9 rounded-xl" />
+          <div className="flex-1 space-y-1">
+            <Skeleton className="h-5 w-28" />
+            <Skeleton className="h-3 w-16" />
+          </div>
+          <Skeleton className="w-9 h-9 rounded-xl" />
+        </div>
+        <Skeleton className="h-10 w-full rounded-2xl mb-4" />
+        <div className="space-y-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-2">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-2/3" />
+              <div className="flex justify-between">
+                <Skeleton className="h-4 w-12 rounded-full" />
+                <Skeleton className="h-3 w-20" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function CommunitySkeleton() {
+  return (
+    <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-7 w-40" />
+        <Skeleton className="h-9 w-24 rounded-xl" />
+      </div>
+      <div className="flex gap-2">
+        <Skeleton className="h-8 w-28 rounded-full" />
+        <Skeleton className="h-8 w-20 rounded-full" />
+      </div>
+      <div className="flex gap-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-7 w-20 rounded-full" />
+        ))}
+      </div>
+      <div className="space-y-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="rounded-2xl p-4 border border-pink-100 space-y-2">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-3 w-32" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <div className="flex gap-2 pt-1">
+              {Array.from({ length: 4 }).map((_, j) => (
+                <Skeleton key={j} className="h-6 w-12 rounded-full" />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function ChecklistSkeleton() {
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
