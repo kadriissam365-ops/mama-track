@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Upsert the push subscription keyed on (user_id, endpoint)
-    const { error } = await supabase.from("push_subscriptions").upsert(
+    const { error } = await (supabase as any).from("push_subscriptions").upsert(
       {
         user_id: user.id,
         endpoint: subscription.endpoint,
@@ -88,7 +88,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await supabase
+    await (supabase as any)
       .from("push_subscriptions")
       .delete()
       .eq("user_id", user.id)

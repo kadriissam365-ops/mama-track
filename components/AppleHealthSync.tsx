@@ -44,7 +44,7 @@ export default function AppleHealthSync() {
     setExporting("symptoms");
     const csv = [
       "Date,Symptôme,Intensité",
-      ...store.symptomEntries.map((e) => `${e.date},"${e.symptom}",${e.severity ?? ""}`),
+      ...store.symptomEntries.map((e) => `${e.date},"${(e.symptoms ?? []).join("; ")}",${e.severity ?? ""}`),
     ].join("\n");
     downloadFile(csv, "mamatrack-symptomes.csv", "text/csv");
     toast.success("Export symptômes téléchargé !");

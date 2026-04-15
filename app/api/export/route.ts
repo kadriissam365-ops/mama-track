@@ -22,6 +22,7 @@ export async function GET() {
     const userId = user.id;
 
     // Fetch all user data in parallel
+    const sb = supabase as any;
     const [
       profileRes,
       weightRes,
@@ -37,19 +38,19 @@ export async function GET() {
       communityRes,
       pushRes,
     ] = await Promise.all([
-      supabase.from("profiles").select("*").eq("id", userId).single(),
-      supabase.from("weight_entries").select("*").eq("user_id", userId).order("date", { ascending: true }),
-      supabase.from("symptom_entries").select("*").eq("user_id", userId).order("date", { ascending: true }),
-      supabase.from("kick_sessions").select("*").eq("user_id", userId).order("date", { ascending: true }),
-      supabase.from("contraction_sessions").select("*").eq("user_id", userId).order("date", { ascending: true }),
-      supabase.from("appointments").select("*").eq("user_id", userId).order("date", { ascending: true }),
-      supabase.from("water_intake").select("*").eq("user_id", userId),
-      supabase.from("checklist_items").select("*").eq("user_id", userId).order("created_at", { ascending: true }),
-      supabase.from("notification_settings").select("*").eq("user_id", userId).single(),
-      supabase.from("bump_photos").select("*").eq("user_id", userId).order("week", { ascending: true }),
-      supabase.from("journal_notes").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
-      supabase.from("community_posts").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
-      supabase.from("push_subscriptions").select("*").eq("user_id", userId),
+      sb.from("profiles").select("*").eq("id", userId).single(),
+      sb.from("weight_entries").select("*").eq("user_id", userId).order("date", { ascending: true }),
+      sb.from("symptom_entries").select("*").eq("user_id", userId).order("date", { ascending: true }),
+      sb.from("kick_sessions").select("*").eq("user_id", userId).order("date", { ascending: true }),
+      sb.from("contraction_sessions").select("*").eq("user_id", userId).order("date", { ascending: true }),
+      sb.from("appointments").select("*").eq("user_id", userId).order("date", { ascending: true }),
+      sb.from("water_intake").select("*").eq("user_id", userId),
+      sb.from("checklist_items").select("*").eq("user_id", userId).order("created_at", { ascending: true }),
+      sb.from("notification_settings").select("*").eq("user_id", userId).single(),
+      sb.from("bump_photos").select("*").eq("user_id", userId).order("week", { ascending: true }),
+      sb.from("journal_notes").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
+      sb.from("community_posts").select("*").eq("user_id", userId).order("created_at", { ascending: false }),
+      sb.from("push_subscriptions").select("*").eq("user_id", userId),
     ]);
 
     const exportData = {

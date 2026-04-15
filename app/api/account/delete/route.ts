@@ -43,7 +43,7 @@ export async function DELETE() {
     ];
 
     // Delete bump photos from storage first
-    const { data: bumpPhotos } = await supabase
+    const { data: bumpPhotos } = await (supabase as any)
       .from("bump_photos")
       .select("storage_path")
       .eq("user_id", userId);
@@ -56,7 +56,7 @@ export async function DELETE() {
     // Delete data from all tables
     const errors: string[] = [];
     for (const table of tables) {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from(table.name)
         .delete()
         .eq(table.column, userId);

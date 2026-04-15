@@ -61,10 +61,12 @@ export async function POST(request: NextRequest) {
     };
 
     // Fetch all push subscriptions for the target user
-    const { data: subscriptions, error } = await supabase
+    const result = await (supabase as any)
       .from("push_subscriptions")
       .select("subscription_json, endpoint")
       .eq("user_id", targetUserId);
+    const subscriptions = result.data as { subscription_json: string; endpoint: string }[] | null;
+    const error = result.error;
 
     if (error) {
       console.error("Error fetching subscriptions:", error);
@@ -95,7 +97,7 @@ export async function POST(request: NextRequest) {
           const pushError = err as { statusCode?: number };
           // If subscription is expired/invalid, clean it up
           if (pushError.statusCode === 410 || pushError.statusCode === 404) {
-            await supabase
+            await (supabase as any)
               .from("push_subscriptions")
               .delete()
               .eq("user_id", targetUserId)

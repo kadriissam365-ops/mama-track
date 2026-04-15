@@ -102,7 +102,7 @@ export default function ExportPDF() {
           margin: { left: 14, right: 14 },
         });
 
-        yPos = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15;
+        yPos = (doc as any).lastAutoTable.finalY + 15;
       }
 
       // Check if we need a new page
@@ -142,7 +142,7 @@ export default function ExportPDF() {
           },
         });
 
-        yPos = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15;
+        yPos = (doc as any).lastAutoTable.finalY + 15;
       }
 
       // Check if we need a new page
@@ -185,7 +185,7 @@ export default function ExportPDF() {
           margin: { left: 14, right: 14 },
         });
 
-        yPos = (doc as jsPDF & { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 15;
+        yPos = (doc as any).lastAutoTable.finalY + 15;
       }
 
       // Check if we need a new page

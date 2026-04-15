@@ -41,19 +41,21 @@ export async function GET() {
       });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const row = data as any;
     return NextResponse.json({
       preferences: {
-        userId: data.user_id,
-        dailyTips: data.daily_tips,
-        dailyTipTime: data.daily_tip_time,
-        appointmentReminders: data.appointment_reminders,
-        appointmentReminderAdvance: data.appointment_reminder_advance,
-        weeklyMilestones: data.weekly_milestones,
-        hydrationReminders: data.hydration_reminders,
-        hydrationIntervalMinutes: data.hydration_interval_minutes,
-        kickCountReminders: data.kick_count_reminders,
-        kickReminderTime: data.kick_reminder_time,
-        partnerNotifications: data.partner_notifications,
+        userId: row.user_id,
+        dailyTips: row.daily_tips,
+        dailyTipTime: row.daily_tip_time,
+        appointmentReminders: row.appointment_reminders,
+        appointmentReminderAdvance: row.appointment_reminder_advance,
+        weeklyMilestones: row.weekly_milestones,
+        hydrationReminders: row.hydration_reminders,
+        hydrationIntervalMinutes: row.hydration_interval_minutes,
+        kickCountReminders: row.kick_count_reminders,
+        kickReminderTime: row.kick_reminder_time,
+        partnerNotifications: row.partner_notifications,
       },
     });
   } catch (err) {
@@ -109,8 +111,8 @@ export async function POST(request: NextRequest) {
     if (body.partnerNotifications !== undefined)
       row.partner_notifications = body.partnerNotifications;
 
-    const { error } = await supabase
-      .from("notification_preferences")
+    const { error } = await (supabase
+      .from("notification_preferences") as any)
       .upsert(row, { onConflict: "user_id" });
 
     if (error) {
