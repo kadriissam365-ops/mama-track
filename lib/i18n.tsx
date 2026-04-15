@@ -1,117 +1,29 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+// Re-export everything from the i18n module directory for backward compatibility.
+// The canonical sources are now:
+//   - lib/i18n/provider.tsx  (I18nProvider, I18nContext, Locale)
+//   - lib/i18n/useTranslation.ts  (useTranslation hook)
+//   - lib/i18n/fr.json / en.json  (translation dictionaries)
 
-import fr from "@/locales/fr.json";
-import en from "@/locales/en.json";
+export { I18nProvider, I18nContext } from "@/lib/i18n/provider";
+export type { Locale, I18nContextType } from "@/lib/i18n/provider";
+export { useTranslation } from "@/lib/i18n/useTranslation";
 
-export type Locale = "fr" | "en";
+// LanguageSwitcher stays here to avoid circular imports between provider and hook
+import React from "react";
+import { useTranslation } from "@/lib/i18n/useTranslation";
+import type { Locale } from "@/lib/i18n/provider";
 
-type TranslationDict = Record<string, Record<string, string>>;
-
-const translations: Record<Locale, TranslationDict> = { fr, en };
-
-const STORAGE_KEY = "mamatrack-locale";
-
-interface I18nContextType {
-  locale: Locale;
-  setLocale: (locale: Locale) => void;
-  t: (key: string) => string;
-}
-
-const I18nContext = createContext<I18nContextType | null>(null);
-
-/**
- * Resolve a dotted key like "settings.title" from the translation dictionary.
- */
-function resolve(dict: TranslationDict, key: string): string {
-  const parts = key.split(".");
-  if (parts.length === 2) {
-    const section = dict[parts[0]];
-    if (section && typeof section === "object") {
-      const value = section[parts[1]];
-      if (typeof value === "string") return value;
-    }
-  }
-  // Fallback: return the key itself so missing translations are visible
-  return key;
-}
-
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("fr");
-  const [mounted, setMounted] = useState(false);
-
-  // Read from localStorage on mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === "en" || stored === "fr") {
-        setLocaleState(stored);
-      }
-    } catch {
-      // localStorage unavailable (SSR / private browsing)
-    }
-    setMounted(true);
-  }, []);
-
-  const setLocale = useCallback((newLocale: Locale) => {
-    setLocaleState(newLocale);
-    try {
-      localStorage.setItem(STORAGE_KEY, newLocale);
-    } catch {
-      // ignore
-    }
-    // Update the html lang attribute
-    document.documentElement.lang = newLocale;
-  }, []);
-
-  const t = useCallback(
-    (key: string): string => {
-      const result = resolve(translations[locale], key);
-      // If not found in current locale, try French as fallback
-      if (result === key && locale !== "fr") {
-        return resolve(translations.fr, key);
-      }
-      return result;
-    },
-    [locale]
-  );
-
-  // Update html lang on mount
-  useEffect(() => {
-    if (mounted) {
-      document.documentElement.lang = locale;
-    }
-  }, [locale, mounted]);
-
-  return (
-    <I18nContext.Provider value={{ locale, setLocale, t }}>
-      {children}
-    </I18nContext.Provider>
-  );
-}
-
-/**
- * Hook to access translations.
- *
- * Usage:
- *   const { t } = useTranslation();
- *   t("settings.title") // => "Parametres" or "Settings"
- */
-export function useTranslation() {
-  const ctx = useContext(I18nContext);
-  if (!ctx) {
-    throw new Error("useTranslation must be used within an I18nProvider");
-  }
-  return ctx;
-}
-
-/**
- * A compact language switcher component.
- * Renders two buttons for FR / EN.
- */
 export function LanguageSwitcher() {
   const { locale, setLocale, t } = useTranslation();
+
+  const languages: { code: Locale; flag: string; label: string }[] = [
+    { code: "fr", flag: "\u{1F1EB}\u{1F1F7}", label: "Fran\u00e7ais" },
+    { code: "en", flag: "\u{1F1EC}\u{1F1E7}", label: "English" },
+    { code: "es", flag: "\u{1F1EA}\u{1F1F8}", label: "Espa\u00f1ol" },
+    { code: "ar", flag: "\u{1F1F2}\u{1F1E6}", label: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629" },
+  ];
 
   return (
     <div className="bg-white dark:bg-[#1a1a2e] rounded-2xl p-4 border border-pink-100 dark:border-pink-900">
@@ -124,29 +36,22 @@ export function LanguageSwitcher() {
             {t("settings.languageDescription")}
           </p>
         </div>
-        <span className="text-lg">🌐</span>
+        <span className="text-lg">{"\u{1F310}"}</span>
       </div>
-      <div className="flex gap-2">
-        <button
-          onClick={() => setLocale("fr")}
-          className={`flex-1 py-2.5 text-sm font-medium rounded-xl transition-all flex items-center justify-center gap-2 ${
-            locale === "fr"
-              ? "bg-pink-400 text-white shadow-sm"
-              : "bg-pink-50 text-gray-500 hover:bg-pink-100"
-          }`}
-        >
-          🇫🇷 Francais
-        </button>
-        <button
-          onClick={() => setLocale("en")}
-          className={`flex-1 py-2.5 text-sm font-medium rounded-xl transition-all flex items-center justify-center gap-2 ${
-            locale === "en"
-              ? "bg-pink-400 text-white shadow-sm"
-              : "bg-pink-50 text-gray-500 hover:bg-pink-100"
-          }`}
-        >
-          🇬🇧 English
-        </button>
+      <div className="grid grid-cols-2 gap-2">
+        {languages.map(({ code, flag, label }) => (
+          <button
+            key={code}
+            onClick={() => setLocale(code)}
+            className={`py-2.5 text-sm font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+              locale === code
+                ? "bg-pink-400 text-white shadow-sm"
+                : "bg-pink-50 text-gray-500 hover:bg-pink-100"
+            }`}
+          >
+            {flag} {label}
+          </button>
+        ))}
       </div>
     </div>
   );

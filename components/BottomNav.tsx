@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Activity, Baby, BookOpen, MoreHorizontal } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 const navItems = [
-  { href: "/", label: "Accueil", icon: Home },
-  { href: "/tracking", label: "Suivi", icon: Activity },
-  { href: "/baby", label: "Bébé", icon: Baby },
-  { href: "/journal", label: "Journal", icon: BookOpen },
-  { href: "/plus", label: "Plus", icon: MoreHorizontal },
+  { href: "/", labelKey: "nav.home", icon: Home },
+  { href: "/tracking", labelKey: "nav.tracking", icon: Activity },
+  { href: "/baby", labelKey: "nav.baby", icon: Baby },
+  { href: "/journal", labelKey: "nav.journal", icon: BookOpen },
+  { href: "/plus", labelKey: "nav.more", icon: MoreHorizontal },
 ];
 
 const plusPaths = [
@@ -20,6 +21,7 @@ const plusPaths = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -32,7 +34,7 @@ export default function BottomNav() {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-pink-100/80 bottom-nav-safe dark:bg-gray-900/95 dark:border-gray-800">
       <div className="max-w-lg mx-auto flex items-center justify-around px-1 py-1.5">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        {navItems.map(({ href, labelKey, icon: Icon }) => {
           const active = isActive(href);
           return (
             <Link
@@ -51,7 +53,7 @@ export default function BottomNav() {
                 className={`relative w-5 h-5 ${active ? "fill-pink-200 dark:fill-pink-800" : ""}`}
               />
               <span className={`relative text-[10px] ${active ? "font-semibold" : "font-medium"}`}>
-                {label}
+                {t(labelKey)}
               </span>
             </Link>
           );

@@ -49,12 +49,12 @@ const differentiators = [
 ];
 
 const testimonials = [
-  { name: "Sarah M.", week: "32 SA", text: "Je cherchais une app gratuite et complete. MamaTrack a tout ce qu'il faut, et le mode duo est genial ! Mon conjoint adore suivre l'evolution.", avatar: "S", gradient: "from-pink-300 to-rose-400" },
-  { name: "Lea D.", week: "28 SA", text: "Le suivi semaine par semaine est top. J'adore les comparaisons fruits et les conseils personnalises. C'est devenu mon rituel du lundi !", avatar: "L", gradient: "from-purple-300 to-violet-400" },
-  { name: "Amina K.", week: "Accouchee", text: "Le projet naissance en PDF m'a sauvee a la maternite. L'equipe medicale a adore. Merci MamaTrack !", avatar: "A", gradient: "from-emerald-300 to-teal-400" },
-  { name: "Julie R.", week: "36 SA", text: "Le chrono contractions m'a rassuree pendant le pre-travail. Interface claire et simple, exactement ce qu'il faut quand on stresse.", avatar: "J", gradient: "from-amber-300 to-orange-400" },
-  { name: "Fatima B.", week: "22 SA", text: "En parcours PMA, j'ai galere a trouver une app qui comprend la FIV. MamaTrack est la seule a gerer le calcul TEC. Un vrai soulagement.", avatar: "F", gradient: "from-blue-300 to-cyan-400" },
-  { name: "Marine L.", week: "Accouchee", text: "J'ai utilise MamaTrack du debut a la fin. Le journal photo bump, c'est mon plus beau souvenir. Merci pour cette app gratuite et complete !", avatar: "M", gradient: "from-rose-300 to-pink-400" },
+  { name: "Sarah M.", week: "32 SA", text: "Le mode duo a change notre grossesse ! Mon conjoint suit tout en temps reel, il se sent vraiment implique. On adore regarder l'evolution ensemble le soir.", avatar: "S", gradient: "from-pink-400 to-purple-400", rating: 5, feature: "Mode duo" },
+  { name: "Fatima B.", week: "24 SA", text: "Apres 3 ans de PMA et un transfert FIV, j'avais besoin d'une app qui comprenne mon parcours. MamaTrack est la seule a gerer le calcul TEC. Enfin !", avatar: "F", gradient: "from-purple-400 to-pink-400", rating: 5, feature: "FIV / PMA" },
+  { name: "Lea D.", week: "Jeune maman", text: "J'ai passe des heures sur l'outil prenoms avec mon mari ! On swipait chacun de notre cote et on comparait nos favoris. On a trouve LE prenom parfait.", avatar: "L", gradient: "from-pink-300 to-purple-500", rating: 4, feature: "Prenoms" },
+  { name: "Amina K.", week: "36 SA", text: "Le journal de grossesse est devenu mon rituel du soir. Je note mes emotions, mes symptomes, et je relis les semaines passees. C'est precieux.", avatar: "A", gradient: "from-purple-300 to-pink-500", rating: 5, feature: "Journal" },
+  { name: "Julie R.", week: "Jeune maman", text: "Le chrono contractions m'a sauvee la nuit de l'accouchement. Interface claire, gros boutons, pas besoin de reflechir. Mon mari chronometrait pendant que je respirais.", avatar: "J", gradient: "from-pink-400 to-purple-500", rating: 5, feature: "Contractions" },
+  { name: "Marine L.", week: "30 SA", text: "La checklist m'a evite tellement d'oublis ! Valise maternite, papiers administratifs, achats bebe... tout est categorise et je coche au fur et a mesure.", avatar: "M", gradient: "from-purple-400 to-pink-300", rating: 4, feature: "Checklist" },
 ];
 
 const faqItems = [
@@ -657,6 +657,13 @@ export default function LandingPage() {
           variants={sectionVariants}
           className="text-center mb-12"
         >
+          <div className="flex items-center justify-center gap-1 mb-3">
+            {[...Array(5)].map((_, j) => (
+              <Star key={j} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+            ))}
+            <span className="ml-2 text-sm font-bold text-[#3d2b2b]">4.7</span>
+            <span className="text-xs text-gray-400 ml-1">({testimonials.length} avis)</span>
+          </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-3">
             Ce qu&apos;elles en disent
           </h2>
@@ -672,8 +679,10 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-2xl p-6 border border-pink-100 shadow-sm hover:shadow-md transition-all"
+              className="relative bg-white rounded-3xl p-6 border border-pink-100 shadow-sm hover:shadow-md transition-all overflow-hidden"
             >
+              {/* Gradient accent bar */}
+              <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${t.gradient}`} />
               <div className="flex items-center gap-3 mb-4">
                 <div className={`w-11 h-11 bg-gradient-to-br ${t.gradient} rounded-full flex items-center justify-center text-sm font-bold text-white shadow-sm`}>
                   {t.avatar}
@@ -684,11 +693,16 @@ export default function LandingPage() {
                 </div>
                 <div className="ml-auto flex gap-0.5">
                   {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="w-3.5 h-3.5 text-yellow-400 fill-yellow-400" />
+                    <Star key={j} className={`w-3.5 h-3.5 ${j < t.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-200 fill-gray-200"}`} />
                   ))}
                 </div>
               </div>
               <p className="text-sm text-gray-600 leading-relaxed italic">&ldquo;{t.text}&rdquo;</p>
+              {t.feature && (
+                <span className="inline-block mt-3 text-[10px] font-semibold bg-gradient-to-r from-pink-50 to-purple-50 text-purple-500 px-2.5 py-1 rounded-full border border-purple-100">
+                  {t.feature}
+                </span>
+              )}
             </motion.div>
           ))}
         </div>
