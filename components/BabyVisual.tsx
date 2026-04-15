@@ -39,13 +39,13 @@ export default function BabyVisual({ week }: BabyVisualProps) {
         <motion.div
           key={week}
           className="absolute inset-0 flex items-center justify-center"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
           <svg
             viewBox="0 0 200 200"
-            className="w-full h-full animate-gentle-float"
+            className="w-full h-full"
           >
             <g
               transform={`translate(100, 100) scale(${scale})`}

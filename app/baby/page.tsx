@@ -93,10 +93,10 @@ export default function BabyPage() {
         <motion.div
           key={`visual-${selectedWeek}`}
           custom={direction}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 0.4 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
           className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 rounded-3xl border border-pink-100 shadow-sm overflow-hidden"
         >
           <BabyVisual week={selectedWeek} />

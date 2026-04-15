@@ -144,9 +144,9 @@ function WeightViz({ weightG, week }: { weightG: number; week: number }) {
           {Array.from({ length: displayCount }, (_, i) => (
             <motion.span
               key={i}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.4 + i * 0.06, type: "spring", stiffness: 300 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 + i * 0.04, duration: 0.2 }}
               className="text-lg"
             >
               {equiv.emoji}
@@ -239,9 +239,9 @@ function GrowthSparkline({ currentWeek }: { currentWeek: number }) {
           fill="#ec4899"
           stroke="white"
           strokeWidth="2"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.8, type: "spring" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.3 }}
         />
       </svg>
       <div className="flex justify-between text-[9px] text-gray-400 mt-1">
@@ -263,7 +263,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
   return (
     <div
       className="relative w-full cursor-pointer select-none"
-      style={{ perspective: "1000px", minHeight: "260px" }}
+      style={{ perspective: "1000px", height: "280px" }}
       onClick={() => setFlipped((f) => !f)}
       role="button"
       tabIndex={0}
@@ -272,9 +272,9 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
     >
       <motion.div
         animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.5, type: "spring", stiffness: 200, damping: 25 }}
-        style={{ transformStyle: "preserve-3d" }}
-        className="relative w-full h-full"
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+        style={{ transformStyle: "preserve-3d", width: "100%", height: "100%" }}
+        className="relative"
       >
         {/* Front face */}
         <div
@@ -293,26 +293,15 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
           <AnimatePresence mode="wait">
             <motion.div
               key={weekData.week}
-              initial={{ scale: 0, rotate: -20 }}
-              animate={{ scale: 1, rotate: 0 }}
-              exit={{ scale: 0, rotate: 20 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
               className="flex justify-center z-10"
             >
-              <motion.span
-                animate={{
-                  y: [0, -6, 0],
-                  rotate: [0, 3, -3, 0],
-                }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 3,
-                  ease: "easeInOut",
-                }}
-                className="text-8xl select-none inline-block drop-shadow-lg"
-              >
+              <span className="text-8xl select-none inline-block drop-shadow-lg">
                 {weekData.fruitEmoji}
-              </motion.span>
+              </span>
             </motion.div>
           </AnimatePresence>
 
@@ -412,9 +401,9 @@ function SideBySide({ weekData }: { weekData: WeekData }) {
         <div className="flex flex-col items-center">
           <motion.span
             key={`baby-${weekData.week}`}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
             style={{ fontSize: `${babySize}rem` }}
             className="select-none inline-block"
           >
@@ -427,9 +416,9 @@ function SideBySide({ weekData }: { weekData: WeekData }) {
         {/* VS divider */}
         <div className="flex flex-col items-center pb-4">
           <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.4, type: "spring" }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, duration: 0.3 }}
             className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-100 to-purple-100 flex items-center justify-center border border-pink-200"
           >
             <span className="text-xs font-bold text-purple-500">VS</span>
@@ -440,9 +429,9 @@ function SideBySide({ weekData }: { weekData: WeekData }) {
         <div className="flex flex-col items-center">
           <motion.span
             key={`fruit-${weekData.week}`}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.3 }}
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
             style={{ fontSize: `${fruitSize}rem` }}
             className="select-none inline-block"
           >
@@ -510,9 +499,9 @@ function SizeGallery({ currentWeek }: { currentWeek: number }) {
           return (
             <motion.div
               key={w.week}
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: Math.min(i * 0.03, 0.6), duration: 0.3 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: Math.min(i * 0.02, 0.4), duration: 0.25 }}
               className={`snap-center flex-shrink-0 flex flex-col items-center justify-end rounded-2xl p-3 min-w-[80px] transition-all ${
                 isCurrent
                   ? "bg-gradient-to-b from-pink-100 to-purple-100 border-2 border-pink-300 shadow-md"
