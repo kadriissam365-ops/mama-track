@@ -28,10 +28,26 @@ export default function robots(): MetadataRoute.Robots {
           "/checklist",
           "/achats",
           "/plus",
+          "/alimentation",
+          "/urgences",
+          "/conseils",
           "/auth/callback",
           "/auth/reset-password",
           "/auth/forgot-password",
         ],
+      },
+      // Block AI crawlers from scraping protected content
+      {
+        userAgent: "GPTBot",
+        disallow: ["/"],
+      },
+      {
+        userAgent: "ChatGPT-User",
+        disallow: ["/"],
+      },
+      {
+        userAgent: "CCBot",
+        disallow: ["/"],
       },
     ],
     sitemap: "https://mamatrack.fr/sitemap.xml",

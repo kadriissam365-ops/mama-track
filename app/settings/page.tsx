@@ -16,6 +16,10 @@ const AppleHealthSync = dynamic(() => import("@/components/AppleHealthSync"), {
   ssr: false,
   loading: () => <Skeleton className="h-48 w-full rounded-3xl" />,
 });
+const DataExport = dynamic(() => import("@/components/DataExport"), {
+  ssr: false,
+  loading: () => <div className="space-y-3"><Skeleton className="h-48 w-full rounded-3xl" /><Skeleton className="h-32 w-full rounded-3xl" /></div>,
+});
 import { Settings, User, Bell, LogOut, Calendar, Baby, Loader2, Lock, Eye, EyeOff, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { createClient } from "@/lib/supabase";
@@ -271,6 +275,9 @@ export default function SettingsPage() {
 
           {/* Apple Health Sync */}
           <AppleHealthSync />
+
+          {/* GDPR Data Export & Account Deletion */}
+          <DataExport />
 
           {/* Sign out */}
           <button

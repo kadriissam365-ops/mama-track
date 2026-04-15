@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import {
   Heart,
   Baby,
@@ -16,43 +17,52 @@ import {
   Star,
   ChevronRight,
   Sparkles,
+  Droplets,
+  Moon,
+  FileText,
+  CheckCircle2,
+  ArrowRight,
 } from "lucide-react";
 
 const features = [
-  { icon: Baby, title: "Suivi semaine par semaine", desc: "Développement bébé, taille, poids et conseils personnalisés", color: "bg-pink-100 text-pink-500" },
-  { icon: Activity, title: "10 trackers de santé", desc: "Poids, eau, symptômes, humeur, tension, sommeil et plus", color: "bg-purple-100 text-purple-500" },
-  { icon: Timer, title: "Chrono contractions", desc: "Minuteur précis avec historique et fréquence", color: "bg-indigo-100 text-indigo-500" },
-  { icon: Users, title: "Mode duo", desc: "Partagez l'aventure avec votre partenaire en temps réel", color: "bg-emerald-100 text-emerald-500" },
-  { icon: Camera, title: "Journal photo", desc: "Bump diary et galerie pour capturer chaque moment", color: "bg-rose-100 text-rose-500" },
-  { icon: Calendar, title: "Agenda médical", desc: "Tous vos rendez-vous au même endroit, avec rappels", color: "bg-orange-100 text-orange-500" },
-  { icon: Heart, title: "250+ prénoms", desc: "Explorez, filtrez et sauvegardez vos prénoms favoris", color: "bg-red-100 text-red-500" },
-  { icon: BookOpen, title: "Guides complets", desc: "Alimentation, sport, FAQ et conseils de pros", color: "bg-teal-100 text-teal-500" },
+  { icon: Baby, title: "Suivi semaine par semaine", desc: "Taille, poids, fruit de comparaison et conseils personnalises chaque semaine", color: "bg-pink-100 text-pink-500" },
+  { icon: Activity, title: "10+ trackers sante", desc: "Poids, eau, symptomes, humeur, tension, sommeil, contractions et plus", color: "bg-purple-100 text-purple-500" },
+  { icon: Timer, title: "Chrono contractions", desc: "Minuteur precis avec historique, duree et frequence en temps reel", color: "bg-indigo-100 text-indigo-500" },
+  { icon: Users, title: "Mode duo", desc: "Partagez l'aventure avec votre partenaire qui suit tout en temps reel", color: "bg-emerald-100 text-emerald-500" },
+  { icon: Camera, title: "Journal photo bump", desc: "Capturez chaque moment et comparez l'evolution de votre ventre", color: "bg-rose-100 text-rose-500" },
+  { icon: Calendar, title: "Agenda medical", desc: "Tous vos rendez-vous organises au meme endroit avec rappels", color: "bg-orange-100 text-orange-500" },
+  { icon: Heart, title: "250+ prenoms", desc: "Explorez, filtrez par origine et sauvegardez vos prenoms favoris", color: "bg-red-100 text-red-500" },
+  { icon: BookOpen, title: "Guides complets", desc: "Alimentation, sport, FAQ et conseils valides par des professionnels", color: "bg-teal-100 text-teal-500" },
+  { icon: FileText, title: "Projet naissance PDF", desc: "Creez et exportez votre projet de naissance personnalise en PDF", color: "bg-blue-100 text-blue-500" },
+  { icon: Moon, title: "Suivi sommeil & humeur", desc: "Notez votre qualite de sommeil et votre humeur jour apres jour", color: "bg-violet-100 text-violet-500" },
 ];
 
 const differentiators = [
-  { icon: Shield, title: "100% gratuit", desc: "Pas de version premium cachée, tout est accessible" },
-  { icon: Smartphone, title: "Pas besoin de télécharger", desc: "PWA : ouvrez dans votre navigateur, ajoutez à l'écran d'accueil" },
-  { icon: Star, title: "Mode FIV/PMA", desc: "La seule app qui prend en compte les parcours de PMA" },
+  { icon: Shield, title: "100% gratuit, pour de vrai", desc: "Pas de version premium cachee, pas d'abonnement, pas de pub. Tout est accessible des l'inscription." },
+  { icon: Smartphone, title: "Aucun telechargement requis", desc: "MamaTrack est une PWA : ouvrez-la dans votre navigateur et ajoutez-la a votre ecran d'accueil. C'est tout !" },
+  { icon: Star, title: "Mode FIV / PMA integre", desc: "La seule app qui prend en compte les parcours de procreation medicalement assistee." },
+  { icon: Droplets, title: "Fonctionne hors connexion", desc: "Vos donnees se synchronisent automatiquement des que vous retrouvez internet." },
 ];
 
 const testimonials = [
-  { name: "Sarah M.", week: "32 SA", text: "Je cherchais une app gratuite et complète. MamaTrack a tout ce qu'il faut, et le mode duo est génial !", avatar: "S" },
-  { name: "Léa D.", week: "28 SA", text: "Le suivi semaine par semaine est top. J'adore les comparaisons fruits et les conseils personnalisés.", avatar: "L" },
-  { name: "Amina K.", week: "Accouchée", text: "Le projet naissance en PDF m'a sauvée à la maternité. Merci MamaTrack !", avatar: "A" },
-  { name: "Julie R.", week: "36 SA", text: "Le chrono contractions m'a rassurée pendant le travail. Interface claire et simple, exactement ce qu'il faut.", avatar: "J" },
+  { name: "Sarah M.", week: "32 SA", text: "Je cherchais une app gratuite et complete. MamaTrack a tout ce qu'il faut, et le mode duo est genial ! Mon conjoint adore suivre l'evolution.", avatar: "S", gradient: "from-pink-300 to-rose-400" },
+  { name: "Lea D.", week: "28 SA", text: "Le suivi semaine par semaine est top. J'adore les comparaisons fruits et les conseils personnalises. C'est devenu mon rituel du lundi !", avatar: "L", gradient: "from-purple-300 to-violet-400" },
+  { name: "Amina K.", week: "Accouchee", text: "Le projet naissance en PDF m'a sauvee a la maternite. L'equipe medicale a adore. Merci MamaTrack !", avatar: "A", gradient: "from-emerald-300 to-teal-400" },
+  { name: "Julie R.", week: "36 SA", text: "Le chrono contractions m'a rassuree pendant le pre-travail. Interface claire et simple, exactement ce qu'il faut quand on stresse.", avatar: "J", gradient: "from-amber-300 to-orange-400" },
 ];
 
 const faqItems = [
-  { q: "MamaTrack est-il vraiment gratuit ?", a: "Oui, 100% gratuit sans pub ni abonnement caché. Toutes les fonctionnalités sont accessibles." },
-  { q: "Dois-je télécharger l'app ?", a: "Non ! MamaTrack est une PWA. Ouvrez mamatrack.fr dans votre navigateur et ajoutez-le à votre écran d'accueil." },
-  { q: "Mes données sont-elles sécurisées ?", a: "Vos données sont chiffrées et stockées de façon sécurisée. Nous ne vendons aucune donnée personnelle." },
-  { q: "Le mode duo, c'est quoi ?", a: "Votre partenaire peut suivre votre grossesse en temps réel : symptômes, rendez-vous, évolution du bébé." },
-  { q: "Puis-je utiliser MamaTrack hors connexion ?", a: "Oui ! En tant que PWA, MamaTrack fonctionne même sans connexion internet. Vos données se synchronisent dès que vous êtes reconnectée." },
+  { q: "MamaTrack est-il vraiment gratuit ?", a: "Oui, 100% gratuit sans pub ni abonnement cache. Toutes les fonctionnalites sont accessibles des la creation de votre compte." },
+  { q: "Dois-je telecharger l'app sur l'App Store ?", a: "Non ! MamaTrack est une PWA (Progressive Web App). Ouvrez mamatrack.fr dans votre navigateur et ajoutez-le a votre ecran d'accueil pour une experience native." },
+  { q: "Mes donnees sont-elles securisees ?", a: "Vos donnees sont chiffrees et stockees de facon securisee sur des serveurs europeens. Nous ne vendons et ne partageons aucune donnee personnelle." },
+  { q: "Le mode duo, c'est quoi exactement ?", a: "Invitez votre partenaire a suivre votre grossesse en temps reel : evolution bebe, symptomes, rendez-vous, humeur. Il/elle recoit les mises a jour instantanement." },
+  { q: "Puis-je utiliser MamaTrack hors connexion ?", a: "Oui ! En tant que PWA, MamaTrack fonctionne meme sans connexion internet. Vos donnees se synchronisent automatiquement des que vous etes reconnectee." },
+  { q: "L'app prend-elle en compte les parcours PMA / FIV ?", a: "Absolument. MamaTrack est l'une des rares applications a integrer les specificites des parcours de procreation medicalement assistee dans le calcul des dates et le suivi." },
 ];
 
 const footerLinks = [
   {
-    title: "Fonctionnalités",
+    title: "Fonctionnalites",
     links: [
       { label: "Suivi hebdomadaire", href: "/auth/signup" },
       { label: "Mode duo", href: "/auth/signup" },
@@ -68,18 +78,32 @@ const footerLinks = [
     ],
   },
   {
-    title: "Légal",
+    title: "Legal",
     links: [
-      { label: "Mentions légales", href: "/mentions-legales" },
-      { label: "Politique de confidentialité", href: "/confidentialite" },
+      { label: "Mentions legales", href: "/mentions-legales" },
+      { label: "Politique de confidentialite", href: "/confidentialite" },
       { label: "CGU", href: "/cgu" },
     ],
   },
 ];
 
+const weekPreviewData = [
+  { week: 12, fruit: "Citron", emoji: "🍋", size: "5,4 cm" },
+  { week: 20, fruit: "Banane", emoji: "🍌", size: "25 cm" },
+  { week: 28, fruit: "Aubergine", emoji: "🍆", size: "37 cm" },
+  { week: 36, fruit: "Melon", emoji: "🍈", size: "47 cm" },
+];
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
+
 export default function LandingPage() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 via-white to-purple-50 overflow-x-hidden">
       {/* JSON-LD Structured Data */}
       <script
         type="application/ld+json"
@@ -90,7 +114,7 @@ export default function LandingPage() {
             name: "MamaTrack",
             url: "https://mamatrack.fr",
             description:
-              "Application gratuite de suivi de grossesse semaine par semaine. Poids, symptômes, contractions, mode duo, prénoms, projet naissance et plus.",
+              "Application gratuite de suivi de grossesse semaine par semaine. Poids, symptomes, contractions, mode duo, prenoms, projet naissance et plus.",
             applicationCategory: "HealthApplication",
             operatingSystem: "Web",
             offers: {
@@ -111,62 +135,99 @@ export default function LandingPage() {
 
       {/* Navbar */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-pink-100">
-        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-400 rounded-xl flex items-center justify-center">
-              <Heart className="w-4 h-4 text-white fill-white" />
+        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl flex items-center justify-center shadow-sm shadow-pink-200/50">
+              <Heart className="w-4.5 h-4.5 text-white fill-white" />
             </div>
-            <span className="font-bold text-[#3d2b2b] text-lg">MamaTrack</span>
+            <span className="font-bold text-[#3d2b2b] text-lg tracking-tight">MamaTrack</span>
           </div>
           <div className="flex items-center gap-3">
             <Link
               href="/auth/login"
-              className="text-sm text-gray-600 hover:text-pink-500 transition-colors font-medium"
+              className="text-sm text-gray-600 hover:text-pink-500 transition-colors font-medium hidden sm:inline-block"
             >
               Connexion
             </Link>
             <Link
               href="/auth/signup"
-              className="text-sm bg-gradient-to-r from-pink-400 to-pink-500 text-white font-semibold py-2 px-4 rounded-xl hover:from-pink-500 hover:to-pink-600 transition-all shadow-sm"
+              className="text-sm bg-gradient-to-r from-pink-400 to-purple-500 text-white font-semibold py-2.5 px-5 rounded-xl hover:from-pink-500 hover:to-purple-600 transition-all shadow-sm shadow-pink-200/30"
             >
-              S&apos;inscrire
+              Commencer
             </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="px-4 pt-16 pb-20 text-center max-w-2xl mx-auto">
+      <section className="relative px-4 pt-20 pb-24 text-center max-w-3xl mx-auto">
+        {/* Floating decorative elements */}
+        <motion.div
+          className="absolute top-12 left-8 text-4xl opacity-20 hidden sm:block"
+          animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+        >
+          🍼
+        </motion.div>
+        <motion.div
+          className="absolute top-24 right-10 text-3xl opacity-20 hidden sm:block"
+          animate={{ y: [0, -12, 0], rotate: [0, -8, 0] }}
+          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
+        >
+          🧸
+        </motion.div>
+        <motion.div
+          className="absolute bottom-20 left-12 text-3xl opacity-15 hidden sm:block"
+          animate={{ y: [0, -10, 0] }}
+          transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut", delay: 0.5 }}
+        >
+          🌸
+        </motion.div>
+        <motion.div
+          className="absolute bottom-32 right-8 text-3xl opacity-15 hidden sm:block"
+          animate={{ y: [0, -14, 0], rotate: [0, 12, 0] }}
+          transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 1.5 }}
+        >
+          🤍
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="mb-6"
+          className="mb-8"
         >
-          <span className="inline-flex items-center gap-1.5 bg-pink-100 text-pink-600 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
+          <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-600 text-xs font-semibold px-4 py-2 rounded-full shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            100% gratuit, sans pub
+            100% gratuit &middot; Sans pub &middot; Sans abonnement
           </span>
         </motion.div>
 
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", duration: 0.6 }}
-          className="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-pink-400 to-purple-400 rounded-[2rem] shadow-xl shadow-pink-200/50 mb-8"
+          initial={{ scale: 0, rotate: -10 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: "spring", duration: 0.7 }}
+          className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-pink-400 via-purple-400 to-emerald-300 rounded-[2.5rem] shadow-2xl shadow-pink-300/40 mb-10 relative"
         >
-          <Heart className="w-14 h-14 text-white fill-white" />
+          <Heart className="w-16 h-16 text-white fill-white drop-shadow-sm" />
+          <motion.div
+            className="absolute -top-2 -right-2 w-8 h-8 bg-emerald-400 rounded-full flex items-center justify-center shadow-lg"
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+          >
+            <CheckCircle2 className="w-5 h-5 text-white" />
+          </motion.div>
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="text-4xl sm:text-5xl font-bold text-[#3d2b2b] mb-4 leading-tight"
+          className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#3d2b2b] mb-5 leading-[1.1] tracking-tight"
         >
           Suivez votre grossesse
           <br />
-          <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-emerald-400 bg-clip-text text-transparent">
             semaine par semaine
           </span>
         </motion.h1>
@@ -175,7 +236,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="text-lg text-gray-600 mb-3 max-w-md mx-auto"
+          className="text-lg sm:text-xl text-gray-600 mb-3 max-w-lg mx-auto leading-relaxed"
         >
           Votre compagnon de grossesse complet, gratuit et sans pub.
         </motion.p>
@@ -184,71 +245,137 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35 }}
-          className="text-sm text-gray-500 mb-10 max-w-sm mx-auto"
+          className="text-sm sm:text-base text-gray-500 mb-10 max-w-md mx-auto"
         >
-          Du premier jour jusqu&apos;a la naissance : suivi bébé, trackers santé, mode duo, prénoms et projet naissance.
+          Du premier jour jusqu&apos;a la naissance : suivi bebe, 10+ trackers sante, mode duo, 250+ prenoms et projet naissance PDF.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto justify-center"
+          className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto justify-center"
         >
           <Link
             href="/auth/signup"
-            className="flex items-center justify-center gap-2 bg-gradient-to-r from-pink-400 to-pink-500 text-white font-semibold py-3.5 px-8 rounded-2xl hover:from-pink-500 hover:to-pink-600 transition-all shadow-lg shadow-pink-200/50 text-center"
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold py-4 px-8 rounded-2xl hover:from-pink-500 hover:to-purple-600 transition-all shadow-xl shadow-pink-300/30 text-center text-base"
           >
             Commencer gratuitement
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-5 h-5" />
           </Link>
           <Link
             href="/auth/login"
-            className="text-pink-500 font-medium py-3.5 px-6 hover:text-pink-600 hover:bg-pink-50 rounded-2xl transition-all text-center"
+            className="text-pink-500 font-semibold py-4 px-6 hover:text-pink-600 hover:bg-pink-50 rounded-2xl transition-all text-center"
           >
-            J&apos;ai déja un compte
+            J&apos;ai deja un compte
           </Link>
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mt-6 text-xs text-gray-400 flex items-center justify-center gap-1.5"
+        >
+          <Shield className="w-3.5 h-3.5" />
+          Inscription en 30 secondes &middot; Aucune carte bancaire requise
+        </motion.p>
       </section>
 
       {/* Social proof stats */}
-      <section className="px-4 py-10 max-w-2xl mx-auto">
-        <div className="bg-white rounded-3xl border border-pink-100 shadow-sm p-6">
-          <div className="flex justify-around">
+      <section className="px-4 py-6 max-w-3xl mx-auto -mt-8">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="bg-white rounded-3xl border border-pink-100 shadow-lg shadow-pink-100/30 p-8"
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             {[
-              { value: "10+", label: "Trackers santé" },
-              { value: "250+", label: "Prénoms" },
-              { value: "40", label: "Semaines couvertes" },
-              { value: "100%", label: "Gratuit" },
+              { value: "10+", label: "Trackers sante", icon: "📊" },
+              { value: "250+", label: "Prenoms a explorer", icon: "💛" },
+              { value: "40", label: "Semaines couvertes", icon: "📅" },
+              { value: "0\u00a0\u20ac", label: "Pour toujours", icon: "🎉" },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + i * 0.1 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
                 className="text-center"
               >
-                <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+                <p className="text-sm mb-1">{stat.icon}</p>
+                <p className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
                   {stat.value}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
+                <p className="text-xs text-gray-500 mt-1 font-medium">{stat.label}</p>
               </motion.div>
             ))}
           </div>
+        </motion.div>
+      </section>
+
+      {/* Week preview / App preview */}
+      <section className="px-4 py-20 max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="text-center mb-12"
+        >
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-3">
+            Votre bebe grandit, <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">on vous montre tout</span>
+          </h2>
+          <p className="text-sm sm:text-base text-gray-500 max-w-md mx-auto">
+            Chaque semaine, decouvrez la taille de votre bebe comparee a un fruit, son developpement et des conseils personnalises.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {weekPreviewData.map((item, i) => (
+            <motion.div
+              key={item.week}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-white rounded-3xl p-5 border border-pink-100 shadow-sm hover:shadow-lg hover:border-pink-200 transition-all text-center group"
+            >
+              <motion.span
+                className="text-5xl block mb-3"
+                whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
+                transition={{ duration: 0.4 }}
+              >
+                {item.emoji}
+              </motion.span>
+              <p className="text-xs font-semibold text-pink-400 uppercase tracking-wider mb-1">Semaine {item.week}</p>
+              <p className="text-sm font-bold text-[#3d2b2b]">{item.fruit}</p>
+              <p className="text-xs text-gray-400 mt-1">{item.size}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
       {/* Features */}
-      <section className="px-4 py-16 max-w-2xl mx-auto">
-        <div className="text-center mb-10">
+      <section className="px-4 py-20 max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="text-center mb-12"
+        >
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-3">
-            Tout ce dont vous avez besoin
+            Tout ce dont vous avez besoin, <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">en un seul endroit</span>
           </h2>
-          <p className="text-sm text-gray-500 max-w-md mx-auto">
-            Une application complète pour vivre sereinement chaque étape de votre grossesse.
+          <p className="text-sm sm:text-base text-gray-500 max-w-md mx-auto">
+            Une application complete pour vivre sereinement chaque etape de votre grossesse.
           </p>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
+        </motion.div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
           {features.map((f, i) => {
             const colorParts = f.color.split(" ");
             const bgColor = colorParts[0];
@@ -256,12 +383,13 @@ export default function LandingPage() {
             return (
               <motion.div
                 key={f.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.05 }}
-                className="bg-white rounded-2xl p-4 border border-pink-100 shadow-sm hover:shadow-md hover:border-pink-200 transition-all"
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="bg-white rounded-2xl p-4 sm:p-5 border border-pink-100 shadow-sm hover:shadow-md hover:border-pink-200 transition-all group"
               >
-                <div className={`w-10 h-10 ${bgColor} rounded-xl flex items-center justify-center mb-3`}>
+                <div className={`w-11 h-11 ${bgColor} rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                   <f.icon className={`w-5 h-5 ${textColor}`} />
                 </div>
                 <h3 className="text-sm font-semibold text-[#3d2b2b] mb-1">{f.title}</h3>
@@ -272,30 +400,106 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* App Preview Mockup */}
+      <section className="px-4 py-20 max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="relative bg-gradient-to-br from-pink-100 via-purple-50 to-emerald-50 rounded-[2rem] p-8 sm:p-12 border border-pink-100 overflow-hidden"
+          style={{ background: "linear-gradient(135deg, #fce7f3 0%, #ede9fe 50%, #d1fae5 100%)" }}
+        >
+          <div className="flex flex-col sm:flex-row items-center gap-8">
+            <div className="flex-1 text-center sm:text-left">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-4">
+                Un tableau de bord clair et intuitif
+              </h2>
+              <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+                Retrouvez en un coup d&apos;oeil : votre semaine de grossesse, la progression, vos trackers sante, le prochain rendez-vous et le developpement de bebe.
+              </p>
+              <ul className="space-y-3 text-sm text-gray-600">
+                {[
+                  "Progression visuelle avec cercle anime",
+                  "Comparaison fruit de la semaine",
+                  "Compteur de jours restants",
+                  "Acces rapide a tous vos trackers",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Mini phone mockup */}
+            <div className="flex-shrink-0">
+              <div className="w-56 bg-white rounded-[2rem] shadow-2xl shadow-pink-200/40 border border-pink-100 p-4 relative">
+                <div className="w-20 h-1.5 bg-gray-200 rounded-full mx-auto mb-4" />
+                <div className="space-y-3">
+                  <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-4 text-center">
+                    <p className="text-[10px] text-pink-400 font-semibold uppercase">Semaine</p>
+                    <p className="text-3xl font-bold text-[#3d2b2b]">24 <span className="text-base text-pink-400">SA</span></p>
+                    <p className="text-xs text-gray-400 mt-1">🌽 Epi de mais</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-pink-50 rounded-xl p-2.5 text-center">
+                      <p className="text-[10px] text-gray-400">Poids</p>
+                      <p className="text-sm font-bold text-[#3d2b2b]">65.2 kg</p>
+                    </div>
+                    <div className="bg-purple-50 rounded-xl p-2.5 text-center">
+                      <p className="text-[10px] text-gray-400">Eau</p>
+                      <p className="text-sm font-bold text-[#3d2b2b]">1.5 L</p>
+                    </div>
+                  </div>
+                  <div className="bg-emerald-50 rounded-xl p-2.5">
+                    <p className="text-[10px] text-gray-400">Prochain RDV</p>
+                    <p className="text-xs font-semibold text-[#3d2b2b]">Echo T2 - 15 mai</p>
+                  </div>
+                  <div className="flex gap-1.5 justify-center pt-1">
+                    <div className="w-8 h-1 bg-pink-300 rounded-full" />
+                    <div className="w-8 h-1 bg-purple-200 rounded-full" />
+                    <div className="w-8 h-1 bg-gray-200 rounded-full" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
       {/* Differentiators */}
-      <section className="px-4 py-16 max-w-2xl mx-auto">
-        <div className="text-center mb-10">
+      <section className="px-4 py-20 max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="text-center mb-12"
+        >
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-3">
-            Pourquoi MamaTrack ?
+            Pourquoi choisir <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">MamaTrack</span> ?
           </h2>
-          <p className="text-sm text-gray-500 max-w-md mx-auto">
-            Conçue par des parents, pour des parents. Pas de surprises, pas de frais cachés.
+          <p className="text-sm sm:text-base text-gray-500 max-w-md mx-auto">
+            Concue par des parents, pour des parents. Pas de surprises, pas de frais caches.
           </p>
-        </div>
-        <div className="space-y-3">
+        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {differentiators.map((d, i) => (
             <motion.div
               key={d.title}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + i * 0.1 }}
-              className="bg-white rounded-2xl p-5 border border-purple-100 shadow-sm flex items-start gap-4 hover:shadow-md hover:border-purple-200 transition-all"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-white rounded-2xl p-6 border border-purple-100 shadow-sm flex items-start gap-4 hover:shadow-md hover:border-purple-200 transition-all"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <d.icon className="w-6 h-6 text-purple-500" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-[#3d2b2b] mb-1">{d.title}</h3>
+                <h3 className="text-sm font-bold text-[#3d2b2b] mb-1">{d.title}</h3>
                 <p className="text-xs text-gray-500 leading-relaxed">{d.desc}</p>
               </div>
             </motion.div>
@@ -304,63 +508,81 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="px-4 py-16 max-w-2xl mx-auto">
-        <div className="text-center mb-10">
+      <section className="px-4 py-20 max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="text-center mb-12"
+        >
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-3">
-            Comment ça marche ?
+            Prete en <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">3 etapes</span>
           </h2>
-        </div>
+          <p className="text-sm sm:text-base text-gray-500">
+            Commencez a suivre votre grossesse en moins d&apos;une minute.
+          </p>
+        </motion.div>
         <div className="space-y-4">
           {[
-            { step: "1", title: "Créez votre compte", desc: "Inscription gratuite en 30 secondes avec votre email.", color: "from-pink-400 to-pink-500" },
-            { step: "2", title: "Entrez votre DPA", desc: "Date Prévue d'Accouchement ou date de début de grossesse.", color: "from-purple-400 to-purple-500" },
-            { step: "3", title: "Suivez chaque semaine", desc: "Développement bébé, trackers santé, conseils personnalisés.", color: "from-emerald-400 to-emerald-500" },
+            { step: "1", title: "Creez votre compte", desc: "Inscription gratuite en 30 secondes avec votre email. Aucune carte bancaire requise.", color: "from-pink-400 to-pink-500", icon: "✨" },
+            { step: "2", title: "Entrez votre DPA", desc: "Renseignez votre Date Prevue d'Accouchement ou votre date de debut de grossesse.", color: "from-purple-400 to-purple-500", icon: "📅" },
+            { step: "3", title: "Profitez de tout, gratuitement", desc: "Suivi bebe, trackers sante, mode duo, prenoms, projet naissance... tout est a vous !", color: "from-emerald-400 to-emerald-500", icon: "🎉" },
           ].map((item, i) => (
             <motion.div
               key={item.step}
-              initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + i * 0.15 }}
-              className="flex items-center gap-4 bg-white rounded-2xl p-5 border border-pink-100 shadow-sm"
+              initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15 }}
+              className="flex items-center gap-5 bg-white rounded-2xl p-6 border border-pink-100 shadow-sm hover:shadow-md transition-all"
             >
-              <div className={`w-12 h-12 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center flex-shrink-0 text-white font-bold text-lg shadow-sm`}>
+              <div className={`w-14 h-14 bg-gradient-to-br ${item.color} rounded-2xl flex items-center justify-center flex-shrink-0 text-white font-bold text-xl shadow-sm`}>
                 {item.step}
               </div>
-              <div>
-                <h3 className="text-sm font-semibold text-[#3d2b2b] mb-0.5">{item.title}</h3>
-                <p className="text-xs text-gray-500 leading-relaxed">{item.desc}</p>
+              <div className="flex-1">
+                <h3 className="text-sm sm:text-base font-bold text-[#3d2b2b] mb-1">{item.title}</h3>
+                <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">{item.desc}</p>
               </div>
+              <span className="text-2xl hidden sm:block">{item.icon}</span>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="px-4 py-16 max-w-2xl mx-auto">
-        <div className="text-center mb-10">
+      <section className="px-4 py-20 max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="text-center mb-12"
+        >
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-3">
             Ce qu&apos;elles en disent
           </h2>
-          <p className="text-sm text-gray-500 max-w-md mx-auto">
-            Des milliers de mamans font confiance à MamaTrack pour leur grossesse.
+          <p className="text-sm sm:text-base text-gray-500 max-w-md mx-auto">
+            Des mamans font confiance a MamaTrack pour les accompagner tout au long de leur grossesse.
           </p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + i * 0.1 }}
-              className="bg-white rounded-2xl p-5 border border-pink-100 shadow-sm"
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-white rounded-2xl p-6 border border-pink-100 shadow-sm hover:shadow-md transition-all"
             >
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-pink-200 to-purple-200 rounded-full flex items-center justify-center text-sm font-bold text-purple-600">
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-11 h-11 bg-gradient-to-br ${t.gradient} rounded-full flex items-center justify-center text-sm font-bold text-white shadow-sm`}>
                   {t.avatar}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#3d2b2b]">{t.name}</p>
-                  <p className="text-[10px] text-pink-400 font-medium">{t.week}</p>
+                  <p className="text-sm font-bold text-[#3d2b2b]">{t.name}</p>
+                  <p className="text-[11px] text-pink-400 font-semibold">{t.week}</p>
                 </div>
                 <div className="ml-auto flex gap-0.5">
                   {[...Array(5)].map((_, j) => (
@@ -368,34 +590,63 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed">{t.text}</p>
+              <p className="text-sm text-gray-600 leading-relaxed italic">&ldquo;{t.text}&rdquo;</p>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="px-4 py-16 max-w-2xl mx-auto">
-        <div className="text-center mb-10">
+      <section id="faq" className="px-4 py-20 max-w-3xl mx-auto">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="text-center mb-12"
+        >
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-3">
-            Questions fréquentes
+            Questions frequentes
           </h2>
-        </div>
+          <p className="text-sm sm:text-base text-gray-500">
+            Tout ce que vous devez savoir avant de commencer.
+          </p>
+        </motion.div>
         <div className="space-y-3">
           {faqItems.map((item, i) => (
-            <motion.details
+            <motion.div
               key={i}
               initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + i * 0.08 }}
-              className="bg-white rounded-2xl border border-pink-100 shadow-sm group"
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.06 }}
+              className="bg-white rounded-2xl border border-pink-100 shadow-sm overflow-hidden"
             >
-              <summary className="px-5 py-4 text-sm font-semibold text-[#3d2b2b] cursor-pointer list-none flex items-center justify-between">
+              <button
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                className="w-full px-6 py-5 text-left text-sm font-semibold text-[#3d2b2b] flex items-center justify-between hover:bg-pink-50/50 transition-colors"
+              >
                 {item.q}
-                <span className="text-pink-300 group-open:rotate-180 transition-transform text-lg ml-2 flex-shrink-0">▾</span>
-              </summary>
-              <p className="px-5 pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</p>
-            </motion.details>
+                <motion.span
+                  animate={{ rotate: openFaq === i ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="text-pink-300 text-lg ml-3 flex-shrink-0"
+                >
+                  &#x25BE;
+                </motion.span>
+              </button>
+              <motion.div
+                initial={false}
+                animate={{
+                  height: openFaq === i ? "auto" : 0,
+                  opacity: openFaq === i ? 1 : 0,
+                }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <p className="px-6 pb-5 text-sm text-gray-600 leading-relaxed">{item.a}</p>
+              </motion.div>
+            </motion.div>
           ))}
         </div>
 
@@ -406,12 +657,12 @@ export default function LandingPage() {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "FAQPage",
-              mainEntity: faqItems.map((item) => ({
+              mainEntity: faqItems.map((faqItem) => ({
                 "@type": "Question",
-                name: item.q,
+                name: faqItem.q,
                 acceptedAnswer: {
                   "@type": "Answer",
-                  text: item.a,
+                  text: faqItem.a,
                 },
               })),
             }),
@@ -420,53 +671,68 @@ export default function LandingPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="px-4 py-16 pb-8 max-w-2xl mx-auto text-center">
+      <section className="px-4 py-20 pb-10 max-w-3xl mx-auto text-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-pink-100 via-purple-50 to-emerald-50 rounded-3xl p-10 border border-pink-100 relative overflow-hidden"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={sectionVariants}
+          className="bg-gradient-to-br from-pink-100 via-purple-50 to-emerald-50 rounded-[2rem] p-10 sm:p-14 border border-pink-100 relative overflow-hidden"
           style={{ background: "linear-gradient(135deg, #fce7f3 0%, #ede9fe 50%, #d1fae5 100%)" }}
         >
-          <p className="text-5xl mb-4">🤰</p>
-          <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] mb-3">
-            Prête à commencer ?
+          {/* Decorative circles */}
+          <div className="absolute -top-10 -right-10 w-40 h-40 bg-pink-200/30 rounded-full blur-2xl" />
+          <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-200/30 rounded-full blur-2xl" />
+
+          <motion.p
+            className="text-6xl mb-5"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+          >
+            🤰
+          </motion.p>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#3d2b2b] mb-4 relative z-10">
+            Prete a commencer ?
           </h2>
-          <p className="text-sm text-gray-600 mb-8 max-w-sm mx-auto">
-            Rejoignez les mamans qui suivent leur grossesse avec MamaTrack. Inscription en 30 secondes.
+          <p className="text-sm sm:text-base text-gray-600 mb-10 max-w-md mx-auto relative z-10">
+            Rejoignez les mamans qui suivent leur grossesse avec MamaTrack. Inscription gratuite en 30 secondes.
           </p>
           <Link
             href="/auth/signup"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white font-semibold py-3.5 px-10 rounded-2xl hover:from-pink-500 hover:to-purple-500 transition-all shadow-lg shadow-pink-200/50"
+            className="relative z-10 inline-flex items-center gap-2 bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold py-4 px-10 rounded-2xl hover:from-pink-500 hover:to-purple-600 transition-all shadow-xl shadow-pink-300/30 text-base"
           >
-            Créer mon compte gratuitement
-            <ChevronRight className="w-4 h-4" />
+            Creer mon compte gratuitement
+            <ArrowRight className="w-5 h-5" />
           </Link>
+          <p className="mt-5 text-xs text-gray-400 relative z-10">
+            Aucune carte bancaire requise &middot; Gratuit pour toujours
+          </p>
         </motion.div>
       </section>
 
       {/* Footer */}
-      <footer className="px-4 py-12 max-w-4xl mx-auto border-t border-pink-100 mt-8">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-10">
+      <footer className="px-4 py-14 max-w-5xl mx-auto border-t border-pink-100 mt-8">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 sm:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-purple-400 rounded-xl flex items-center justify-center">
+              <div className="w-9 h-9 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl flex items-center justify-center shadow-sm">
                 <Heart className="w-4 h-4 text-white fill-white" />
               </div>
-              <span className="font-bold text-[#3d2b2b]">MamaTrack</span>
+              <span className="font-bold text-[#3d2b2b] text-lg">MamaTrack</span>
             </div>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              Votre compagnon de grossesse gratuit, complet et sans pub.
+            <p className="text-xs text-gray-500 leading-relaxed mb-4">
+              Votre compagnon de grossesse gratuit, complet et sans pub. Fait avec amour en France.
             </p>
           </div>
 
           {/* Links */}
           {footerLinks.map((section) => (
             <div key={section.title}>
-              <h4 className="text-xs font-semibold text-[#3d2b2b] uppercase tracking-wider mb-3">
+              <h4 className="text-xs font-bold text-[#3d2b2b] uppercase tracking-wider mb-3">
                 {section.title}
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
@@ -484,14 +750,14 @@ export default function LandingPage() {
 
         <div className="border-t border-pink-50 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-400">
-            &copy; {new Date().getFullYear()} MamaTrack. Tous droits réservés.
+            &copy; {new Date().getFullYear()} MamaTrack. Tous droits reserves.
           </p>
-          <div className="flex items-center gap-4 text-xs text-gray-400">
+          <div className="flex items-center gap-3 text-xs text-gray-400">
             <span>Fait avec amour en France</span>
-            <span>·</span>
+            <span className="text-pink-200">&middot;</span>
             <span>100% gratuit</span>
-            <span>·</span>
-            <span>Données sécurisées</span>
+            <span className="text-pink-200">&middot;</span>
+            <span>Donnees securisees</span>
           </div>
         </div>
       </footer>

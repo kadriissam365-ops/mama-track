@@ -1,8 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Bell, BellOff, Droplets, Pill, Calendar, Check, Send } from "lucide-react";
+import {
+  Bell,
+  BellOff,
+  Droplets,
+  Pill,
+  Calendar,
+  Check,
+  Send,
+  Baby,
+  Heart,
+  Users,
+  Lightbulb,
+  Trophy,
+  TestTube,
+  Loader2,
+} from "lucide-react";
 import {
   isNotificationSupported,
   getNotificationPermission,
@@ -11,21 +26,54 @@ import {
   subscribeToPush,
   unsubscribeFromPush,
   getPushSubscription,
+  sendPushNotification,
   type NotificationSettings as Settings,
 } from "@/lib/notifications";
 import {
   getNotificationSettings,
   saveNotificationSettings,
 } from "@/lib/supabase-api";
+import type { NotificationPreferences } from "@/lib/notification-scheduler";
+import { DEFAULT_PREFERENCES } from "@/lib/notification-scheduler";
 
 interface NotificationSettingsProps {
   userId?: string;
 }
 
+// Toggle component to reduce repetition
+function Toggle({
+  enabled,
+  onToggle,
+  color = "blue",
+}: {
+  enabled: boolean;
+  onToggle: () => void;
+  color?: string;
+}) {
+  const bgClass = enabled ? `bg-${color}-400` : "bg-gray-200";
+  return (
+    <button
+      onClick={onToggle}
+      className={`relative w-12 h-7 rounded-full transition-colors ${bgClass}`}
+      style={enabled ? { backgroundColor: `var(--color-${color}, '')` } : undefined}
+    >
+      <motion.div
+        animate={{ x: enabled ? 20 : 2 }}
+        className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
+      />
+    </button>
+  );
+}
+
 export default function NotificationSettings({ userId }: NotificationSettingsProps) {
   const [supported, setSupported] = useState(true);
-  const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('default');
+  const [permission, setPermission] = useState<NotificationPermission | "unsupported">(
+    "default"
+  );
   const [pushSubscribed, setPushSubscribed] = useState(false);
+  const [testSending, setTestSending] = useState(false);
+
+  // Original settings (medication, water, appointments — existing toggles)
   const [settings, setSettings] = useState<Settings>({
     waterReminders: true,
     medicationMorning: false,
@@ -34,16 +82,19 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
     reminderIntervalHours: 2,
   });
 
-  // Charger les settings au montage : Supabase en priorité, fallback localStorage
+  // Extended notification preferences (schedule API)
+  const [prefs, setPrefs] = useState<Omit<NotificationPreferences, "userId">>({
+    ...DEFAULT_PREFERENCES,
+  });
+  const [prefsLoaded, setPrefsLoaded] = useState(false);
+
+  // Load settings on mount
   useEffect(() => {
     setSupported(isNotificationSupported());
     setPermission(getNotificationPermission());
-
-    // Check if push is already subscribed
     getPushSubscription().then((sub) => setPushSubscribed(!!sub));
 
     if (userId) {
-      // Load from Supabase (with localStorage fallback built-in)
       getNotificationSettings(userId).then((data) => {
         if (data) {
           setSettings({
@@ -55,35 +106,115 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
           });
         }
       });
+
+      // Fetch extended preferences from schedule API
+      fetch("/api/push/schedule")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (data?.preferences) {
+            const p = data.preferences;
+            setPrefs({
+              dailyTips: p.dailyTips ?? DEFAULT_PREFERENCES.dailyTips,
+              dailyTipTime: p.dailyTipTime ?? DEFAULT_PREFERENCES.dailyTipTime,
+              appointmentReminders:
+                p.appointmentReminders ?? DEFAULT_PREFERENCES.appointmentReminders,
+              appointmentReminderAdvance:
+                p.appointmentReminderAdvance ??
+                DEFAULT_PREFERENCES.appointmentReminderAdvance,
+              weeklyMilestones:
+                p.weeklyMilestones ?? DEFAULT_PREFERENCES.weeklyMilestones,
+              hydrationReminders:
+                p.hydrationReminders ?? DEFAULT_PREFERENCES.hydrationReminders,
+              hydrationIntervalMinutes:
+                p.hydrationIntervalMinutes ??
+                DEFAULT_PREFERENCES.hydrationIntervalMinutes,
+              kickCountReminders:
+                p.kickCountReminders ?? DEFAULT_PREFERENCES.kickCountReminders,
+              kickReminderTime:
+                p.kickReminderTime ?? DEFAULT_PREFERENCES.kickReminderTime,
+              partnerNotifications:
+                p.partnerNotifications ?? DEFAULT_PREFERENCES.partnerNotifications,
+            });
+          }
+          setPrefsLoaded(true);
+        })
+        .catch(() => setPrefsLoaded(true));
     } else {
-      // No userId — use localStorage only via notifications lib
-      import("@/lib/notifications").then(({ getNotificationSettings: getLocal }) => {
-        setSettings(getLocal());
-      });
+      import("@/lib/notifications").then(
+        ({ getNotificationSettings: getLocal }) => {
+          setSettings(getLocal());
+        }
+      );
+      setPrefsLoaded(true);
     }
   }, [userId]);
 
   const handleRequestPermission = async () => {
     const result = await requestNotificationPermission();
     setPermission(result);
-    if (result === 'granted') {
+    if (result === "granted") {
       initializeNotifications();
     }
   };
 
-  const updateSetting = async <K extends keyof Settings>(key: K, value: Settings[K]) => {
+  // Save original settings (existing behavior)
+  const updateSetting = async <K extends keyof Settings>(
+    key: K,
+    value: Settings[K]
+  ) => {
     const updated = { ...settings, [key]: value };
     setSettings(updated);
     initializeNotifications();
 
     if (userId) {
-      // Sauvegarder en Supabase (+ localStorage comme cache)
-      await saveNotificationSettings(userId, { [key]: value } as Partial<typeof updated>);
+      await saveNotificationSettings(userId, {
+        [key]: value,
+      } as Partial<typeof updated>);
     } else {
-      // Fallback localStorage uniquement
-      const { saveNotificationSettings: saveLocal } = await import("@/lib/notifications");
+      const { saveNotificationSettings: saveLocal } = await import(
+        "@/lib/notifications"
+      );
       saveLocal({ [key]: value });
     }
+  };
+
+  // Save extended preferences via schedule API
+  const updatePref = useCallback(
+    async (partial: Partial<Omit<NotificationPreferences, "userId">>) => {
+      setPrefs((prev) => ({ ...prev, ...partial }));
+      try {
+        await fetch("/api/push/schedule", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(partial),
+        });
+      } catch (err) {
+        console.error("Error saving notification preferences:", err);
+      }
+    },
+    []
+  );
+
+  // Send a test notification
+  const handleTestNotification = async () => {
+    setTestSending(true);
+    try {
+      await sendPushNotification({
+        title: "Test MamaTrack",
+        body: "Les notifications push fonctionnent correctement !",
+        tag: "test",
+        url: "/",
+      });
+    } catch {
+      // Try local fallback
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("Test MamaTrack", {
+          body: "Les notifications fonctionnent correctement !",
+          icon: "/icons/icon-192x192.png",
+        });
+      }
+    }
+    setTestSending(false);
   };
 
   if (!supported) {
@@ -92,24 +223,24 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         <div className="flex items-center gap-3">
           <BellOff className="w-5 h-5 text-yellow-500" />
           <p className="text-sm text-yellow-700">
-            Les notifications ne sont pas supportées sur ce navigateur.
+            Les notifications ne sont pas supportees sur ce navigateur.
           </p>
         </div>
       </div>
     );
   }
 
-  if (permission === 'denied') {
+  if (permission === "denied") {
     return (
       <div className="bg-red-50 rounded-2xl p-4 border border-red-200">
         <div className="flex items-center gap-3">
           <BellOff className="w-5 h-5 text-red-500" />
           <div>
             <p className="text-sm text-red-700 font-medium">
-              Notifications bloquées
+              Notifications bloquees
             </p>
             <p className="text-xs text-red-600 mt-1">
-              Allez dans les paramètres de votre navigateur pour les activer.
+              Allez dans les parametres de votre navigateur pour les activer.
             </p>
           </div>
         </div>
@@ -117,7 +248,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
     );
   }
 
-  if (permission === 'default') {
+  if (permission === "default") {
     return (
       <motion.button
         whileHover={{ scale: 1.02 }}
@@ -133,9 +264,17 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center gap-2 text-green-500 text-sm mb-4">
-        <Check className="w-4 h-4" />
-        <span>Notifications activées</span>
+      {/* Subscription status */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2 text-green-500 text-sm">
+          <Check className="w-4 h-4" />
+          <span>Notifications activees</span>
+        </div>
+        {pushSubscribed && (
+          <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full">
+            Push actif
+          </span>
+        )}
       </div>
 
       {/* Push notifications toggle */}
@@ -146,11 +285,13 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <Send className="w-5 h-5 text-indigo-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">Notifications push</p>
+              <p className="text-sm font-medium text-gray-800">
+                Notifications push
+              </p>
               <p className="text-xs text-gray-500">
                 {pushSubscribed
-                  ? "Recevez des rappels même en arrière-plan"
-                  : "Activez pour recevoir des rappels en arrière-plan"}
+                  ? "Recevez des rappels meme en arriere-plan"
+                  : "Activez pour recevoir des rappels en arriere-plan"}
               </p>
             </div>
           </div>
@@ -176,7 +317,60 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         </div>
       </div>
 
-      {/* Water reminders */}
+      {/* Test notification button */}
+      {pushSubscribed && (
+        <button
+          onClick={handleTestNotification}
+          disabled={testSending}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+        >
+          {testSending ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <TestTube className="w-4 h-4" />
+          )}
+          <span>Envoyer une notification test</span>
+        </button>
+      )}
+
+      {/* ─── Daily tips ───────────────────────────────────────── */}
+      <div className="bg-white rounded-2xl p-4 border border-amber-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+              <Lightbulb className="w-5 h-5 text-amber-500" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-800">
+                Conseil du jour
+              </p>
+              <p className="text-xs text-gray-500">
+                Un conseil quotidien adapte a votre semaine
+              </p>
+            </div>
+          </div>
+          <Toggle
+            enabled={prefs.dailyTips}
+            onToggle={() => updatePref({ dailyTips: !prefs.dailyTips })}
+            color="amber"
+          />
+        </div>
+        {prefs.dailyTips && prefsLoaded && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <label className="text-xs text-gray-500 block mb-2">
+              Heure d&apos;envoi
+            </label>
+            <input
+              type="time"
+              value={prefs.dailyTipTime}
+              onChange={(e) => updatePref({ dailyTipTime: e.target.value })}
+              className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* ─── Hydration reminders ──────────────────────────────── */}
       <div className="bg-white rounded-2xl p-4 border border-blue-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -184,46 +378,64 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <Droplets className="w-5 h-5 text-blue-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">Rappels hydratation</p>
-              <p className="text-xs text-gray-500">Toutes les {settings.reminderIntervalHours}h</p>
+              <p className="text-sm font-medium text-gray-800">
+                Rappels hydratation
+              </p>
+              <p className="text-xs text-gray-500">
+                Toutes les {Math.round(prefs.hydrationIntervalMinutes / 60)}h
+                {prefs.hydrationIntervalMinutes % 60 > 0
+                  ? `${prefs.hydrationIntervalMinutes % 60}min`
+                  : ""}
+              </p>
             </div>
           </div>
-          <button
-            onClick={() => updateSetting('waterReminders', !settings.waterReminders)}
-            className={`relative w-12 h-7 rounded-full transition-colors ${
-              settings.waterReminders ? 'bg-blue-400' : 'bg-gray-200'
-            }`}
-          >
-            <motion.div
-              animate={{ x: settings.waterReminders ? 20 : 2 }}
-              className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
-            />
-          </button>
+          <Toggle
+            enabled={settings.waterReminders}
+            onToggle={() => {
+              updateSetting("waterReminders", !settings.waterReminders);
+              updatePref({ hydrationReminders: !settings.waterReminders });
+            }}
+            color="blue"
+          />
         </div>
 
         {settings.waterReminders && (
           <div className="mt-3 pt-3 border-t border-gray-100">
-            <label className="text-xs text-gray-500 block mb-2">Fréquence</label>
+            <label className="text-xs text-gray-500 block mb-2">
+              Intervalle
+            </label>
             <div className="flex gap-2">
-              {[1, 2, 3, 4].map((hours) => (
-                <button
-                  key={hours}
-                  onClick={() => updateSetting('reminderIntervalHours', hours)}
-                  className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${
-                    settings.reminderIntervalHours === hours
-                      ? 'bg-blue-400 text-white'
-                      : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-                  }`}
-                >
-                  {hours}h
-                </button>
-              ))}
+              {[60, 90, 120, 180, 240].map((minutes) => {
+                const label =
+                  minutes >= 60
+                    ? `${Math.floor(minutes / 60)}h${minutes % 60 || ""}`
+                    : `${minutes}min`;
+                return (
+                  <button
+                    key={minutes}
+                    onClick={() => {
+                      updateSetting(
+                        "reminderIntervalHours",
+                        minutes / 60
+                      );
+                      updatePref({ hydrationIntervalMinutes: minutes });
+                    }}
+                    className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${
+                      prefs.hydrationIntervalMinutes === minutes
+                        ? "bg-blue-400 text-white"
+                        : "bg-blue-50 text-blue-600 hover:bg-blue-100"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
       </div>
 
-      {/* Morning medication */}
+      {/* ─── Morning medication ───────────────────────────────── */}
       <div className="bg-white rounded-2xl p-4 border border-pink-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -231,14 +443,18 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <Pill className="w-5 h-5 text-pink-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">Médicaments matin</p>
-              <p className="text-xs text-gray-500">Rappel à 8h00</p>
+              <p className="text-sm font-medium text-gray-800">
+                Medicaments matin
+              </p>
+              <p className="text-xs text-gray-500">Rappel a 8h00</p>
             </div>
           </div>
           <button
-            onClick={() => updateSetting('medicationMorning', !settings.medicationMorning)}
+            onClick={() =>
+              updateSetting("medicationMorning", !settings.medicationMorning)
+            }
             className={`relative w-12 h-7 rounded-full transition-colors ${
-              settings.medicationMorning ? 'bg-pink-400' : 'bg-gray-200'
+              settings.medicationMorning ? "bg-pink-400" : "bg-gray-200"
             }`}
           >
             <motion.div
@@ -249,7 +465,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         </div>
       </div>
 
-      {/* Evening medication */}
+      {/* ─── Evening medication ───────────────────────────────── */}
       <div className="bg-white rounded-2xl p-4 border border-purple-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -257,14 +473,18 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <Pill className="w-5 h-5 text-purple-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">Médicaments soir</p>
-              <p className="text-xs text-gray-500">Rappel à 20h00</p>
+              <p className="text-sm font-medium text-gray-800">
+                Medicaments soir
+              </p>
+              <p className="text-xs text-gray-500">Rappel a 20h00</p>
             </div>
           </div>
           <button
-            onClick={() => updateSetting('medicationEvening', !settings.medicationEvening)}
+            onClick={() =>
+              updateSetting("medicationEvening", !settings.medicationEvening)
+            }
             className={`relative w-12 h-7 rounded-full transition-colors ${
-              settings.medicationEvening ? 'bg-purple-400' : 'bg-gray-200'
+              settings.medicationEvening ? "bg-purple-400" : "bg-gray-200"
             }`}
           >
             <motion.div
@@ -275,7 +495,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         </div>
       </div>
 
-      {/* Appointment reminders */}
+      {/* ─── Appointment reminders ────────────────────────────── */}
       <div className="bg-white rounded-2xl p-4 border border-green-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -284,21 +504,166 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
             </div>
             <div>
               <p className="text-sm font-medium text-gray-800">Rappels RDV</p>
-              <p className="text-xs text-gray-500">24h avant chaque RDV</p>
+              <p className="text-xs text-gray-500">
+                Rappels avant chaque rendez-vous
+              </p>
             </div>
           </div>
-          <button
-            onClick={() => updateSetting('appointmentReminders', !settings.appointmentReminders)}
-            className={`relative w-12 h-7 rounded-full transition-colors ${
-              settings.appointmentReminders ? 'bg-green-400' : 'bg-gray-200'
-            }`}
-          >
-            <motion.div
-              animate={{ x: settings.appointmentReminders ? 20 : 2 }}
-              className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
-            />
-          </button>
+          <Toggle
+            enabled={settings.appointmentReminders}
+            onToggle={() => {
+              updateSetting(
+                "appointmentReminders",
+                !settings.appointmentReminders
+              );
+              updatePref({
+                appointmentReminders: !settings.appointmentReminders,
+              });
+            }}
+            color="green"
+          />
         </div>
+        {settings.appointmentReminders && prefsLoaded && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <label className="text-xs text-gray-500 block mb-2">
+              Rappeler
+            </label>
+            <div className="flex gap-2">
+              {(["2h", "1d"] as const).map((advance) => {
+                const active =
+                  prefs.appointmentReminderAdvance.includes(advance);
+                const label = advance === "2h" ? "2h avant" : "1 jour avant";
+                return (
+                  <button
+                    key={advance}
+                    onClick={() => {
+                      const updated = active
+                        ? prefs.appointmentReminderAdvance.filter(
+                            (a) => a !== advance
+                          )
+                        : [...prefs.appointmentReminderAdvance, advance];
+                      // Ensure at least one is selected
+                      if (updated.length > 0) {
+                        updatePref({ appointmentReminderAdvance: updated });
+                      }
+                    }}
+                    className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${
+                      active
+                        ? "bg-green-400 text-white"
+                        : "bg-green-50 text-green-600 hover:bg-green-100"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ─── Weekly milestones ────────────────────────────────── */}
+      <div className="bg-white rounded-2xl p-4 border border-teal-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+              <Trophy className="w-5 h-5 text-teal-500" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-800">
+                Etapes hebdomadaires
+              </p>
+              <p className="text-xs text-gray-500">
+                Notification a chaque nouvelle semaine
+              </p>
+            </div>
+          </div>
+          <Toggle
+            enabled={prefs.weeklyMilestones}
+            onToggle={() =>
+              updatePref({ weeklyMilestones: !prefs.weeklyMilestones })
+            }
+            color="teal"
+          />
+        </div>
+      </div>
+
+      {/* ─── Kick count reminders ─────────────────────────────── */}
+      <div className="bg-white rounded-2xl p-4 border border-rose-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
+              <Baby className="w-5 h-5 text-rose-500" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-800">
+                Rappels mouvements
+              </p>
+              <p className="text-xs text-gray-500">
+                Rappel quotidien pour compter les mouvements
+              </p>
+            </div>
+          </div>
+          <Toggle
+            enabled={prefs.kickCountReminders}
+            onToggle={() =>
+              updatePref({ kickCountReminders: !prefs.kickCountReminders })
+            }
+            color="rose"
+          />
+        </div>
+        {prefs.kickCountReminders && prefsLoaded && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <label className="text-xs text-gray-500 block mb-2">
+              Heure du rappel
+            </label>
+            <input
+              type="time"
+              value={prefs.kickReminderTime}
+              onChange={(e) => updatePref({ kickReminderTime: e.target.value })}
+              className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* ─── Partner notifications (duo mode) ─────────────────── */}
+      <div className="bg-white rounded-2xl p-4 border border-orange-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+              <Users className="w-5 h-5 text-orange-500" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-800">
+                Mode duo (partenaire)
+              </p>
+              <p className="text-xs text-gray-500">
+                Partagez les etapes et rappels avec votre partenaire
+              </p>
+            </div>
+          </div>
+          <Toggle
+            enabled={prefs.partnerNotifications}
+            onToggle={() =>
+              updatePref({
+                partnerNotifications: !prefs.partnerNotifications,
+              })
+            }
+            color="orange"
+          />
+        </div>
+        {prefs.partnerNotifications && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <div className="flex items-center gap-2 text-xs text-orange-600">
+              <Heart className="w-3.5 h-3.5" />
+              <span>
+                Votre partenaire recevra les conseils hebdomadaires et les rappels de
+                RDV
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

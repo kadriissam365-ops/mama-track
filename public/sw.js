@@ -93,14 +93,27 @@ self.addEventListener('message', (event) => {
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {};
   const title = data.title || 'MamaTrack';
+
+  // Map tags to relevant action buttons when not provided by the payload
+  const defaultActions = {
+    'daily-tip':          [{ action: 'open', title: 'Lire' }, { action: 'dismiss', title: 'OK' }],
+    'hydration-reminder': [{ action: 'log-water', title: "J'ai bu" }, { action: 'dismiss', title: 'Plus tard' }],
+    'kick-reminder':      [{ action: 'start-count', title: 'Commencer' }, { action: 'dismiss', title: 'Deja fait' }],
+    'weekly-milestone':   [{ action: 'open', title: 'Decouvrir' }],
+  };
+
+  const tag = data.tag || 'mamatrack-push';
+  const actions = data.actions || defaultActions[tag] || [];
+
   const options = {
     body: data.body || '',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-72x72.png',
-    tag: data.tag || 'mamatrack-push',
-    data: { url: data.url || '/' },
+    tag: tag,
+    data: { url: data.url || '/', tag: tag },
     vibrate: [100, 50, 100],
-    actions: data.actions || [],
+    actions: actions,
+    requireInteraction: ['appointment', 'kick-reminder'].some(function(t) { return tag.includes(t); }),
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });
@@ -151,13 +164,32 @@ self.addEventListener('periodicsync', (event) => {
   }
 });
 
-// Notification click handler
+// Notification click handler — routes based on action and tag
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-  const url = event.notification.data?.url || '/';
+
+  var action = event.action; // e.g. 'open', 'log-water', 'start-count', 'dismiss'
+  var data = event.notification.data || {};
+  var tag = data.tag || '';
+  var url = data.url || '/';
+
+  // Handle specific actions
+  if (action === 'dismiss') return; // just close the notification
+
+  if (action === 'log-water') {
+    url = '/tracking?action=log-water';
+  } else if (action === 'start-count') {
+    url = '/tracking?action=kick-count';
+  } else if (tag.includes('appointment')) {
+    url = '/agenda';
+  } else if (tag === 'daily-tip' || tag === 'weekly-milestone') {
+    url = '/';
+  }
+
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
-      for (const client of windowClients) {
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(windowClients) {
+      for (var i = 0; i < windowClients.length; i++) {
+        var client = windowClients[i];
         if (client.url.includes(self.location.origin) && 'focus' in client) {
           client.navigate(url);
           return client.focus();
