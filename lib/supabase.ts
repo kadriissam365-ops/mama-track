@@ -11,11 +11,8 @@ export function createClient() {
 }
 
 // Server-side Supabase client (for Route Handlers, Server Components)
-export function createServerClientFromCookies(cookieStore: {
-  get: (name: string) => { value: string } | undefined
-  set: (name: string, value: string, options: CookieOptions) => void
-  remove: (name: string, options: CookieOptions) => void
-}) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function createServerClientFromCookies(cookieStore: any) {
   return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
     cookies: {
       get(name: string) {
@@ -30,7 +27,7 @@ export function createServerClientFromCookies(cookieStore: {
       },
       remove(name: string, options: CookieOptions) {
         try {
-          cookieStore.remove(name, options)
+          cookieStore.delete?.(name) ?? cookieStore.remove?.(name, options)
         } catch {
           // Handle cookies in Server Components (read-only)
         }
