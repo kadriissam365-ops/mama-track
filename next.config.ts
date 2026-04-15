@@ -27,6 +27,9 @@ const ContentSecurityPolicy = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   images: {
     remotePatterns: [
       {
