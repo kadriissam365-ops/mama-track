@@ -7,8 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { FileDown, Loader2, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import type jsPDFType from "jspdf";
 import { getCurrentWeek, getDaysRemaining, getWeekData } from "@/lib/pregnancy-data";
 
 export default function ExportPDF() {
@@ -22,6 +21,8 @@ export default function ExportPDF() {
     setSuccess(false);
 
     try {
+      const { default: jsPDF } = await import("jspdf");
+      const { default: autoTable } = await import("jspdf-autotable");
       const doc = new jsPDF();
       const pageWidth = doc.internal.pageSize.getWidth();
       let yPos = 20;

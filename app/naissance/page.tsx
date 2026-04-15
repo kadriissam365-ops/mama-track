@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileDown, ChevronDown, ChevronUp, Check, X, Loader2, CheckCircle2 } from "lucide-react";
-import jsPDF from "jspdf";
+import type jsPDFType from "jspdf";
 
 interface ProjetNaissance {
   // Section 1 - Infos
@@ -143,6 +143,7 @@ export default function NaissancePage() {
   const exportPDF = async () => {
     setLoading(true);
     try {
+      const { default: jsPDF } = await import("jspdf");
       const doc = new jsPDF();
       const pw = doc.internal.pageSize.getWidth();
       let y = 0;

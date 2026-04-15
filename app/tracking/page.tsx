@@ -1,20 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import WeightTab from "@/components/tracking/WeightTab";
-import SymptomTab from "@/components/tracking/SymptomTab";
-import WaterTab from "@/components/tracking/WaterTab";
-import KicksTab from "@/components/tracking/KicksTab";
-import NutritionTab from "@/components/tracking/NutritionTab";
-import BloodPressureTab from "@/components/tracking/BloodPressureTab";
-import AbdomenTab from "@/components/tracking/AbdomenTab";
-import MoodTab from "@/components/tracking/MoodTab";
-import SleepTab from "@/components/tracking/SleepTab";
-import ExerciseTab from "@/components/tracking/ExerciseTab";
 import { Timer } from "lucide-react";
+
+const SymptomTab = dynamic(() => import("@/components/tracking/SymptomTab"));
+const WeightTab = dynamic(() => import("@/components/tracking/WeightTab"));
+const WaterTab = dynamic(() => import("@/components/tracking/WaterTab"));
+const KicksTab = dynamic(() => import("@/components/tracking/KicksTab"));
+const NutritionTab = dynamic(() => import("@/components/tracking/NutritionTab"));
+const BloodPressureTab = dynamic(() => import("@/components/tracking/BloodPressureTab"));
+const AbdomenTab = dynamic(() => import("@/components/tracking/AbdomenTab"));
+const MoodTab = dynamic(() => import("@/components/tracking/MoodTab"));
+const SleepTab = dynamic(() => import("@/components/tracking/SleepTab"));
+const ExerciseTab = dynamic(() => import("@/components/tracking/ExerciseTab"));
 
 type Tab = "symptoms" | "weight" | "water" | "kicks" | "nutrition" | "bp" | "abdomen" | "mood" | "sleep" | "exercise";
 

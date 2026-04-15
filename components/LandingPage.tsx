@@ -33,6 +33,19 @@ const differentiators = [
   { icon: Star, title: "Mode FIV/PMA", desc: "La seule app qui prend en compte les parcours de PMA" },
 ];
 
+const testimonials = [
+  { name: "Sarah M.", week: "32 SA", text: "Je cherchais une app gratuite et complète. MamaTrack a tout ce qu'il faut, et le mode duo est génial !" },
+  { name: "Léa D.", week: "28 SA", text: "Le suivi semaine par semaine est top. J'adore les comparaisons fruits et les conseils personnalisés." },
+  { name: "Amina K.", week: "Accouchée", text: "Le projet naissance en PDF m'a sauvée à la maternité. Merci MamaTrack !" },
+];
+
+const faqItems = [
+  { q: "MamaTrack est-il vraiment gratuit ?", a: "Oui, 100% gratuit sans pub ni abonnement caché. Toutes les fonctionnalités sont accessibles." },
+  { q: "Dois-je télécharger l'app ?", a: "Non ! MamaTrack est une PWA. Ouvrez mamatrack.fr dans votre navigateur et ajoutez-le à votre écran d'accueil." },
+  { q: "Mes données sont-elles sécurisées ?", a: "Vos données sont chiffrées et stockées de façon sécurisée. Nous ne vendons aucune donnée personnelle." },
+  { q: "Le mode duo, c'est quoi ?", a: "Votre partenaire peut suivre votre grossesse en temps réel : symptômes, rendez-vous, évolution du bébé." },
+];
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 via-white to-purple-50">
@@ -145,6 +158,85 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Social proof */}
+      <section className="px-4 py-8 max-w-lg mx-auto">
+        <div className="flex justify-center gap-8">
+          {[
+            { value: "10+", label: "Trackers" },
+            { value: "250+", label: "Prénoms" },
+            { value: "40", label: "Semaines couvertes" },
+          ].map((stat) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center"
+            >
+              <p className="text-2xl font-bold text-pink-500">{stat.value}</p>
+              <p className="text-xs text-gray-500">{stat.label}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="px-4 py-12 max-w-lg mx-auto">
+        <h2 className="text-xl font-bold text-[#3d2b2b] text-center mb-8">
+          Ce qu&apos;elles en disent
+        </h2>
+        <div className="space-y-3">
+          {testimonials.map((t, i) => (
+            <motion.div
+              key={t.name}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.1 }}
+              className="bg-white rounded-2xl p-4 border border-pink-100 shadow-sm"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center text-sm">
+                  {t.name.charAt(0)}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#3d2b2b]">{t.name}</p>
+                  <p className="text-[10px] text-pink-400">{t.week}</p>
+                </div>
+                <div className="ml-auto flex gap-0.5">
+                  {[...Array(5)].map((_, j) => (
+                    <Star key={j} className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                  ))}
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed">{t.text}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="px-4 py-12 max-w-lg mx-auto">
+        <h2 className="text-xl font-bold text-[#3d2b2b] text-center mb-8">
+          Questions fréquentes
+        </h2>
+        <div className="space-y-3">
+          {faqItems.map((item, i) => (
+            <motion.details
+              key={i}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.08 }}
+              className="bg-white rounded-2xl border border-pink-100 shadow-sm group"
+            >
+              <summary className="px-4 py-3.5 text-sm font-semibold text-[#3d2b2b] cursor-pointer list-none flex items-center justify-between">
+                {item.q}
+                <span className="text-pink-300 group-open:rotate-180 transition-transform text-lg">▾</span>
+              </summary>
+              <p className="px-4 pb-4 text-sm text-gray-600 leading-relaxed">{item.a}</p>
+            </motion.details>
+          ))}
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="px-4 py-12 pb-20 max-w-lg mx-auto text-center">
         <div className="bg-gradient-to-br from-pink-100 via-purple-50 to-mint-50 rounded-3xl p-8 border border-pink-100" style={{ background: "linear-gradient(135deg, #fce7f3 0%, #ede9fe 50%, #d1fae5 100%)" }}>
@@ -163,9 +255,18 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        <p className="text-xs text-gray-400 mt-8">
-          MamaTrack — Fait avec amour pour toutes les mamans
-        </p>
+        <footer className="mt-12 space-y-3">
+          <p className="text-xs text-gray-400">
+            MamaTrack — Fait avec amour pour toutes les mamans
+          </p>
+          <div className="flex justify-center gap-4 text-xs text-gray-400">
+            <span>100% gratuit</span>
+            <span>·</span>
+            <span>Sans pub</span>
+            <span>·</span>
+            <span>Données sécurisées</span>
+          </div>
+        </footer>
       </section>
     </div>
   );
