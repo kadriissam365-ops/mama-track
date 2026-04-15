@@ -8,18 +8,16 @@ import { useRouter } from "next/navigation";
 import { Timer } from "lucide-react";
 import { TrackingSkeleton } from "@/components/Skeleton";
 
-const loadOpts = { loading: () => <TrackingSkeleton />, ssr: false };
-
-const SymptomTab = dynamic(() => import("@/components/tracking/SymptomTab"), loadOpts);
-const WeightTab = dynamic(() => import("@/components/tracking/WeightTab"), loadOpts);
-const WaterTab = dynamic(() => import("@/components/tracking/WaterTab"), loadOpts);
-const KicksTab = dynamic(() => import("@/components/tracking/KicksTab"), loadOpts);
-const NutritionTab = dynamic(() => import("@/components/tracking/NutritionTab"), loadOpts);
-const BloodPressureTab = dynamic(() => import("@/components/tracking/BloodPressureTab"), loadOpts);
-const AbdomenTab = dynamic(() => import("@/components/tracking/AbdomenTab"), loadOpts);
-const MoodTab = dynamic(() => import("@/components/tracking/MoodTab"), loadOpts);
-const SleepTab = dynamic(() => import("@/components/tracking/SleepTab"), loadOpts);
-const ExerciseTab = dynamic(() => import("@/components/tracking/ExerciseTab"), loadOpts);
+const SymptomTab = dynamic(() => import("@/components/tracking/SymptomTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const WeightTab = dynamic(() => import("@/components/tracking/WeightTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const WaterTab = dynamic(() => import("@/components/tracking/WaterTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const KicksTab = dynamic(() => import("@/components/tracking/KicksTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const NutritionTab = dynamic(() => import("@/components/tracking/NutritionTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const BloodPressureTab = dynamic(() => import("@/components/tracking/BloodPressureTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const AbdomenTab = dynamic(() => import("@/components/tracking/AbdomenTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const MoodTab = dynamic(() => import("@/components/tracking/MoodTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const SleepTab = dynamic(() => import("@/components/tracking/SleepTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const ExerciseTab = dynamic(() => import("@/components/tracking/ExerciseTab"), { loading: () => <TrackingSkeleton />, ssr: false });
 
 type Tab = "symptoms" | "weight" | "water" | "kicks" | "nutrition" | "bp" | "abdomen" | "mood" | "sleep" | "exercise";
 
