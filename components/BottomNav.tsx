@@ -2,19 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Activity, Baby, BookOpen, MoreHorizontal } from "lucide-react";
+import { Home, Activity, Baby, Calendar, MoreHorizontal } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
 
 const navItems = [
   { href: "/", labelKey: "nav.home", icon: Home },
   { href: "/tracking", labelKey: "nav.tracking", icon: Activity },
   { href: "/baby", labelKey: "nav.baby", icon: Baby },
-  { href: "/journal", labelKey: "nav.journal", icon: BookOpen },
+  { href: "/agenda", labelKey: "nav.agenda", icon: Calendar },
   { href: "/plus", labelKey: "nav.more", icon: MoreHorizontal },
 ];
 
 const plusPaths = [
-  "/agenda", "/checklist", "/contractions", "/timeline", "/bump",
+  "/journal", "/checklist", "/contractions", "/timeline", "/bump",
   "/prenoms", "/naissance", "/achats", "/alimentation", "/medicaments",
   "/respiration", "/urgences", "/duo", "/communaute", "/conseils", "/settings",
 ];
