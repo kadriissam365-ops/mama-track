@@ -263,7 +263,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
   return (
     <div
       className="relative w-full cursor-pointer select-none"
-      style={{ perspective: "1000px", minHeight: "260px" }}
+      style={{ perspective: "1000px" }}
       onClick={() => setFlipped((f) => !f)}
       role="button"
       tabIndex={0}
@@ -273,13 +273,13 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
       <motion.div
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        style={{ transformStyle: "preserve-3d", width: "100%", height: "100%" }}
+        style={{ transformStyle: "preserve-3d" }}
         className="relative"
       >
         {/* Front face */}
         <div
-          className="absolute inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 rounded-3xl border border-pink-100 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center"
-          style={{ backfaceVisibility: "hidden" }}
+          className={`bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 rounded-3xl border border-pink-100 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center ${flipped ? 'invisible' : ''}`}
+          style={{ backfaceVisibility: "hidden", minHeight: "280px" }}
         >
           {/* Decorative blurred blobs */}
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-200/30 rounded-full blur-2xl pointer-events-none" />
@@ -343,7 +343,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
         {/* Back face */}
         <div
           className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-green-50 rounded-3xl border border-purple-200 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center"
-          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)", minHeight: "280px" }}
         >
           <div className="absolute -top-10 -left-10 w-32 h-32 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
 
@@ -497,11 +497,8 @@ function SizeGallery({ currentWeek }: { currentWeek: number }) {
           const emojiSize = Math.max(1.5, 1.5 + progress * 1.5);
 
           return (
-            <motion.div
+            <div
               key={w.week}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: Math.min(i * 0.02, 0.4), duration: 0.25 }}
               className={`snap-center flex-shrink-0 flex flex-col items-center justify-end rounded-2xl p-3 min-w-[80px] transition-all ${
                 isCurrent
                   ? "bg-gradient-to-b from-pink-100 to-purple-100 border-2 border-pink-300 shadow-md"
@@ -537,7 +534,7 @@ function SizeGallery({ currentWeek }: { currentWeek: number }) {
               >
                 S{w.week}
               </span>
-            </motion.div>
+            </div>
           );
         })}
       </div>

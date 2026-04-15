@@ -53,20 +53,18 @@ export default function BabyVisual({ week }: BabyVisualProps) {
           </svg>
         </div>
 
-        {/* Subtle pulsing ring */}
-        <div className="absolute inset-0 animate-gentle-pulse">
-          <svg viewBox="0 0 200 200" className="w-full h-full">
-            <circle
-              cx="100"
-              cy="100"
-              r="92"
-              fill="none"
-              stroke="#d8b4fe"
-              strokeWidth="0.5"
-              strokeOpacity={opacity * 0.5}
-            />
-          </svg>
-        </div>
+        {/* Subtle ring */}
+        <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full pointer-events-none">
+          <circle
+            cx="100"
+            cy="100"
+            r="92"
+            fill="none"
+            stroke="#d8b4fe"
+            strokeWidth="0.5"
+            strokeOpacity={opacity * 0.3}
+          />
+        </svg>
       </div>
     </div>
   );
@@ -156,14 +154,14 @@ function EarlyCellStage({ week }: { week: number }) {
         strokeWidth="2.5"
         strokeLinecap="round"
       />
-      {/* Heart beat indicator */}
+      {/* Heart indicator */}
       {week >= 5 && (
         <circle
           cx={-size * 0.1}
           cy={0}
           r={2}
           fill="#ef4444"
-          className="animate-heartbeat"
+          opacity="0.8"
         />
       )}
     </g>
@@ -226,7 +224,7 @@ function EmbryoStage({ week }: { week: number }) {
         cy={bodyH * 0.05}
         r={2}
         fill="#ef4444"
-        className="animate-heartbeat"
+        opacity="0.8"
       />
     </g>
   );
