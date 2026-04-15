@@ -29,23 +29,23 @@ import {
 } from "lucide-react";
 
 const features = [
-  { icon: Baby, title: "Suivi semaine par semaine", desc: "Taille, poids, fruit de comparaison et conseils personnalises chaque semaine", color: "bg-pink-100 text-pink-500" },
-  { icon: Activity, title: "10+ trackers sante", desc: "Poids, eau, symptomes, humeur, tension, sommeil, contractions et plus", color: "bg-purple-100 text-purple-500" },
-  { icon: Timer, title: "Chrono contractions", desc: "Minuteur precis avec historique, duree et frequence en temps reel", color: "bg-indigo-100 text-indigo-500" },
-  { icon: Users, title: "Mode duo", desc: "Partagez l'aventure avec votre partenaire qui suit tout en temps reel", color: "bg-emerald-100 text-emerald-500" },
-  { icon: Camera, title: "Journal photo bump", desc: "Capturez chaque moment et comparez l'evolution de votre ventre", color: "bg-rose-100 text-rose-500" },
-  { icon: Calendar, title: "Agenda medical", desc: "Tous vos rendez-vous organises au meme endroit avec rappels", color: "bg-orange-100 text-orange-500" },
-  { icon: Heart, title: "250+ prenoms", desc: "Explorez, filtrez par origine et sauvegardez vos prenoms favoris", color: "bg-red-100 text-red-500" },
-  { icon: BookOpen, title: "Guides complets", desc: "Alimentation, sport, FAQ et conseils valides par des professionnels", color: "bg-teal-100 text-teal-500" },
-  { icon: FileText, title: "Projet naissance PDF", desc: "Creez et exportez votre projet de naissance personnalise en PDF", color: "bg-blue-100 text-blue-500" },
-  { icon: Moon, title: "Suivi sommeil & humeur", desc: "Notez votre qualite de sommeil et votre humeur jour apres jour", color: "bg-violet-100 text-violet-500" },
+  { icon: Baby, title: "Suivi semaine par semaine", desc: "Taille, poids, fruit de comparaison et conseils personnalisés chaque semaine", color: "bg-pink-100 text-pink-500" },
+  { icon: Activity, title: "10+ trackers santé", desc: "Poids, eau, symptômes, humeur, tension, sommeil, contractions et plus", color: "bg-purple-100 text-purple-500" },
+  { icon: Timer, title: "Chrono contractions", desc: "Minuteur précis avec historique, durée et fréquence en temps réel", color: "bg-indigo-100 text-indigo-500" },
+  { icon: Users, title: "Mode duo", desc: "Partagez l'aventure avec votre partenaire qui suit tout en temps réel", color: "bg-emerald-100 text-emerald-500" },
+  { icon: Camera, title: "Journal photo bump", desc: "Capturez chaque moment et comparez l'évolution de votre ventre", color: "bg-rose-100 text-rose-500" },
+  { icon: Calendar, title: "Agenda médical", desc: "Tous vos rendez-vous organisés au même endroit avec rappels", color: "bg-orange-100 text-orange-500" },
+  { icon: Heart, title: "250+ prénoms", desc: "Explorez, filtrez par origine et sauvegardez vos prénoms favoris", color: "bg-red-100 text-red-500" },
+  { icon: BookOpen, title: "Guides complets", desc: "Alimentation, sport, FAQ et conseils validés par des professionnels", color: "bg-teal-100 text-teal-500" },
+  { icon: FileText, title: "Projet naissance PDF", desc: "Créez et exportez votre projet de naissance personnalisé en PDF", color: "bg-blue-100 text-blue-500" },
+  { icon: Moon, title: "Suivi sommeil & humeur", desc: "Notez votre qualité de sommeil et votre humeur jour après jour", color: "bg-violet-100 text-violet-500" },
 ];
 
 const differentiators = [
-  { icon: Shield, title: "100% gratuit, pour de vrai", desc: "Pas de version premium cachee, pas d'abonnement, pas de pub. Tout est accessible des l'inscription." },
-  { icon: Smartphone, title: "Aucun telechargement requis", desc: "MamaTrack est une PWA : ouvrez-la dans votre navigateur et ajoutez-la a votre ecran d'accueil. C'est tout !" },
-  { icon: Star, title: "Mode FIV / PMA integre", desc: "La seule app qui prend en compte les parcours de procreation medicalement assistee." },
-  { icon: Droplets, title: "Fonctionne hors connexion", desc: "Vos donnees se synchronisent automatiquement des que vous retrouvez internet." },
+  { icon: Shield, title: "100% gratuit, pour de vrai", desc: "Pas de version premium cachée, pas d'abonnement, pas de pub. Tout est accessible dès l'inscription." },
+  { icon: Smartphone, title: "Aucun téléchargement requis", desc: "MamaTrack est une PWA : ouvrez-la dans votre navigateur et ajoutez-la à votre écran d'accueil. C'est tout !" },
+  { icon: Star, title: "Mode FIV / PMA intégré", desc: "La seule app qui prend en compte les parcours de procréation médicalement assistée." },
+  { icon: Droplets, title: "Fonctionne hors connexion", desc: "Vos données se synchronisent automatiquement dès que vous retrouvez internet." },
 ];
 
 const testimonials = [
