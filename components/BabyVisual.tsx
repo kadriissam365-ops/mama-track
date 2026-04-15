@@ -43,11 +43,9 @@ export default function BabyVisual({ week }: BabyVisualProps) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <motion.svg
+          <svg
             viewBox="0 0 200 200"
-            className="w-full h-full"
-            animate={{ y: [0, -3, 0] }}
-            transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+            className="w-full h-full animate-gentle-float"
           >
             <g
               transform={`translate(100, 100) scale(${scale})`}
@@ -59,15 +57,11 @@ export default function BabyVisual({ week }: BabyVisualProps) {
               {week >= 17 && week <= 28 && <BabyStage week={week} />}
               {week >= 29 && <FetalStage week={week} />}
             </g>
-          </motion.svg>
+          </svg>
         </motion.div>
 
         {/* Subtle pulsing ring */}
-        <motion.div
-          className="absolute inset-0"
-          animate={{ scale: [1, 1.03, 1] }}
-          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-        >
+        <div className="absolute inset-0 animate-gentle-pulse">
           <svg viewBox="0 0 200 200" className="w-full h-full">
             <circle
               cx="100"
@@ -79,7 +73,7 @@ export default function BabyVisual({ week }: BabyVisualProps) {
               strokeOpacity={opacity * 0.5}
             />
           </svg>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
@@ -171,13 +165,12 @@ function EarlyCellStage({ week }: { week: number }) {
       />
       {/* Heart beat indicator */}
       {week >= 5 && (
-        <motion.circle
+        <circle
           cx={-size * 0.1}
           cy={0}
           r={2}
           fill="#ef4444"
-          animate={{ scale: [1, 1.6, 1], opacity: [1, 0.5, 1] }}
-          transition={{ repeat: Infinity, duration: 0.8 }}
+          className="animate-heartbeat"
         />
       )}
     </g>
@@ -235,13 +228,12 @@ function EmbryoStage({ week }: { week: number }) {
         strokeLinecap="round"
       />
       {/* Heart */}
-      <motion.circle
+      <circle
         cx={0}
         cy={bodyH * 0.05}
         r={2}
         fill="#ef4444"
-        animate={{ scale: [1, 1.4, 1], opacity: [0.8, 0.4, 0.8] }}
-        transition={{ repeat: Infinity, duration: 0.9 }}
+        className="animate-heartbeat"
       />
     </g>
   );

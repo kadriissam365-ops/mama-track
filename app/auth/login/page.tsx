@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { Mail, Lock, Eye, EyeOff, Heart, Loader2 } from "lucide-react";
 
@@ -56,16 +57,31 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-b from-pink-50 via-white to-purple-50">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-pink-400 to-purple-400 rounded-3xl shadow-lg mb-4">
+        <motion.div
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.div
+            className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-pink-400 to-purple-400 rounded-3xl shadow-lg mb-4"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.4, type: "spring", stiffness: 200 }}
+          >
             <Heart className="w-10 h-10 text-white fill-white" />
-          </div>
+          </motion.div>
           <h1 className="text-3xl font-bold text-gray-800">MamaTrack</h1>
           <p className="text-gray-500 mt-2">Suivez votre grossesse en toute sérénité</p>
-        </div>
+        </motion.div>
 
         {/* Form */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 border border-pink-100">
+        <motion.div
+          className="bg-white rounded-3xl shadow-xl p-8 border border-pink-100"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
             Connexion
           </h2>
@@ -155,11 +171,16 @@ export default function LoginPage() {
               Créer un compte
             </Link>
           </p>
-        </div>
+        </motion.div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <motion.p
+          className="text-center text-xs text-gray-400 mt-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
           En vous connectant, vous acceptez nos conditions d&apos;utilisation
-        </p>
+        </motion.p>
       </div>
     </div>
   );
