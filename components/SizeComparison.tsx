@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { pregnancyData, type WeekData } from "@/lib/pregnancy-data";
 import { Ruler, ChevronRight, RotateCw } from "lucide-react";
 
@@ -134,11 +134,7 @@ function WeightViz({ weightG, week }: { weightG: number; week: number }) {
   const hasMore = equiv.count > 10;
 
   return (
-    <motion.div
-      key={`wv-${week}`}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3 }}
+    <div
       className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-3 border border-purple-100"
     >
       <div className="flex items-center gap-2 mb-2">
@@ -155,22 +151,19 @@ function WeightViz({ weightG, week }: { weightG: number; week: number }) {
       {weightG > 0 && (
         <div className="flex items-center gap-0.5 flex-wrap">
           {Array.from({ length: displayCount }, (_, i) => (
-            <motion.span
+            <span
               key={i}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 + i * 0.04, duration: 0.2 }}
               className="text-lg"
             >
               {equiv.emoji}
-            </motion.span>
+            </span>
           ))}
           {hasMore && (
             <span className="text-xs text-gray-400 ml-1">+{equiv.count - 10}</span>
           )}
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }
 
@@ -287,12 +280,12 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
         style={{ transformStyle: "preserve-3d" }}
-        className="relative min-h-[280px]"
+        className="relative h-[280px]"
       >
         {/* Front face */}
         <div
-          className={`bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 rounded-3xl border border-pink-100 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center ${flipped ? 'invisible' : ''}`}
-          style={{ backfaceVisibility: "hidden", minHeight: "280px" }}
+          className="absolute inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 rounded-3xl border border-pink-100 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center"
+          style={{ backfaceVisibility: "hidden" }}
         >
           {/* Decorative blurred blobs */}
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-200/30 rounded-full blur-2xl pointer-events-none" />
@@ -302,49 +295,27 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
             Taille comparable à
           </p>
 
-          {/* Fruit emoji with bounce */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={weekData.week}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="flex justify-center z-10"
-            >
-              <span className="text-8xl select-none inline-block drop-shadow-lg">
-                {weekData.fruitEmoji}
-              </span>
-            </motion.div>
-          </AnimatePresence>
+          {/* Fruit emoji */}
+          <div className="flex justify-center z-10">
+            <span className="text-8xl select-none inline-block drop-shadow-lg">
+              {weekData.fruitEmoji}
+            </span>
+          </div>
 
           {/* Fruit name */}
-          <AnimatePresence mode="wait">
-            <motion.h2
-              key={`name-${weekData.week}`}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25, delay: 0.1 }}
+          <h2
               className="text-xl font-bold text-[#3d2b2b] text-center mt-3 z-10"
             >
               {weekData.fruit}
-            </motion.h2>
-          </AnimatePresence>
+            </h2>
 
           {/* Size badge */}
-          <motion.div
-            key={`badge-${weekData.week}`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="flex justify-center mt-3 z-10"
-          >
+          <div className="flex justify-center mt-3 z-10">
             <span className="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-sm text-[#3d2b2b] text-sm font-semibold px-4 py-1.5 rounded-full border border-pink-200 shadow-sm">
               <Ruler className="w-4 h-4 text-pink-400" />
               {sizeCm}
             </span>
-          </motion.div>
+          </div>
 
           {/* Tap hint */}
           <div className="flex items-center gap-1 mt-3 z-10">
@@ -356,7 +327,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
         {/* Back face */}
         <div
           className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-green-50 rounded-3xl border border-purple-200 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center"
-          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)", minHeight: "280px" }}
+          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <div className="absolute -top-10 -left-10 w-32 h-32 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
 
@@ -392,69 +363,48 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
 /*  Side-by-side comparison: baby vs fruit with animated scaling        */
 /* ------------------------------------------------------------------ */
 function SideBySide({ weekData }: { weekData: WeekData }) {
-  // Scale emoji based on size (min 2rem, max 5rem)
   const maxMm = 520;
   const progress = Math.min(weekData.sizeMm / maxMm, 1);
-  const babySize = 2 + progress * 3; // 2rem to 5rem
+  const babySize = 2 + progress * 3;
   const fruitSize = 2 + progress * 3;
 
   return (
-    <motion.div
-      key={`sbs-${weekData.week}`}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 }}
-      className="bg-white rounded-2xl border border-pink-100 p-4"
-    >
+    <div className="bg-white rounded-2xl border border-pink-100 p-4">
       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider text-center mb-3">
         Comparaison de taille
       </p>
       <div className="flex items-end justify-center gap-8">
-        {/* Baby side */}
         <div className="flex flex-col items-center">
-          <motion.span
-            key={`baby-${weekData.week}`}
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
+          <span
             style={{ fontSize: `${babySize}rem` }}
             className="select-none inline-block"
           >
             👶
-          </motion.span>
+          </span>
           <span className="text-[10px] font-medium text-gray-500 mt-1">Bébé</span>
           <span className="text-[10px] text-pink-500 font-bold">{formatSize(weekData.sizeMm)}</span>
         </div>
 
-        {/* VS divider */}
         <div className="flex flex-col items-center pb-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.3 }}
+          <div
             className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-100 to-purple-100 flex items-center justify-center border border-pink-200"
           >
             <span className="text-xs font-bold text-purple-500">VS</span>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Fruit side */}
         <div className="flex flex-col items-center">
-          <motion.span
-            key={`fruit-${weekData.week}`}
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
+          <span
             style={{ fontSize: `${fruitSize}rem` }}
             className="select-none inline-block"
           >
             {weekData.fruitEmoji}
-          </motion.span>
+          </span>
           <span className="text-[10px] font-medium text-gray-500 mt-1">{weekData.fruit}</span>
           <span className="text-[10px] text-purple-500 font-bold">{formatSize(weekData.sizeMm)}</span>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -565,13 +515,8 @@ export default function SizeComparison({
   const isEarlyWeek = weekData.week <= 3;
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
+      <div
         key={`size-comparison-${currentWeek}`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
         className="space-y-4"
       >
         {/* Main flip card */}
@@ -607,7 +552,6 @@ export default function SizeComparison({
 
         {/* Size gallery */}
         <SizeGallery currentWeek={currentWeek} />
-      </motion.div>
-    </AnimatePresence>
+      </div>
   );
 }

@@ -94,14 +94,14 @@ export default function BabyPage() {
 
       {/* Illustration du bébé */}
       <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 rounded-3xl border border-pink-100 shadow-sm overflow-hidden">
-        <BabyVisual week={selectedWeek} />
+        <BabyVisual key={selectedWeek} week={selectedWeek} />
         <p className="text-center text-xs text-gray-400 pb-3 -mt-2">
           Illustration de votre bébé
         </p>
       </div>
 
       {/* Comparaisons de taille visuelles */}
-      <SizeComparison currentWeek={selectedWeek} weekData={weekData} />
+      <SizeComparison key={selectedWeek} currentWeek={selectedWeek} weekData={weekData} />
 
       {/* Bouton partager */}
       <div className="flex justify-center">
