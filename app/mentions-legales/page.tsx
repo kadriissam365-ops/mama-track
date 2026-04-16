@@ -9,7 +9,7 @@ export default function MentionsLegalesPage() {
       <div className="max-w-2xl mx-auto">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-pink-500 hover:text-pink-600 font-medium mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-pink-500 dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 font-medium mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour
@@ -28,7 +28,7 @@ export default function MentionsLegalesPage() {
               MamaTrack<br />
               Statut : Micro-entreprise<br />
               Si&egrave;ge social : France<br />
-              Email de contact : <a href="mailto:contact@mamatrack.fr" className="text-pink-500 underline">contact@mamatrack.fr</a><br />
+              Email de contact : <a href="mailto:contact@mamatrack.fr" className="text-pink-500 dark:text-pink-400 underline">contact@mamatrack.fr</a><br />
               Directeur de la publication : L&apos;&eacute;quipe MamaTrack
             </p>
           </section>
@@ -38,10 +38,10 @@ export default function MentionsLegalesPage() {
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               L&apos;application est h&eacute;berg&eacute;e par :<br />
               <strong>Vercel Inc.</strong> &mdash; 440 N Barranca Ave #4133, Covina, CA 91723, USA<br />
-              Site web : <a href="https://vercel.com" className="text-pink-500 underline" target="_blank" rel="noopener noreferrer">vercel.com</a><br /><br />
+              Site web : <a href="https://vercel.com" className="text-pink-500 dark:text-pink-400 underline" target="_blank" rel="noopener noreferrer">vercel.com</a><br /><br />
               Les donn&eacute;es utilisateur sont stock&eacute;es sur :<br />
               <strong>Supabase</strong> &mdash; serveurs situ&eacute;s dans l&apos;Union europ&eacute;enne (r&eacute;gion eu-west)<br />
-              Site web : <a href="https://supabase.com" className="text-pink-500 underline" target="_blank" rel="noopener noreferrer">supabase.com</a>
+              Site web : <a href="https://supabase.com" className="text-pink-500 dark:text-pink-400 underline" target="_blank" rel="noopener noreferrer">supabase.com</a>
             </p>
           </section>
 
@@ -78,7 +78,7 @@ export default function MentionsLegalesPage() {
               Conform&eacute;ment au R&egrave;glement G&eacute;n&eacute;ral sur la Protection des Donn&eacute;es (RGPD) et
               &agrave; la loi Informatique et Libert&eacute;s, vous disposez de droits sur vos donn&eacute;es
               personnelles. Pour en savoir plus, consultez notre{" "}
-              <Link href="/confidentialite" className="text-pink-500 underline">
+              <Link href="/confidentialite" className="text-pink-500 dark:text-pink-400 underline">
                 Politique de confidentialit&eacute;
               </Link>.
             </p>
@@ -97,7 +97,7 @@ export default function MentionsLegalesPage() {
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Contact</h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               Pour toute question relative aux mentions l&eacute;gales, vous pouvez nous contacter &agrave;
-              l&apos;adresse : <a href="mailto:contact@mamatrack.fr" className="text-pink-500 underline">contact@mamatrack.fr</a>
+              l&apos;adresse : <a href="mailto:contact@mamatrack.fr" className="text-pink-500 dark:text-pink-400 underline">contact@mamatrack.fr</a>
             </p>
           </section>
         </div>

@@ -266,7 +266,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
     <div className="space-y-3">
       {/* Subscription status */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2 text-green-500 text-sm">
+        <div className="flex items-center gap-2 text-green-500 dark:text-green-400 text-sm">
           <Check className="w-4 h-4" />
           <span>Notifications activees</span>
         </div>
@@ -440,7 +440,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
-              <Pill className="w-5 h-5 text-pink-500" />
+              <Pill className="w-5 h-5 text-pink-500 dark:text-pink-400" />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
@@ -470,7 +470,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-              <Pill className="w-5 h-5 text-purple-500" />
+              <Pill className="w-5 h-5 text-purple-500 dark:text-purple-400" />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
@@ -500,7 +500,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-green-500" />
+              <Calendar className="w-5 h-5 text-green-500 dark:text-green-400" />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Rappels RDV</p>
@@ -632,7 +632,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-              <Users className="w-5 h-5 text-orange-500" />
+              <Users className="w-5 h-5 text-orange-500 dark:text-orange-400" />
             </div>
             <div>
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">

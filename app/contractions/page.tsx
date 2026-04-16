@@ -197,7 +197,7 @@ export default function ContractionsPage() {
         ) : (
           <div className="space-y-4">
             <div className="text-sm text-gray-500 dark:text-gray-400">
-              Durée de session : <span className="font-semibold text-pink-500">{formatDuration(elapsed)}</span>
+              Durée de session : <span className="font-semibold text-pink-500 dark:text-pink-400">{formatDuration(elapsed)}</span>
             </div>
 
             {/* Bouton contraction */}
@@ -256,7 +256,7 @@ export default function ContractionsPage() {
                 }}
                 className="w-full flex items-center gap-3 bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800/30 rounded-2xl px-4 py-3 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30 transition-colors"
               >
-                <MessageCircle className="w-5 h-5 text-pink-500" />
+                <MessageCircle className="w-5 h-5 text-pink-500 dark:text-pink-400" />
                 <div className="text-left">
                   <p className="text-sm font-semibold text-pink-700 dark:text-pink-300">Prévenir mon partenaire</p>
                   <p className="text-xs text-pink-400">Envoie un message automatique au Duo</p>
@@ -275,7 +275,7 @@ export default function ContractionsPage() {
           className="grid grid-cols-3 gap-3"
         >
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 text-center shadow-sm border border-pink-100 dark:border-pink-900/30">
-            <p className="text-2xl font-bold text-pink-500">{localContractions.length}</p>
+            <p className="text-2xl font-bold text-pink-500 dark:text-pink-400">{localContractions.length}</p>
             <p className="text-xs text-gray-400 dark:text-gray-500">Contractions</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 text-center shadow-sm border border-purple-100 dark:border-purple-900/30">

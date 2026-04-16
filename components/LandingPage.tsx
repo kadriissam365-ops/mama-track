@@ -328,7 +328,7 @@ export default function LandingPage() {
           </Link>
           <Link
             href="/auth/login"
-            className="text-pink-500 font-semibold py-4 px-6 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 rounded-2xl transition-all text-center"
+            className="text-pink-500 dark:text-pink-400 font-semibold py-4 px-6 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 rounded-2xl transition-all text-center"
           >
             J&apos;ai deja un compte
           </Link>
@@ -512,7 +512,7 @@ export default function LandingPage() {
                       </svg>
                     </div>
                     <p className="text-3xl mb-0.5">🍌</p>
-                    <p className="text-[10px] text-pink-500 font-semibold">Banane</p>
+                    <p className="text-[10px] text-pink-500 dark:text-pink-400 font-semibold">Banane</p>
                     <p className="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5">112 jours restants</p>
                   </div>
                   <div className="grid grid-cols-2 gap-2">

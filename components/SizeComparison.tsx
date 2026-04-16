@@ -108,7 +108,7 @@ function SizeRuler({ sizeMm, week }: { sizeMm: number; week: number }) {
       {/* Labels */}
       <div className="flex justify-between mt-1.5">
         <span className="text-[10px] text-gray-400 dark:text-gray-500">0 cm</span>
-        <span className="text-[11px] font-bold text-pink-500">
+        <span className="text-[11px] font-bold text-pink-500 dark:text-pink-400">
           {formatSize(sizeMm)}
         </span>
         <span className="text-[10px] text-gray-400 dark:text-gray-500">52 cm</span>
@@ -320,7 +320,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
           </p>
           <p className="text-center text-sm text-[#3d2b2b] dark:text-gray-100 leading-relaxed max-w-[240px]">
             Votre bébé fait environ la taille{" "}
-            <span className="font-bold text-pink-500">{deContraction(weekData.funComparison)}</span>{" "}
+            <span className="font-bold text-pink-500 dark:text-pink-400">{deContraction(weekData.funComparison)}</span>{" "}
             {weekData.funComparisonEmoji}
           </p>
           <div className="mt-3 text-center">
@@ -365,14 +365,14 @@ function SideBySide({ weekData }: { weekData: WeekData }) {
             👶
           </span>
           <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-1">Bébé</span>
-          <span className="text-[10px] text-pink-500 font-bold">{formatSize(weekData.sizeMm)}</span>
+          <span className="text-[10px] text-pink-500 dark:text-pink-400 font-bold">{formatSize(weekData.sizeMm)}</span>
         </div>
 
         <div className="flex flex-col items-center pb-4">
           <div
             className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/40 dark:to-purple-900/40 flex items-center justify-center border border-pink-200 dark:border-pink-800/30"
           >
-            <span className="text-xs font-bold text-purple-500">VS</span>
+            <span className="text-xs font-bold text-purple-500 dark:text-purple-400">VS</span>
           </div>
         </div>
 
@@ -384,7 +384,7 @@ function SideBySide({ weekData }: { weekData: WeekData }) {
             {weekData.fruitEmoji}
           </span>
           <span className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mt-1">{weekData.fruit}</span>
-          <span className="text-[10px] text-purple-500 font-bold">{formatSize(weekData.sizeMm)}</span>
+          <span className="text-[10px] text-purple-500 dark:text-purple-400 font-bold">{formatSize(weekData.sizeMm)}</span>
         </div>
       </div>
     </div>

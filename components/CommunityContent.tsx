@@ -352,12 +352,12 @@ export default function CommunityContent() {
       {/* Stats banner */}
       <div className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30 rounded-2xl p-4 flex items-center justify-around border border-pink-100 dark:border-pink-900/30">
         <div className="text-center">
-          <p className="text-lg font-bold text-pink-500">{posts.length}</p>
+          <p className="text-lg font-bold text-pink-500 dark:text-pink-400">{posts.length}</p>
           <p className="text-[10px] text-gray-500 dark:text-gray-400">Publications</p>
         </div>
         <div className="w-px h-8 bg-pink-200" />
         <div className="text-center">
-          <p className="text-lg font-bold text-purple-500">{totalReactions}</p>
+          <p className="text-lg font-bold text-purple-500 dark:text-purple-400">{totalReactions}</p>
           <p className="text-[10px] text-gray-500 dark:text-gray-400">Reactions</p>
         </div>
         <div className="w-px h-8 bg-pink-200" />
@@ -419,7 +419,7 @@ export default function CommunityContent() {
           <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           <button
             onClick={handleRefresh}
-            className="text-sm text-pink-500 font-medium hover:underline"
+            className="text-sm text-pink-500 dark:text-pink-400 font-medium hover:underline"
           >
             Reessayer
           </button>
@@ -443,7 +443,7 @@ export default function CommunityContent() {
             {isAuthenticated && (
               <button
                 onClick={() => setShowModal(true)}
-                className="text-sm text-pink-500 font-medium hover:underline"
+                className="text-sm text-pink-500 dark:text-pink-400 font-medium hover:underline"
               >
                 Soyez la premiere a partager !
               </button>

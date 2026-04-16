@@ -136,7 +136,7 @@ export default function BumpPage() {
         </div>
         <div className="text-right">
           <p className="text-xs text-gray-400 dark:text-gray-500">Photos prises</p>
-          <p className="text-lg font-bold text-pink-500">{photos.length}</p>
+          <p className="text-lg font-bold text-pink-500 dark:text-pink-400">{photos.length}</p>
         </div>
       </div>
 

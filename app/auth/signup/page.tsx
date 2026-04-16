@@ -82,14 +82,14 @@ export default function SignupPage() {
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
             Nous avons envoyé un lien de confirmation à <br />
-            <span className="font-medium text-pink-500">{email}</span>
+            <span className="font-medium text-pink-500 dark:text-pink-400">{email}</span>
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
             Cliquez sur le lien dans l&apos;email pour activer votre compte et commencer votre suivi de grossesse.
           </p>
           <Link
             href="/auth/login"
-            className="inline-flex items-center gap-2 text-pink-500 font-medium hover:text-pink-600"
+            className="inline-flex items-center gap-2 text-pink-500 dark:text-pink-400 font-medium hover:text-pink-600 dark:hover:text-pink-300"
           >
             Retour à la connexion
           </Link>
@@ -221,7 +221,7 @@ export default function SignupPage() {
             Déjà un compte ?{" "}
             <Link
               href="/auth/login"
-              className="text-pink-500 font-medium hover:text-pink-600"
+              className="text-pink-500 dark:text-pink-400 font-medium hover:text-pink-600 dark:hover:text-pink-300"
             >
               Se connecter
             </Link>

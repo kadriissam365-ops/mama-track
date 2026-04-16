@@ -108,7 +108,7 @@ export default function BabyIllustration({ week, compact = false }: BabyIllustra
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <span className="text-[10px] font-semibold text-pink-500">SA {week}</span>
+            <span className="text-[10px] font-semibold text-pink-500 dark:text-pink-400">SA {week}</span>
           </motion.div>
         )}
       </div>

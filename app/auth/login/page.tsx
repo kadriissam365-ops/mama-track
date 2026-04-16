@@ -137,7 +137,7 @@ export default function LoginPage() {
             <div className="flex justify-end">
               <a
                 href="/auth/forgot-password"
-                className="text-xs text-pink-500 hover:text-pink-600 cursor-pointer select-none"
+                className="text-xs text-pink-500 dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 cursor-pointer select-none"
                 onClick={(e) => { e.stopPropagation(); }}
               >
                 Mot de passe oublié ?
@@ -166,7 +166,7 @@ export default function LoginPage() {
             Pas encore de compte ?{" "}
             <Link
               href="/auth/signup"
-              className="text-pink-500 font-medium hover:text-pink-600"
+              className="text-pink-500 dark:text-pink-400 font-medium hover:text-pink-600 dark:hover:text-pink-300"
             >
               Créer un compte
             </Link>

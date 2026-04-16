@@ -196,7 +196,7 @@ export default function AbdomenTab() {
             <p className="text-lg font-bold text-purple-700 dark:text-purple-300">
               {lastEntry.circumference} cm
               {diff !== null && (
-                <span className={`text-sm font-normal ml-2 ${parseFloat(diff) >= 0 ? "text-orange-500" : "text-green-500"}`}>
+                <span className={`text-sm font-normal ml-2 ${parseFloat(diff) >= 0 ? "text-orange-500 dark:text-orange-400" : "text-green-500 dark:text-green-400"}`}>
                   ({parseFloat(diff) >= 0 ? "+" : ""}{diff} cm)
                 </span>
               )}

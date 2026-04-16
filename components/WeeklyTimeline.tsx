@@ -37,7 +37,7 @@ function WeekTooltip({ weekData, onClose }: { weekData: WeekData; onClose: () =>
 
         <span className="text-3xl block mb-1">{weekData.fruitEmoji}</span>
         <p className="text-xs font-bold text-[#3d2b2b] dark:text-gray-100">Semaine {weekData.week}</p>
-        <p className="text-[10px] text-pink-500 font-medium">{weekData.fruit}</p>
+        <p className="text-[10px] text-pink-500 dark:text-pink-400 font-medium">{weekData.fruit}</p>
         <div className="flex items-center justify-center gap-2 mt-1.5">
           <span className="text-[10px] text-gray-500 dark:text-gray-400">{sizeCm}</span>
           {weekData.weightG > 0 && (
@@ -48,7 +48,7 @@ function WeekTooltip({ weekData, onClose }: { weekData: WeekData; onClose: () =>
           )}
         </div>
         {weekData.weeklyMilestone && (
-          <p className="text-[10px] text-purple-500 mt-1 leading-tight">
+          <p className="text-[10px] text-purple-500 dark:text-purple-400 mt-1 leading-tight">
             {weekData.weeklyMilestone}
           </p>
         )}

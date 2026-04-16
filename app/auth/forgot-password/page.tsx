@@ -67,7 +67,7 @@ export default function ForgotPasswordPage() {
               </p>
               <Link
                 href="/auth/login"
-                className="inline-flex items-center gap-2 text-pink-500 font-medium hover:text-pink-600 mt-4"
+                className="inline-flex items-center gap-2 text-pink-500 dark:text-pink-400 font-medium hover:text-pink-600 dark:hover:text-pink-300 mt-4"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Retour à la connexion

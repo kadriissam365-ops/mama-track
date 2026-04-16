@@ -74,7 +74,7 @@ export default function KicksTab({ today }: KicksTabProps) {
           }`}
         >
           <Baby
-            className={`w-10 h-10 mb-1 ${counting ? "text-green-500" : "text-pink-400"}`}
+            className={`w-10 h-10 mb-1 ${counting ? "text-green-500 dark:text-green-400" : "text-pink-400"}`}
           />
           <span className="text-4xl font-bold text-[#3d2b2b] dark:text-gray-100">{count}</span>
           <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -182,7 +182,7 @@ export default function KicksTab({ today }: KicksTabProps) {
                 <span className="text-sm text-gray-600 dark:text-gray-300">
                   {format(new Date(date), "EEEE d MMM", { locale: fr })}
                 </span>
-                <span className="text-sm font-semibold text-green-500">
+                <span className="text-sm font-semibold text-green-500 dark:text-green-400">
                   {total} mvts
                 </span>
               </div>

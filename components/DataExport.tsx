@@ -438,7 +438,7 @@ export default function DataExport() {
       {/* Data overview card */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 space-y-4">
         <div className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-purple-500" />
+          <Shield className="w-5 h-5 text-purple-500 dark:text-purple-400" />
           <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Donnees & Confidentialite</h3>
         </div>
 
@@ -456,9 +456,9 @@ export default function DataExport() {
               {totalItems} elements stockes
             </span>
             {showDetails ? (
-              <ChevronUp className="w-4 h-4 text-purple-500" />
+              <ChevronUp className="w-4 h-4 text-purple-500 dark:text-purple-400" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-purple-500" />
+              <ChevronDown className="w-4 h-4 text-purple-500 dark:text-purple-400" />
             )}
           </button>
 
