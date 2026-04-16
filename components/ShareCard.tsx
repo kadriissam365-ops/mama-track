@@ -224,7 +224,7 @@ export default function ShareCard({ onClose }: ShareCardProps) {
           <p className="text-6xl my-2">{weekData?.fruitEmoji ?? "🍎"}</p>
           <p className={`text-sm ${theme.previewSecondary} font-medium`}>{weekData?.fruit ?? ""}</p>
           {weekData && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               📏 {weekData.sizeMm >= 10 ? `${(weekData.sizeMm / 10).toFixed(1)} cm` : `${weekData.sizeMm} mm`}
               {" · "}
               ⚖️ {weekData.weightG >= 1000 ? `${(weekData.weightG / 1000).toFixed(1)} kg` : `${weekData.weightG} g`}

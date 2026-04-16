@@ -98,7 +98,7 @@ function RadioField({ label, value, options, onChange }: {
             key={opt.value}
             onClick={() => onChange(opt.value)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              value === opt.value ? "bg-pink-400 text-white" : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:bg-gray-700"
+              value === opt.value ? "bg-pink-400 text-white" : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:bg-gray-700"
             }`}
           >
             {opt.label}
@@ -264,7 +264,7 @@ export default function NaissancePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">🌸 Projet de naissance</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Prépare et partage tes souhaits</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Prépare et partage tes souhaits</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -310,7 +310,7 @@ export default function NaissancePage() {
                     <>
                       {(["mamanNom", "papaPartenaireNom", "maternite", "medecin"] as const).map((key, i) => (
                         <div key={key} className="py-2.5 border-b border-gray-100 dark:border-gray-800 last:border-0">
-                          <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">
+                          <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">
                             {["Prénom de la maman", "Prénom du papa/partenaire", "Nom de la maternité", "Médecin/Sage-femme"][i]}
                           </label>
                           <input
@@ -322,7 +322,7 @@ export default function NaissancePage() {
                         </div>
                       ))}
                       <div className="py-2.5">
-                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Date prévue d&apos;accouchement</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">Date prévue d&apos;accouchement</label>
                         <input
                           type="date"
                           value={projet.datePrevu}
@@ -336,7 +336,7 @@ export default function NaissancePage() {
                   {section.id === 2 && (
                     <>
                       <div className="py-2.5 border-b border-gray-100 dark:border-gray-800">
-                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Type de salle</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">Type de salle</label>
                         <select
                           value={projet.typeSalle}
                           onChange={e => update("typeSalle", e.target.value)}
@@ -360,7 +360,7 @@ export default function NaissancePage() {
                         </div>
                       )}
                       <div className="py-2.5">
-                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Accompagnants souhaités</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">Accompagnants souhaités</label>
                         <input
                           placeholder="ex: conjoint, ma mère..."
                           value={projet.accompagnants}
@@ -387,7 +387,7 @@ export default function NaissancePage() {
                       <BooleanField label="Bain / douche de relaxation" value={projet.bain} onChange={v => update("bain", v)} />
                       <BooleanField label="Massage par le/la partenaire" value={projet.massage} onChange={v => update("massage", v)} />
                       <div className="py-2.5">
-                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Autres demandes</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">Autres demandes</label>
                         <textarea
                           value={projet.autresDouleur}
                           onChange={e => update("autresDouleur", e.target.value)}
@@ -445,7 +445,7 @@ export default function NaissancePage() {
                       <BooleanField label="Peau à peau au bloc opératoire" value={projet.cesariennePeauPeau} onChange={v => update("cesariennePeauPeau", v)} />
                       <BooleanField label="Partenaire présent(e) au bloc" value={projet.cesariennePartenaire} onChange={v => update("cesariennePartenaire", v)} />
                       <div className="py-2.5">
-                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Notes spécifiques</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">Notes spécifiques</label>
                         <textarea
                           value={projet.cesarienneNotesLibres}
                           onChange={e => update("cesarienneNotesLibres", e.target.value)}

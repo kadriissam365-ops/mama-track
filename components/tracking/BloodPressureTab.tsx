@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Plus, Trash2, Heart } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { useTheme } from "next-themes";
 
 interface BPEntry {
   id: string;
@@ -29,6 +30,8 @@ function getBPZone(sys: number, dias: number): { label: string; color: string; b
 
 // Simple SVG chart for blood pressure evolution
 function BPChart({ entries }: { entries: BPEntry[] }) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   if (entries.length < 2) return null;
 
   const data = entries.slice(-10);
@@ -75,8 +78,8 @@ function BPChart({ entries }: { entries: BPEntry[] }) {
           const val = Math.round(maxVal - (i / 3) * (maxVal - minVal));
           return (
             <g key={i}>
-              <line x1={padX} y1={y} x2={width - padX} y2={y} stroke="#f3e8ff" strokeWidth="1" />
-              <text x={padX - 3} y={y + 4} textAnchor="end" fontSize="8" fill="#9b7b8a">
+              <line x1={padX} y1={y} x2={width - padX} y2={y} stroke={isDark ? "#374151" : "#f3e8ff"} strokeWidth="1" />
+              <text x={padX - 3} y={y + 4} textAnchor="end" fontSize="8" fill={isDark ? "#9ca3af" : "#9b7b8a"}>
                 {val}
               </text>
             </g>
@@ -90,20 +93,20 @@ function BPChart({ entries }: { entries: BPEntry[] }) {
             y={height - 2}
             textAnchor="middle"
             fontSize="7"
-            fill="#9b7b8a"
+            fill={isDark ? "#9ca3af" : "#9b7b8a"}
           >
             {format(new Date(e.measured_at), "dd/MM")}
           </text>
         ))}
         {/* Systolic line */}
-        <path d={sysPath} fill="none" stroke="#f87171" strokeWidth="2" strokeLinejoin="round" />
+        <path d={sysPath} fill="none" stroke={isDark ? "#f87171" : "#f87171"} strokeWidth="2" strokeLinejoin="round" />
         {data.map((e, i) => (
-          <circle key={`s${i}`} cx={toX(i)} cy={toY(e.systolic)} r="3" fill="#f87171" />
+          <circle key={`s${i}`} cx={toX(i)} cy={toY(e.systolic)} r="3" fill={isDark ? "#f87171" : "#f87171"} />
         ))}
         {/* Diastolic line */}
-        <path d={diasPath} fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinejoin="round" />
+        <path d={diasPath} fill="none" stroke={isDark ? "#60a5fa" : "#60a5fa"} strokeWidth="2" strokeLinejoin="round" />
         {data.map((e, i) => (
-          <circle key={`d${i}`} cx={toX(i)} cy={toY(e.diastolic)} r="3" fill="#60a5fa" />
+          <circle key={`d${i}`} cx={toX(i)} cy={toY(e.diastolic)} r="3" fill={isDark ? "#60a5fa" : "#60a5fa"} />
         ))}
       </svg>
     </div>
@@ -217,7 +220,7 @@ export default function BloodPressureTab() {
         <div className={`rounded-2xl px-4 py-3 border ${latestZone.bg} flex items-center gap-3`}>
           <Heart className="w-5 h-5 flex-shrink-0 text-pink-400" />
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Dernière mesure</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Dernière mesure</p>
             <p className={`text-sm font-semibold ${latestZone.color}`}>
               {entries[entries.length - 1].systolic}/{entries[entries.length - 1].diastolic} mmHg
               {" — "}{latestZone.label}

@@ -160,7 +160,7 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
     return (
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-pink-100 dark:border-pink-900/30 text-center">
         <MessageCircle className="w-10 h-10 text-pink-200 mx-auto mb-2" />
-        <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Invitez votre partenaire pour activer le chat
         </p>
       </div>
@@ -422,7 +422,7 @@ export default function DuoPage() {
             <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-4">Nouvelle invitation</h3>
             
             {/* Role selection */}
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">Type de partage</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 block mb-2">Type de partage</label>
             <div className="grid grid-cols-3 gap-2 mb-4">
               {(Object.keys(ROLE_LABELS) as Role[]).map((r) => {
                 const { label, icon: Icon, color } = ROLE_LABELS[r];
@@ -439,7 +439,7 @@ export default function DuoPage() {
                     style={selected ? { borderColor: `var(--color-${color}-400)` } : undefined}
                   >
                     <Icon className={`w-5 h-5 ${selected ? `text-${color}-500` : "text-gray-400 dark:text-gray-500"}`} />
-                    <span className={`text-xs font-medium ${selected ? `text-${color}-600` : "text-gray-500 dark:text-gray-400 dark:text-gray-500"}`}>
+                    <span className={`text-xs font-medium ${selected ? `text-${color}-600` : "text-gray-500 dark:text-gray-400"}`}>
                       {label}
                     </span>
                   </button>
@@ -448,7 +448,7 @@ export default function DuoPage() {
             </div>
 
             {/* Email input */}
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1.5">Email</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1.5">Email</label>
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
@@ -483,7 +483,7 @@ export default function DuoPage() {
       {/* Pending Invitations */}
       {invitations.length > 0 && (
         <div>
-          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
             Invitations en attente ({invitations.length})
           </h2>
           <div className="space-y-2">
@@ -512,7 +512,7 @@ export default function DuoPage() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => copyInviteUrl(inv.token)}
-                        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:bg-gray-700 transition-colors"
+                        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:bg-gray-700 transition-colors"
                         aria-label="Copier le lien d'invitation"
                       >
                         {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
@@ -536,7 +536,7 @@ export default function DuoPage() {
       {/* Active Partners */}
       {partners.length > 0 && (
         <div>
-          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
             Partenaires actifs ({partners.length})
           </h2>
           <div className="space-y-2">
@@ -580,7 +580,7 @@ export default function DuoPage() {
         <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 text-center border border-pink-100 dark:border-pink-900/30 shadow-sm">
           <Users className="w-12 h-12 text-pink-200 mx-auto mb-3" />
           <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Aucun partage actif</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
             Invitez votre partenaire ou sage-femme à suivre votre grossesse.
           </p>
           <button

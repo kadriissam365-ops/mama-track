@@ -77,7 +77,7 @@ export default function KicksTab({ today }: KicksTabProps) {
             className={`w-10 h-10 mb-1 ${counting ? "text-green-500" : "text-pink-400"}`}
           />
           <span className="text-4xl font-bold text-[#3d2b2b] dark:text-gray-100">{count}</span>
-          <span className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
+          <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             {counting ? "Touchez !" : "Démarrer"}
           </span>
         </motion.button>
@@ -93,7 +93,7 @@ export default function KicksTab({ today }: KicksTabProps) {
 
         {!counting && (
           <div className="mt-4 space-y-3">
-            <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Total aujourd&apos;hui :{" "}
               <span className="font-bold text-green-600">
                 {totalToday} mouvements

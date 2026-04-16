@@ -19,6 +19,7 @@ import { DashboardSkeleton } from "@/components/Skeleton";
 import { initializeNotifications } from "@/lib/notifications";
 import { WATER_GOAL_ML } from "@/lib/constants";
 import ReminderBanner from "@/components/ReminderBanner";
+import { useTheme } from "next-themes";
 
 const LandingPage = dynamic(() => import("@/components/LandingPage"), {
   ssr: false,
@@ -41,6 +42,8 @@ const BabyIllustration = dynamic(() => import("@/components/BabyIllustration"), 
 export default function DashboardPage() {
   const store = useStore();
   const { user, isAuthenticated } = useAuth();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   if (!isAuthenticated) {
     return <LandingPage />;
@@ -149,7 +152,7 @@ export default function DashboardPage() {
               {week}
               <span className="text-2xl text-pink-400 ml-1">SA</span>
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               {weekData.fruit}
             </p>
             {dueDate && (
@@ -197,7 +200,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="mt-4 flex items-center justify-between">
-          <div className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+          <div className="text-xs text-gray-500 dark:text-gray-400">
             Progression : <span className="font-semibold text-pink-500">{progress}%</span>
           </div>
           {days !== null && (
@@ -224,7 +227,7 @@ export default function DashboardPage() {
         {store.dueDate && (
           <button
             onClick={() => setShowSetup(true)}
-            className="absolute top-3 right-3 text-gray-300 hover:text-gray-500 dark:text-gray-400 dark:text-gray-500"
+            className="absolute top-3 right-3 text-gray-300 hover:text-gray-500 dark:text-gray-400"
           >
             <Settings className="w-4 h-4" />
           </button>
@@ -263,7 +266,7 @@ export default function DashboardPage() {
             <div className="w-8 h-8 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
               <Scale className="w-4 h-4 text-pink-500" />
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Poids</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Poids</span>
           </div>
           {lastWeight ? (
             <>
@@ -290,7 +293,7 @@ export default function DashboardPage() {
             <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
               <Droplets className="w-4 h-4 text-purple-500" />
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Hydratation</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Hydratation</span>
           </div>
           <p className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">
             {waterToday} <span className="text-sm font-normal text-gray-400 dark:text-gray-500">ml</span>
@@ -315,7 +318,7 @@ export default function DashboardPage() {
             <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
               <Activity className="w-4 h-4 text-green-500" />
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Symptômes</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Symptômes</span>
           </div>
           {recentSymptoms.length > 0 ? (
             <div className="space-y-1">
@@ -345,7 +348,7 @@ export default function DashboardPage() {
             <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
               <Calendar className="w-4 h-4 text-orange-500" />
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Prochain RDV</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Prochain RDV</span>
           </div>
           {upcomingAppts.length > 0 ? (
             <div>
@@ -412,7 +415,7 @@ export default function DashboardPage() {
         transition={{ delay: 0.43 }}
         className="space-y-3"
       >
-        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 px-1">Explorer</h3>
+        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 px-1">Explorer</h3>
         <div className="grid grid-cols-3 gap-2">
           {[
             { href: "/timeline", emoji: "📅", label: "Timeline", color: "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900/30" },

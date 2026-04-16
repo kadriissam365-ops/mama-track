@@ -149,7 +149,7 @@ export default function MoodTab() {
               }`}
             >
               <span className="text-2xl">{mood.emoji}</span>
-              <span className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5">{mood.label}</span>
+              <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">{mood.label}</span>
             </button>
           ))}
         </div>
@@ -228,7 +228,7 @@ export default function MoodTab() {
                 {entry ? (
                   <>
                     <span className="text-base leading-none">{entry.mood_emoji}</span>
-                    <span className="text-[8px] text-gray-500 dark:text-gray-400 dark:text-gray-500 leading-tight">{day.getDate()}</span>
+                    <span className="text-[8px] text-gray-500 dark:text-gray-400 leading-tight">{day.getDate()}</span>
                   </>
                 ) : (
                   <span className={`text-[10px] font-medium ${isToday ? "text-pink-500" : "text-gray-400 dark:text-gray-500"}`}>
@@ -243,7 +243,7 @@ export default function MoodTab() {
         {/* Legend */}
         <div className="mt-3 flex flex-wrap gap-1.5">
           {MOODS.map((mood) => (
-            <div key={mood.emoji} className="flex items-center gap-1 text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">
+            <div key={mood.emoji} className="flex items-center gap-1 text-[10px] text-gray-500 dark:text-gray-400">
               <span>{mood.emoji}</span>
               <span>{mood.label}</span>
             </div>

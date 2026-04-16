@@ -49,7 +49,7 @@ function PrenomsCard({
           <Heart className={`w-4 h-4 ${isFavori ? "fill-pink-400" : ""}`} />
         </button>
       </div>
-      <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 font-medium">{prenom.origine}</p>
+      <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{prenom.origine}</p>
       <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed line-clamp-2">{prenom.signification}</p>
       <div className="flex items-center gap-1 mt-1">
         {[1, 2, 3].map((i) => (
@@ -131,7 +131,7 @@ export default function PrenomsPage() {
         <button
           onClick={() => setTab("tous")}
           className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${
-            tab === "tous" ? "bg-white dark:bg-gray-900 shadow-sm text-[#3d2b2b] dark:text-gray-100" : "text-gray-500 dark:text-gray-400 dark:text-gray-500"
+            tab === "tous" ? "bg-white dark:bg-gray-900 shadow-sm text-[#3d2b2b] dark:text-gray-100" : "text-gray-500 dark:text-gray-400"
           }`}
         >
           Tous ({filtered.length})
@@ -139,7 +139,7 @@ export default function PrenomsPage() {
         <button
           onClick={() => setTab("favoris")}
           className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${
-            tab === "favoris" ? "bg-white dark:bg-gray-900 shadow-sm text-[#3d2b2b] dark:text-gray-100" : "text-gray-500 dark:text-gray-400 dark:text-gray-500"
+            tab === "favoris" ? "bg-white dark:bg-gray-900 shadow-sm text-[#3d2b2b] dark:text-gray-100" : "text-gray-500 dark:text-gray-400"
           }`}
         >
           ❤️ Favoris ({favoris.length})
@@ -283,7 +283,7 @@ export default function PrenomsPage() {
               <p className={`text-center text-sm font-medium mb-4 ${GENRE_CONFIG[surprisePrenom.genre].badge.split(" ")[1]}`}>
                 {surprisePrenom.origine}
               </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 text-center mb-6">{surprisePrenom.signification}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-6">{surprisePrenom.signification}</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => {

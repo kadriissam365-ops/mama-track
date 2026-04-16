@@ -79,7 +79,7 @@ export default function JournalPage() {
         className="mb-8"
       >
         <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">Journal 📖</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Tes souvenirs précieux de grossesse</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Tes souvenirs précieux de grossesse</p>
       </motion.div>
 
       {/* Hero polaroid preview */}
@@ -122,7 +122,7 @@ export default function JournalPage() {
                 </div>
                 <div>
                   <p className="font-semibold text-gray-800 dark:text-gray-200">{card.title}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">{card.subtitle}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{card.subtitle}</p>
                   <p className="text-xs font-medium mt-1" style={{ color: "inherit" }}>
                     <span className={card.iconColor}>{card.stat}</span>
                   </p>

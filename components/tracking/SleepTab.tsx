@@ -150,7 +150,7 @@ export default function SleepTab() {
         {/* Bedtime / Waketime */}
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Coucher</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Coucher</label>
             <input
               type="time"
               value={bedtime}
@@ -159,7 +159,7 @@ export default function SleepTab() {
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Réveil</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Réveil</label>
             <input
               type="time"
               value={waketime}
@@ -176,7 +176,7 @@ export default function SleepTab() {
         </div>
 
         {/* Quality selector */}
-        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1.5 block">Qualité du sommeil</label>
+        <label className="text-xs text-gray-500 dark:text-gray-400 mb-1.5 block">Qualité du sommeil</label>
         <div className="flex gap-1.5 mb-3">
           {[1, 2, 3, 4, 5].map((q) => (
             <button
@@ -189,7 +189,7 @@ export default function SleepTab() {
               }`}
             >
               <span className="text-lg">{QUALITY_EMOJIS[q]}</span>
-              <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5">{QUALITY_LABELS[q]}</span>
+              <span className="text-[9px] text-gray-500 dark:text-gray-400 mt-0.5">{QUALITY_LABELS[q]}</span>
             </button>
           ))}
         </div>
@@ -197,7 +197,7 @@ export default function SleepTab() {
         {/* Night wakings + naps */}
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Réveils nocturnes</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Réveils nocturnes</label>
             <input
               type="number"
               min="0"
@@ -208,7 +208,7 @@ export default function SleepTab() {
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Sieste (min)</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Sieste (min)</label>
             <input
               type="number"
               min="0"
@@ -264,7 +264,7 @@ export default function SleepTab() {
                 const barH = Math.max(20, (dur / maxH) * 120);
                 return (
                   <div key={e.id} className="flex flex-col items-center flex-1 min-w-[28px]">
-                    <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-0.5">{formatDuration(dur)}</span>
+                    <span className="text-[9px] text-gray-500 dark:text-gray-400 mb-0.5">{formatDuration(dur)}</span>
                     <div
                       className="w-full rounded-t-lg bg-indigo-200"
                       style={{ height: `${barH}px` }}

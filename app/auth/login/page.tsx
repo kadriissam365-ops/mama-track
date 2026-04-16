@@ -72,7 +72,7 @@ export default function LoginPage() {
             <Heart className="w-10 h-10 text-white fill-white" />
           </motion.div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">MamaTrack</h1>
-          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-2">Suivez votre grossesse en toute sérénité</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Suivez votre grossesse en toute sérénité</p>
         </motion.div>
 
         {/* Form */}
@@ -162,7 +162,7 @@ export default function LoginPage() {
 
 
 
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-6">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
             Pas encore de compte ?{" "}
             <Link
               href="/auth/signup"

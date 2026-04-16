@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Minus } from "lucide-react";
 import { WATER_GOAL_ML } from "@/lib/constants";
+import { useTheme } from "next-themes";
 
 interface WaterTabProps {
   today: string;
@@ -15,6 +16,8 @@ const AMOUNTS = [250, 500, 750, 1000];
 
 export default function WaterTab({ today }: WaterTabProps) {
   const store = useStore();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   const waterToday = store.waterIntake[today] ?? 0;
   const goal = WATER_GOAL_ML;
   const pct = Math.min(100, (waterToday / goal) * 100);
@@ -30,13 +33,13 @@ export default function WaterTab({ today }: WaterTabProps) {
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-blue-100 dark:border-blue-900/30 text-center">
         <div className="relative w-40 h-40 mx-auto mb-4">
           <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#e0f2fe" strokeWidth="10" />
+            <circle cx="60" cy="60" r="50" fill="none" stroke={isDark ? "#1e3a5f" : "#e0f2fe"} strokeWidth="10" />
             <motion.circle
               cx="60"
               cy="60"
               r="50"
               fill="none"
-              stroke="#7dd3fc"
+              stroke={isDark ? "#38bdf8" : "#7dd3fc"}
               strokeWidth="10"
               strokeLinecap="round"
               strokeDasharray={2 * Math.PI * 50}

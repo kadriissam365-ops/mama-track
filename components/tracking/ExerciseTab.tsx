@@ -174,7 +174,7 @@ export default function ExerciseTab() {
               }`}
             >
               <span className="text-xl">{act.emoji}</span>
-              <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5 text-center leading-tight">{act.label}</span>
+              <span className="text-[9px] text-gray-500 dark:text-gray-400 mt-0.5 text-center leading-tight">{act.label}</span>
             </button>
           ))}
         </div>
@@ -182,7 +182,7 @@ export default function ExerciseTab() {
         {/* Duration + Intensity */}
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Durée (min)</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Durée (min)</label>
             <input
               type="number"
               min="5"
@@ -193,7 +193,7 @@ export default function ExerciseTab() {
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Intensité</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Intensité</label>
             <div className="flex gap-1">
               {INTENSITIES.map((int) => (
                 <button
@@ -245,7 +245,7 @@ export default function ExerciseTab() {
               return (
                 <div key={i} className="flex flex-col items-center flex-1">
                   {dayMins > 0 && (
-                    <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-0.5">{dayMins}m</span>
+                    <span className="text-[9px] text-gray-500 dark:text-gray-400 mb-0.5">{dayMins}m</span>
                   )}
                   <div
                     className={`w-full rounded-t-lg ${dayMins > 0 ? "bg-emerald-300" : "bg-gray-100 dark:bg-gray-800"}`}

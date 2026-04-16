@@ -107,7 +107,7 @@ export default function SettingsPage() {
           className={`flex-1 py-2.5 text-sm font-medium rounded-xl transition-all flex items-center justify-center gap-2 ${
             activeTab === "profile"
               ? "bg-white dark:bg-gray-900 text-pink-600 shadow-sm"
-              : "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-pink-400"
+              : "text-gray-500 dark:text-gray-400 hover:text-pink-400"
           }`}
         >
           <User className="w-4 h-4" />
@@ -118,7 +118,7 @@ export default function SettingsPage() {
           className={`flex-1 py-2.5 text-sm font-medium rounded-xl transition-all flex items-center justify-center gap-2 ${
             activeTab === "notifications"
               ? "bg-white dark:bg-gray-900 text-pink-600 shadow-sm"
-              : "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-pink-400"
+              : "text-gray-500 dark:text-gray-400 hover:text-pink-400"
           }`}
         >
           <Bell className="w-4 h-4" />
@@ -135,7 +135,7 @@ export default function SettingsPage() {
           {/* User info */}
           {user && (
             <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 border border-pink-100 dark:border-pink-900/30">
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1">{t("settings.connectedWith")}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t("settings.connectedWith")}</p>
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{user.email}</p>
             </div>
           )}
@@ -145,7 +145,7 @@ export default function SettingsPage() {
             <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">{t("settings.myProfile")}</h3>
 
             <div>
-              <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 flex items-center gap-1 mb-1">
+              <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mb-1">
                 <User className="w-3 h-3" />
                 {t("settings.firstName")}
               </label>
@@ -159,7 +159,7 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 flex items-center gap-1 mb-1">
+              <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mb-1">
                 <Baby className="w-3 h-3" />
                 {t("settings.babyName")}
               </label>
@@ -173,7 +173,7 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 flex items-center gap-1 mb-1">
+              <label className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mb-1">
                 <Calendar className="w-3 h-3" />
                 {t("settings.dueDate")}
               </label>

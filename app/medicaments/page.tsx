@@ -262,7 +262,7 @@ export default function MedicamentsPage() {
               return (
                 <div key={d.date} className="flex flex-col items-center flex-1">
                   {d.taken > 0 && (
-                    <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-0.5">{d.taken}/{d.total}</span>
+                    <span className="text-[9px] text-gray-500 dark:text-gray-400 mb-0.5">{d.taken}/{d.total}</span>
                   )}
                   <div
                     className={`w-full rounded-t-lg ${
@@ -322,7 +322,7 @@ export default function MedicamentsPage() {
               {/* Quick presets */}
               {showPresets && (
                 <div className="mb-4">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-2">Suggestions grossesse :</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Suggestions grossesse :</p>
                   <div className="grid grid-cols-2 gap-2">
                     {PRESET_MEDS.map((preset) => {
                       const alreadyAdded = medications.some((m) => m.name === preset.name);
@@ -367,7 +367,7 @@ export default function MedicamentsPage() {
               {!showPresets && (
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Nom</label>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Nom</label>
                     <input
                       type="text"
                       value={newName}
@@ -378,7 +378,7 @@ export default function MedicamentsPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Dosage</label>
+                      <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Dosage</label>
                       <input
                         type="text"
                         value={newDosage}
@@ -388,7 +388,7 @@ export default function MedicamentsPage() {
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Heure</label>
+                      <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Heure</label>
                       <input
                         type="time"
                         value={newTime}
@@ -398,7 +398,7 @@ export default function MedicamentsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Fréquence</label>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Fréquence</label>
                     <div className="flex gap-2">
                       {FREQUENCIES.map((f) => (
                         <button

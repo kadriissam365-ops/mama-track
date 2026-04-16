@@ -62,7 +62,7 @@ export default function ForgotPasswordPage() {
             <div className="text-center space-y-4">
               <CheckCircle className="w-16 h-16 text-green-400 mx-auto" />
               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Email envoyé !</h2>
-              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
                 Un lien de réinitialisation a été envoyé à <strong>{email}</strong>. Vérifiez aussi vos spams.
               </p>
               <Link
@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2 text-center">
                 Mot de passe oublié ?
               </h2>
-              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm text-center mb-6">
+              <p className="text-gray-500 dark:text-gray-400 text-sm text-center mb-6">
                 Entrez votre email pour recevoir un lien de réinitialisation
               </p>
 
@@ -123,7 +123,7 @@ export default function ForgotPasswordPage() {
 
               <Link
                 href="/auth/login"
-                className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-pink-500 mt-6"
+                className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-pink-500 mt-6"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Retour à la connexion

@@ -166,11 +166,11 @@ export default function UrgencesPage() {
         </a>
         <a href="tel:18" className="flex flex-col items-center gap-1 bg-orange-50 dark:bg-orange-950/30 border border-orange-200 rounded-2xl py-3 hover:bg-orange-100 dark:bg-orange-900/30 transition-colors">
           <span className="text-xl">🚒</span>
-          <span className="text-[10px] font-semibold text-orange-600">Pompiers 18</span>
+          <span className="text-[10px] font-semibold text-orange-600 dark:text-orange-400">Pompiers 18</span>
         </a>
         <a href="tel:112" className="flex flex-col items-center gap-1 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 rounded-2xl py-3 hover:bg-blue-100 dark:hover:bg-blue-900/30 dark:bg-blue-900/30 transition-colors">
           <span className="text-xl">🆘</span>
-          <span className="text-[10px] font-semibold text-blue-600">Urgences 112</span>
+          <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">Urgences 112</span>
         </a>
       </div>
 
@@ -217,7 +217,7 @@ export default function UrgencesPage() {
                   onClick={() => startEdit(contact)}
                   className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:bg-gray-700 transition-colors"
                 >
-                  <Edit3 className="w-3 h-3 text-gray-500 dark:text-gray-400 dark:text-gray-500" />
+                  <Edit3 className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                 </button>
                 <button
                   onClick={() => setConfirmDelete(contact.id)}
@@ -248,7 +248,7 @@ export default function UrgencesPage() {
                       className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium whitespace-nowrap transition-all ${
                         selectedRole.role === role.role
                           ? "bg-pink-400 text-white"
-                          : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 dark:text-gray-500"
+                          : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400"
                       }`}
                     >
                       <span>{role.emoji}</span>
@@ -281,7 +281,7 @@ export default function UrgencesPage() {
                   </button>
                   <button
                     onClick={resetForm}
-                    className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 dark:text-gray-500 rounded-xl text-sm hover:bg-gray-300 transition-colors"
+                    className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-xl text-sm hover:bg-gray-300 transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>

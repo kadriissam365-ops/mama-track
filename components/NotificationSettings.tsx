@@ -288,7 +288,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Notifications push
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 {pushSubscribed
                   ? "Recevez des rappels meme en arriere-plan"
                   : "Activez pour recevoir des rappels en arriere-plan"}
@@ -344,7 +344,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Conseil du jour
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Un conseil quotidien adapte a votre semaine
               </p>
             </div>
@@ -357,7 +357,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         </div>
         {prefs.dailyTips && prefsLoaded && (
           <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
+            <label className="text-xs text-gray-500 dark:text-gray-400 block mb-2">
               Heure d&apos;envoi
             </label>
             <input
@@ -381,7 +381,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Rappels hydratation
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Toutes les {Math.round(prefs.hydrationIntervalMinutes / 60)}h
                 {prefs.hydrationIntervalMinutes % 60 > 0
                   ? `${prefs.hydrationIntervalMinutes % 60}min`
@@ -401,7 +401,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
 
         {settings.waterReminders && (
           <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
+            <label className="text-xs text-gray-500 dark:text-gray-400 block mb-2">
               Intervalle
             </label>
             <div className="flex gap-2">
@@ -446,7 +446,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Medicaments matin
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Rappel a 8h00</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Rappel a 8h00</p>
             </div>
           </div>
           <button
@@ -476,7 +476,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Medicaments soir
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Rappel a 20h00</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Rappel a 20h00</p>
             </div>
           </div>
           <button
@@ -504,7 +504,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
             </div>
             <div>
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Rappels RDV</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Rappels avant chaque rendez-vous
               </p>
             </div>
@@ -525,7 +525,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         </div>
         {settings.appointmentReminders && prefsLoaded && (
           <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
+            <label className="text-xs text-gray-500 dark:text-gray-400 block mb-2">
               Rappeler
             </label>
             <div className="flex gap-2">
@@ -573,7 +573,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Etapes hebdomadaires
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Notification a chaque nouvelle semaine
               </p>
             </div>
@@ -599,7 +599,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Rappels mouvements
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Rappel quotidien pour compter les mouvements
               </p>
             </div>
@@ -614,7 +614,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         </div>
         {prefs.kickCountReminders && prefsLoaded && (
           <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
-            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
+            <label className="text-xs text-gray-500 dark:text-gray-400 block mb-2">
               Heure du rappel
             </label>
             <input
@@ -638,7 +638,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Mode duo (partenaire)
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Partagez les etapes et rappels avec votre partenaire
               </p>
             </div>

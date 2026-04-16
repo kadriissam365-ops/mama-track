@@ -157,7 +157,7 @@ function AnimatedStat({ value, label, icon }: { value: string; label: string; ic
       <p className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
         {numericMatch ? `${count}${suffix}` : value}
       </p>
-      <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1 font-medium">{label}</p>
+      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{label}</p>
     </div>
   );
 }
@@ -308,7 +308,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35 }}
-          className="text-sm sm:text-base text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-10 max-w-md mx-auto"
+          className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-10 max-w-md mx-auto"
         >
           Du premier jour jusqu&apos;a la naissance : suivi bebe, 10+ trackers sante, mode duo, 250+ prenoms et projet naissance PDF.
         </motion.p>
@@ -379,7 +379,7 @@ export default function LandingPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-3">
             Votre bebe grandit, <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">on vous montre tout</span>
           </h2>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 dark:text-gray-500 max-w-md mx-auto">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
             Chaque semaine, decouvrez la taille de votre bebe comparee a un fruit, son developpement et des conseils personnalises.
           </p>
         </motion.div>
@@ -421,7 +421,7 @@ export default function LandingPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-3">
             Tout ce dont vous avez besoin, <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">en un seul endroit</span>
           </h2>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 dark:text-gray-500 max-w-md mx-auto">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
             Une application complete pour vivre sereinement chaque etape de votre grossesse.
           </p>
         </motion.div>
@@ -443,7 +443,7 @@ export default function LandingPage() {
                   <f.icon className={`w-5 h-5 ${textColor}`} />
                 </div>
                 <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-1">{f.title}</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 leading-relaxed">{f.desc}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{f.desc}</p>
               </motion.div>
             );
           })}
@@ -555,7 +555,7 @@ export default function LandingPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-3">
             Pourquoi choisir <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">MamaTrack</span> ?
           </h2>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 dark:text-gray-500 max-w-md mx-auto">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
             Concue par des parents, pour des parents. Pas de surprises, pas de frais caches.
           </p>
         </motion.div>
@@ -574,7 +574,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[#3d2b2b] dark:text-gray-100 mb-1">{d.title}</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 leading-relaxed">{d.desc}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{d.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -593,7 +593,7 @@ export default function LandingPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-3">
             Comment ca <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">marche</span>
           </h2>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 dark:text-gray-500 max-w-md mx-auto">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
             Commencez a suivre votre grossesse en moins d&apos;une minute.
           </p>
         </motion.div>
@@ -641,7 +641,7 @@ export default function LandingPage() {
               </div>
 
               <h3 className="text-sm font-bold text-[#3d2b2b] dark:text-gray-100 mb-1">{step.title}</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 leading-relaxed max-w-[180px]">{step.desc}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-[180px]">{step.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -666,7 +666,7 @@ export default function LandingPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-3">
             Ce qu&apos;elles en disent
           </h2>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 dark:text-gray-500 max-w-md mx-auto">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
             Des mamans font confiance a MamaTrack pour les accompagner tout au long de leur grossesse.
           </p>
         </motion.div>
@@ -719,7 +719,7 @@ export default function LandingPage() {
           <h2 className="text-2xl sm:text-3xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-3">
             Questions frequentes
           </h2>
-          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 dark:text-gray-500">
+          <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">
             Tout ce que vous devez savoir avant de commencer.
           </p>
         </motion.div>
@@ -797,7 +797,7 @@ export default function LandingPage() {
             { icon: "💶", text: "Gratuit pour toujours" },
             { icon: "📱", text: "Fonctionne hors ligne" },
           ].map((badge) => (
-            <div key={badge.text} className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 font-medium">
+            <div key={badge.text} className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium">
               <span className="text-base">{badge.icon}</span>
               {badge.text}
             </div>
@@ -859,7 +859,7 @@ export default function LandingPage() {
           <h2 className="text-xl sm:text-2xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-2">
             Restez informee chaque semaine
           </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-6 max-w-md mx-auto">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
             Recevez des conseils grossesse chaque semaine directement dans votre boite mail.
           </p>
           <form
@@ -896,7 +896,7 @@ export default function LandingPage() {
               </div>
               <span className="font-bold text-[#3d2b2b] dark:text-gray-100 text-lg">MamaTrack</span>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 leading-relaxed mb-4">
+            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
               Votre compagnon de grossesse gratuit, complet et sans pub. Fait avec amour en France.
             </p>
           </div>
@@ -912,7 +912,7 @@ export default function LandingPage() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-pink-500 transition-colors"
+                      className="text-xs text-gray-500 dark:text-gray-400 hover:text-pink-500 transition-colors"
                     >
                       {link.label}
                     </Link>

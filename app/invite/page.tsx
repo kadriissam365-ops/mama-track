@@ -187,7 +187,7 @@ function InviteContent() {
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
             Invitation MamaTrack
           </h1>
-          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             Vous êtes invité(e) en tant que <span className="font-semibold text-pink-500">{roleInfo.label}</span>
           </p>
         </div>
@@ -244,7 +244,7 @@ function InviteContent() {
           </button>
         ) : (
           <div className="space-y-3">
-            <p className="text-sm text-center text-gray-500 dark:text-gray-400 dark:text-gray-500">
+            <p className="text-sm text-center text-gray-500 dark:text-gray-400">
               Connectez-vous pour accepter cette invitation
             </p>
             <button

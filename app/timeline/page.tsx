@@ -164,7 +164,7 @@ export default function TimelinePage() {
                             Semaine {week}
                             {isCurrent && <span className="ml-2 text-xs bg-pink-400 text-white px-2 py-0.5 rounded-full">Vous êtes ici</span>}
                           </p>
-                          <p className={`text-xs ${isPast || isCurrent ? "text-gray-500 dark:text-gray-400 dark:text-gray-500" : "text-gray-300 dark:text-gray-500"}`}>
+                          <p className={`text-xs ${isPast || isCurrent ? "text-gray-500 dark:text-gray-400" : "text-gray-300 dark:text-gray-500"}`}>
                             {weekData.fruit} · {weekData.sizeMm >= 100 ? `${(weekData.sizeMm / 10).toFixed(0)} cm` : `${weekData.sizeMm} mm`} · {weekData.weightG >= 1000 ? `${(weekData.weightG / 1000).toFixed(1)} kg` : `${weekData.weightG} g`}
                           </p>
                         </div>

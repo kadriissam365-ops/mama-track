@@ -353,17 +353,17 @@ export default function CommunityContent() {
       <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 flex items-center justify-around border border-pink-100 dark:border-pink-900/30">
         <div className="text-center">
           <p className="text-lg font-bold text-pink-500">{posts.length}</p>
-          <p className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">Publications</p>
+          <p className="text-[10px] text-gray-500 dark:text-gray-400">Publications</p>
         </div>
         <div className="w-px h-8 bg-pink-200" />
         <div className="text-center">
           <p className="text-lg font-bold text-purple-500">{totalReactions}</p>
-          <p className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">Reactions</p>
+          <p className="text-[10px] text-gray-500 dark:text-gray-400">Reactions</p>
         </div>
         <div className="w-px h-8 bg-pink-200" />
         <div className="text-center">
           <p className="text-lg font-bold text-emerald-500">{uniqueAuthors}</p>
-          <p className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">Mamans</p>
+          <p className="text-[10px] text-gray-500 dark:text-gray-400">Mamans</p>
         </div>
       </div>
 
@@ -601,7 +601,7 @@ export default function CommunityContent() {
                 </p>
               </div>
 
-              <div className="bg-pink-50 dark:bg-pink-950/30 rounded-xl p-3 text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 flex items-center gap-2">
+              <div className="bg-pink-50 dark:bg-pink-950/30 rounded-xl p-3 text-xs text-gray-600 dark:text-gray-400 flex items-center gap-2">
                 <Heart className="w-4 h-4 text-pink-400 flex-shrink-0" />
                 <span>
                   Publie en tant que : <strong>{myPseudo}</strong>
@@ -648,7 +648,7 @@ export default function CommunityContent() {
                     <h3 className="font-bold text-[#3d2b2b] dark:text-gray-100">
                       Merci pour votre signalement
                     </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Notre equipe examinera ce post dans les plus brefs delais.
                     </p>
                   </div>

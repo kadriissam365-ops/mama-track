@@ -196,7 +196,7 @@ export default function ContractionsPage() {
           </button>
         ) : (
           <div className="space-y-4">
-            <div className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
+            <div className="text-sm text-gray-500 dark:text-gray-400">
               Durée de session : <span className="font-semibold text-pink-500">{formatDuration(elapsed)}</span>
             </div>
 
@@ -353,7 +353,7 @@ export default function ContractionsPage() {
       {/* Sessions passées */}
       {pastSessions.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
             Sessions passées
           </h2>
           {pastSessions.map((session) => {
@@ -372,7 +372,7 @@ export default function ContractionsPage() {
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
                   <span>{session.contractions.length} contractions</span>
                   {sessionAnalysis.avgDuration > 0 && (
                     <span>Durée moy : {formatDuration(sessionAnalysis.avgDuration)}</span>

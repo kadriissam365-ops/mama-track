@@ -84,7 +84,7 @@ export default function SignupPage() {
             Nous avons envoyé un lien de confirmation à <br />
             <span className="font-medium text-pink-500">{email}</span>
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-6">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
             Cliquez sur le lien dans l&apos;email pour activer votre compte et commencer votre suivi de grossesse.
           </p>
           <Link
@@ -116,7 +116,7 @@ export default function SignupPage() {
             <Heart className="w-10 h-10 text-white fill-white" />
           </motion.div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">MamaTrack</h1>
-          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-2">Créez votre compte</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Créez votre compte</p>
         </div>
 
         {/* Form */}
@@ -217,7 +217,7 @@ export default function SignupPage() {
 
 
 
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-6">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
             Déjà un compte ?{" "}
             <Link
               href="/auth/login"

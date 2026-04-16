@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Plus, Trash2 } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { useTheme } from "next-themes";
 
 interface AbdomenEntry {
   id: string;
@@ -18,6 +19,8 @@ interface AbdomenEntry {
 
 // Simple SVG chart for abdomen evolution
 function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   if (entries.length < 2) return null;
 
   const data = entries.slice(-12);
@@ -50,8 +53,8 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
           const val = Math.round(maxVal - (i / 3) * (maxVal - minVal));
           return (
             <g key={i}>
-              <line x1={padX} y1={y} x2={width - padX} y2={y} stroke="#f3e8ff" strokeWidth="1" />
-              <text x={padX - 4} y={y + 4} textAnchor="end" fontSize="8" fill="#9b7b8a">
+              <line x1={padX} y1={y} x2={width - padX} y2={y} stroke={isDark ? "#374151" : "#f3e8ff"} strokeWidth="1" />
+              <text x={padX - 4} y={y + 4} textAnchor="end" fontSize="8" fill={isDark ? "#9ca3af" : "#9b7b8a"}>
                 {val}
               </text>
             </g>
@@ -65,13 +68,13 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
             y={height - 2}
             textAnchor="middle"
             fontSize="7"
-            fill="#9b7b8a"
+            fill={isDark ? "#9ca3af" : "#9b7b8a"}
           >
             {format(new Date(e.measured_at), "dd/MM")}
           </text>
         ))}
         {/* Line */}
-        <path d={path} fill="none" stroke="#C084FC" strokeWidth="2.5" strokeLinejoin="round" />
+        <path d={path} fill="none" stroke={isDark ? "#c084fc" : "#C084FC"} strokeWidth="2.5" strokeLinejoin="round" />
         {/* Area under curve */}
         <path
           d={`${path} L ${toX(data.length - 1)} ${height - padY} L ${toX(0)} ${height - padY} Z`}
@@ -86,7 +89,7 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
         </defs>
         {/* Dots */}
         {data.map((e, i) => (
-          <circle key={i} cx={toX(i)} cy={toY(e.circumference)} r="3.5" fill="#C084FC" />
+          <circle key={i} cx={toX(i)} cy={toY(e.circumference)} r="3.5" fill={isDark ? "#c084fc" : "#C084FC"} />
         ))}
       </svg>
     </div>
@@ -189,7 +192,7 @@ export default function AbdomenTab() {
         <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/30 rounded-2xl px-4 py-3 flex items-center gap-3">
           <span className="text-2xl">📏</span>
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Dernière mesure</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Dernière mesure</p>
             <p className="text-lg font-bold text-purple-700 dark:text-purple-300">
               {lastEntry.circumference} cm
               {diff !== null && (

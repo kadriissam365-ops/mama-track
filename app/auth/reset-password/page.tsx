@@ -115,14 +115,14 @@ function ResetPasswordContent() {
             <div className="text-center space-y-4">
               <CheckCircle className="w-16 h-16 text-green-400 mx-auto" />
               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Mot de passe mis à jour !</h2>
-              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">Redirection en cours...</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">Redirection en cours...</p>
             </div>
           ) : (
             <>
               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2 text-center">
                 Nouveau mot de passe
               </h2>
-              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm text-center mb-6">
+              <p className="text-gray-500 dark:text-gray-400 text-sm text-center mb-6">
                 Choisissez un nouveau mot de passe sécurisé
               </p>
 

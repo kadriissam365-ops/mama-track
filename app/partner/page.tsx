@@ -212,7 +212,7 @@ export default function PartnerViewPage() {
       {/* Back button */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1.5 text-sm text-teal-600 hover:text-teal-800 transition-colors"
+        className="flex items-center gap-1.5 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" /> {t("common.back")}
       </button>
@@ -224,8 +224,8 @@ export default function PartnerViewPage() {
         </div>
         <h1 className="text-2xl font-bold text-[#2b3d3d] dark:text-gray-100">{t("partner.title")}</h1>
         {store.mamaName && (
-          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
-            {t("partner.pregnancyOf")} <span className="font-semibold text-teal-600">{store.mamaName}</span>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
+            {t("partner.pregnancyOf")} <span className="font-semibold text-teal-600 dark:text-teal-400">{store.mamaName}</span>
           </p>
         )}
       </div>
@@ -245,7 +245,7 @@ export default function PartnerViewPage() {
         <h2 className="text-5xl font-bold text-[#2b3d3d] dark:text-gray-100">
           {week} <span className="text-2xl text-teal-500">{t("partner.week")}</span>
         </h2>
-        <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
+        <p className="text-gray-500 dark:text-gray-400 mt-1">
           {store.babyName || "Baby"} : {t("partner.likeFruit")} {weekData.fruit}
         </p>
         <div className="flex justify-center gap-4 mt-2 text-xs text-gray-400 dark:text-gray-500">
@@ -254,7 +254,7 @@ export default function PartnerViewPage() {
         </div>
         {days !== null && (
           <div className="mt-3 bg-white dark:bg-gray-900 rounded-2xl px-4 py-2 inline-block shadow-sm">
-            <span className="text-2xl font-bold text-teal-600">{days}</span>
+            <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">{days}</span>
             <span className="text-sm text-gray-400 dark:text-gray-500 ml-1">
               {t("partner.daysBefore")}{store.babyName ? ` ${store.babyName}` : ""}
             </span>
@@ -382,7 +382,7 @@ export default function PartnerViewPage() {
               const catDone = items.filter((i) => i.done).length;
               return (
                 <div key={cat}>
-                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
                     {cat} ({catDone}/{items.length})
                   </p>
                   <div className="flex flex-wrap gap-1.5">
@@ -500,14 +500,14 @@ export default function PartnerViewPage() {
       <motion.div
         {...anim}
         transition={{ delay: 0.45 }}
-        className="bg-gradient-to-r from-teal-50 to-blue-50 rounded-3xl p-5 border border-teal-100 dark:border-teal-900/30"
+        className="bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-950/30 dark:to-blue-950/30 rounded-3xl p-5 border border-teal-100 dark:border-teal-900/30"
       >
-        <p className="text-xs font-semibold text-teal-600 mb-2 flex items-center gap-1.5">
+        <p className="text-xs font-semibold text-teal-600 dark:text-teal-400 mb-2 flex items-center gap-1.5">
           💡 Conseil du jour pour vous
         </p>
         <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{tipOfDay}</p>
         {weekData.partnerTip && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 leading-relaxed mt-2 pt-2 border-t border-teal-100 dark:border-teal-900/30">
+          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mt-2 pt-2 border-t border-teal-100 dark:border-teal-900/30">
             {weekData.partnerTip}
           </p>
         )}
@@ -539,7 +539,7 @@ export default function PartnerViewPage() {
           <motion.p
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center text-sm text-teal-600 mt-3 font-medium"
+            className="text-center text-sm text-teal-600 dark:text-teal-400 mt-3 font-medium"
           >
             ✓ Message envoyé avec amour
           </motion.p>

@@ -169,7 +169,7 @@ export default function AgendaPage() {
 
       {/* RDV à venir */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+        <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
           À venir ({upcoming.length})
         </h2>
         {upcoming.length === 0 ? (
@@ -200,10 +200,10 @@ export default function AgendaPage() {
                       {format(new Date(appt.date + "T00:00:00"), "EEEE d MMMM yyyy", { locale: fr })} à {appt.time}
                     </p>
                     {appt.doctor && (
-                      <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5">👨‍⚕️ {appt.doctor}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">👨‍⚕️ {appt.doctor}</p>
                     )}
                     {appt.location && (
-                      <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">📍 {appt.location}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">📍 {appt.location}</p>
                     )}
                     {appt.notes && (
                       <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 italic">{appt.notes}</p>
@@ -234,7 +234,7 @@ export default function AgendaPage() {
 
       {/* Checklist examens par trimestre */}
       <div>
-        <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+        <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
           Examens par trimestre
         </h2>
         {([1, 2, 3] as const).map((t) => {
@@ -250,7 +250,7 @@ export default function AgendaPage() {
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${trimesterHeaderColors[t]}`}>
                     {t === 1 ? "1er" : t === 2 ? "2ème" : "3ème"} trimestre
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">{exams.length} examens</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{exams.length} examens</span>
                 </div>
                 {isExpanded ? (
                   <ChevronUp className="w-4 h-4 text-gray-400 dark:text-gray-500" />
@@ -309,7 +309,7 @@ export default function AgendaPage() {
       {/* RDV passés */}
       {past.length > 0 && (
         <div>
-          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
             Passés ({past.length})
           </h2>
           <div className="space-y-2">

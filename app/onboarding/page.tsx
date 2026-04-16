@@ -203,7 +203,7 @@ export default function OnboardingPage() {
                   <Heart className="w-8 h-8 text-white fill-white" />
                 </motion.div>
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Bienvenue ! 🌸</h2>
-                <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-2">Comment vous appelez-vous ?</p>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">Comment vous appelez-vous ?</p>
               </div>
 
               <div className="space-y-4">
@@ -260,7 +260,7 @@ export default function OnboardingPage() {
                   <FlaskConical className="w-8 h-8 text-white" />
                 </motion.div>
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Mode de conception 🌸</h2>
-                <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-2">Pour calculer votre DPA avec précision</p>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">Pour calculer votre DPA avec précision</p>
               </div>
 
               <div className="space-y-3">
@@ -289,7 +289,7 @@ export default function OnboardingPage() {
                       <span className="text-2xl">{opt.icon}</span>
                       <div>
                         <p className="font-semibold text-gray-800 dark:text-gray-100">{opt.label}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5">{opt.desc}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{opt.desc}</p>
                       </div>
                       {conceptionMode === opt.value && (
                         <span className="ml-auto text-pink-500">✓</span>
@@ -322,7 +322,7 @@ export default function OnboardingPage() {
                   <Calendar className="w-8 h-8 text-white" />
                 </motion.div>
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Quand bébé arrive ? 📅</h2>
-                <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-2">Choisissez votre méthode de calcul</p>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">Choisissez votre méthode de calcul</p>
               </div>
 
               {/* Method selector */}
@@ -338,7 +338,7 @@ export default function OnboardingPage() {
                     }`}
                   >
                     <p className="font-medium text-gray-800 dark:text-gray-100 text-sm">{opt.label}</p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">{opt.desc}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{opt.desc}</p>
                   </button>
                 ))}
               </div>
@@ -427,7 +427,7 @@ export default function OnboardingPage() {
                             className={`flex-1 py-2.5 rounded-xl border-2 font-semibold text-sm transition-all ${
                               fivStade === stade
                                 ? "border-purple-400 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-300"
-                                : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 dark:text-gray-500"
+                                : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400"
                             }`}
                           >
                             {stade} {stade === "J3" ? "(+263j)" : "(+261j)"}
@@ -480,7 +480,7 @@ export default function OnboardingPage() {
                   <Bell className="w-8 h-8 text-white" />
                 </motion.div>
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Notifications 🔔</h2>
-                <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-2">Choisissez ce que vous voulez recevoir</p>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">Choisissez ce que vous voulez recevoir</p>
               </div>
 
               <div className="space-y-3">
@@ -502,7 +502,7 @@ export default function OnboardingPage() {
                       <span className="text-2xl">{notif.emoji}</span>
                       <div className="flex-1">
                         <p className="font-semibold text-gray-800 dark:text-gray-100">{notif.label}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5">{notif.desc}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{notif.desc}</p>
                       </div>
                       <div className={`w-12 h-7 rounded-full transition-colors flex items-center ${
                         notif.value ? "bg-orange-400 justify-end" : "bg-gray-300 justify-start"
@@ -541,29 +541,29 @@ export default function OnboardingPage() {
                   <Sparkles className="w-8 h-8 text-white" />
                 </motion.div>
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Tout est prêt ! ✨</h2>
-                <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-2">Vérifiez vos informations</p>
+                <p className="text-gray-500 dark:text-gray-400 mt-2">Vérifiez vos informations</p>
               </div>
 
               <div className="bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30 rounded-2xl p-5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-500 dark:text-gray-400 dark:text-gray-500">Prénom</span>
+                  <span className="text-gray-500 dark:text-gray-400">Prénom</span>
                   <span className="font-semibold text-gray-800 dark:text-gray-100">{mamaName}</span>
                 </div>
                 {babyName && (
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500 dark:text-gray-400 dark:text-gray-500">Bébé</span>
+                    <span className="text-gray-500 dark:text-gray-400">Bébé</span>
                     <span className="font-semibold text-gray-800 dark:text-gray-100">{babyName}</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-500 dark:text-gray-400 dark:text-gray-500">Mode</span>
+                  <span className="text-gray-500 dark:text-gray-400">Mode</span>
                   <span className="font-semibold text-gray-800 dark:text-gray-100">
                     {conceptionMode === "naturelle" ? "🌸 Naturelle" : conceptionMode === "fiv_frais" ? "🔬 FIV frais" : "🧊 FIV TEC"}
                   </span>
                 </div>
                 {finalDueDate && (
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-500 dark:text-gray-400 dark:text-gray-500">DPA</span>
+                    <span className="text-gray-500 dark:text-gray-400">DPA</span>
                     <span className="font-semibold text-gray-800 dark:text-gray-100">
                       {new Date(finalDueDate).toLocaleDateString("fr-FR", {
                         day: "numeric",
@@ -575,7 +575,7 @@ export default function OnboardingPage() {
                 )}
               </div>
 
-              <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 text-center mt-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-4">
                 Vous pourrez modifier ces informations à tout moment dans les paramètres.
               </p>
             </motion.div>

@@ -50,7 +50,7 @@ export default function TrackingPage() {
             className={`flex-shrink-0 flex-1 py-1.5 text-xs font-medium rounded-xl transition-all whitespace-nowrap ${
               activeTab === tab.id
                 ? "bg-white dark:bg-gray-900 text-pink-600 shadow-sm"
-                : "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-pink-400"
+                : "text-gray-500 dark:text-gray-400 hover:text-pink-400"
             }`}
           >
             {tab.label}

@@ -154,7 +154,7 @@ export default function PhotosContent() {
                   {/* Card */}
                   <div className="flex-1 mb-2">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500">Semaine {slot.week}</span>
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Semaine {slot.week}</span>
                       {slot.week === currentWeek && (
                         <span className="text-[10px] bg-pink-100 dark:bg-pink-900/30 text-pink-600 rounded-full px-2 py-0.5">
                           Actuelle
@@ -197,7 +197,7 @@ export default function PhotosContent() {
                           </div>
                         ) : (
                           <div className="mt-2 flex items-start justify-between gap-2">
-                            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 flex-1">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 flex-1">
                               {slot.photo.note || (
                                 <span className="italic text-gray-400 dark:text-gray-500">Ajouter une note...</span>
                               )}
@@ -280,7 +280,7 @@ export default function PhotosContent() {
                 <div className="flex justify-between items-center mb-3">
                   <span className="font-semibold text-gray-700 dark:text-gray-300">Semaine {modalSlot.week}</span>
                   <button onClick={() => setModalSlot(null)}>
-                    <X className="w-5 h-5 text-gray-500 dark:text-gray-400 dark:text-gray-500" />
+                    <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   </button>
                 </div>
                 <div className="relative w-full" style={{ aspectRatio: "3/4" }}>
@@ -318,7 +318,7 @@ export default function PhotosContent() {
               className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 w-full max-w-lg"
             >
               <p className="text-center font-semibold text-gray-800 dark:text-gray-200 mb-2">Supprimer cette photo ?</p>
-              <p className="text-center text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-6">Cette action est irreversible</p>
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">Cette action est irreversible</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}

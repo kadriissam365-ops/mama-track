@@ -62,7 +62,7 @@ export default function GalerieContent() {
         ) : photos.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-5xl mb-4">🎞️</p>
-            <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">Aucune photo pour l&apos;instant</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Aucune photo pour l&apos;instant</p>
             <button
               onClick={() => router.push("/journal/photos")}
               className="mt-4 text-sm text-violet-500 underline"
@@ -100,7 +100,7 @@ export default function GalerieContent() {
                   </div>
                   {photo.note && (
                     <div className="px-2 py-1.5">
-                      <p className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500 line-clamp-2">{photo.note}</p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 line-clamp-2">{photo.note}</p>
                     </div>
                   )}
                 </motion.button>
@@ -131,7 +131,7 @@ export default function GalerieContent() {
                 <div className="flex justify-between items-center mb-3">
                   <span className="font-semibold text-gray-700 dark:text-gray-300">Semaine {modal.week}</span>
                   <button onClick={() => setModal(null)}>
-                    <X className="w-5 h-5 text-gray-500 dark:text-gray-400 dark:text-gray-500" />
+                    <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   </button>
                 </div>
                 <div className="relative w-full" style={{ aspectRatio: "3/4" }}>

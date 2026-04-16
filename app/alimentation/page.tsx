@@ -160,7 +160,7 @@ export default function AlimentationPage() {
         <button
           onClick={() => setActiveFilter("all")}
           className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
-            activeFilter === "all" ? "bg-pink-400 text-white" : "bg-white dark:bg-gray-900 border border-pink-100 dark:border-pink-900/30 text-gray-500 dark:text-gray-400 dark:text-gray-500"
+            activeFilter === "all" ? "bg-pink-400 text-white" : "bg-white dark:bg-gray-900 border border-pink-100 dark:border-pink-900/30 text-gray-500 dark:text-gray-400"
           }`}
         >
           Tous ({FOOD_DATABASE.length})
@@ -174,7 +174,7 @@ export default function AlimentationPage() {
               className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1 ${
                 activeFilter === s
                   ? `${config.bg} ${config.text} ${config.border} border`
-                  : "bg-white dark:bg-gray-900 border border-pink-100 dark:border-pink-900/30 text-gray-500 dark:text-gray-400 dark:text-gray-500"
+                  : "bg-white dark:bg-gray-900 border border-pink-100 dark:border-pink-900/30 text-gray-500 dark:text-gray-400"
               }`}
             >
               <config.icon className="w-3 h-3" />
@@ -252,7 +252,7 @@ export default function AlimentationPage() {
                         {food.tip && (
                           <div className="flex items-start gap-1.5 mt-2 bg-white/60 dark:bg-gray-800/60 rounded-xl p-2">
                             <Info className="w-3.5 h-3.5 text-blue-400 mt-0.5 flex-shrink-0" />
-                            <p className="text-xs text-blue-600">{food.tip}</p>
+                            <p className="text-xs text-blue-600 dark:text-blue-400">{food.tip}</p>
                           </div>
                         )}
                       </div>

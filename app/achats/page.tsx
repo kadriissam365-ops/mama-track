@@ -154,15 +154,15 @@ export default function AchatsPage() {
         </div>
         <div className="grid grid-cols-3 gap-3 mb-3">
           <div className="text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Budget estimé</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Budget estimé</p>
             <p className="text-lg font-bold text-gray-700 dark:text-gray-300">{totalEstime}€</p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Déjà coché</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Déjà coché</p>
             <p className="text-lg font-bold text-pink-500">{totalCoche}€</p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Restant</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Restant</p>
             <p className="text-lg font-bold text-purple-500">{totalEstime - totalCoche}€</p>
           </div>
         </div>

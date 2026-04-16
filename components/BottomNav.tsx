@@ -43,7 +43,7 @@ export default function BottomNav() {
               className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all duration-200 min-w-[60px] ${
                 active
                   ? "text-pink-600 dark:text-pink-400"
-                  : "text-gray-400 dark:text-gray-500 hover:text-pink-400 dark:text-gray-500 dark:text-gray-400 dark:text-gray-500 dark:hover:text-pink-400"
+                  : "text-gray-400 dark:text-gray-500 hover:text-pink-400 dark:hover:text-pink-400"
               }`}
             >
               {active && (

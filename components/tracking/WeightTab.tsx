@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Plus, Trash2 } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { useTheme } from "next-themes";
 
 const LineChart = dynamic(() => import("recharts").then((m) => ({ default: m.LineChart })), { ssr: false });
 const Line = dynamic(() => import("recharts").then((m) => ({ default: m.Line })), { ssr: false });
@@ -19,6 +20,8 @@ const ResponsiveContainer = dynamic(() => import("recharts").then((m) => ({ defa
 
 export default function WeightTab() {
   const store = useStore();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   const [weight, setWeight] = useState("");
   const [note, setNote] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -81,16 +84,16 @@ export default function WeightTab() {
           <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Courbe de poids</h3>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ede9fe" />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9b7b8a" }} />
-              <YAxis tick={{ fontSize: 10, fill: "#9b7b8a" }} domain={["auto", "auto"]} />
-              <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid #ede9fe" }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#374151" : "#ede9fe"} />
+              <XAxis dataKey="date" tick={{ fontSize: 10, fill: isDark ? "#9ca3af" : "#9b7b8a" }} />
+              <YAxis tick={{ fontSize: 10, fill: isDark ? "#9ca3af" : "#9b7b8a" }} domain={["auto", "auto"]} />
+              <Tooltip contentStyle={{ borderRadius: "12px", border: isDark ? "1px solid #374151" : "1px solid #ede9fe", backgroundColor: isDark ? "#1f2937" : "#fff", color: isDark ? "#e5e7eb" : "#1f2937" }} />
               <Line
                 type="monotone"
                 dataKey="poids"
-                stroke="#C4B5FD"
+                stroke={isDark ? "#a78bfa" : "#C4B5FD"}
                 strokeWidth={2.5}
-                dot={{ fill: "#C4B5FD", r: 4 }}
+                dot={{ fill: isDark ? "#a78bfa" : "#C4B5FD", r: 4 }}
                 activeDot={{ r: 6 }}
               />
             </LineChart>

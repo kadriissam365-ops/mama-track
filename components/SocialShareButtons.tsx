@@ -261,7 +261,7 @@ export default function SocialShareButtons({ content, onImageGenerate, compact =
               ? "bg-blue-50 dark:bg-blue-950/30 text-blue-600"
               : status === "error"
               ? "bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400"
-              : "bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500"
+              : "bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400"
           }`}
         >
           {status === "copied" && <Check className="w-3 h-3 inline mr-1" />}

@@ -62,7 +62,7 @@ const sections = [
   {
     title: "Paramètres",
     items: [
-      { href: "/settings", label: "Paramètres", icon: Settings, color: "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:text-gray-400 dark:text-gray-500" },
+      { href: "/settings", label: "Paramètres", icon: Settings, color: "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 dark:bg-gray-800 dark:text-gray-400" },
     ],
   },
 ];

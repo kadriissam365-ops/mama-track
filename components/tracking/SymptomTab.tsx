@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Plus, Trash2 } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { useTheme } from "next-themes";
 
 const BarChart = dynamic(() => import("recharts").then((m) => ({ default: m.BarChart })), { ssr: false });
 const Bar = dynamic(() => import("recharts").then((m) => ({ default: m.Bar })), { ssr: false });
@@ -25,6 +26,8 @@ const SYMPTOM_OPTIONS = [
 
 export default function SymptomTab() {
   const store = useStore();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [severity, setSeverity] = useState(3);
   const [note, setNote] = useState("");
@@ -98,7 +101,7 @@ export default function SymptomTab() {
             </div>
 
             <div className="mb-4">
-              <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
+              <label className="text-xs text-gray-500 dark:text-gray-400 block mb-2">
                 Sévérité : {severity}/5
               </label>
               <div className="flex gap-2">
@@ -142,11 +145,11 @@ export default function SymptomTab() {
           <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Évolution (14 derniers jours)</h3>
           <ResponsiveContainer width="100%" height={150}>
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#fce7f3" />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9b7b8a" }} />
-              <YAxis tick={{ fontSize: 10, fill: "#9b7b8a" }} domain={[0, 5]} />
-              <Tooltip contentStyle={{ borderRadius: "12px", border: "1px solid #fce7f3" }} />
-              <Bar dataKey="sévérité" fill="#F9A8D4" radius={[6, 6, 0, 0]} />
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#374151" : "#fce7f3"} />
+              <XAxis dataKey="date" tick={{ fontSize: 10, fill: isDark ? "#9ca3af" : "#9b7b8a" }} />
+              <YAxis tick={{ fontSize: 10, fill: isDark ? "#9ca3af" : "#9b7b8a" }} domain={[0, 5]} />
+              <Tooltip contentStyle={{ borderRadius: "12px", border: isDark ? "1px solid #374151" : "1px solid #fce7f3", backgroundColor: isDark ? "#1f2937" : "#fff", color: isDark ? "#e5e7eb" : "#1f2937" }} />
+              <Bar dataKey="sévérité" fill={isDark ? "#f472b6" : "#F9A8D4"} radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -186,7 +189,7 @@ export default function SymptomTab() {
                   ))}
                 </div>
                 {entry.note && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">{entry.note}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{entry.note}</p>
                 )}
               </div>
               <button

@@ -311,7 +311,7 @@ function NutritionGuide() {
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
               activeTrimestre === t
                 ? `bg-gradient-to-r ${content[t].color} text-white shadow-md`
-                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:bg-gray-700"
+                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:bg-gray-700"
             }`}
           >
             T{t}
@@ -409,7 +409,7 @@ function SportGuide() {
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
               activeTrimestre === t
                 ? "bg-gradient-to-r from-pink-400 to-rose-500 text-white shadow-md"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:bg-gray-700"
+                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:bg-gray-700"
             }`}
           >
             T{t}
@@ -446,7 +446,7 @@ function SportGuide() {
               <span className="text-2xl flex-shrink-0">{item.emoji}</span>
               <div>
                 <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{item.title}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">{item.text}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{item.text}</p>
               </div>
             </div>
           ))}
@@ -513,7 +513,7 @@ export default function ConseilsPage() {
       >
         <p className="text-xs font-medium text-pink-400 uppercase tracking-wider mb-1">Semaine {week}</p>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Conseils & Bien-être</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">Tout ce dont vous avez besoin pour cette semaine</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Tout ce dont vous avez besoin pour cette semaine</p>
       </motion.div>
 
       {/* Tabs */}
@@ -525,7 +525,7 @@ export default function ConseilsPage() {
             className={`flex-shrink-0 flex-1 py-1.5 text-xs font-medium rounded-xl transition-all whitespace-nowrap ${
               activeTab === tab.id
                 ? "bg-white dark:bg-gray-900 text-pink-600 shadow-sm"
-                : "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-pink-400"
+                : "text-gray-500 dark:text-gray-400 hover:text-pink-400"
             }`}
           >
             {tab.label}
@@ -627,7 +627,7 @@ export default function ConseilsPage() {
             exit={{ opacity: 0, y: -10 }}
             className="space-y-5"
           >
-            <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Réponses médicalement fiables aux questions les plus fréquentes, par trimestre.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Réponses médicalement fiables aux questions les plus fréquentes, par trimestre.</p>
             {faqData.map((section) => (
               <div key={section.title}>
                 <div className="flex items-center gap-2 mb-3">
@@ -638,7 +638,7 @@ export default function ConseilsPage() {
               </div>
             ))}
             <div className="bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-4 mt-4">
-              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 text-center">
+              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
                 Ces informations sont générales et ne remplacent pas l'avis médical. En cas de doute, contactez toujours votre médecin ou sage-femme. 💗
               </p>
             </div>

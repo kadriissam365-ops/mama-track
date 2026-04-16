@@ -215,7 +215,7 @@ export default function NotesContent() {
         ) : filteredNotes.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-4xl mb-3">📝</p>
-            <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
               {search ? "Aucun resultat" : "Aucune note pour l'instant"}
             </p>
             {!search && (
@@ -303,7 +303,7 @@ export default function NotesContent() {
               className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 w-full max-w-lg"
             >
               <p className="text-center font-semibold text-gray-800 dark:text-gray-200 mb-2">Supprimer cette note ?</p>
-              <p className="text-center text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-6">Cette action est irreversible</p>
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">Cette action est irreversible</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteId(null)}

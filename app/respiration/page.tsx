@@ -258,7 +258,7 @@ export default function RespirationPage() {
               </div>
               <button
                 onClick={() => { setSelectedExercise(null); setIsRunning(false); }}
-                className="text-gray-300 hover:text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm"
+                className="text-gray-300 hover:text-gray-500 dark:text-gray-400 text-sm"
               >
                 ✕
               </button>
@@ -349,7 +349,7 @@ export default function RespirationPage() {
                 onClick={reset}
                 className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:bg-gray-700 transition-colors"
               >
-                <RotateCcw className="w-5 h-5 text-gray-500 dark:text-gray-400 dark:text-gray-500" />
+                <RotateCcw className="w-5 h-5 text-gray-500 dark:text-gray-400" />
               </button>
               <button
                 onClick={togglePause}
@@ -384,13 +384,13 @@ export default function RespirationPage() {
                 <span className="text-2xl">{exercise.emoji}</span>
                 <div>
                   <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">{exercise.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5">{exercise.when}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{exercise.when}</p>
                   <div className="flex gap-1 mt-1">
-                    <span className="text-[10px] bg-white/60 dark:bg-gray-800/60 px-1.5 py-0.5 rounded-full text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                    <span className="text-[10px] bg-white/60 dark:bg-gray-800/60 px-1.5 py-0.5 rounded-full text-gray-500 dark:text-gray-400">
                       {exercise.inhale}-{exercise.hold}-{exercise.exhale}
                       {exercise.holdAfter > 0 ? `-${exercise.holdAfter}` : ""}
                     </span>
-                    <span className="text-[10px] bg-white/60 dark:bg-gray-800/60 px-1.5 py-0.5 rounded-full text-gray-500 dark:text-gray-400 dark:text-gray-500">
+                    <span className="text-[10px] bg-white/60 dark:bg-gray-800/60 px-1.5 py-0.5 rounded-full text-gray-500 dark:text-gray-400">
                       {exercise.rounds} cycles
                     </span>
                   </div>

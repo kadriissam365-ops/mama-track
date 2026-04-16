@@ -442,7 +442,7 @@ export default function DataExport() {
           <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Donnees & Confidentialite</h3>
         </div>
 
-        <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           Conformement au RGPD, vous pouvez exporter ou supprimer toutes vos donnees personnelles a tout moment.
         </p>
 
@@ -478,7 +478,7 @@ export default function DataExport() {
 
         {/* Export buttons */}
         <div className="space-y-2">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
             Exporter mes donnees
           </p>
           <div className="flex gap-2">
@@ -519,7 +519,7 @@ export default function DataExport() {
           <Trash2 className="w-4 h-4" />
           Zone de danger
         </h3>
-        <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           La suppression de votre compte est irreversible. Toutes vos donnees seront definitivement effacees.
         </p>
         <button

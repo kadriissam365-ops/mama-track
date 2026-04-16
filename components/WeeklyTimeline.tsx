@@ -39,11 +39,11 @@ function WeekTooltip({ weekData, onClose }: { weekData: WeekData; onClose: () =>
         <p className="text-xs font-bold text-[#3d2b2b] dark:text-gray-100">Semaine {weekData.week}</p>
         <p className="text-[10px] text-pink-500 font-medium">{weekData.fruit}</p>
         <div className="flex items-center justify-center gap-2 mt-1.5">
-          <span className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">{sizeCm}</span>
+          <span className="text-[10px] text-gray-500 dark:text-gray-400">{sizeCm}</span>
           {weekData.weightG > 0 && (
             <>
               <span className="text-[10px] text-gray-300 dark:text-gray-500">|</span>
-              <span className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">{weightDisplay}</span>
+              <span className="text-[10px] text-gray-500 dark:text-gray-400">{weightDisplay}</span>
             </>
           )}
         </div>
