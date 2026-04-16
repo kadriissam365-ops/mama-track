@@ -9,7 +9,7 @@ export default function ConfidentialitePage() {
       <div className="max-w-2xl mx-auto">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-pink-500 hover:text-pink-600 font-medium mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-pink-500 dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 font-medium mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour
@@ -24,7 +24,7 @@ export default function ConfidentialitePage() {
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Introduction</h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-              MamaTrack (<a href="https://mamatrack.fr" className="text-pink-500 underline">mamatrack.fr</a>) s&apos;engage &agrave;
+              MamaTrack (<a href="https://mamatrack.fr" className="text-pink-500 dark:text-pink-400 underline">mamatrack.fr</a>) s&apos;engage &agrave;
               prot&eacute;ger la vie priv&eacute;e de ses utilisatrices. La pr&eacute;sente politique de confidentialit&eacute;
               d&eacute;crit les donn&eacute;es que nous collectons, comment nous les utilisons et les droits
               dont vous disposez, conform&eacute;ment au R&egrave;glement G&eacute;n&eacute;ral sur la Protection des
@@ -36,7 +36,7 @@ export default function ConfidentialitePage() {
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Responsable du traitement</h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               Le responsable du traitement des donn&eacute;es est MamaTrack.<br />
-              Email : <a href="mailto:dpo@mamatrack.fr" className="text-pink-500 underline">dpo@mamatrack.fr</a>
+              Email : <a href="mailto:dpo@mamatrack.fr" className="text-pink-500 dark:text-pink-400 underline">dpo@mamatrack.fr</a>
             </p>
           </section>
 
@@ -155,13 +155,13 @@ export default function ConfidentialitePage() {
             </div>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               Pour exercer vos droits, contactez-nous &agrave; :&nbsp;
-              <a href="mailto:dpo@mamatrack.fr" className="text-pink-500 underline">dpo@mamatrack.fr</a>.
+              <a href="mailto:dpo@mamatrack.fr" className="text-pink-500 dark:text-pink-400 underline">dpo@mamatrack.fr</a>.
               Nous r&eacute;pondrons dans un d&eacute;lai maximum de 30 jours.
             </p>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               Vous pouvez &eacute;galement d&eacute;poser une r&eacute;clamation aupr&egrave;s de la&nbsp;
               <strong>CNIL</strong> (Commission Nationale de l&apos;Informatique et des Libert&eacute;s) :&nbsp;
-              <a href="https://www.cnil.fr" className="text-pink-500 underline" target="_blank" rel="noopener noreferrer">www.cnil.fr</a>
+              <a href="https://www.cnil.fr" className="text-pink-500 dark:text-pink-400 underline" target="_blank" rel="noopener noreferrer">www.cnil.fr</a>
             </p>
           </section>
 
@@ -187,7 +187,7 @@ export default function ConfidentialitePage() {
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Contact</h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               Pour toute question relative &agrave; la protection de vos donn&eacute;es :<br />
-              Email : <a href="mailto:dpo@mamatrack.fr" className="text-pink-500 underline">dpo@mamatrack.fr</a>
+              Email : <a href="mailto:dpo@mamatrack.fr" className="text-pink-500 dark:text-pink-400 underline">dpo@mamatrack.fr</a>
             </p>
           </section>
         </div>

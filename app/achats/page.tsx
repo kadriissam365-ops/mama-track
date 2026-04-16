@@ -126,7 +126,7 @@ export default function AchatsPage() {
   const totalCoche = items.filter(i => i.coche).reduce((sum, item) => sum + item.budgetEstime, 0);
   const budgetNum = parseFloat(budgetUser) || 0;
   const difference = budgetNum - totalEstime;
-  const diffColor = difference >= 0 ? 'text-green-600' : 'text-red-500';
+  const diffColor = difference >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400';
   const progress = items.length > 0 ? Math.round((items.filter(i => i.coche).length / items.length) * 100) : 0;
 
   return (
@@ -159,11 +159,11 @@ export default function AchatsPage() {
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">Déjà coché</p>
-            <p className="text-lg font-bold text-pink-500">{totalCoche}€</p>
+            <p className="text-lg font-bold text-pink-500 dark:text-pink-400">{totalCoche}€</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">Restant</p>
-            <p className="text-lg font-bold text-purple-500">{totalEstime - totalCoche}€</p>
+            <p className="text-lg font-bold text-purple-500 dark:text-purple-400">{totalEstime - totalCoche}€</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -371,7 +371,7 @@ export default function AchatsPage() {
             <span className="text-sm font-medium">{items.filter(i => !i.coche).length} restants</span>
           </div>
           <div className="text-sm font-bold text-gray-700 dark:text-gray-300">
-            Total estimé : <span className="text-pink-500">{totalEstime}€</span>
+            Total estimé : <span className="text-pink-500 dark:text-pink-400">{totalEstime}€</span>
           </div>
         </div>
       </div>

@@ -292,7 +292,7 @@ export default function OnboardingPage() {
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{opt.desc}</p>
                       </div>
                       {conceptionMode === opt.value && (
-                        <span className="ml-auto text-pink-500">✓</span>
+                        <span className="ml-auto text-pink-500 dark:text-pink-400">✓</span>
                       )}
                     </div>
                   </button>
@@ -445,7 +445,7 @@ export default function OnboardingPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="bg-purple-50 dark:bg-purple-950/30 rounded-xl p-3 text-center"
                   >
-                    <p className="text-xs text-purple-500 font-medium">DPA calculée</p>
+                    <p className="text-xs text-purple-500 dark:text-purple-400 font-medium">DPA calculée</p>
                     <p className="text-base font-bold text-purple-700 dark:text-purple-300">
                       {new Date(finalDueDate).toLocaleDateString("fr-FR", {
                         day: "numeric",

@@ -515,7 +515,7 @@ export default function DuoPage() {
                         className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:bg-gray-700 transition-colors"
                         aria-label="Copier le lien d'invitation"
                       >
-                        {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                        {isCopied ? <Check className="w-4 h-4 text-green-500 dark:text-green-400" /> : <Copy className="w-4 h-4" />}
                       </button>
                       <button
                         onClick={() => handleCancelInvitation(inv.id)}
@@ -557,7 +557,7 @@ export default function DuoPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{label}</p>
-                        <p className="text-xs text-green-500">✓ Connecté</p>
+                        <p className="text-xs text-green-500 dark:text-green-400">✓ Connecté</p>
                       </div>
                     </div>
                     <button

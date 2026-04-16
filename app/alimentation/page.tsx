@@ -193,7 +193,7 @@ export default function AlimentationPage() {
             className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
               activeCategory === cat
                 ? "bg-pink-400 text-white"
-                : "bg-pink-50 dark:bg-pink-950/30 text-pink-500 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30"
+                : "bg-pink-50 dark:bg-pink-950/30 text-pink-500 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30"
             }`}
           >
             {cat}

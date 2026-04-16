@@ -196,7 +196,7 @@ export default function AgendaPage() {
                       )}
                       <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">{appt.title}</h3>
                     </div>
-                    <p className="text-sm text-pink-500 font-medium">
+                    <p className="text-sm text-pink-500 dark:text-pink-400 font-medium">
                       {format(new Date(appt.date + "T00:00:00"), "EEEE d MMMM yyyy", { locale: fr })} à {appt.time}
                     </p>
                     {appt.doctor && (
@@ -212,7 +212,7 @@ export default function AgendaPage() {
                   <div className="flex gap-2 ml-3">
                     <button
                       onClick={() => store.updateAppointment(appt.id, { done: true })}
-                      className="w-8 h-8 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-500 hover:bg-green-200 transition-colors"
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-500 dark:text-green-400 hover:bg-green-200 transition-colors"
                       aria-label="Marquer comme fait"
                     >
                       <Check className="w-4 h-4" />

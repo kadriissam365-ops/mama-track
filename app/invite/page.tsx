@@ -119,7 +119,7 @@ function InviteContent() {
           className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-xl border border-red-100 dark:border-red-900/30 max-w-md w-full text-center"
         >
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <XCircle className="w-8 h-8 text-red-500" />
+            <XCircle className="w-8 h-8 text-red-500 dark:text-red-400" />
           </div>
           <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Oups !</h1>
           <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
@@ -148,7 +148,7 @@ function InviteContent() {
             transition={{ delay: 0.2, type: "spring" }}
             className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
           >
-            <CheckCircle className="w-8 h-8 text-green-500" />
+            <CheckCircle className="w-8 h-8 text-green-500 dark:text-green-400" />
           </motion.div>
           <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">C&apos;est fait !</h1>
           <p className="text-gray-600 dark:text-gray-300">
@@ -188,7 +188,7 @@ function InviteContent() {
             Invitation MamaTrack
           </h1>
           <p className="text-gray-500 dark:text-gray-400">
-            Vous êtes invité(e) en tant que <span className="font-semibold text-pink-500">{roleInfo.label}</span>
+            Vous êtes invité(e) en tant que <span className="font-semibold text-pink-500 dark:text-pink-400">{roleInfo.label}</span>
           </p>
         </div>
 

@@ -72,7 +72,7 @@ export default function ChecklistPage() {
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">Progression globale</span>
-          <span className="text-2xl font-bold text-pink-500">{globalProgress}%</span>
+          <span className="text-2xl font-bold text-pink-500 dark:text-pink-400">{globalProgress}%</span>
         </div>
         <div className="w-full bg-pink-50 dark:bg-pink-950/30 rounded-full h-3 overflow-hidden">
           <motion.div
@@ -87,7 +87,7 @@ export default function ChecklistPage() {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-sm text-center mt-2 font-semibold text-pink-500"
+            className="text-sm text-center mt-2 font-semibold text-pink-500 dark:text-pink-400"
           >
             🎉 Tout est prêt ! Bravo maman !
           </motion.p>

@@ -9,7 +9,7 @@ export default function CGUPage() {
       <div className="max-w-2xl mx-auto">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-pink-500 hover:text-pink-600 font-medium mb-8 transition-colors"
+          className="inline-flex items-center gap-2 text-pink-500 dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 font-medium mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Retour
@@ -26,7 +26,7 @@ export default function CGUPage() {
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               Les pr&eacute;sentes Conditions G&eacute;n&eacute;rales d&apos;Utilisation (ci-apr&egrave;s &laquo; CGU &raquo;) ont pour objet de
               d&eacute;finir les conditions d&apos;acc&egrave;s et d&apos;utilisation de l&apos;application web MamaTrack,
-              accessible &agrave; l&apos;adresse <a href="https://mamatrack.fr" className="text-pink-500 underline">mamatrack.fr</a>.
+              accessible &agrave; l&apos;adresse <a href="https://mamatrack.fr" className="text-pink-500 dark:text-pink-400 underline">mamatrack.fr</a>.
               L&apos;utilisation du service implique l&apos;acceptation pleine et enti&egrave;re des pr&eacute;sentes CGU.
             </p>
           </section>
@@ -106,7 +106,7 @@ export default function CGUPage() {
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Article 7 &mdash; Donn&eacute;es personnelles</h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               Le traitement des donn&eacute;es personnelles est d&eacute;crit dans notre{" "}
-              <Link href="/confidentialite" className="text-pink-500 underline">
+              <Link href="/confidentialite" className="text-pink-500 dark:text-pink-400 underline">
                 Politique de confidentialit&eacute;
               </Link>.
               Vos donn&eacute;es sont stock&eacute;es sur des serveurs Supabase situ&eacute;s dans l&apos;Union europ&eacute;enne
@@ -116,7 +116,7 @@ export default function CGUPage() {
               Conform&eacute;ment au RGPD, vous disposez d&apos;un droit d&apos;acc&egrave;s, de rectification, de
               suppression, de portabilit&eacute;, d&apos;opposition et de limitation du traitement de vos
               donn&eacute;es. Ces droits peuvent &ecirc;tre exerc&eacute;s en contactant{" "}
-              <a href="mailto:dpo@mamatrack.fr" className="text-pink-500 underline">dpo@mamatrack.fr</a>.
+              <a href="mailto:dpo@mamatrack.fr" className="text-pink-500 dark:text-pink-400 underline">dpo@mamatrack.fr</a>.
             </p>
           </section>
 
@@ -176,7 +176,7 @@ export default function CGUPage() {
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Article 13 &mdash; Contact</h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               Pour toute question relative aux pr&eacute;sentes CGU :<br />
-              Email : <a href="mailto:contact@mamatrack.fr" className="text-pink-500 underline">contact@mamatrack.fr</a>
+              Email : <a href="mailto:contact@mamatrack.fr" className="text-pink-500 dark:text-pink-400 underline">contact@mamatrack.fr</a>
             </p>
           </section>
         </div>

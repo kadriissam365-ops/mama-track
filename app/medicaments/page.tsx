@@ -163,7 +163,7 @@ export default function MedicamentsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Pill className="w-6 h-6 text-purple-500" />
+          <Pill className="w-6 h-6 text-purple-500 dark:text-purple-400" />
           <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100">Mes médicaments</h1>
         </div>
         <button
@@ -183,7 +183,7 @@ export default function MedicamentsPage() {
         >
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Aujourd&apos;hui</h3>
-            <span className="text-sm text-purple-500 font-semibold">{takenCount}/{totalCount}</span>
+            <span className="text-sm text-purple-500 dark:text-purple-400 font-semibold">{takenCount}/{totalCount}</span>
           </div>
           <div className="w-full bg-purple-100 dark:bg-purple-900/30 rounded-full h-3 mb-2">
             <motion.div
@@ -270,7 +270,7 @@ export default function MedicamentsPage() {
                     }`}
                     style={{ height: `${barH}px` }}
                   />
-                  <span className={`text-[9px] mt-0.5 ${isToday ? "text-purple-500 font-bold" : "text-gray-400 dark:text-gray-500"}`}>
+                  <span className={`text-[9px] mt-0.5 ${isToday ? "text-purple-500 dark:text-purple-400 font-bold" : "text-gray-400 dark:text-gray-500"}`}>
                     {d.day}
                   </span>
                 </div>

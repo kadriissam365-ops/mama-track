@@ -141,7 +141,7 @@ export default function BabyPage() {
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 text-center">
           <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-            <Ruler className="w-6 h-6 text-pink-500" />
+            <Ruler className="w-6 h-6 text-pink-500 dark:text-pink-400" />
           </div>
           <p className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">{sizeDisplay}</p>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Taille (CR)</p>
@@ -149,7 +149,7 @@ export default function BabyPage() {
 
         <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-purple-100 dark:border-purple-900/30 text-center">
           <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-            <Weight className="w-6 h-6 text-purple-500" />
+            <Weight className="w-6 h-6 text-purple-500 dark:text-purple-400" />
           </div>
           <p className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">{weightDisplay}</p>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Poids estimé</p>

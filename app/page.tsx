@@ -201,7 +201,7 @@ export default function DashboardPage() {
 
         <div className="mt-4 flex items-center justify-between">
           <div className="text-xs text-gray-500 dark:text-gray-400">
-            Progression : <span className="font-semibold text-pink-500">{progress}%</span>
+            Progression : <span className="font-semibold text-pink-500 dark:text-pink-400">{progress}%</span>
           </div>
           {days !== null && (
             <motion.div
@@ -210,7 +210,7 @@ export default function DashboardPage() {
               transition={{ delay: 0.5, type: "spring" }}
               className="bg-white dark:bg-gray-900 rounded-2xl px-3 py-1.5 shadow-sm"
             >
-              <span className="text-2xl font-bold text-purple-500">{days}</span>
+              <span className="text-2xl font-bold text-purple-500 dark:text-purple-400">{days}</span>
               <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">jours restants</span>
             </motion.div>
           )}
@@ -264,7 +264,7 @@ export default function DashboardPage() {
         >
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
-              <Scale className="w-4 h-4 text-pink-500" />
+              <Scale className="w-4 h-4 text-pink-500 dark:text-pink-400" />
             </div>
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Poids</span>
           </div>
@@ -291,7 +291,7 @@ export default function DashboardPage() {
         >
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-              <Droplets className="w-4 h-4 text-purple-500" />
+              <Droplets className="w-4 h-4 text-purple-500 dark:text-purple-400" />
             </div>
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Hydratation</span>
           </div>
@@ -316,7 +316,7 @@ export default function DashboardPage() {
         >
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-              <Activity className="w-4 h-4 text-green-500" />
+              <Activity className="w-4 h-4 text-green-500 dark:text-green-400" />
             </div>
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Symptômes</span>
           </div>
@@ -346,7 +346,7 @@ export default function DashboardPage() {
         >
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-              <Calendar className="w-4 h-4 text-orange-500" />
+              <Calendar className="w-4 h-4 text-orange-500 dark:text-orange-400" />
             </div>
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Prochain RDV</span>
           </div>
