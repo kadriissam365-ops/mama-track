@@ -50,7 +50,7 @@ export default function ReminderBanner() {
             </p>
             <button
               onClick={handleDismiss}
-              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0"
+              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-300 flex-shrink-0"
             >
               <X className="w-4 h-4" />
             </button>

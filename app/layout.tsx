@@ -147,7 +147,7 @@ export default function RootLayout({
         {/* Splash screens for iOS */}
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="h-screen flex flex-col overflow-hidden bg-[#fdf6f0]">
+      <body className="h-screen flex flex-col overflow-hidden bg-[#fdf6f0] dark:bg-[#0f0f1a]">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <I18nProvider>
         <AuthProvider>

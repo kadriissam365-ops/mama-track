@@ -31,19 +31,19 @@ function WeekTooltip({ weekData, onClose }: { weekData: WeekData; onClose: () =>
       transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 25 }}
       className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 pointer-events-none"
     >
-      <div className="bg-white rounded-2xl shadow-lg border border-pink-100 p-3 min-w-[160px] text-center">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-pink-100 dark:border-pink-900/30 p-3 min-w-[160px] text-center">
         {/* Arrow */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-white" />
 
         <span className="text-3xl block mb-1">{weekData.fruitEmoji}</span>
-        <p className="text-xs font-bold text-[#3d2b2b]">Semaine {weekData.week}</p>
+        <p className="text-xs font-bold text-[#3d2b2b] dark:text-gray-100">Semaine {weekData.week}</p>
         <p className="text-[10px] text-pink-500 font-medium">{weekData.fruit}</p>
         <div className="flex items-center justify-center gap-2 mt-1.5">
-          <span className="text-[10px] text-gray-500">{sizeCm}</span>
+          <span className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">{sizeCm}</span>
           {weekData.weightG > 0 && (
             <>
-              <span className="text-[10px] text-gray-300">|</span>
-              <span className="text-[10px] text-gray-500">{weightDisplay}</span>
+              <span className="text-[10px] text-gray-300 dark:text-gray-500">|</span>
+              <span className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">{weightDisplay}</span>
             </>
           )}
         </div>
@@ -84,10 +84,10 @@ function WeekNode({
 
   const trimesterBorder =
     weekData.trimester === 1
-      ? "border-pink-200"
+      ? "border-pink-200 dark:border-pink-800/30"
       : weekData.trimester === 2
-      ? "border-purple-200"
-      : "border-green-200";
+      ? "border-purple-200 dark:border-purple-800/30"
+      : "border-green-200 dark:border-green-800/30";
 
   const trimesterText =
     weekData.trimester === 1
@@ -119,7 +119,7 @@ function WeekNode({
             ? `bg-gradient-to-b ${trimesterBg} border-2 border-pink-400 shadow-md shadow-pink-200/50`
             : isPast
             ? `bg-gradient-to-b ${trimesterBg}/50 border ${trimesterBorder} opacity-80`
-            : `bg-gray-50 border border-gray-200 opacity-50`
+            : `bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 opacity-50`
         }`}
         aria-label={`Semaine ${weekData.week}: ${weekData.fruit}`}
       >
@@ -144,7 +144,7 @@ function WeekNode({
         {/* Week number */}
         <span
           className={`text-[10px] font-bold ${
-            isCurrent ? "text-pink-600" : isPast ? trimesterText : "text-gray-400"
+            isCurrent ? "text-pink-600" : isPast ? trimesterText : "text-gray-400 dark:text-gray-500"
           }`}
         >
           S{weekData.week}
@@ -199,11 +199,11 @@ export default function WeeklyTimeline({
   ];
 
   return (
-    <div className="bg-white rounded-3xl border border-pink-100 shadow-sm p-4 overflow-hidden">
+    <div className="bg-white dark:bg-gray-900 rounded-3xl border border-pink-100 dark:border-pink-900/30 shadow-sm p-4 overflow-hidden">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-lg">🗓️</span>
-          <h3 className="text-sm font-semibold text-[#3d2b2b]">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">
             Timeline de grossesse
           </h3>
         </div>
@@ -211,14 +211,14 @@ export default function WeeklyTimeline({
           {trimesterStarts.map((t) => (
             <span key={t.label} className="flex items-center gap-1">
               <span className={`w-2 h-2 rounded-full ${t.color}`} />
-              <span className="text-[10px] text-gray-400">{t.label}</span>
+              <span className="text-[10px] text-gray-400 dark:text-gray-500">{t.label}</span>
             </span>
           ))}
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="relative h-1.5 bg-gray-100 rounded-full mb-3 overflow-hidden">
+      <div className="relative h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full mb-3 overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${(currentWeek / 42) * 100}%` }}
@@ -253,8 +253,8 @@ export default function WeeklyTimeline({
         animate={{ opacity: 1 }}
         className="flex items-center justify-center mt-3 gap-2"
       >
-        <span className="text-[10px] text-gray-400">Vous etes a la</span>
-        <span className="text-xs font-bold text-pink-500 bg-pink-50 px-2 py-0.5 rounded-full">
+        <span className="text-[10px] text-gray-400 dark:text-gray-500">Vous etes a la</span>
+        <span className="text-xs font-bold text-pink-500 bg-pink-50 dark:bg-pink-950/30 px-2 py-0.5 rounded-full">
           semaine {currentWeek}/42
         </span>
       </motion.div>

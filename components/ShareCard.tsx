@@ -195,7 +195,7 @@ export default function ShareCard({ onClose }: ShareCardProps) {
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">✨ Partager ma grossesse</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-300">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -224,16 +224,16 @@ export default function ShareCard({ onClose }: ShareCardProps) {
           <p className="text-6xl my-2">{weekData?.fruitEmoji ?? "🍎"}</p>
           <p className={`text-sm ${theme.previewSecondary} font-medium`}>{weekData?.fruit ?? ""}</p>
           {weekData && (
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
               📏 {weekData.sizeMm >= 10 ? `${(weekData.sizeMm / 10).toFixed(1)} cm` : `${weekData.sizeMm} mm`}
               {" · "}
               ⚖️ {weekData.weightG >= 1000 ? `${(weekData.weightG / 1000).toFixed(1)} kg` : `${weekData.weightG} g`}
             </p>
           )}
-          <p className="text-gray-600 text-sm mt-2">
+          <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
             {daysRemaining} jours avant l&apos;arrivee de <strong>{babyName}</strong>
           </p>
-          <p className="text-xs text-gray-400 mt-2">MamaTrack 🌸</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">MamaTrack 🌸</p>
         </div>
 
         <canvas ref={canvasRef} className="hidden" />

@@ -107,15 +107,15 @@ export default function PhotosContent() {
   const photoCount = slots.filter((s) => s.photo).length;
 
   return (
-    <div className="max-w-lg mx-auto" style={{ background: "#fdfaf6", minHeight: "100vh" }}>
+    <div className="max-w-lg mx-auto min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-pink-100 px-4 py-3">
+      <div className="sticky top-0 z-10 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-pink-100 dark:border-pink-900/30 px-4 py-3">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 rounded-xl hover:bg-pink-50">
-            <ChevronLeft className="w-5 h-5 text-gray-600" />
+          <button onClick={() => router.back()} className="p-2 rounded-xl hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30">
+            <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
           <div>
-            <h1 className="text-lg font-bold text-gray-800">Photos ventre</h1>
+            <h1 className="text-lg font-bold text-gray-800 dark:text-gray-200">Photos ventre</h1>
             <p className="text-xs text-rose-500">
               {photoCount} photo{photoCount !== 1 ? "s" : ""} capturee{photoCount !== 1 ? "s" : ""}
             </p>
@@ -131,7 +131,7 @@ export default function PhotosContent() {
         ) : (
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-pink-100" />
+            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-pink-100 dark:bg-pink-900/30" />
 
             <div className="space-y-4">
               {slots.map((slot, idx) => (
@@ -146,7 +146,7 @@ export default function PhotosContent() {
                   <div className="flex flex-col items-center flex-shrink-0 z-10">
                     <div
                       className={`w-4 h-4 rounded-full border-2 mt-3 ${
-                        slot.photo ? "bg-rose-400 border-rose-400" : "bg-white border-pink-300"
+                        slot.photo ? "bg-rose-400 border-rose-400" : "bg-white dark:bg-gray-900 border-pink-300"
                       }`}
                     />
                   </div>
@@ -154,19 +154,19 @@ export default function PhotosContent() {
                   {/* Card */}
                   <div className="flex-1 mb-2">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-semibold text-gray-500">Semaine {slot.week}</span>
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500">Semaine {slot.week}</span>
                       {slot.week === currentWeek && (
-                        <span className="text-[10px] bg-pink-100 text-pink-600 rounded-full px-2 py-0.5">
+                        <span className="text-[10px] bg-pink-100 dark:bg-pink-900/30 text-pink-600 rounded-full px-2 py-0.5">
                           Actuelle
                         </span>
                       )}
                     </div>
 
                     {slot.photo && slot.signedUrl ? (
-                      <div className="bg-white rounded-2xl p-3 shadow-sm border border-pink-100">
+                      <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-pink-100 dark:border-pink-900/30">
                         <button onClick={() => setModalSlot(slot)} className="w-full relative">
                           <div
-                            className="bg-gray-100 rounded-xl overflow-hidden relative"
+                            className="bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden relative"
                             style={{ aspectRatio: "1/1" }}
                           >
                             <Image
@@ -183,43 +183,43 @@ export default function PhotosContent() {
                         {editNote?.week === slot.week ? (
                           <div className="mt-2 flex gap-2">
                             <input
-                              className="flex-1 text-xs border border-pink-200 rounded-lg px-2 py-1 focus:outline-none focus:border-pink-400"
+                              className="flex-1 text-xs border border-pink-200 dark:border-pink-800/30 rounded-lg px-2 py-1 focus:outline-none focus:border-pink-400"
                               value={editNote.value}
                               onChange={(e) => setEditNote({ week: slot.week, value: e.target.value })}
                               placeholder="Note pour cette semaine..."
                             />
                             <button
                               onClick={() => handleSaveNote(slot.week, editNote.value)}
-                              className="p-1 bg-pink-100 rounded-lg"
+                              className="p-1 bg-pink-100 dark:bg-pink-900/30 rounded-lg"
                             >
                               <Check className="w-4 h-4 text-pink-600" />
                             </button>
                           </div>
                         ) : (
                           <div className="mt-2 flex items-start justify-between gap-2">
-                            <p className="text-xs text-gray-500 flex-1">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 flex-1">
                               {slot.photo.note || (
-                                <span className="italic text-gray-300">Ajouter une note...</span>
+                                <span className="italic text-gray-400 dark:text-gray-500">Ajouter une note...</span>
                               )}
                             </p>
                             <button
                               onClick={() =>
                                 setEditNote({ week: slot.week, value: slot.photo?.note || "" })
                               }
-                              className="flex-shrink-0 p-1 hover:bg-pink-50 rounded-lg"
+                              className="flex-shrink-0 p-1 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 rounded-lg"
                             >
-                              <Edit3 className="w-3.5 h-3.5 text-gray-400" />
+                              <Edit3 className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
                             </button>
                           </div>
                         )}
 
                         <div className="mt-2 flex justify-between items-center">
-                          <span className="text-[10px] text-gray-300">
+                          <span className="text-[10px] text-gray-400 dark:text-gray-500">
                             {new Date(slot.photo.captured_at).toLocaleDateString("fr-FR")}
                           </span>
                           <button
                             onClick={() => setDeleteConfirm(slot.week)}
-                            className="text-[10px] text-red-400 hover:text-red-600 flex items-center gap-1"
+                            className="text-[10px] text-red-400 hover:text-red-600 dark:text-red-400 flex items-center gap-1"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
@@ -229,7 +229,7 @@ export default function PhotosContent() {
                       <button
                         onClick={() => triggerUpload(slot.week)}
                         disabled={uploading !== null}
-                        className="w-full bg-white border-2 border-dashed border-pink-200 rounded-2xl p-6 flex flex-col items-center gap-2 hover:border-pink-400 hover:bg-pink-50 transition-all"
+                        className="w-full bg-white dark:bg-gray-900 border-2 border-dashed border-pink-200 dark:border-pink-800/30 rounded-2xl p-6 flex flex-col items-center gap-2 hover:border-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-all"
                       >
                         {uploading === slot.week ? (
                           <div className="w-6 h-6 rounded-full border-2 border-pink-400 border-t-transparent animate-spin" />
@@ -276,11 +276,11 @@ export default function PhotosContent() {
               className="relative max-w-sm w-full mx-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-white p-4 rounded-2xl shadow-2xl">
+              <div className="bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-2xl">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="font-semibold text-gray-700">Semaine {modalSlot.week}</span>
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">Semaine {modalSlot.week}</span>
                   <button onClick={() => setModalSlot(null)}>
-                    <X className="w-5 h-5 text-gray-500" />
+                    <X className="w-5 h-5 text-gray-500 dark:text-gray-400 dark:text-gray-500" />
                   </button>
                 </div>
                 <div className="relative w-full" style={{ aspectRatio: "3/4" }}>
@@ -294,7 +294,7 @@ export default function PhotosContent() {
                   />
                 </div>
                 {modalSlot.photo?.note && (
-                  <p className="mt-3 text-sm text-gray-600">{modalSlot.photo.note}</p>
+                  <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">{modalSlot.photo.note}</p>
                 )}
               </div>
             </motion.div>
@@ -315,14 +315,14 @@ export default function PhotosContent() {
               initial={{ y: 100 }}
               animate={{ y: 0 }}
               exit={{ y: 100 }}
-              className="bg-white rounded-t-3xl p-6 w-full max-w-lg"
+              className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 w-full max-w-lg"
             >
-              <p className="text-center font-semibold text-gray-800 mb-2">Supprimer cette photo ?</p>
-              <p className="text-center text-sm text-gray-500 mb-6">Cette action est irreversible</p>
+              <p className="text-center font-semibold text-gray-800 dark:text-gray-200 mb-2">Supprimer cette photo ?</p>
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-6">Cette action est irreversible</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 py-3 rounded-2xl bg-gray-100 text-gray-700 font-medium"
+                  className="flex-1 py-3 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium"
                 >
                   Annuler
                 </button>
@@ -331,7 +331,7 @@ export default function PhotosContent() {
                     const slot = slots.find((s) => s.week === deleteConfirm);
                     if (slot) handleDelete(slot);
                   }}
-                  className="flex-1 py-3 rounded-2xl bg-red-500 text-white font-medium"
+                  className="flex-1 py-3 rounded-2xl bg-red-50 dark:bg-red-950/300 text-white font-medium"
                 >
                   Supprimer
                 </button>

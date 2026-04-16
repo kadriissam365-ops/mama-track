@@ -252,7 +252,7 @@ export default function ExportPDF() {
       disabled={loading}
       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all ${
         success
-          ? "bg-green-100 text-green-600"
+          ? "bg-green-100 dark:bg-green-900/30 text-green-600"
           : "bg-gradient-to-r from-pink-400 to-purple-400 text-white hover:from-pink-500 hover:to-purple-500"
       } disabled:opacity-60`}
     >

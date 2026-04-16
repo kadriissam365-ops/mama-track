@@ -102,17 +102,17 @@ export default function BumpPage() {
     <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-[#3d2b2b] flex items-center gap-2">
+          <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
             📸 Mon bump
           </h1>
-          <p className="text-sm text-gray-400 mt-0.5">Suivez l&apos;évolution de votre ventre</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mt-0.5">Suivez l&apos;évolution de votre ventre</p>
         </div>
         <div className="flex gap-2">
           {photos.length >= 2 && (
             <button
               onClick={() => setCompareMode(!compareMode)}
               className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all ${
-                compareMode ? "bg-purple-400 text-white" : "bg-purple-50 text-purple-500 border border-purple-200"
+                compareMode ? "bg-purple-400 text-white" : "bg-purple-50 dark:bg-purple-950/30 text-purple-500 border border-purple-200 dark:border-purple-800/30"
               }`}
             >
               <ArrowLeftRight className="w-3.5 h-3.5" />
@@ -121,7 +121,7 @@ export default function BumpPage() {
           )}
           <button
             onClick={() => setShowCamera(true)}
-            className="w-10 h-10 bg-pink-400 rounded-xl flex items-center justify-center text-white hover:bg-pink-500 transition-colors shadow-sm"
+            className="w-10 h-10 bg-pink-400 rounded-xl flex items-center justify-center text-white hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors shadow-sm"
           >
             <Camera className="w-5 h-5" />
           </button>
@@ -129,13 +129,13 @@ export default function BumpPage() {
       </div>
 
       {/* Week indicator */}
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl px-4 py-3 border border-pink-100 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/20 rounded-2xl px-4 py-3 border border-pink-100 dark:border-pink-900/30 flex items-center justify-between">
         <div>
-          <p className="text-xs text-gray-400">Semaine actuelle</p>
-          <p className="text-lg font-bold text-[#3d2b2b]">{currentWeek} SA</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500">Semaine actuelle</p>
+          <p className="text-lg font-bold text-[#3d2b2b] dark:text-gray-100">{currentWeek} SA</p>
         </div>
         <div className="text-right">
-          <p className="text-xs text-gray-400">Photos prises</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500">Photos prises</p>
           <p className="text-lg font-bold text-pink-500">{photos.length}</p>
         </div>
       </div>
@@ -149,15 +149,15 @@ export default function BumpPage() {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="bg-white rounded-3xl p-4 shadow-sm border border-purple-100">
-              <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Avant / Après</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30">
+              <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Avant / Après</h3>
               <div className="flex gap-3">
                 {/* Left selector */}
                 <div className="flex-1">
                   <select
                     value={compareLeft ?? ""}
                     onChange={(e) => setCompareLeft(Number(e.target.value))}
-                    className="w-full text-xs border border-purple-200 rounded-xl px-2 py-1.5 mb-2"
+                    className="w-full text-xs border border-purple-200 dark:border-purple-800/30 rounded-xl px-2 py-1.5 mb-2"
                   >
                     <option value="">Semaine...</option>
                     {weekNumbers.map((w) => (
@@ -165,7 +165,7 @@ export default function BumpPage() {
                     ))}
                   </select>
                   {compareLeft && getPhotoForWeek(compareLeft) ? (
-                    <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100">
+                    <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
                       <img
                         src={getPhotoForWeek(compareLeft)!.dataUrl}
                         alt={`Semaine ${compareLeft}`}
@@ -173,8 +173,8 @@ export default function BumpPage() {
                       />
                     </div>
                   ) : (
-                    <div className="aspect-[3/4] rounded-2xl bg-gray-50 flex items-center justify-center">
-                      <Image className="w-8 h-8 text-gray-200" />
+                    <div className="aspect-[3/4] rounded-2xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
+                      <Image className="w-8 h-8 text-gray-200 dark:text-gray-700" />
                     </div>
                   )}
                 </div>
@@ -189,7 +189,7 @@ export default function BumpPage() {
                   <select
                     value={compareRight ?? ""}
                     onChange={(e) => setCompareRight(Number(e.target.value))}
-                    className="w-full text-xs border border-purple-200 rounded-xl px-2 py-1.5 mb-2"
+                    className="w-full text-xs border border-purple-200 dark:border-purple-800/30 rounded-xl px-2 py-1.5 mb-2"
                   >
                     <option value="">Semaine...</option>
                     {weekNumbers.map((w) => (
@@ -197,7 +197,7 @@ export default function BumpPage() {
                     ))}
                   </select>
                   {compareRight && getPhotoForWeek(compareRight) ? (
-                    <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100">
+                    <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
                       <img
                         src={getPhotoForWeek(compareRight)!.dataUrl}
                         alt={`Semaine ${compareRight}`}
@@ -205,8 +205,8 @@ export default function BumpPage() {
                       />
                     </div>
                   ) : (
-                    <div className="aspect-[3/4] rounded-2xl bg-gray-50 flex items-center justify-center">
-                      <Image className="w-8 h-8 text-gray-200" />
+                    <div className="aspect-[3/4] rounded-2xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center">
+                      <Image className="w-8 h-8 text-gray-200 dark:text-gray-700" />
                     </div>
                   )}
                 </div>
@@ -225,7 +225,7 @@ export default function BumpPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               onClick={() => setViewPhoto(photo)}
-              className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 group"
+              className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 group"
             >
               <img
                 src={photo.dataUrl}
@@ -244,7 +244,7 @@ export default function BumpPage() {
           {/* Add placeholder */}
           <button
             onClick={() => setShowCamera(true)}
-            className="aspect-[3/4] rounded-2xl border-2 border-dashed border-pink-200 flex flex-col items-center justify-center gap-1 hover:border-pink-400 transition-colors"
+            className="aspect-[3/4] rounded-2xl border-2 border-dashed border-pink-200 dark:border-pink-800/30 flex flex-col items-center justify-center gap-1 hover:border-pink-400 transition-colors"
           >
             <Camera className="w-6 h-6 text-pink-300" />
             <span className="text-[10px] text-pink-400">SA {currentWeek}</span>
@@ -257,13 +257,13 @@ export default function BumpPage() {
           className="text-center py-16"
         >
           <Camera className="w-16 h-16 text-pink-200 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-[#3d2b2b] mb-2">Commencez votre journal bump !</h3>
-          <p className="text-sm text-gray-400 mb-4 px-8">
+          <h3 className="text-lg font-semibold text-[#3d2b2b] dark:text-gray-100 mb-2">Commencez votre journal bump !</h3>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mb-4 px-8">
             Prenez une photo de votre ventre chaque semaine pour voir l&apos;évolution de votre grossesse
           </p>
           <button
             onClick={() => setShowCamera(true)}
-            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-pink-500 transition-colors"
+            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
           >
             Prendre ma première photo
           </button>
@@ -271,12 +271,12 @@ export default function BumpPage() {
       )}
 
       {/* Tips */}
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100">
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/20 rounded-3xl p-5 border border-pink-100 dark:border-pink-900/30">
         <div className="flex items-start gap-3">
           <span className="text-2xl">💡</span>
           <div>
-            <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Astuces pour de belles photos bump</h3>
-            <ul className="text-sm text-gray-600 space-y-1 leading-relaxed">
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm mb-1">Astuces pour de belles photos bump</h3>
+            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 leading-relaxed">
               <li>• Même endroit et même lumière chaque semaine</li>
               <li>• De profil, vêtements ajustés ou le ventre nu</li>
               <li>• Utilisez un minuteur pour être bien positionnée</li>
@@ -300,17 +300,17 @@ export default function BumpPage() {
               initial={{ y: 100 }}
               animate={{ y: 0 }}
               exit={{ y: 100 }}
-              className="bg-white rounded-3xl p-5 w-full max-w-md"
+              className="bg-white dark:bg-gray-900 rounded-3xl p-5 w-full max-w-md"
             >
-              <h3 className="font-semibold text-[#3d2b2b] mb-4">📸 Photo semaine {currentWeek}</h3>
+              <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-4">📸 Photo semaine {currentWeek}</h3>
 
               <div
                 onClick={() => fileRef.current?.click()}
-                className="aspect-[3/4] rounded-2xl border-2 border-dashed border-pink-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-pink-400 hover:bg-pink-50 transition-all mb-4"
+                className="aspect-[3/4] rounded-2xl border-2 border-dashed border-pink-200 dark:border-pink-800/30 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-all mb-4"
               >
                 <Camera className="w-12 h-12 text-pink-300" />
                 <p className="text-sm text-pink-400 font-medium">Appuyez pour choisir une photo</p>
-                <p className="text-xs text-gray-400">ou prendre depuis l&apos;appareil photo</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">ou prendre depuis l&apos;appareil photo</p>
               </div>
 
               <input
@@ -327,12 +327,12 @@ export default function BumpPage() {
                 onChange={(e) => setNote(e.target.value.slice(0, 200))}
                 placeholder="Note (optionnel) — comment vous sentez-vous ?"
                 rows={2}
-                className="w-full border border-pink-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none mb-3"
+                className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none mb-3"
               />
 
               <button
                 onClick={() => setShowCamera(false)}
-                className="w-full text-gray-400 text-sm hover:text-gray-600"
+                className="w-full text-gray-400 dark:text-gray-500 text-sm hover:text-gray-600 dark:text-gray-300"
               >
                 Annuler
               </button>

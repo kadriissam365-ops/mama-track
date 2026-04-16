@@ -23,24 +23,24 @@ export default function ConfirmDialog({ isOpen, title, message, onConfirm, onCan
           onClick={onCancel}
         >
           <motion.div
-            className="bg-white rounded-2xl p-6 shadow-xl w-full max-w-sm"
+            className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-xl w-full max-w-sm"
             initial={{ scale: 0.9, y: 20 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
             onClick={e => e.stopPropagation()}
           >
-            <h3 className="font-semibold text-gray-900 text-lg mb-2">{title}</h3>
-            <p className="text-gray-500 text-sm mb-6">{message}</p>
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-2">{title}</h3>
+            <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm mb-6">{message}</p>
             <div className="flex gap-3">
               <button
                 onClick={onCancel}
-                className="flex-1 py-2.5 px-4 rounded-xl border border-gray-200 text-gray-700 font-medium text-sm"
+                className="flex-1 py-2.5 px-4 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium text-sm"
               >
                 Annuler
               </button>
               <button
                 onClick={onConfirm}
-                className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-sm text-white ${danger ? 'bg-red-500 hover:bg-red-600' : 'bg-pink-500 hover:bg-pink-600'}`}
+                className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-sm text-white ${danger ? 'bg-red-50 dark:bg-red-950/300 hover:bg-red-600' : 'bg-pink-50 dark:bg-pink-950/300 hover:bg-pink-600'}`}
               >
                 {confirmLabel}
               </button>

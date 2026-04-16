@@ -63,7 +63,7 @@ export default function KicksTab({ today }: KicksTabProps) {
       className="space-y-5"
     >
       {/* Compteur principal */}
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-green-100 text-center">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-green-100 dark:border-green-900/30 text-center">
         <motion.button
           onClick={counting ? handleKick : handleStart}
           whileTap={{ scale: 0.92 }}
@@ -76,8 +76,8 @@ export default function KicksTab({ today }: KicksTabProps) {
           <Baby
             className={`w-10 h-10 mb-1 ${counting ? "text-green-500" : "text-pink-400"}`}
           />
-          <span className="text-4xl font-bold text-[#3d2b2b]">{count}</span>
-          <span className="text-xs text-gray-500 mt-1">
+          <span className="text-4xl font-bold text-[#3d2b2b] dark:text-gray-100">{count}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
             {counting ? "Touchez !" : "Démarrer"}
           </span>
         </motion.button>
@@ -85,7 +85,7 @@ export default function KicksTab({ today }: KicksTabProps) {
         {counting && (
           <button
             onClick={handleStop}
-            className="mt-4 px-6 py-2 bg-red-100 text-red-500 rounded-xl font-medium hover:bg-red-200 transition-colors"
+            className="mt-4 px-6 py-2 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-xl font-medium hover:bg-red-200 transition-colors"
           >
             Terminer la session
           </button>
@@ -93,7 +93,7 @@ export default function KicksTab({ today }: KicksTabProps) {
 
         {!counting && (
           <div className="mt-4 space-y-3">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
               Total aujourd&apos;hui :{" "}
               <span className="font-bold text-green-600">
                 {totalToday} mouvements
@@ -114,11 +114,11 @@ export default function KicksTab({ today }: KicksTabProps) {
                   localStorage.setItem('duo-messages', JSON.stringify([...saved, msg]));
                   toast.success('Message envoyé à votre partenaire 💬');
                 }}
-                className="w-full flex items-center gap-3 bg-green-50 border border-green-200 rounded-2xl px-4 py-3 hover:bg-green-100 transition-colors"
+                className="w-full flex items-center gap-3 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/30 rounded-2xl px-4 py-3 hover:bg-green-100 dark:hover:bg-green-900/30 dark:bg-green-900/30 transition-colors"
               >
                 <MessageCircle className="w-5 h-5 text-green-600" />
                 <div className="text-left">
-                  <p className="text-sm font-semibold text-green-700">Partager avec papa 👶</p>
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-300">Partager avec papa 👶</p>
                   <p className="text-xs text-green-400">Envoie un message automatique au Duo</p>
                 </div>
               </motion.button>
@@ -129,26 +129,26 @@ export default function KicksTab({ today }: KicksTabProps) {
 
       {/* Sessions du jour */}
       {todaySessions.length > 0 && (
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-green-100">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-green-100 dark:border-green-900/30">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">
             Sessions aujourd&apos;hui
           </h3>
           {todaySessions.map((s) => (
             <div
               key={s.id}
-              className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+              className="flex items-center justify-between py-2 border-b border-gray-50 dark:border-gray-800 last:border-0"
             >
               <div>
-                <span className="text-sm font-semibold text-[#3d2b2b]">
+                <span className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">
                   {s.count} mouvements
                 </span>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   {s.startTime} — {s.duration} min
                 </p>
               </div>
               <button
                 onClick={() => setConfirmDelete(s.id)}
-                className="text-gray-300 hover:text-red-400 transition-colors"
+                className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors"
                 aria-label="Supprimer la session de kicks"
               >
                 <Trash2 className="w-4 h-4" />
@@ -159,10 +159,10 @@ export default function KicksTab({ today }: KicksTabProps) {
       )}
 
       {/* Historique */}
-      <div className="bg-white rounded-3xl p-4 shadow-sm border border-green-100">
-        <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Historique</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-green-100 dark:border-green-900/30">
+        <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Historique</h3>
         {store.kickSessions.length === 0 ? (
-          <p className="text-sm text-gray-400 text-center py-3">
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-3">
             Commencez à compter les mouvements de bébé ! 👶
           </p>
         ) : (
@@ -177,9 +177,9 @@ export default function KicksTab({ today }: KicksTabProps) {
             .map(([date, total]) => (
               <div
                 key={date}
-                className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+                className="flex items-center justify-between py-2 border-b border-gray-50 dark:border-gray-800 last:border-0"
               >
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-gray-300">
                   {format(new Date(date), "EEEE d MMM", { locale: fr })}
                 </span>
                 <span className="text-sm font-semibold text-green-500">

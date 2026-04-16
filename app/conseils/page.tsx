@@ -154,16 +154,16 @@ function FAQAccordion({ items }: { items: FAQItem[] }) {
   return (
     <div className="space-y-2">
       {items.map((item, idx) => (
-        <div key={idx} className="bg-white rounded-2xl border border-pink-100 overflow-hidden">
+        <div key={idx} className="bg-white dark:bg-gray-900 rounded-2xl border border-pink-100 dark:border-pink-900/30 overflow-hidden">
           <button
             onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
             className="w-full flex items-center justify-between px-4 py-3 text-left"
           >
-            <span className="text-sm font-semibold text-gray-800 pr-2">{item.q}</span>
+            <span className="text-sm font-semibold text-gray-800 dark:text-gray-200 pr-2">{item.q}</span>
             {openIndex === idx ? (
               <ChevronUp className="w-4 h-4 text-pink-400 flex-shrink-0" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-gray-400 flex-shrink-0" />
+              <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
             )}
           </button>
           <AnimatePresence>
@@ -176,9 +176,9 @@ function FAQAccordion({ items }: { items: FAQItem[] }) {
                 className="overflow-hidden"
               >
                 <div className="px-4 pb-4">
-                  <p className="text-sm text-gray-600 leading-relaxed">{item.a}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{item.a}</p>
                   {item.warning && (
-                    <div className="mt-3 flex items-start gap-2 bg-amber-50 rounded-xl px-3 py-2">
+                    <div className="mt-3 flex items-start gap-2 bg-amber-50 dark:bg-amber-950/30 rounded-xl px-3 py-2">
                       <span className="text-base">⚠️</span>
                       <p className="text-xs text-amber-700">{item.warning}</p>
                     </div>
@@ -201,8 +201,8 @@ function NutritionGuide() {
     1: {
       title: "1er Trimestre (S1 - S12)",
       color: "from-green-400 to-emerald-500",
-      bgColor: "bg-green-50",
-      borderColor: "border-green-200",
+      bgColor: "bg-green-50 dark:bg-green-950/30",
+      borderColor: "border-green-200 dark:border-green-800/30",
       intro: "Le 1er trimestre est crucial pour la formation des organes. L'acide folique est la star absolue !",
       tips: [
         { emoji: "🫚", title: "Nausées : votre stratégie", text: "Fractionnez en 5-6 petits repas. Mangez des crackers avant de vous lever. Le gingembre (tisane, biscuits) est votre meilleur allié." },
@@ -233,8 +233,8 @@ function NutritionGuide() {
     2: {
       title: "2ème Trimestre (S13 - S27)",
       color: "from-pink-400 to-rose-500",
-      bgColor: "bg-pink-50",
-      borderColor: "border-pink-200",
+      bgColor: "bg-pink-50 dark:bg-pink-950/30",
+      borderColor: "border-pink-200 dark:border-pink-800/30",
       intro: "Les nausées s'atténuent, l'appétit revient. Concentrez-vous sur le fer, le calcium et les bonnes protéines.",
       tips: [
         { emoji: "🥩", title: "Fer : priorité absolue", text: "Vos besoins en fer doublent ! Mangez de la viande rouge 2x/sem, des légumineuses, des céréales complètes. Associez-les à la vitamine C pour mieux absorber le fer végétal." },
@@ -266,8 +266,8 @@ function NutritionGuide() {
     3: {
       title: "3ème Trimestre (S28 - S42)",
       color: "from-purple-400 to-violet-500",
-      bgColor: "bg-purple-50",
-      borderColor: "border-purple-200",
+      bgColor: "bg-purple-50 dark:bg-purple-950/30",
+      borderColor: "border-purple-200 dark:border-purple-800/30",
       intro: "Bébé grandit très vite ! Les oméga-3, la vitamine K et les petits repas fréquents sont vos alliés.",
       tips: [
         { emoji: "🐟", title: "Oméga-3 pour le cerveau", text: "Essentiels au développement cérébral de bébé en fin de grossesse. Consommez du saumon, des sardines, du maquereau 2-3x/semaine. Ou complétez avec de l'huile de lin ou des noix." },
@@ -311,7 +311,7 @@ function NutritionGuide() {
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
               activeTrimestre === t
                 ? `bg-gradient-to-r ${content[t].color} text-white shadow-md`
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:bg-gray-700"
             }`}
           >
             T{t}
@@ -328,38 +328,38 @@ function NutritionGuide() {
         className="space-y-4"
       >
         <div className={`${c.bgColor} rounded-2xl p-4`}>
-          <h3 className="font-bold text-gray-800 text-base mb-1">{c.title}</h3>
-          <p className="text-sm text-gray-600">{c.intro}</p>
+          <h3 className="font-bold text-gray-800 dark:text-gray-200 text-base mb-1">{c.title}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{c.intro}</p>
         </div>
 
         {/* Tips */}
         <div className="space-y-3">
           {c.tips.map((tip, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-gray-100 p-4">
+            <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xl">{tip.emoji}</span>
-                <span className="font-semibold text-gray-800 text-sm">{tip.title}</span>
+                <span className="font-semibold text-gray-800 dark:text-gray-200 text-sm">{tip.title}</span>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed">{tip.text}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{tip.text}</p>
             </div>
           ))}
         </div>
 
         {/* Good & Bad */}
         <div className="grid grid-cols-1 gap-3">
-          <div className={`bg-green-50 rounded-2xl p-4 border ${c.borderColor}`}>
-            <h4 className="font-bold text-green-700 text-sm mb-3">✅ À privilégier ce trimestre</h4>
+          <div className={`bg-green-50 dark:bg-green-950/30 rounded-2xl p-4 border ${c.borderColor}`}>
+            <h4 className="font-bold text-green-700 dark:text-green-300 text-sm mb-3">✅ À privilégier ce trimestre</h4>
             <ul className="space-y-1">
               {c.good.map((item, i) => (
-                <li key={i} className="text-sm text-gray-700">{item}</li>
+                <li key={i} className="text-sm text-gray-700 dark:text-gray-300">{item}</li>
               ))}
             </ul>
           </div>
-          <div className="bg-red-50 rounded-2xl p-4 border border-red-100">
-            <h4 className="font-bold text-red-600 text-sm mb-3">❌ À éviter</h4>
+          <div className="bg-red-50 dark:bg-red-950/30 rounded-2xl p-4 border border-red-100 dark:border-red-900/30">
+            <h4 className="font-bold text-red-600 dark:text-red-400 text-sm mb-3">❌ À éviter</h4>
             <ul className="space-y-1">
               {c.bad.map((item, i) => (
-                <li key={i} className="text-sm text-gray-700">{item}</li>
+                <li key={i} className="text-sm text-gray-700 dark:text-gray-300">{item}</li>
               ))}
             </ul>
           </div>
@@ -409,7 +409,7 @@ function SportGuide() {
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
               activeTrimestre === t
                 ? "bg-gradient-to-r from-pink-400 to-rose-500 text-white shadow-md"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:bg-gray-700"
             }`}
           >
             T{t}
@@ -422,18 +422,18 @@ function SportGuide() {
         key={activeTrimestre}
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-pink-50 rounded-2xl p-4"
+        className="bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-4"
       >
         <div className="flex items-center gap-2 mb-2">
           <span className="text-xl">{trimestreInfo[activeTrimestre].icon}</span>
-          <span className="font-bold text-gray-800">{trimestreInfo[activeTrimestre].title}</span>
+          <span className="font-bold text-gray-800 dark:text-gray-200">{trimestreInfo[activeTrimestre].title}</span>
         </div>
-        <p className="text-sm text-gray-600">{trimestreInfo[activeTrimestre].text}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{trimestreInfo[activeTrimestre].text}</p>
       </motion.div>
 
       {/* Recommended */}
-      <div className="bg-white rounded-2xl border border-green-200 p-4">
-        <h3 className="font-bold text-green-700 text-sm mb-3">✅ Sports recommandés</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-green-200 dark:border-green-800/30 p-4">
+        <h3 className="font-bold text-green-700 dark:text-green-300 text-sm mb-3">✅ Sports recommandés</h3>
         <div className="space-y-3">
           {[
             { emoji: "🚶‍♀️", title: "Marche douce", text: "30 min/jour, idéal toute la grossesse. Améliore la circulation, prépare le périnée, réduit les œdèmes." },
@@ -445,8 +445,8 @@ function SportGuide() {
             <div key={i} className="flex gap-3">
               <span className="text-2xl flex-shrink-0">{item.emoji}</span>
               <div>
-                <p className="text-sm font-semibold text-gray-800">{item.title}</p>
-                <p className="text-xs text-gray-500">{item.text}</p>
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{item.title}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">{item.text}</p>
               </div>
             </div>
           ))}
@@ -454,8 +454,8 @@ function SportGuide() {
       </div>
 
       {/* Avoid */}
-      <div className="bg-red-50 rounded-2xl border border-red-100 p-4">
-        <h3 className="font-bold text-red-600 text-sm mb-3">❌ Sports à éviter</h3>
+      <div className="bg-red-50 dark:bg-red-950/30 rounded-2xl border border-red-100 dark:border-red-900/30 p-4">
+        <h3 className="font-bold text-red-600 dark:text-red-400 text-sm mb-3">❌ Sports à éviter</h3>
         <div className="space-y-2">
           {[
             "🥊 Sports de contact (boxe, judo, football)",
@@ -465,29 +465,29 @@ function SportGuide() {
             "🏃 Course à pied à haute intensité (au 3ème trimestre)",
             "🧗 Escalade et activités en altitude",
           ].map((item, i) => (
-            <p key={i} className="text-sm text-gray-700">{item}</p>
+            <p key={i} className="text-sm text-gray-700 dark:text-gray-300">{item}</p>
           ))}
         </div>
       </div>
 
       {/* Kegel */}
-      <div className="bg-purple-50 rounded-2xl border border-purple-200 p-4">
-        <h3 className="font-bold text-purple-700 text-sm mb-2">💪 Exercices de Kegel – Périnée</h3>
-        <p className="text-sm text-gray-600 mb-3">
+      <div className="bg-purple-50 dark:bg-purple-950/30 rounded-2xl border border-purple-200 dark:border-purple-800/30 p-4">
+        <h3 className="font-bold text-purple-700 dark:text-purple-300 text-sm mb-2">💪 Exercices de Kegel – Périnée</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
           Les exercices de Kegel renforcent le périnée pour prévenir les fuites urinaires et faciliter la récupération post-partum.
         </p>
-        <div className="bg-white rounded-xl p-3 mb-3">
-          <p className="text-sm font-semibold text-gray-800 mb-1">Comment faire ?</p>
-          <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+        <div className="bg-white dark:bg-gray-900 rounded-xl p-3 mb-3">
+          <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">Comment faire ?</p>
+          <ol className="text-sm text-gray-600 dark:text-gray-300 space-y-1 list-decimal list-inside">
             <li>Contractez les muscles du périnée (comme si vous vouliez arrêter d'uriner)</li>
             <li>Maintenez la contraction 5-8 secondes</li>
             <li>Relâchez complètement 10 secondes</li>
             <li>Répétez 10 fois → 1 série</li>
           </ol>
         </div>
-        <div className="bg-purple-100 rounded-xl px-3 py-2 flex items-center gap-2">
+        <div className="bg-purple-100 dark:bg-purple-900/30 rounded-xl px-3 py-2 flex items-center gap-2">
           <span className="text-lg">🎯</span>
-          <p className="text-sm font-medium text-purple-800">Objectif : 3 séries de 10 contractions par jour</p>
+          <p className="text-sm font-medium text-purple-800 dark:text-purple-300">Objectif : 3 séries de 10 contractions par jour</p>
         </div>
       </div>
     </div>
@@ -512,20 +512,20 @@ export default function ConseilsPage() {
         className="mb-5"
       >
         <p className="text-xs font-medium text-pink-400 uppercase tracking-wider mb-1">Semaine {week}</p>
-        <h1 className="text-2xl font-bold text-gray-900">Conseils & Bien-être</h1>
-        <p className="text-sm text-gray-500 mt-1">Tout ce dont vous avez besoin pour cette semaine</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Conseils & Bien-être</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">Tout ce dont vous avez besoin pour cette semaine</p>
       </motion.div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-pink-50 rounded-2xl p-1 mb-5 overflow-x-auto scrollbar-hide">
+      <div className="flex gap-1 bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-1 mb-5 overflow-x-auto scrollbar-hide">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-shrink-0 flex-1 py-1.5 text-xs font-medium rounded-xl transition-all whitespace-nowrap ${
               activeTab === tab.id
-                ? "bg-white text-pink-600 shadow-sm"
-                : "text-gray-500 hover:text-pink-400"
+                ? "bg-white dark:bg-gray-900 text-pink-600 shadow-sm"
+                : "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-pink-400"
             }`}
           >
             {tab.label}
@@ -551,44 +551,44 @@ export default function ConseilsPage() {
             )}
 
             {/* Baby development */}
-            <div className="bg-white rounded-2xl border border-pink-100 p-4">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-pink-100 dark:border-pink-900/30 p-4">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 bg-pink-100 rounded-2xl flex items-center justify-center text-2xl">
+                <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-2xl flex items-center justify-center text-2xl">
                   {weekData.fruitEmoji}
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400 uppercase tracking-wide">Bébé cette semaine</p>
-                  <p className="font-bold text-gray-800">Taille d'un(e) {weekData.fruit}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">Bébé cette semaine</p>
+                  <p className="font-bold text-gray-800 dark:text-gray-200">Taille d'un(e) {weekData.fruit}</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed">{weekData.babyDevelopment}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.babyDevelopment}</p>
             </div>
 
             {/* Weekly tip */}
-            <div className="bg-amber-50 rounded-2xl border border-amber-100 p-4">
+            <div className="bg-amber-50 dark:bg-amber-950/30 rounded-2xl border border-amber-100 dark:border-amber-900/30 p-4">
               <p className="text-sm font-bold text-amber-700 mb-1">💡 Conseil de la semaine</p>
-              <p className="text-sm text-gray-700 leading-relaxed">{weekData.weeklyTip}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{weekData.weeklyTip}</p>
             </div>
 
             {/* Mom tips */}
-            <div className="bg-white rounded-2xl border border-gray-100 p-4">
-              <p className="text-sm font-bold text-gray-700 mb-2">🌷 Pour vous</p>
-              <p className="text-sm text-gray-600 leading-relaxed">{weekData.momTips}</p>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-4">
+              <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">🌷 Pour vous</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.momTips}</p>
             </div>
 
             {/* Symptoms */}
             {weekData.weeklySymptoms && weekData.weeklySymptoms.length > 0 && (
-              <div className="bg-blue-50 rounded-2xl border border-blue-100 p-4">
-                <p className="text-sm font-bold text-blue-700 mb-3">💙 Symptômes courants cette semaine</p>
+              <div className="bg-blue-50 dark:bg-blue-950/30 rounded-2xl border border-blue-100 dark:border-blue-900/30 p-4">
+                <p className="text-sm font-bold text-blue-700 dark:text-blue-300 mb-3">💙 Symptômes courants cette semaine</p>
                 <div className="space-y-2">
                   {weekData.weeklySymptoms.map((s, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <span className="w-2 h-2 bg-blue-300 rounded-full flex-shrink-0" />
-                      <p className="text-sm text-gray-600">{s}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">{s}</p>
                     </div>
                   ))}
                 </div>
-                <p className="text-xs text-gray-400 mt-3">Ces symptômes sont normaux. Consultez si ils vous inquiètent.</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">Ces symptômes sont normaux. Consultez si ils vous inquiètent.</p>
               </div>
             )}
           </motion.div>
@@ -627,18 +627,18 @@ export default function ConseilsPage() {
             exit={{ opacity: 0, y: -10 }}
             className="space-y-5"
           >
-            <p className="text-sm text-gray-500">Réponses médicalement fiables aux questions les plus fréquentes, par trimestre.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Réponses médicalement fiables aux questions les plus fréquentes, par trimestre.</p>
             {faqData.map((section) => (
               <div key={section.title}>
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xl">{section.emoji}</span>
-                  <h3 className="font-bold text-gray-800">{section.title}</h3>
+                  <h3 className="font-bold text-gray-800 dark:text-gray-200">{section.title}</h3>
                 </div>
                 <FAQAccordion items={section.items} />
               </div>
             ))}
-            <div className="bg-pink-50 rounded-2xl p-4 mt-4">
-              <p className="text-xs text-gray-500 text-center">
+            <div className="bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-4 mt-4">
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 text-center">
                 Ces informations sont générales et ne remplacent pas l'avis médical. En cas de doute, contactez toujours votre médecin ou sage-femme. 💗
               </p>
             </div>

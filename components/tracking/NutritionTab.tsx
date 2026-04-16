@@ -18,28 +18,28 @@ const NUTRIENTS: NutrientItem[] = [
     emoji: "🌿",
     label: "Acide folique",
     description: "400-800 µg / Protection tube neural",
-    color: "bg-green-100 border-green-300 text-green-700",
+    color: "bg-green-100 dark:bg-green-900/30 border-green-300 text-green-700 dark:text-green-300",
   },
   {
     id: "vitd",
     emoji: "☀️",
     label: "Vitamine D",
     description: "Exposition solaire ou supplément",
-    color: "bg-yellow-100 border-yellow-300 text-yellow-700",
+    color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 text-yellow-700 dark:text-yellow-300",
   },
   {
     id: "protein",
     emoji: "🥩",
     label: "Protéines",
     description: "70-100g/j / Viande, œufs, légumineuses",
-    color: "bg-orange-100 border-orange-300 text-orange-700",
+    color: "bg-orange-100 dark:bg-orange-900/30 border-orange-300 text-orange-700 dark:text-orange-300",
   },
   {
     id: "calcium",
     emoji: "🥛",
     label: "Calcium",
     description: "3-4 portions laitières/j",
-    color: "bg-blue-100 border-blue-300 text-blue-700",
+    color: "bg-blue-100 dark:bg-blue-900/30 border-blue-300 text-blue-700 dark:text-blue-300",
   },
   {
     id: "omega3",
@@ -53,7 +53,7 @@ const NUTRIENTS: NutrientItem[] = [
     emoji: "🌾",
     label: "Fibres",
     description: "Légumes, fruits, céréales complètes",
-    color: "bg-amber-100 border-amber-300 text-amber-700",
+    color: "bg-amber-100 dark:bg-amber-900/30 border-amber-300 text-amber-700",
   },
 ];
 
@@ -112,8 +112,8 @@ export default function NutritionTab() {
     >
       {/* Header */}
       <div className="text-center">
-        <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Aujourd'hui</p>
-        <p className="text-sm font-medium text-gray-600">Cochez ce que vous avez consommé</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Aujourd'hui</p>
+        <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Cochez ce que vous avez consommé</p>
       </div>
 
       {/* Score card */}
@@ -150,7 +150,7 @@ export default function NutritionTab() {
               className={`w-full flex items-center gap-3 p-3 rounded-2xl border-2 transition-all text-left ${
                 isChecked
                   ? nutrient.color
-                  : "bg-white border-gray-200 text-gray-700 hover:border-pink-200"
+                  : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-pink-200 dark:border-pink-800/30"
               }`}
             >
               {/* Emoji */}
@@ -160,14 +160,14 @@ export default function NutritionTab() {
               <div className="flex-1 min-w-0">
                 <p
                   className={`text-sm font-semibold ${
-                    isChecked ? "" : "text-gray-800"
+                    isChecked ? "" : "text-gray-800 dark:text-gray-200"
                   }`}
                 >
                   {nutrient.label}
                 </p>
                 <p
                   className={`text-xs truncate ${
-                    isChecked ? "opacity-75" : "text-gray-400"
+                    isChecked ? "opacity-75" : "text-gray-400 dark:text-gray-500"
                   }`}
                 >
                   {nutrient.description}
@@ -178,8 +178,8 @@ export default function NutritionTab() {
               <div
                 className={`w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center border-2 transition-all ${
                   isChecked
-                    ? "bg-white border-current"
-                    : "bg-gray-100 border-gray-300"
+                    ? "bg-white dark:bg-gray-900 border-current"
+                    : "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600"
                 }`}
               >
                 {isChecked && (
@@ -202,7 +202,7 @@ export default function NutritionTab() {
       </div>
 
       {/* Daily tip */}
-      <div className="bg-amber-50 rounded-2xl border border-amber-100 p-3">
+      <div className="bg-amber-50 dark:bg-amber-950/30 rounded-2xl border border-amber-100 dark:border-amber-900/30 p-3">
         <p className="text-xs text-amber-700">
           💡 <strong>Rappel :</strong> Ces besoins sont en plus d'une alimentation équilibrée variée. En cas de doute, parlez-en à votre sage-femme ou médecin.
         </p>

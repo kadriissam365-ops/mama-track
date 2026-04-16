@@ -26,7 +26,7 @@ export default function InstallBanner() {
         <button onClick={() => setShow(false)} className="text-pink-200 text-sm px-2">Plus tard</button>
         <button
           onClick={async () => { await promptInstall(); setShow(false); }}
-          className="bg-white text-pink-600 text-sm font-semibold px-3 py-1.5 rounded-xl"
+          className="bg-white dark:bg-gray-900 text-pink-600 text-sm font-semibold px-3 py-1.5 rounded-xl"
         >
           Installer
         </button>

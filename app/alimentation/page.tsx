@@ -98,9 +98,9 @@ const FOOD_DATABASE: FoodItem[] = [
 const CATEGORIES = Array.from(new Set(FOOD_DATABASE.map((f) => f.category)));
 
 const SAFETY_CONFIG: Record<Safety, { icon: typeof ShieldCheck; label: string; bg: string; text: string; border: string }> = {
-  ok: { icon: ShieldCheck, label: "Autorisé", bg: "bg-green-50", text: "text-green-600", border: "border-green-200" },
-  caution: { icon: ShieldAlert, label: "Avec précaution", bg: "bg-yellow-50", text: "text-yellow-600", border: "border-yellow-200" },
-  avoid: { icon: ShieldX, label: "À éviter", bg: "bg-red-50", text: "text-red-600", border: "border-red-200" },
+  ok: { icon: ShieldCheck, label: "Autorisé", bg: "bg-green-50 dark:bg-green-950/30", text: "text-green-600", border: "border-green-200 dark:border-green-800/30" },
+  caution: { icon: ShieldAlert, label: "Avec précaution", bg: "bg-yellow-50 dark:bg-yellow-950/30", text: "text-yellow-600", border: "border-yellow-200 dark:border-yellow-800/30" },
+  avoid: { icon: ShieldX, label: "À éviter", bg: "bg-red-50 dark:bg-red-950/30", text: "text-red-600 dark:text-red-400", border: "border-red-200 dark:border-red-800/30" },
 };
 
 export default function AlimentationPage() {
@@ -137,21 +137,21 @@ export default function AlimentationPage() {
     <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
       {/* Header */}
       <div>
-        <h1 className="text-xl font-bold text-[#3d2b2b] flex items-center gap-2">
+        <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
           🥗 Guide alimentaire
         </h1>
-        <p className="text-sm text-gray-400 mt-1">Puis-je manger... ? Recherchez un aliment</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Puis-je manger... ? Recherchez un aliment</p>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher un aliment..."
-          className="w-full pl-10 pr-4 py-3 border border-pink-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 bg-white"
+          className="w-full pl-10 pr-4 py-3 border border-pink-200 dark:border-pink-800/30 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 bg-white dark:bg-gray-900"
         />
       </div>
 
@@ -160,7 +160,7 @@ export default function AlimentationPage() {
         <button
           onClick={() => setActiveFilter("all")}
           className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
-            activeFilter === "all" ? "bg-pink-400 text-white" : "bg-white border border-pink-100 text-gray-500"
+            activeFilter === "all" ? "bg-pink-400 text-white" : "bg-white dark:bg-gray-900 border border-pink-100 dark:border-pink-900/30 text-gray-500 dark:text-gray-400 dark:text-gray-500"
           }`}
         >
           Tous ({FOOD_DATABASE.length})
@@ -174,7 +174,7 @@ export default function AlimentationPage() {
               className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center gap-1 ${
                 activeFilter === s
                   ? `${config.bg} ${config.text} ${config.border} border`
-                  : "bg-white border border-pink-100 text-gray-500"
+                  : "bg-white dark:bg-gray-900 border border-pink-100 dark:border-pink-900/30 text-gray-500 dark:text-gray-400 dark:text-gray-500"
               }`}
             >
               <config.icon className="w-3 h-3" />
@@ -193,7 +193,7 @@ export default function AlimentationPage() {
             className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
               activeCategory === cat
                 ? "bg-pink-400 text-white"
-                : "bg-pink-50 text-pink-500 hover:bg-pink-100"
+                : "bg-pink-50 dark:bg-pink-950/30 text-pink-500 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30"
             }`}
           >
             {cat}
@@ -205,8 +205,8 @@ export default function AlimentationPage() {
       <div className="space-y-2">
         {filtered.length === 0 && (
           <div className="text-center py-8">
-            <Search className="w-10 h-10 text-gray-200 mx-auto mb-2" />
-            <p className="text-sm text-gray-400">Aucun résultat pour &quot;{search}&quot;</p>
+            <Search className="w-10 h-10 text-gray-200 dark:text-gray-700 mx-auto mb-2" />
+            <p className="text-sm text-gray-400 dark:text-gray-500">Aucun résultat pour &quot;{search}&quot;</p>
           </div>
         )}
 
@@ -230,8 +230,8 @@ export default function AlimentationPage() {
                   <div className="flex items-center gap-3">
                     <config.icon className={`w-5 h-5 ${config.text} flex-shrink-0`} />
                     <div>
-                      <p className="text-sm font-semibold text-[#3d2b2b]">{food.name}</p>
-                      <p className="text-xs text-gray-400">{food.category}</p>
+                      <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">{food.name}</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">{food.category}</p>
                     </div>
                   </div>
                   <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${config.bg} ${config.text}`}>
@@ -248,9 +248,9 @@ export default function AlimentationPage() {
                       className="overflow-hidden"
                     >
                       <div className="px-4 pb-3 pt-0">
-                        <p className="text-sm text-gray-600">{food.detail}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{food.detail}</p>
                         {food.tip && (
-                          <div className="flex items-start gap-1.5 mt-2 bg-white/60 rounded-xl p-2">
+                          <div className="flex items-start gap-1.5 mt-2 bg-white/60 dark:bg-gray-800/60 rounded-xl p-2">
                             <Info className="w-3.5 h-3.5 text-blue-400 mt-0.5 flex-shrink-0" />
                             <p className="text-xs text-blue-600">{food.tip}</p>
                           </div>
@@ -266,12 +266,12 @@ export default function AlimentationPage() {
       </div>
 
       {/* Footer info */}
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100">
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100 dark:border-pink-900/30">
         <div className="flex items-start gap-3">
           <span className="text-2xl">⚠️</span>
           <div>
-            <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Rappel important</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm mb-1">Rappel important</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
               Ce guide est indicatif. Chaque grossesse est unique. En cas de doute, consultez votre médecin ou sage-femme. Si vous n&apos;êtes pas immunisée contre la toxoplasmose, soyez particulièrement vigilante avec les aliments crus.
             </p>
           </div>

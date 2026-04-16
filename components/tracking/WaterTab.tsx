@@ -27,7 +27,7 @@ export default function WaterTab({ today }: WaterTabProps) {
       className="space-y-5"
     >
       {/* Jauge principale */}
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-blue-100 text-center">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-blue-100 dark:border-blue-900/30 text-center">
         <div className="relative w-40 h-40 mx-auto mb-4">
           <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
             <circle cx="60" cy="60" r="50" fill="none" stroke="#e0f2fe" strokeWidth="10" />
@@ -46,11 +46,11 @@ export default function WaterTab({ today }: WaterTabProps) {
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-3xl font-bold text-blue-500">{waterToday}</span>
-            <span className="text-xs text-gray-400">ml / {goal} ml</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">ml / {goal} ml</span>
           </div>
         </div>
 
-        <p className="text-sm font-medium text-gray-600">
+        <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
           {pct >= 100
             ? "🎉 Objectif atteint !"
             : `Encore ${goal - waterToday} ml pour atteindre l'objectif`}
@@ -63,7 +63,7 @@ export default function WaterTab({ today }: WaterTabProps) {
           <button
             key={ml}
             onClick={() => store.addWater(today, ml)}
-            className="bg-white rounded-2xl py-4 shadow-sm border border-blue-100 flex flex-col items-center gap-1 hover:bg-blue-50 transition-colors"
+            className="bg-white dark:bg-gray-900 rounded-2xl py-4 shadow-sm border border-blue-100 dark:border-blue-900/30 flex flex-col items-center gap-1 hover:bg-blue-50 dark:bg-blue-950/30 transition-colors"
           >
             <span className="text-2xl">💧</span>
             <span className="text-sm font-semibold text-blue-500">+ {ml} ml</span>
@@ -74,28 +74,28 @@ export default function WaterTab({ today }: WaterTabProps) {
       <button
         onClick={() => store.removeWater(today, 250)}
         disabled={waterToday === 0}
-        className="w-full py-3 bg-white border border-red-100 text-red-400 rounded-2xl font-medium flex items-center justify-center gap-2 disabled:opacity-30 hover:bg-red-50 transition-colors"
+        className="w-full py-3 bg-white dark:bg-gray-900 border border-red-100 dark:border-red-900/30 text-red-400 rounded-2xl font-medium flex items-center justify-center gap-2 disabled:opacity-30 hover:bg-red-50 dark:bg-red-950/30 transition-colors"
       >
         <Minus className="w-4 h-4" />
         Annuler 250 ml
       </button>
 
       {/* Historique 7 jours */}
-      <div className="bg-white rounded-3xl p-4 shadow-sm border border-blue-100">
-        <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">7 derniers jours</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-blue-100 dark:border-blue-900/30">
+        <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">7 derniers jours</h3>
         {Object.entries(store.waterIntake)
           .sort((a, b) => b[0].localeCompare(a[0]))
           .slice(0, 7)
           .map(([date, ml]) => (
             <div
               key={date}
-              className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+              className="flex items-center justify-between py-2 border-b border-gray-50 dark:border-gray-800 last:border-0"
             >
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
                 {format(new Date(date), "EEEE d MMM", { locale: fr })}
               </span>
               <div className="flex items-center gap-2">
-                <div className="w-20 bg-blue-100 rounded-full h-2">
+                <div className="w-20 bg-blue-100 dark:bg-blue-900/30 rounded-full h-2">
                   <div
                     className="bg-blue-400 h-2 rounded-full"
                     style={{ width: `${Math.min(100, ((ml as number) / goal) * 100)}%` }}

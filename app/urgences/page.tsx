@@ -29,7 +29,7 @@ const EMERGENCY_SIGNS = [
   {
     title: "Appeler le 15 (SAMU) immédiatement",
     emoji: "🚨",
-    color: "bg-red-50 border-red-200",
+    color: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/30",
     symptoms: [
       "Saignements abondants",
       "Douleurs abdominales intenses et persistantes",
@@ -42,7 +42,7 @@ const EMERGENCY_SIGNS = [
   {
     title: "Consulter dans les 24h",
     emoji: "⚠️",
-    color: "bg-orange-50 border-orange-200",
+    color: "bg-orange-50 dark:bg-orange-950/30 border-orange-200",
     symptoms: [
       "Légers saignements (spotting)",
       "Contractions régulières avant 37 SA",
@@ -56,7 +56,7 @@ const EMERGENCY_SIGNS = [
   {
     title: "En parler au prochain RDV",
     emoji: "💬",
-    color: "bg-yellow-50 border-yellow-200",
+    color: "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800/30",
     symptoms: [
       "Fatigue inhabituelle",
       "Nausées persistantes après 16 SA",
@@ -143,15 +143,15 @@ export default function UrgencesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-[#3d2b2b] flex items-center gap-2">
+          <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
             <Siren className="w-6 h-6 text-red-400" />
             Urgences
           </h1>
-          <p className="text-xs text-gray-400 mt-0.5">Contacts et signaux d&apos;alerte</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Contacts et signaux d&apos;alerte</p>
         </div>
         <a
           href="tel:15"
-          className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
+          className="flex items-center gap-2 bg-red-50 dark:bg-red-950/300 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
         >
           <Phone className="w-4 h-4" />
           SAMU 15
@@ -160,37 +160,37 @@ export default function UrgencesPage() {
 
       {/* Quick call buttons */}
       <div className="grid grid-cols-3 gap-2">
-        <a href="tel:15" className="flex flex-col items-center gap-1 bg-red-50 border border-red-200 rounded-2xl py-3 hover:bg-red-100 transition-colors">
+        <a href="tel:15" className="flex flex-col items-center gap-1 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-2xl py-3 hover:bg-red-100 dark:bg-red-900/30 transition-colors">
           <span className="text-xl">🚑</span>
-          <span className="text-[10px] font-semibold text-red-600">SAMU 15</span>
+          <span className="text-[10px] font-semibold text-red-600 dark:text-red-400">SAMU 15</span>
         </a>
-        <a href="tel:18" className="flex flex-col items-center gap-1 bg-orange-50 border border-orange-200 rounded-2xl py-3 hover:bg-orange-100 transition-colors">
+        <a href="tel:18" className="flex flex-col items-center gap-1 bg-orange-50 dark:bg-orange-950/30 border border-orange-200 rounded-2xl py-3 hover:bg-orange-100 dark:bg-orange-900/30 transition-colors">
           <span className="text-xl">🚒</span>
           <span className="text-[10px] font-semibold text-orange-600">Pompiers 18</span>
         </a>
-        <a href="tel:112" className="flex flex-col items-center gap-1 bg-blue-50 border border-blue-200 rounded-2xl py-3 hover:bg-blue-100 transition-colors">
+        <a href="tel:112" className="flex flex-col items-center gap-1 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 rounded-2xl py-3 hover:bg-blue-100 dark:hover:bg-blue-900/30 dark:bg-blue-900/30 transition-colors">
           <span className="text-xl">🆘</span>
           <span className="text-[10px] font-semibold text-blue-600">Urgences 112</span>
         </a>
       </div>
 
       {/* My contacts */}
-      <div className="bg-white rounded-3xl p-4 shadow-sm border border-pink-100">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-[#3d2b2b] flex items-center gap-2">
+          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
             <Heart className="w-4 h-4 text-pink-400" />
             Mes contacts
           </h3>
           <button
             onClick={() => { resetForm(); setShowAdd(true); }}
-            className="w-7 h-7 bg-pink-400 rounded-lg flex items-center justify-center text-white hover:bg-pink-500 transition-colors"
+            className="w-7 h-7 bg-pink-400 rounded-lg flex items-center justify-center text-white hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
           >
             <Plus className="w-4 h-4" />
           </button>
         </div>
 
         {contacts.length === 0 && !showAdd && (
-          <p className="text-sm text-gray-400 text-center py-4">
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-4">
             Ajoutez votre maternité, gynécologue, sage-femme...
           </p>
         )}
@@ -199,29 +199,29 @@ export default function UrgencesPage() {
           {contacts.map((contact) => (
             <div
               key={contact.id}
-              className="flex items-center gap-3 bg-pink-50 rounded-2xl px-3 py-2.5"
+              className="flex items-center gap-3 bg-pink-50 dark:bg-pink-950/30 rounded-2xl px-3 py-2.5"
             >
               <span className="text-xl">{contact.emoji}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[#3d2b2b] truncate">{contact.name}</p>
-                <p className="text-xs text-gray-400">{contact.role} · {contact.phone}</p>
+                <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 truncate">{contact.name}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">{contact.role} · {contact.phone}</p>
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
                 <a
                   href={`tel:${contact.phone}`}
-                  className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center hover:bg-green-500 transition-colors"
+                  className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center hover:bg-green-50 dark:bg-green-950/300 transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5 text-white" />
                 </a>
                 <button
                   onClick={() => startEdit(contact)}
-                  className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                  className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:bg-gray-700 transition-colors"
                 >
-                  <Edit3 className="w-3 h-3 text-gray-500" />
+                  <Edit3 className="w-3 h-3 text-gray-500 dark:text-gray-400 dark:text-gray-500" />
                 </button>
                 <button
                   onClick={() => setConfirmDelete(contact.id)}
-                  className="text-gray-300 hover:text-red-400 transition-colors"
+                  className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -239,7 +239,7 @@ export default function UrgencesPage() {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="mt-3 p-3 bg-gray-50 rounded-2xl space-y-2">
+              <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl space-y-2">
                 <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
                   {PRESET_ROLES.map((role) => (
                     <button
@@ -248,7 +248,7 @@ export default function UrgencesPage() {
                       className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium whitespace-nowrap transition-all ${
                         selectedRole.role === role.role
                           ? "bg-pink-400 text-white"
-                          : "bg-white border border-gray-200 text-gray-500"
+                          : "bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 dark:text-gray-500"
                       }`}
                     >
                       <span>{role.emoji}</span>
@@ -261,27 +261,27 @@ export default function UrgencesPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Nom"
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
                 />
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="Numéro de téléphone"
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
                 />
                 <div className="flex gap-2">
                   <button
                     onClick={addContact}
                     disabled={!name.trim() || !phone.trim()}
-                    className="flex-1 flex items-center justify-center gap-1 bg-pink-400 text-white py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-500 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1 bg-pink-400 text-white py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
                   >
                     <Save className="w-3.5 h-3.5" />
                     {editId ? "Modifier" : "Ajouter"}
                   </button>
                   <button
                     onClick={resetForm}
-                    className="px-3 py-2 bg-gray-200 text-gray-500 rounded-xl text-sm hover:bg-gray-300 transition-colors"
+                    className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 dark:text-gray-500 rounded-xl text-sm hover:bg-gray-300 transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -294,7 +294,7 @@ export default function UrgencesPage() {
 
       {/* Emergency signs */}
       <div className="space-y-3">
-        <h2 className="font-bold text-[#3d2b2b] flex items-center gap-2">
+        <h2 className="font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
           <AlertTriangle className="w-5 h-5 text-orange-400" />
           Signaux d&apos;alerte
         </h2>
@@ -307,9 +307,9 @@ export default function UrgencesPage() {
             >
               <div className="flex items-center gap-2">
                 <span className="text-lg">{section.emoji}</span>
-                <span className="text-sm font-semibold text-[#3d2b2b]">{section.title}</span>
+                <span className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">{section.title}</span>
               </div>
-              <span className="text-gray-400">{expandedSign === i ? "−" : "+"}</span>
+              <span className="text-gray-400 dark:text-gray-500">{expandedSign === i ? "−" : "+"}</span>
             </button>
             <AnimatePresence>
               {expandedSign === i && (
@@ -321,7 +321,7 @@ export default function UrgencesPage() {
                 >
                   <ul className="px-4 pb-3 space-y-1.5">
                     {section.symptoms.map((symptom, j) => (
-                      <li key={j} className="flex items-start gap-2 text-sm text-gray-600">
+                      <li key={j} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300">
                         <span className="text-xs mt-1">•</span>
                         {symptom}
                       </li>
@@ -335,15 +335,15 @@ export default function UrgencesPage() {
       </div>
 
       {/* Hospital bag reminder */}
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-5 border border-blue-100">
+      <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-5 border border-blue-100 dark:border-blue-900/30">
         <div className="flex items-start gap-3">
           <Hospital className="w-6 h-6 text-blue-400 flex-shrink-0" />
           <div>
-            <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Valise maternité</h3>
-            <p className="text-sm text-gray-600 leading-relaxed mb-2">
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm mb-1">Valise maternité</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-2">
               Pensez à préparer votre valise vers 32-34 SA. Documents à ne pas oublier :
             </p>
-            <ul className="text-sm text-gray-600 space-y-1">
+            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
               <li>• Carte vitale et carte de mutuelle</li>
               <li>• Carnet de santé maternité</li>
               <li>• Carte de groupe sanguin</li>

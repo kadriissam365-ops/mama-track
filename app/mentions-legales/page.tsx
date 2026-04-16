@@ -19,7 +19,7 @@ export default function MentionsLegalesPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent">
             Mentions L&eacute;gales
           </h1>
-          <p className="text-sm text-gray-400">Derni&egrave;re mise &agrave; jour : 15 avril 2026</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">Derni&egrave;re mise &agrave; jour : 15 avril 2026</p>
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">&Eacute;diteur du site</h2>

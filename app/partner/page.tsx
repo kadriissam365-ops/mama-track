@@ -222,9 +222,9 @@ export default function PartnerViewPage() {
         <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-3 shadow-lg">
           <Heart className="w-8 h-8 text-white fill-white" />
         </div>
-        <h1 className="text-2xl font-bold text-[#2b3d3d]">{t("partner.title")}</h1>
+        <h1 className="text-2xl font-bold text-[#2b3d3d] dark:text-gray-100">{t("partner.title")}</h1>
         {store.mamaName && (
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
             {t("partner.pregnancyOf")} <span className="font-semibold text-teal-600">{store.mamaName}</span>
           </p>
         )}
@@ -233,7 +233,7 @@ export default function PartnerViewPage() {
       {/* Week + Size + Progress Hero */}
       <motion.div
         {...anim}
-        className="bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 rounded-3xl p-6 text-center border border-teal-100 shadow-sm"
+        className="bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 dark:from-teal-950/30 dark:via-cyan-950/30 dark:to-blue-950/30 rounded-3xl p-6 text-center border border-teal-100 dark:border-teal-900/30 shadow-sm"
       >
         <motion.div
           animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
@@ -242,32 +242,32 @@ export default function PartnerViewPage() {
         >
           {weekData.fruitEmoji}
         </motion.div>
-        <h2 className="text-5xl font-bold text-[#2b3d3d]">
+        <h2 className="text-5xl font-bold text-[#2b3d3d] dark:text-gray-100">
           {week} <span className="text-2xl text-teal-500">{t("partner.week")}</span>
         </h2>
-        <p className="text-gray-500 mt-1">
+        <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
           {store.babyName || "Baby"} : {t("partner.likeFruit")} {weekData.fruit}
         </p>
-        <div className="flex justify-center gap-4 mt-2 text-xs text-gray-400">
+        <div className="flex justify-center gap-4 mt-2 text-xs text-gray-400 dark:text-gray-500">
           <span>📏 {weekData.sizeMm} mm</span>
           <span>⚖️ {weekData.weightG} g</span>
         </div>
         {days !== null && (
-          <div className="mt-3 bg-white rounded-2xl px-4 py-2 inline-block shadow-sm">
+          <div className="mt-3 bg-white dark:bg-gray-900 rounded-2xl px-4 py-2 inline-block shadow-sm">
             <span className="text-2xl font-bold text-teal-600">{days}</span>
-            <span className="text-sm text-gray-400 ml-1">
+            <span className="text-sm text-gray-400 dark:text-gray-500 ml-1">
               {t("partner.daysBefore")}{store.babyName ? ` ${store.babyName}` : ""}
             </span>
           </div>
         )}
         {/* Progress bar */}
         <div className="mt-4 mx-auto max-w-xs">
-          <div className="flex justify-between text-xs text-gray-400 mb-1">
+          <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mb-1">
             <span>{t("partner.start")}</span>
             <span>{Math.round(progress)}%</span>
             <span>{t("partner.birth")}</span>
           </div>
-          <div className="h-2.5 bg-white rounded-full overflow-hidden">
+          <div className="h-2.5 bg-white dark:bg-gray-900 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
@@ -282,29 +282,29 @@ export default function PartnerViewPage() {
       <motion.div
         {...anim}
         transition={{ delay: 0.1 }}
-        className="bg-white rounded-3xl p-5 shadow-sm border border-teal-100"
+        className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-teal-100 dark:border-teal-900/30"
       >
-        <h3 className="font-semibold text-[#2b3d3d] mb-2 flex items-center gap-2">
+        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-2 flex items-center gap-2">
           <Baby className="w-5 h-5 text-teal-500" /> {t("partner.babyDev")}
         </h3>
-        <p className="text-sm text-gray-600 leading-relaxed">{weekData.babyDevelopment}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.babyDevelopment}</p>
       </motion.div>
 
       {/* Upcoming Appointments */}
-      <motion.div {...anim} transition={{ delay: 0.15 }} className="bg-white rounded-3xl p-5 shadow-sm border border-blue-100">
-        <h3 className="font-semibold text-[#2b3d3d] mb-3 flex items-center gap-2">
+      <motion.div {...anim} transition={{ delay: 0.15 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-blue-100 dark:border-blue-900/30">
+        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
           <Calendar className="w-5 h-5 text-blue-500" /> {t("partner.nextAppt")}
         </h3>
         {upcomingAppointments.length > 0 ? (
           <div className="space-y-2">
             {upcomingAppointments.map((appt) => (
-              <div key={appt.id} className="flex items-center gap-3 bg-blue-50 rounded-2xl px-4 py-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+              <div key={appt.id} className="flex items-center gap-3 bg-blue-50 dark:bg-blue-950/30 rounded-2xl px-4 py-3">
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shrink-0">
                   <Calendar className="w-5 h-5 text-blue-500" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-[#2b3d3d] text-sm truncate">{appt.title}</p>
-                  <p className="text-xs text-gray-400">
+                  <p className="font-medium text-[#2b3d3d] dark:text-gray-100 text-sm truncate">{appt.title}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
                     {appt.date} {appt.time ? `à ${appt.time}` : ""}
                   </p>
                 </div>
@@ -312,7 +312,7 @@ export default function PartnerViewPage() {
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-400 text-center py-3">{t("dashboard.noAppt")}</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-3">{t("dashboard.noAppt")}</p>
         )}
       </motion.div>
 
@@ -322,12 +322,12 @@ export default function PartnerViewPage() {
         <motion.div
           {...anim}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-2xl p-3 shadow-sm border border-cyan-100 text-center"
+          className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-cyan-100 dark:border-cyan-900/30 text-center"
         >
           <Droplets className="w-5 h-5 text-cyan-500 mx-auto mb-1" />
-          <p className="text-lg font-bold text-[#2b3d3d]">{waterPercent}%</p>
-          <p className="text-[10px] text-gray-400">{t("partner.hydration")}</p>
-          <div className="h-1 bg-cyan-50 rounded-full mt-1.5 overflow-hidden">
+          <p className="text-lg font-bold text-[#2b3d3d] dark:text-gray-100">{waterPercent}%</p>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500">{t("partner.hydration")}</p>
+          <div className="h-1 bg-cyan-50 dark:bg-cyan-950/30 rounded-full mt-1.5 overflow-hidden">
             <div className="h-full bg-cyan-400 rounded-full transition-all" style={{ width: `${waterPercent}%` }} />
           </div>
         </motion.div>
@@ -336,28 +336,28 @@ export default function PartnerViewPage() {
         <motion.div
           {...anim}
           transition={{ delay: 0.25 }}
-          className="bg-white rounded-2xl p-3 shadow-sm border border-emerald-100 text-center"
+          className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-emerald-100 text-center"
         >
           <Activity className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
-          <p className="text-lg font-bold text-[#2b3d3d]">
+          <p className="text-lg font-bold text-[#2b3d3d] dark:text-gray-100">
             {lastKick ? lastKick.count : "—"}
           </p>
-          <p className="text-[10px] text-gray-400">{t("partner.movements")}</p>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500">{t("partner.movements")}</p>
         </motion.div>
 
         {/* Checklist */}
         <motion.div
           {...anim}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-2xl p-3 shadow-sm border border-blue-100 text-center cursor-pointer hover:border-blue-300 transition-colors"
+          className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-blue-100 dark:border-blue-900/30 text-center cursor-pointer hover:border-blue-300 transition-colors"
           onClick={() => setShowAllChecklist(!showAllChecklist)}
         >
           <CheckCircle2 className="w-5 h-5 text-blue-500 mx-auto mb-1" />
-          <p className="text-lg font-bold text-[#2b3d3d]">
+          <p className="text-lg font-bold text-[#2b3d3d] dark:text-gray-100">
             {doneChecklist}
-            <span className="text-xs font-normal text-gray-400">/{totalChecklist}</span>
+            <span className="text-xs font-normal text-gray-400 dark:text-gray-500">/{totalChecklist}</span>
           </p>
-          <p className="text-[10px] text-gray-400">Checklist</p>
+          <p className="text-[10px] text-gray-400 dark:text-gray-500">Checklist</p>
         </motion.div>
       </div>
 
@@ -366,12 +366,12 @@ export default function PartnerViewPage() {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-blue-100 overflow-hidden"
+          className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-blue-100 dark:border-blue-900/30 overflow-hidden"
         >
-          <h3 className="font-semibold text-[#2b3d3d] mb-3 flex items-center gap-2">
+          <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
             <ListChecks className="w-5 h-5 text-blue-500" /> Checklist — {checklistPercent}% complété
           </h3>
-          <div className="h-2 bg-blue-50 rounded-full overflow-hidden mb-4">
+          <div className="h-2 bg-blue-50 dark:bg-blue-950/30 rounded-full overflow-hidden mb-4">
             <div
               className="h-full bg-gradient-to-r from-teal-400 to-blue-400 rounded-full transition-all"
               style={{ width: `${checklistPercent}%` }}
@@ -382,7 +382,7 @@ export default function PartnerViewPage() {
               const catDone = items.filter((i) => i.done).length;
               return (
                 <div key={cat}>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">
                     {cat} ({catDone}/{items.length})
                   </p>
                   <div className="flex flex-wrap gap-1.5">
@@ -391,8 +391,8 @@ export default function PartnerViewPage() {
                         key={item.id}
                         className={`text-xs px-2.5 py-1 rounded-full ${
                           item.done
-                            ? "bg-teal-50 text-teal-600 line-through opacity-70"
-                            : "bg-gray-100 text-gray-600"
+                            ? "bg-teal-50 dark:bg-teal-950/30 text-teal-600 line-through opacity-70"
+                            : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
                         }`}
                       >
                         {item.done ? "✓ " : ""}{item.label}
@@ -407,24 +407,24 @@ export default function PartnerViewPage() {
       )}
 
       {/* Mood / Symptom Summary */}
-      <motion.div {...anim} transition={{ delay: 0.35 }} className="bg-white rounded-3xl p-5 shadow-sm border border-violet-100">
-        <h3 className="font-semibold text-[#2b3d3d] mb-3 flex items-center gap-2">
+      <motion.div {...anim} transition={{ delay: 0.35 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-violet-100">
+        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
           <Smile className="w-5 h-5 text-violet-500" /> Humeur et symptômes
         </h3>
 
         {/* Mood summary (last 7 days) */}
         {recentMoods.length > 0 ? (
           <div className="mb-3">
-            <p className="text-xs text-gray-400 mb-2">Humeur des 7 derniers jours</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">Humeur des 7 derniers jours</p>
             <div className="flex gap-2 flex-wrap">
               {recentMoods.map((m) => (
                 <div
                   key={m.id}
-                  className="flex items-center gap-1.5 bg-violet-50 rounded-full px-3 py-1.5"
+                  className="flex items-center gap-1.5 bg-violet-50 dark:bg-violet-950/30 rounded-full px-3 py-1.5"
                 >
                   <span className="text-base">{m.mood_emoji}</span>
                   <span className="text-xs text-violet-600">{m.mood_label}</span>
-                  <span className="text-[10px] text-gray-400">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500">
                     {new Date(m.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                   </span>
                 </div>
@@ -433,24 +433,24 @@ export default function PartnerViewPage() {
           </div>
         ) : (
           !dataLoading && (
-            <p className="text-sm text-gray-400 mb-3">Pas de données d&apos;humeur récentes</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mb-3">Pas de données d&apos;humeur récentes</p>
           )
         )}
 
         {/* Today's symptoms */}
         {todaySymptoms.length > 0 ? (
           <div>
-            <p className="text-xs text-gray-400 mb-2">Symptômes aujourd&apos;hui</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">Symptômes aujourd&apos;hui</p>
             <div className="flex flex-wrap gap-2">
               {todaySymptoms.map((s, i) => (
-                <span key={i} className="bg-violet-50 text-violet-600 text-xs px-3 py-1.5 rounded-full">
+                <span key={i} className="bg-violet-50 dark:bg-violet-950/30 text-violet-600 text-xs px-3 py-1.5 rounded-full">
                   {Array.isArray(s.symptoms) ? (s.symptoms as string[]).join(', ') : String(s.symptoms)}
                 </span>
               ))}
             </div>
           </div>
         ) : (
-          <p className="text-sm text-gray-400">Aucun symptôme enregistré aujourd&apos;hui</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">Aucun symptôme enregistré aujourd&apos;hui</p>
         )}
 
         {dataLoading && (
@@ -461,8 +461,8 @@ export default function PartnerViewPage() {
       </motion.div>
 
       {/* Recent Journal Entries (read-only) */}
-      <motion.div {...anim} transition={{ delay: 0.4 }} className="bg-white rounded-3xl p-5 shadow-sm border border-amber-100">
-        <h3 className="font-semibold text-[#2b3d3d] mb-3 flex items-center gap-2">
+      <motion.div {...anim} transition={{ delay: 0.4 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-amber-100 dark:border-amber-900/30">
+        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-amber-500" /> Journal intime
         </h3>
         {dataLoading ? (
@@ -472,27 +472,27 @@ export default function PartnerViewPage() {
         ) : journalNotes.length > 0 ? (
           <div className="space-y-3 max-h-64 overflow-y-auto">
             {journalNotes.slice(0, 5).map((note) => (
-              <div key={note.id} className="bg-amber-50 rounded-2xl px-4 py-3">
+              <div key={note.id} className="bg-amber-50 dark:bg-amber-950/30 rounded-2xl px-4 py-3">
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
                     {note.mood_emoji && <span className="text-base">{note.mood_emoji}</span>}
                     {note.title && (
-                      <span className="text-sm font-medium text-[#2b3d3d]">{note.title}</span>
+                      <span className="text-sm font-medium text-[#2b3d3d] dark:text-gray-100">{note.title}</span>
                     )}
                   </div>
-                  <span className="text-[10px] text-gray-400">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500">
                     {new Date(note.created_at).toLocaleDateString("fr-FR", {
                       day: "numeric",
                       month: "short",
                     })}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">{note.body}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">{note.body}</p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-sm text-gray-400 text-center py-3">Aucune entrée de journal</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-3">Aucune entrée de journal</p>
         )}
       </motion.div>
 
@@ -500,22 +500,22 @@ export default function PartnerViewPage() {
       <motion.div
         {...anim}
         transition={{ delay: 0.45 }}
-        className="bg-gradient-to-r from-teal-50 to-blue-50 rounded-3xl p-5 border border-teal-100"
+        className="bg-gradient-to-r from-teal-50 to-blue-50 rounded-3xl p-5 border border-teal-100 dark:border-teal-900/30"
       >
         <p className="text-xs font-semibold text-teal-600 mb-2 flex items-center gap-1.5">
           💡 Conseil du jour pour vous
         </p>
-        <p className="text-sm text-gray-600 leading-relaxed">{tipOfDay}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{tipOfDay}</p>
         {weekData.partnerTip && (
-          <p className="text-sm text-gray-500 leading-relaxed mt-2 pt-2 border-t border-teal-100">
+          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 leading-relaxed mt-2 pt-2 border-t border-teal-100 dark:border-teal-900/30">
             {weekData.partnerTip}
           </p>
         )}
       </motion.div>
 
       {/* Quick Actions: Send Encouragement */}
-      <motion.div {...anim} transition={{ delay: 0.5 }} className="bg-white rounded-3xl p-5 shadow-sm border border-teal-100">
-        <h3 className="font-semibold text-[#2b3d3d] mb-3 flex items-center gap-2">
+      <motion.div {...anim} transition={{ delay: 0.5 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-teal-100 dark:border-teal-900/30">
+        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
           <Send className="w-5 h-5 text-teal-500" /> Envoyer un encouragement
         </h3>
         <div className="grid grid-cols-2 gap-2">
@@ -526,8 +526,8 @@ export default function PartnerViewPage() {
               disabled={supportSent !== null}
               className={`text-sm rounded-2xl px-3 py-3 font-medium transition-all ${
                 supportSent === `${msg.emoji} ${msg.text}`
-                  ? "bg-teal-100 text-teal-700 scale-95"
-                  : "bg-teal-50 text-teal-700 hover:bg-teal-100 active:scale-95"
+                  ? "bg-teal-100 dark:bg-teal-900/30 text-teal-700 scale-95"
+                  : "bg-teal-50 dark:bg-teal-950/30 text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 active:scale-95"
               }`}
             >
               <span className="text-lg block mb-0.5">{msg.emoji}</span>
@@ -546,7 +546,7 @@ export default function PartnerViewPage() {
         )}
       </motion.div>
 
-      <p className="text-center text-xs text-gray-300 pb-4">MamaTrack · Vue partenaire</p>
+      <p className="text-center text-xs text-gray-400 dark:text-gray-500 pb-4">MamaTrack · Vue partenaire</p>
     </div>
   );
 }

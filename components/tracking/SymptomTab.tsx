@@ -66,7 +66,7 @@ export default function SymptomTab() {
     >
       <button
         onClick={() => setShowForm(!showForm)}
-        className="w-full py-3 bg-pink-400 text-white rounded-2xl font-medium flex items-center justify-center gap-2 hover:bg-pink-500 transition-colors shadow-sm"
+        className="w-full py-3 bg-pink-400 text-white rounded-2xl font-medium flex items-center justify-center gap-2 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors shadow-sm"
       >
         <Plus className="w-4 h-4" />
         Ajouter des symptômes
@@ -78,9 +78,9 @@ export default function SymptomTab() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 overflow-hidden"
+            className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 overflow-hidden"
           >
-            <h3 className="font-semibold text-[#3d2b2b] mb-3">Symptômes aujourd&apos;hui</h3>
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Symptômes aujourd&apos;hui</h3>
             <div className="flex flex-wrap gap-2 mb-4">
               {SYMPTOM_OPTIONS.map((s) => (
                 <button
@@ -89,7 +89,7 @@ export default function SymptomTab() {
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                     selectedSymptoms.includes(s)
                       ? "bg-pink-400 text-white shadow-sm"
-                      : "bg-pink-50 text-pink-600 hover:bg-pink-100"
+                      : "bg-pink-50 dark:bg-pink-950/30 text-pink-600 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30"
                   }`}
                 >
                   {s}
@@ -98,7 +98,7 @@ export default function SymptomTab() {
             </div>
 
             <div className="mb-4">
-              <label className="text-xs text-gray-500 block mb-2">
+              <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
                 Sévérité : {severity}/5
               </label>
               <div className="flex gap-2">
@@ -109,7 +109,7 @@ export default function SymptomTab() {
                     className={`flex-1 h-8 rounded-xl text-sm font-bold transition-all ${
                       v <= severity
                         ? "bg-pink-400 text-white"
-                        : "bg-pink-50 text-pink-300"
+                        : "bg-pink-50 dark:bg-pink-950/30 text-pink-300"
                     }`}
                   >
                     {v}
@@ -122,14 +122,14 @@ export default function SymptomTab() {
               placeholder="Note (optionnel)..."
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              className="w-full border border-pink-200 rounded-xl p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-pink-300 mb-3"
+              className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-pink-300 mb-3"
               rows={2}
             />
 
             <button
               onClick={handleSubmit}
               disabled={selectedSymptoms.length === 0}
-              className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-500 transition-colors"
+              className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
             >
               Enregistrer
             </button>
@@ -138,8 +138,8 @@ export default function SymptomTab() {
       </AnimatePresence>
 
       {chartData.length > 1 && (
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-pink-100">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Évolution (14 derniers jours)</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Évolution (14 derniers jours)</h3>
           <ResponsiveContainer width="100%" height={150}>
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#fce7f3" />
@@ -159,17 +159,17 @@ export default function SymptomTab() {
           .map((entry) => (
             <div
               key={entry.id}
-              className="bg-white rounded-2xl p-4 shadow-sm border border-pink-100 flex items-start justify-between"
+              className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30 flex items-start justify-between"
             >
               <div>
-                <p className="text-xs text-gray-400 mb-1">
+                <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">
                   {format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}
                 </p>
                 <div className="flex flex-wrap gap-1 mb-1">
                   {entry.symptoms.map((s) => (
                     <span
                       key={s}
-                      className="text-xs bg-pink-100 text-pink-600 px-2 py-0.5 rounded-full"
+                      className="text-xs bg-pink-100 dark:bg-pink-900/30 text-pink-600 px-2 py-0.5 rounded-full"
                     >
                       {s}
                     </span>
@@ -180,18 +180,18 @@ export default function SymptomTab() {
                     <span
                       key={v}
                       className={`w-4 h-1.5 rounded-full ${
-                        v <= entry.severity ? "bg-pink-400" : "bg-pink-100"
+                        v <= entry.severity ? "bg-pink-400" : "bg-pink-100 dark:bg-pink-900/30"
                       }`}
                     />
                   ))}
                 </div>
                 {entry.note && (
-                  <p className="text-xs text-gray-500 mt-1">{entry.note}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">{entry.note}</p>
                 )}
               </div>
               <button
                 onClick={() => setConfirmDelete(entry.id)}
-                className="text-gray-300 hover:text-red-400 transition-colors ml-2"
+                className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors ml-2"
                 aria-label="Supprimer le symptôme"
               >
                 <Trash2 className="w-4 h-4" />

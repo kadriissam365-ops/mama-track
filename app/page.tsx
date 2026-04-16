@@ -27,15 +27,15 @@ const LandingPage = dynamic(() => import("@/components/LandingPage"), {
 
 const WeeklyReport = dynamic(() => import("@/components/WeeklyReport"), {
   ssr: false,
-  loading: () => <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center"><div className="bg-white rounded-t-3xl p-6 w-full max-w-lg h-[60vh] animate-pulse" /></div>,
+  loading: () => <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center"><div className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 w-full max-w-lg h-[60vh] animate-pulse" /></div>,
 });
 const ShareCard = dynamic(() => import("@/components/ShareCard"), {
   ssr: false,
-  loading: () => <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center"><div className="bg-white rounded-3xl p-6 w-full max-w-sm h-96 animate-pulse" /></div>,
+  loading: () => <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center"><div className="bg-white dark:bg-gray-900 rounded-3xl p-6 w-full max-w-sm h-96 animate-pulse" /></div>,
 });
 const BabyIllustration = dynamic(() => import("@/components/BabyIllustration"), {
   ssr: false,
-  loading: () => <div className="flex items-center justify-center py-2"><div className="w-32 h-32 rounded-full bg-pink-50 animate-pulse" /></div>,
+  loading: () => <div className="flex items-center justify-center py-2"><div className="w-32 h-32 rounded-full bg-pink-50 dark:bg-pink-950/30 animate-pulse" /></div>,
 });
 
 export default function DashboardPage() {
@@ -111,9 +111,9 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100"
+          className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30"
         >
-          <h2 className="font-semibold text-[#3d2b2b] mb-3">
+          <h2 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">
             📅 {store.dueDate ? "Modifier" : "Définir"} votre Date Prévue d&apos;Accouchement
           </h2>
           <div className="flex gap-2">
@@ -121,11 +121,11 @@ export default function DashboardPage() {
               type="date"
               value={dateInput}
               onChange={(e) => setDateInput(e.target.value)}
-              className="flex-1 border border-pink-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+              className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
             />
             <button
               onClick={handleSaveDueDate}
-              className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 transition-colors"
+              className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
             >
               OK
             </button>
@@ -138,23 +138,22 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-gradient-to-br from-pink-100 via-purple-50 to-mint-50 rounded-3xl p-6 shadow-sm border border-pink-100 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #fce7f3 0%, #ede9fe 50%, #d1fae5 100%)" }}
+        className="bg-gradient-to-br from-pink-100 via-purple-50 to-emerald-50 dark:from-pink-950/40 dark:via-purple-950/30 dark:to-emerald-950/20 rounded-3xl p-6 shadow-sm border border-pink-100 dark:border-pink-900/30 relative overflow-hidden"
       >
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-pink-400 uppercase tracking-wider mb-1">
               Semaine de grossesse
             </p>
-            <h1 className="text-6xl font-bold text-[#3d2b2b]">
+            <h1 className="text-6xl font-bold text-[#3d2b2b] dark:text-gray-100">
               {week}
               <span className="text-2xl text-pink-400 ml-1">SA</span>
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-1">
               {weekData.fruit}
             </p>
             {dueDate && (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                 DPA : {format(dueDate, "d MMMM yyyy", { locale: fr })}
               </p>
             )}
@@ -198,7 +197,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="mt-4 flex items-center justify-between">
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
             Progression : <span className="font-semibold text-pink-500">{progress}%</span>
           </div>
           {days !== null && (
@@ -206,10 +205,10 @@ export default function DashboardPage() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.5, type: "spring" }}
-              className="bg-white rounded-2xl px-3 py-1.5 shadow-sm"
+              className="bg-white dark:bg-gray-900 rounded-2xl px-3 py-1.5 shadow-sm"
             >
               <span className="text-2xl font-bold text-purple-500">{days}</span>
-              <span className="text-xs text-gray-400 ml-1">jours restants</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">jours restants</span>
             </motion.div>
           )}
         </div>
@@ -217,7 +216,7 @@ export default function DashboardPage() {
         {!store.dueDate && (
           <button
             onClick={() => setShowSetup(true)}
-            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+            className="absolute top-3 right-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-300"
           >
             <Settings className="w-4 h-4" />
           </button>
@@ -225,7 +224,7 @@ export default function DashboardPage() {
         {store.dueDate && (
           <button
             onClick={() => setShowSetup(true)}
-            className="absolute top-3 right-3 text-gray-300 hover:text-gray-500"
+            className="absolute top-3 right-3 text-gray-300 hover:text-gray-500 dark:text-gray-400 dark:text-gray-500"
           >
             <Settings className="w-4 h-4" />
           </button>
@@ -243,7 +242,7 @@ export default function DashboardPage() {
             className={`flex-1 text-center py-2 rounded-2xl text-xs font-semibold transition-all ${
               weekData.trimester === t
                 ? "bg-pink-400 text-white shadow-sm"
-                : "bg-white text-gray-400 border border-pink-100"
+                : "bg-white dark:bg-gray-900 text-gray-400 dark:text-gray-500 border border-pink-100 dark:border-pink-900/30"
             }`}
           >
             {t === 1 ? "1er trimestre" : t === 2 ? "2ème trimestre" : "3ème trimestre"}
@@ -258,25 +257,25 @@ export default function DashboardPage() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl p-4 shadow-sm border border-pink-100"
+          className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30"
         >
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
               <Scale className="w-4 h-4 text-pink-500" />
             </div>
-            <span className="text-xs font-medium text-gray-500">Poids</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Poids</span>
           </div>
           {lastWeight ? (
             <>
-              <p className="text-2xl font-bold text-[#3d2b2b]">
-                {lastWeight.weight} <span className="text-sm font-normal text-gray-400">kg</span>
+              <p className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">
+                {lastWeight.weight} <span className="text-sm font-normal text-gray-400 dark:text-gray-500">kg</span>
               </p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                 {format(new Date(lastWeight.date), "d MMM", { locale: fr })}
               </p>
             </>
           ) : (
-            <p className="text-sm text-gray-400">Aucune mesure</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">Aucune mesure</p>
           )}
         </motion.div>
 
@@ -285,24 +284,24 @@ export default function DashboardPage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.25 }}
-          className="bg-white rounded-3xl p-4 shadow-sm border border-purple-100"
+          className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30"
         >
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
               <Droplets className="w-4 h-4 text-purple-500" />
             </div>
-            <span className="text-xs font-medium text-gray-500">Hydratation</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Hydratation</span>
           </div>
-          <p className="text-2xl font-bold text-[#3d2b2b]">
-            {waterToday} <span className="text-sm font-normal text-gray-400">ml</span>
+          <p className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">
+            {waterToday} <span className="text-sm font-normal text-gray-400 dark:text-gray-500">ml</span>
           </p>
-          <div className="w-full bg-purple-100 rounded-full h-1.5 mt-2">
+          <div className="w-full bg-purple-100 dark:bg-purple-900/30 rounded-full h-1.5 mt-2">
             <div
               className="bg-purple-400 h-1.5 rounded-full transition-all"
               style={{ width: `${Math.min(100, (waterToday / waterGoal) * 100)}%` }}
             />
           </div>
-          <p className="text-xs text-gray-400 mt-1">objectif {waterGoal} ml</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">objectif {waterGoal} ml</p>
         </motion.div>
 
         {/* Symptômes */}
@@ -310,20 +309,20 @@ export default function DashboardPage() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-3xl p-4 shadow-sm border border-green-100"
+          className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-green-100 dark:border-green-900/30"
         >
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
               <Activity className="w-4 h-4 text-green-500" />
             </div>
-            <span className="text-xs font-medium text-gray-500">Symptômes</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Symptômes</span>
           </div>
           {recentSymptoms.length > 0 ? (
             <div className="space-y-1">
               {recentSymptoms.slice(-1).map((s) => (
                 <div key={s.id} className="flex flex-wrap gap-1">
                   {s.symptoms.slice(0, 2).map((sym) => (
-                    <span key={sym} className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
+                    <span key={sym} className="text-xs bg-green-50 dark:bg-green-950/30 text-green-600 px-2 py-0.5 rounded-full">
                       {sym}
                     </span>
                   ))}
@@ -331,7 +330,7 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-400">Aucun récent</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">Aucun récent</p>
           )}
         </motion.div>
 
@@ -340,25 +339,25 @@ export default function DashboardPage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.35 }}
-          className="bg-white rounded-3xl p-4 shadow-sm border border-orange-100"
+          className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-orange-100 dark:border-orange-900/30"
         >
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
               <Calendar className="w-4 h-4 text-orange-500" />
             </div>
-            <span className="text-xs font-medium text-gray-500">Prochain RDV</span>
+            <span className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500">Prochain RDV</span>
           </div>
           {upcomingAppts.length > 0 ? (
             <div>
-              <p className="text-sm font-semibold text-[#3d2b2b] truncate">
+              <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 truncate">
                 {upcomingAppts[0].title}
               </p>
-              <p className="text-xs text-gray-400 mt-0.5">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                 {format(new Date(upcomingAppts[0].date), "d MMM", { locale: fr })} à {upcomingAppts[0].time}
               </p>
             </div>
           ) : (
-            <p className="text-sm text-gray-400">Aucun RDV</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500">Aucun RDV</p>
           )}
         </motion.div>
       </div>
@@ -369,13 +368,13 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.38 }}
         onClick={() => router.push("/contractions")}
-        className="w-full flex items-center gap-3 bg-purple-50 border border-purple-100 rounded-3xl px-4 py-3 hover:bg-purple-100 transition-colors"
+        className="w-full flex items-center gap-3 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/30 rounded-3xl px-4 py-3 hover:bg-purple-100 dark:hover:bg-purple-900/30 dark:bg-purple-900/30 transition-colors"
       >
         <div className="w-9 h-9 bg-purple-400 rounded-xl flex items-center justify-center flex-shrink-0">
           <Timer className="w-5 h-5 text-white" />
         </div>
         <div className="text-left">
-          <p className="text-sm font-semibold text-purple-700">Contractions</p>
+          <p className="text-sm font-semibold text-purple-700 dark:text-purple-300">Contractions</p>
           <p className="text-xs text-purple-400">Chronomètre & suivi</p>
         </div>
         <span className="ml-auto text-purple-300 text-lg">›</span>
@@ -387,22 +386,22 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.41 }}
         onClick={() => router.push("/prenoms")}
-        className="w-full flex items-center gap-3 bg-yellow-50 border border-yellow-100 rounded-3xl px-4 py-3 hover:bg-yellow-100 transition-colors"
+        className="w-full flex items-center gap-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-100 dark:border-yellow-900/30 rounded-3xl px-4 py-3 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 dark:bg-yellow-900/30 transition-colors"
       >
         <div className="w-9 h-9 bg-yellow-300 rounded-xl flex items-center justify-center flex-shrink-0">
           <span className="text-lg">💛</span>
         </div>
         <div className="text-left">
-          <p className="text-sm font-semibold text-yellow-700">Choisir un prénom</p>
-          <p className="text-xs text-yellow-500">{prenomFavorisCount} favori(s) sauvegardé(s)</p>
+          <p className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">Choisir un prénom</p>
+          <p className="text-xs text-yellow-500 dark:text-yellow-400">{prenomFavorisCount} favori(s) sauvegardé(s)</p>
         </div>
         <span className="ml-auto text-yellow-300 text-lg">›</span>
       </motion.button>
 
       {/* Bilan semaine */}
-      <button onClick={() => setShowReport(true)} className="w-full flex items-center gap-3 bg-white border border-purple-100 rounded-3xl px-4 py-3 hover:bg-purple-50 transition-colors">
+      <button onClick={() => setShowReport(true)} className="w-full flex items-center gap-3 bg-white dark:bg-gray-900 border border-purple-100 dark:border-purple-900/30 rounded-3xl px-4 py-3 hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/30 transition-colors">
         <BarChart3 className="w-5 h-5 text-purple-400" />
-        <span className="text-sm font-semibold text-purple-700">Mon bilan de la semaine</span>
+        <span className="text-sm font-semibold text-purple-700 dark:text-purple-300">Mon bilan de la semaine</span>
         <span className="ml-auto text-purple-300 text-lg">›</span>
       </button>
 
@@ -413,15 +412,15 @@ export default function DashboardPage() {
         transition={{ delay: 0.43 }}
         className="space-y-3"
       >
-        <h3 className="text-sm font-semibold text-gray-500 px-1">Explorer</h3>
+        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 px-1">Explorer</h3>
         <div className="grid grid-cols-3 gap-2">
           {[
-            { href: "/timeline", emoji: "📅", label: "Timeline", color: "bg-indigo-50 border-indigo-100" },
-            { href: "/bump", emoji: "📸", label: "Bump diary", color: "bg-rose-50 border-rose-100" },
-            { href: "/alimentation", emoji: "🥗", label: "Alimentation", color: "bg-green-50 border-green-100" },
-            { href: "/medicaments", emoji: "💊", label: "Médicaments", color: "bg-blue-50 border-blue-100" },
-            { href: "/respiration", emoji: "🌬️", label: "Respiration", color: "bg-cyan-50 border-cyan-100" },
-            { href: "/urgences", emoji: "🚨", label: "Urgences", color: "bg-red-50 border-red-100" },
+            { href: "/timeline", emoji: "📅", label: "Timeline", color: "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900/30" },
+            { href: "/bump", emoji: "📸", label: "Bump diary", color: "bg-rose-50 dark:bg-rose-950/30 border-rose-100 dark:border-rose-900/30" },
+            { href: "/alimentation", emoji: "🥗", label: "Alimentation", color: "bg-green-50 dark:bg-green-950/30 border-green-100 dark:border-green-900/30" },
+            { href: "/medicaments", emoji: "💊", label: "Médicaments", color: "bg-blue-50 dark:bg-blue-950/30 border-blue-100 dark:border-blue-900/30" },
+            { href: "/respiration", emoji: "🌬️", label: "Respiration", color: "bg-cyan-50 dark:bg-cyan-950/30 border-cyan-100 dark:border-cyan-900/30" },
+            { href: "/urgences", emoji: "🚨", label: "Urgences", color: "bg-red-50 dark:bg-red-950/30 border-red-100 dark:border-red-900/30" },
           ].map((item) => (
             <button
               key={item.href}
@@ -429,7 +428,7 @@ export default function DashboardPage() {
               className={`${item.color} border rounded-2xl p-3 flex flex-col items-center gap-1.5 hover:scale-[1.03] transition-transform`}
             >
               <span className="text-2xl">{item.emoji}</span>
-              <span className="text-xs font-medium text-gray-600">{item.label}</span>
+              <span className="text-xs font-medium text-gray-600 dark:text-gray-300">{item.label}</span>
             </button>
           ))}
         </div>
@@ -440,13 +439,13 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100"
+        className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100 dark:border-pink-900/30"
       >
         <div className="flex items-start gap-3">
           <span className="text-2xl">💡</span>
           <div>
-            <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Conseil de la semaine</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">{weekData.momTips}</p>
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm mb-1">Conseil de la semaine</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.momTips}</p>
           </div>
         </div>
       </motion.div>
@@ -456,36 +455,36 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.45 }}
-        className="bg-white rounded-3xl p-5 shadow-sm border border-mint-100"
+        className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-mint-100"
         style={{ borderColor: "#d1fae5" }}
       >
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xl">👶</span>
-          <h3 className="font-semibold text-[#3d2b2b]">Bébé cette semaine</h3>
+          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Bébé cette semaine</h3>
         </div>
         <div className="flex gap-4 mb-3">
           <div className="text-center">
-            <p className="text-lg font-bold text-[#3d2b2b]">
+            <p className="text-lg font-bold text-[#3d2b2b] dark:text-gray-100">
               {weekData.sizeMm >= 100
                 ? `${(weekData.sizeMm / 10).toFixed(0)} cm`
                 : `${weekData.sizeMm} mm`}
             </p>
-            <p className="text-xs text-gray-400">Taille</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Taille</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-[#3d2b2b]">
+            <p className="text-lg font-bold text-[#3d2b2b] dark:text-gray-100">
               {weekData.weightG >= 1000
                 ? `${(weekData.weightG / 1000).toFixed(1)} kg`
                 : `${weekData.weightG} g`}
             </p>
-            <p className="text-xs text-gray-400">Poids</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Poids</p>
           </div>
           <div className="text-center">
             <p className="text-2xl">{weekData.fruitEmoji}</p>
-            <p className="text-xs text-gray-400 truncate max-w-16">{weekData.fruit}</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 truncate max-w-16">{weekData.fruit}</p>
           </div>
         </div>
-        <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
+        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
           {weekData.babyDevelopment}
         </p>
       </motion.div>

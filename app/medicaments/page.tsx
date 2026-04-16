@@ -38,14 +38,14 @@ const PRESET_MEDS = [
 ];
 
 const MED_COLORS = [
-  "bg-pink-100 border-pink-300 text-pink-700",
-  "bg-purple-100 border-purple-300 text-purple-700",
-  "bg-blue-100 border-blue-300 text-blue-700",
-  "bg-green-100 border-green-300 text-green-700",
-  "bg-orange-100 border-orange-300 text-orange-700",
-  "bg-indigo-100 border-indigo-300 text-indigo-700",
-  "bg-rose-100 border-rose-300 text-rose-700",
-  "bg-teal-100 border-teal-300 text-teal-700",
+  "bg-pink-100 dark:bg-pink-900/30 border-pink-300 text-pink-700 dark:text-pink-300",
+  "bg-purple-100 dark:bg-purple-900/30 border-purple-300 text-purple-700 dark:text-purple-300",
+  "bg-blue-100 dark:bg-blue-900/30 border-blue-300 text-blue-700 dark:text-blue-300",
+  "bg-green-100 dark:bg-green-900/30 border-green-300 text-green-700 dark:text-green-300",
+  "bg-orange-100 dark:bg-orange-900/30 border-orange-300 text-orange-700 dark:text-orange-300",
+  "bg-indigo-100 dark:bg-indigo-900/30 border-indigo-300 text-indigo-700 dark:text-indigo-300",
+  "bg-rose-100 dark:bg-rose-900/30 border-rose-300 text-rose-700",
+  "bg-teal-100 dark:bg-teal-900/30 border-teal-300 text-teal-700",
 ];
 
 const FREQUENCIES = [
@@ -164,11 +164,11 @@ export default function MedicamentsPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Pill className="w-6 h-6 text-purple-500" />
-          <h1 className="text-xl font-bold text-[#3d2b2b]">Mes médicaments</h1>
+          <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100">Mes médicaments</h1>
         </div>
         <button
           onClick={() => { setShowAdd(true); setShowPresets(true); }}
-          className="w-9 h-9 bg-purple-400 rounded-xl flex items-center justify-center text-white hover:bg-purple-500 transition-colors"
+          className="w-9 h-9 bg-purple-400 rounded-xl flex items-center justify-center text-white hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300 transition-colors"
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -179,13 +179,13 @@ export default function MedicamentsPage() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-5 border border-purple-100"
+          className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-3xl p-5 border border-purple-100 dark:border-purple-900/30"
         >
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-[#3d2b2b]">Aujourd&apos;hui</h3>
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Aujourd&apos;hui</h3>
             <span className="text-sm text-purple-500 font-semibold">{takenCount}/{totalCount}</span>
           </div>
-          <div className="w-full bg-purple-100 rounded-full h-3 mb-2">
+          <div className="w-full bg-purple-100 dark:bg-purple-900/30 rounded-full h-3 mb-2">
             <motion.div
               className="h-3 rounded-full bg-purple-400"
               initial={{ width: 0 }}
@@ -193,7 +193,7 @@ export default function MedicamentsPage() {
               transition={{ duration: 0.8 }}
             />
           </div>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-gray-400 dark:text-gray-500">
             {pct === 100
               ? "🎉 Tous vos médicaments sont pris !"
               : `${totalCount - takenCount} médicament${totalCount - takenCount > 1 ? "s" : ""} restant${totalCount - takenCount > 1 ? "s" : ""}`}
@@ -214,7 +214,7 @@ export default function MedicamentsPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className={`rounded-2xl px-4 py-3 border-2 flex items-center justify-between transition-all ${
                   taken
-                    ? "bg-green-50 border-green-200"
+                    ? "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/30"
                     : `${med.color}`
                 }`}
               >
@@ -224,23 +224,23 @@ export default function MedicamentsPage() {
                 >
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                      taken ? "bg-green-400" : "bg-white/60 border border-gray-200"
+                      taken ? "bg-green-400" : "bg-white/60 border border-gray-200 dark:border-gray-700"
                     }`}
                   >
                     {taken && <Check className="w-5 h-5 text-white" />}
                   </div>
                   <div>
-                    <p className={`text-sm font-semibold ${taken ? "text-green-700 line-through" : "text-[#3d2b2b]"}`}>
+                    <p className={`text-sm font-semibold ${taken ? "text-green-700 dark:text-green-300 line-through" : "text-[#3d2b2b] dark:text-gray-100"}`}>
                       {med.name}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 dark:text-gray-500">
                       {med.dosage} · {FREQUENCIES.find((f) => f.id === med.frequency)?.label} · {med.time}
                     </p>
                   </div>
                 </button>
                 <button
                   onClick={() => setConfirmDelete(med.id)}
-                  className="text-gray-300 hover:text-red-400 transition-colors ml-2"
+                  className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors ml-2"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -252,8 +252,8 @@ export default function MedicamentsPage() {
 
       {/* Weekly adherence chart */}
       {totalCount > 0 && (
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-purple-100">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Adhérence (7 jours)</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Adhérence (7 jours)</h3>
           <div className="flex gap-1.5 items-end justify-around">
             {last7.map((d) => {
               const barPct = d.total > 0 ? (d.taken / d.total) * 100 : 0;
@@ -262,15 +262,15 @@ export default function MedicamentsPage() {
               return (
                 <div key={d.date} className="flex flex-col items-center flex-1">
                   {d.taken > 0 && (
-                    <span className="text-[9px] text-gray-500 mb-0.5">{d.taken}/{d.total}</span>
+                    <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-0.5">{d.taken}/{d.total}</span>
                   )}
                   <div
                     className={`w-full rounded-t-lg ${
-                      barPct === 100 ? "bg-green-300" : barPct > 0 ? "bg-purple-200" : "bg-gray-100"
+                      barPct === 100 ? "bg-green-300" : barPct > 0 ? "bg-purple-200" : "bg-gray-100 dark:bg-gray-800"
                     }`}
                     style={{ height: `${barH}px` }}
                   />
-                  <span className={`text-[9px] mt-0.5 ${isToday ? "text-purple-500 font-bold" : "text-gray-400"}`}>
+                  <span className={`text-[9px] mt-0.5 ${isToday ? "text-purple-500 font-bold" : "text-gray-400 dark:text-gray-500"}`}>
                     {d.day}
                   </span>
                 </div>
@@ -288,13 +288,13 @@ export default function MedicamentsPage() {
           className="text-center py-12"
         >
           <Pill className="w-16 h-16 text-purple-200 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-[#3d2b2b] mb-2">Aucun médicament</h3>
-          <p className="text-sm text-gray-400 mb-4">
+          <h3 className="text-lg font-semibold text-[#3d2b2b] dark:text-gray-100 mb-2">Aucun médicament</h3>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mb-4">
             Ajoutez vos vitamines prénatales et suppléments pour suivre vos prises quotidiennes
           </p>
           <button
             onClick={() => { setShowAdd(true); setShowPresets(true); }}
-            className="bg-purple-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-purple-500 transition-colors"
+            className="bg-purple-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300 transition-colors"
           >
             Ajouter un médicament
           </button>
@@ -315,14 +315,14 @@ export default function MedicamentsPage() {
               initial={{ y: 100 }}
               animate={{ y: 0 }}
               exit={{ y: 100 }}
-              className="bg-white rounded-3xl p-5 w-full max-w-md max-h-[80vh] overflow-y-auto"
+              className="bg-white dark:bg-gray-900 rounded-3xl p-5 w-full max-w-md max-h-[80vh] overflow-y-auto"
             >
-              <h3 className="font-semibold text-[#3d2b2b] mb-4">Ajouter un médicament</h3>
+              <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-4">Ajouter un médicament</h3>
 
               {/* Quick presets */}
               {showPresets && (
                 <div className="mb-4">
-                  <p className="text-xs text-gray-500 mb-2">Suggestions grossesse :</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-2">Suggestions grossesse :</p>
                   <div className="grid grid-cols-2 gap-2">
                     {PRESET_MEDS.map((preset) => {
                       const alreadyAdded = medications.some((m) => m.name === preset.name);
@@ -333,15 +333,15 @@ export default function MedicamentsPage() {
                           onClick={() => addMedication(preset.name, preset.dosage)}
                           className={`flex items-start gap-2 p-2.5 rounded-xl border text-left transition-all ${
                             alreadyAdded
-                              ? "bg-gray-50 border-gray-200 opacity-50"
-                              : "bg-purple-50 border-purple-100 hover:border-purple-300"
+                              ? "bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 opacity-50"
+                              : "bg-purple-50 dark:bg-purple-950/30 border-purple-100 dark:border-purple-900/30 hover:border-purple-300"
                           }`}
                         >
                           <span className="text-lg">{preset.emoji}</span>
                           <div>
-                            <p className="text-xs font-semibold text-[#3d2b2b]">{preset.name}</p>
-                            <p className="text-[10px] text-gray-400">{preset.dosage}</p>
-                            <p className="text-[10px] text-gray-400">{preset.desc}</p>
+                            <p className="text-xs font-semibold text-[#3d2b2b] dark:text-gray-100">{preset.name}</p>
+                            <p className="text-[10px] text-gray-400 dark:text-gray-500">{preset.dosage}</p>
+                            <p className="text-[10px] text-gray-400 dark:text-gray-500">{preset.desc}</p>
                           </div>
                           {alreadyAdded && <Check className="w-3 h-3 text-green-400 mt-0.5 ml-auto flex-shrink-0" />}
                         </button>
@@ -353,52 +353,52 @@ export default function MedicamentsPage() {
 
               {/* Divider */}
               <div className="flex items-center gap-2 my-3">
-                <div className="flex-1 h-px bg-gray-200" />
+                <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
                 <button
                   onClick={() => setShowPresets(!showPresets)}
-                  className="text-xs text-gray-400 hover:text-purple-400"
+                  className="text-xs text-gray-400 dark:text-gray-500 hover:text-purple-400"
                 >
                   {showPresets ? "Ajouter manuellement ↓" : "Voir suggestions ↑"}
                 </button>
-                <div className="flex-1 h-px bg-gray-200" />
+                <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
               </div>
 
               {/* Manual form */}
               {!showPresets && (
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs text-gray-500 mb-1 block">Nom</label>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Nom</label>
                     <input
                       type="text"
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
                       placeholder="Ex: Spasfon, Gaviscon..."
-                      className="w-full border border-purple-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+                      className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs text-gray-500 mb-1 block">Dosage</label>
+                      <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Dosage</label>
                       <input
                         type="text"
                         value={newDosage}
                         onChange={(e) => setNewDosage(e.target.value)}
                         placeholder="Ex: 500 mg"
-                        className="w-full border border-purple-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+                        className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-gray-500 mb-1 block">Heure</label>
+                      <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Heure</label>
                       <input
                         type="time"
                         value={newTime}
                         onChange={(e) => setNewTime(e.target.value)}
-                        className="w-full border border-purple-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+                        className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs text-gray-500 mb-1 block">Fréquence</label>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Fréquence</label>
                     <div className="flex gap-2">
                       {FREQUENCIES.map((f) => (
                         <button
@@ -406,8 +406,8 @@ export default function MedicamentsPage() {
                           onClick={() => setNewFrequency(f.id)}
                           className={`flex-1 py-2 rounded-xl border-2 text-xs transition-all ${
                             newFrequency === f.id
-                              ? "bg-purple-100 border-purple-300 text-purple-700"
-                              : "border-gray-100 text-gray-400"
+                              ? "bg-purple-100 dark:bg-purple-900/30 border-purple-300 text-purple-700 dark:text-purple-300"
+                              : "border-gray-100 dark:border-gray-800 text-gray-400 dark:text-gray-500"
                           }`}
                         >
                           {f.label}
@@ -420,12 +420,12 @@ export default function MedicamentsPage() {
                     value={newNotes}
                     onChange={(e) => setNewNotes(e.target.value.slice(0, 200))}
                     rows={2}
-                    className="w-full border border-purple-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 resize-none"
+                    className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 resize-none"
                   />
                   <button
                     onClick={() => { if (newName.trim()) addMedication(newName.trim(), newDosage.trim()); }}
                     disabled={!newName.trim()}
-                    className="w-full bg-purple-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-500 transition-colors"
+                    className="w-full bg-purple-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300 transition-colors"
                   >
                     Ajouter
                   </button>
@@ -434,7 +434,7 @@ export default function MedicamentsPage() {
 
               <button
                 onClick={() => setShowAdd(false)}
-                className="w-full text-gray-400 text-sm mt-3 hover:text-gray-600"
+                className="w-full text-gray-400 dark:text-gray-500 text-sm mt-3 hover:text-gray-600 dark:text-gray-300"
               >
                 Fermer
               </button>
@@ -444,12 +444,12 @@ export default function MedicamentsPage() {
       </AnimatePresence>
 
       {/* Info card */}
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-3xl p-5 border border-purple-100">
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-3xl p-5 border border-purple-100 dark:border-purple-900/30">
         <div className="flex items-start gap-3">
           <span className="text-2xl">💡</span>
           <div>
-            <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Vitamines essentielles</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm mb-1">Vitamines essentielles</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
               L&apos;acide folique (vitamine B9) est recommandé dès le projet de grossesse et pendant tout le 1er trimestre.
               Le fer et la vitamine D sont souvent prescrits au 2ème et 3ème trimestre. Demandez conseil à votre médecin ou sage-femme.
             </p>

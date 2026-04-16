@@ -50,7 +50,7 @@ function Toggle({
   onToggle: () => void;
   color?: string;
 }) {
-  const bgClass = enabled ? `bg-${color}-400` : "bg-gray-200";
+  const bgClass = enabled ? `bg-${color}-400` : "bg-gray-200 dark:bg-gray-700";
   return (
     <button
       onClick={onToggle}
@@ -59,7 +59,7 @@ function Toggle({
     >
       <motion.div
         animate={{ x: enabled ? 20 : 2 }}
-        className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
+        className="absolute top-1 w-5 h-5 bg-white dark:bg-gray-900 rounded-full shadow"
       />
     </button>
   );
@@ -219,10 +219,10 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
 
   if (!supported) {
     return (
-      <div className="bg-yellow-50 rounded-2xl p-4 border border-yellow-200">
+      <div className="bg-yellow-50 dark:bg-yellow-950/30 rounded-2xl p-4 border border-yellow-200 dark:border-yellow-800/30">
         <div className="flex items-center gap-3">
-          <BellOff className="w-5 h-5 text-yellow-500" />
-          <p className="text-sm text-yellow-700">
+          <BellOff className="w-5 h-5 text-yellow-500 dark:text-yellow-400" />
+          <p className="text-sm text-yellow-700 dark:text-yellow-300">
             Les notifications ne sont pas supportees sur ce navigateur.
           </p>
         </div>
@@ -232,14 +232,14 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
 
   if (permission === "denied") {
     return (
-      <div className="bg-red-50 rounded-2xl p-4 border border-red-200">
+      <div className="bg-red-50 dark:bg-red-950/30 rounded-2xl p-4 border border-red-200 dark:border-red-800/30">
         <div className="flex items-center gap-3">
           <BellOff className="w-5 h-5 text-red-500" />
           <div>
-            <p className="text-sm text-red-700 font-medium">
+            <p className="text-sm text-red-700 dark:text-red-300 font-medium">
               Notifications bloquees
             </p>
-            <p className="text-xs text-red-600 mt-1">
+            <p className="text-xs text-red-600 dark:text-red-400 mt-1">
               Allez dans les parametres de votre navigateur pour les activer.
             </p>
           </div>
@@ -254,7 +254,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={handleRequestPermission}
-        className="w-full bg-pink-400 text-white rounded-2xl p-4 flex items-center justify-center gap-3 shadow-sm hover:bg-pink-500 transition-colors"
+        className="w-full bg-pink-400 text-white rounded-2xl p-4 flex items-center justify-center gap-3 shadow-sm hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
       >
         <Bell className="w-5 h-5" />
         <span className="font-medium">Activer les notifications</span>
@@ -271,24 +271,24 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
           <span>Notifications activees</span>
         </div>
         {pushSubscribed && (
-          <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full">
+          <span className="text-xs bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 px-2 py-1 rounded-full">
             Push actif
           </span>
         )}
       </div>
 
       {/* Push notifications toggle */}
-      <div className="bg-white rounded-2xl p-4 border border-indigo-100">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-indigo-100 dark:border-indigo-900/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center">
               <Send className="w-5 h-5 text-indigo-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Notifications push
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 {pushSubscribed
                   ? "Recevez des rappels meme en arriere-plan"
                   : "Activez pour recevoir des rappels en arriere-plan"}
@@ -306,12 +306,12 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               }
             }}
             className={`relative w-12 h-7 rounded-full transition-colors ${
-              pushSubscribed ? "bg-indigo-400" : "bg-gray-200"
+              pushSubscribed ? "bg-indigo-400" : "bg-gray-200 dark:bg-gray-700"
             }`}
           >
             <motion.div
               animate={{ x: pushSubscribed ? 20 : 2 }}
-              className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
+              className="absolute top-1 w-5 h-5 bg-white dark:bg-gray-900 rounded-full shadow"
             />
           </button>
         </div>
@@ -322,7 +322,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         <button
           onClick={handleTestNotification}
           disabled={testSending}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 transition-colors disabled:opacity-50"
         >
           {testSending ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -334,17 +334,17 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
       )}
 
       {/* ─── Daily tips ───────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl p-4 border border-amber-100">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-amber-100 dark:border-amber-900/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
               <Lightbulb className="w-5 h-5 text-amber-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Conseil du jour
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 Un conseil quotidien adapte a votre semaine
               </p>
             </div>
@@ -356,32 +356,32 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
           />
         </div>
         {prefs.dailyTips && prefsLoaded && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <label className="text-xs text-gray-500 block mb-2">
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
               Heure d&apos;envoi
             </label>
             <input
               type="time"
               value={prefs.dailyTipTime}
               onChange={(e) => updatePref({ dailyTipTime: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
+              className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-amber-300"
             />
           </div>
         )}
       </div>
 
       {/* ─── Hydration reminders ──────────────────────────────── */}
-      <div className="bg-white rounded-2xl p-4 border border-blue-100">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-blue-100 dark:border-blue-900/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
               <Droplets className="w-5 h-5 text-blue-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Rappels hydratation
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 Toutes les {Math.round(prefs.hydrationIntervalMinutes / 60)}h
                 {prefs.hydrationIntervalMinutes % 60 > 0
                   ? `${prefs.hydrationIntervalMinutes % 60}min`
@@ -400,8 +400,8 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         </div>
 
         {settings.waterReminders && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <label className="text-xs text-gray-500 block mb-2">
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
               Intervalle
             </label>
             <div className="flex gap-2">
@@ -423,7 +423,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
                     className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${
                       prefs.hydrationIntervalMinutes === minutes
                         ? "bg-blue-400 text-white"
-                        : "bg-blue-50 text-blue-600 hover:bg-blue-100"
+                        : "bg-blue-50 dark:bg-blue-950/30 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/30 dark:bg-blue-900/30"
                     }`}
                   >
                     {label}
@@ -436,17 +436,17 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
       </div>
 
       {/* ─── Morning medication ───────────────────────────────── */}
-      <div className="bg-white rounded-2xl p-4 border border-pink-100">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-pink-100 dark:border-pink-900/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
               <Pill className="w-5 h-5 text-pink-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Medicaments matin
               </p>
-              <p className="text-xs text-gray-500">Rappel a 8h00</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Rappel a 8h00</p>
             </div>
           </div>
           <button
@@ -454,29 +454,29 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               updateSetting("medicationMorning", !settings.medicationMorning)
             }
             className={`relative w-12 h-7 rounded-full transition-colors ${
-              settings.medicationMorning ? "bg-pink-400" : "bg-gray-200"
+              settings.medicationMorning ? "bg-pink-400" : "bg-gray-200 dark:bg-gray-700"
             }`}
           >
             <motion.div
               animate={{ x: settings.medicationMorning ? 20 : 2 }}
-              className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
+              className="absolute top-1 w-5 h-5 bg-white dark:bg-gray-900 rounded-full shadow"
             />
           </button>
         </div>
       </div>
 
       {/* ─── Evening medication ───────────────────────────────── */}
-      <div className="bg-white rounded-2xl p-4 border border-purple-100">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-purple-100 dark:border-purple-900/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
               <Pill className="w-5 h-5 text-purple-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Medicaments soir
               </p>
-              <p className="text-xs text-gray-500">Rappel a 20h00</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Rappel a 20h00</p>
             </div>
           </div>
           <button
@@ -484,27 +484,27 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
               updateSetting("medicationEvening", !settings.medicationEvening)
             }
             className={`relative w-12 h-7 rounded-full transition-colors ${
-              settings.medicationEvening ? "bg-purple-400" : "bg-gray-200"
+              settings.medicationEvening ? "bg-purple-400" : "bg-gray-200 dark:bg-gray-700"
             }`}
           >
             <motion.div
               animate={{ x: settings.medicationEvening ? 20 : 2 }}
-              className="absolute top-1 w-5 h-5 bg-white rounded-full shadow"
+              className="absolute top-1 w-5 h-5 bg-white dark:bg-gray-900 rounded-full shadow"
             />
           </button>
         </div>
       </div>
 
       {/* ─── Appointment reminders ────────────────────────────── */}
-      <div className="bg-white rounded-2xl p-4 border border-green-100">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-green-100 dark:border-green-900/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
               <Calendar className="w-5 h-5 text-green-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">Rappels RDV</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">Rappels RDV</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 Rappels avant chaque rendez-vous
               </p>
             </div>
@@ -524,8 +524,8 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
           />
         </div>
         {settings.appointmentReminders && prefsLoaded && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <label className="text-xs text-gray-500 block mb-2">
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
               Rappeler
             </label>
             <div className="flex gap-2">
@@ -550,7 +550,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
                     className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${
                       active
                         ? "bg-green-400 text-white"
-                        : "bg-green-50 text-green-600 hover:bg-green-100"
+                        : "bg-green-50 dark:bg-green-950/30 text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30 dark:bg-green-900/30"
                     }`}
                   >
                     {label}
@@ -563,17 +563,17 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
       </div>
 
       {/* ─── Weekly milestones ────────────────────────────────── */}
-      <div className="bg-white rounded-2xl p-4 border border-teal-100">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-teal-100 dark:border-teal-900/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
               <Trophy className="w-5 h-5 text-teal-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Etapes hebdomadaires
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 Notification a chaque nouvelle semaine
               </p>
             </div>
@@ -589,17 +589,17 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
       </div>
 
       {/* ─── Kick count reminders ─────────────────────────────── */}
-      <div className="bg-white rounded-2xl p-4 border border-rose-100">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-rose-100 dark:border-rose-900/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center">
               <Baby className="w-5 h-5 text-rose-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Rappels mouvements
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 Rappel quotidien pour compter les mouvements
               </p>
             </div>
@@ -613,32 +613,32 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
           />
         </div>
         {prefs.kickCountReminders && prefsLoaded && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <label className="text-xs text-gray-500 block mb-2">
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">
               Heure du rappel
             </label>
             <input
               type="time"
               value={prefs.kickReminderTime}
               onChange={(e) => updatePref({ kickReminderTime: e.target.value })}
-              className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+              className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
             />
           </div>
         )}
       </div>
 
       {/* ─── Partner notifications (duo mode) ─────────────────── */}
-      <div className="bg-white rounded-2xl p-4 border border-orange-100">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-orange-100 dark:border-orange-900/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
               <Users className="w-5 h-5 text-orange-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-800">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Mode duo (partenaire)
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                 Partagez les etapes et rappels avec votre partenaire
               </p>
             </div>
@@ -654,7 +654,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
           />
         </div>
         {prefs.partnerNotifications && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
+          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
             <div className="flex items-center gap-2 text-xs text-orange-600">
               <Heart className="w-3.5 h-3.5" />
               <span>

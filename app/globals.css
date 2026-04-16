@@ -93,6 +93,12 @@
   background: #F9A8D4;
   border-radius: 2px;
 }
+.dark ::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #4a3060;
+}
 
 /* Dark mode */
 .dark {
@@ -133,6 +139,7 @@
   background-color: #0f0f1a;
   color: #e2e8f0;
 }
+/* Dark mode overrides for components using bg-white without dark: variant */
 .dark .bg-white {
   background-color: #1a1a2e !important;
 }

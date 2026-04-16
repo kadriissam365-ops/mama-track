@@ -34,9 +34,9 @@ const ACTIVITIES = [
 ];
 
 const INTENSITIES = [
-  { id: "leger", label: "Léger", emoji: "💚", color: "bg-green-100 border-green-300" },
-  { id: "modere", label: "Modéré", emoji: "💛", color: "bg-yellow-100 border-yellow-300" },
-  { id: "intense", label: "Intense", emoji: "🧡", color: "bg-orange-100 border-orange-300" },
+  { id: "leger", label: "Léger", emoji: "💚", color: "bg-green-100 dark:bg-green-900/30 border-green-300" },
+  { id: "modere", label: "Modéré", emoji: "💛", color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300" },
+  { id: "intense", label: "Intense", emoji: "🧡", color: "bg-orange-100 dark:bg-orange-900/30 border-orange-300" },
 ];
 
 export default function ExerciseTab() {
@@ -130,10 +130,10 @@ export default function ExerciseTab() {
       className="space-y-4"
     >
       {/* Weekly goal */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-emerald-100">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-emerald-100">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="font-semibold text-[#3d2b2b]">Objectif semaine</h3>
-          <span className="text-xs text-gray-400">{weekMinutes} / {weekGoal} min</span>
+          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Objectif semaine</h3>
+          <span className="text-xs text-gray-400 dark:text-gray-500">{weekMinutes} / {weekGoal} min</span>
         </div>
         <div className="w-full bg-emerald-100 rounded-full h-3 mb-1">
           <motion.div
@@ -143,14 +143,14 @@ export default function ExerciseTab() {
             transition={{ duration: 0.8 }}
           />
         </div>
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-gray-400 dark:text-gray-500">
           {weekPct >= 100
             ? "🎉 Objectif atteint !"
             : `Recommandation OMS : 150 min d'activité modérée/semaine`}
         </p>
 
         {todayMinutes > 0 && (
-          <div className="mt-2 bg-emerald-50 rounded-xl px-3 py-2 text-center">
+          <div className="mt-2 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl px-3 py-2 text-center">
             <span className="text-sm font-semibold text-emerald-600">
               Aujourd&apos;hui : {todayMinutes} min ({todayEntries.length} activité{todayEntries.length > 1 ? "s" : ""})
             </span>
@@ -159,8 +159,8 @@ export default function ExerciseTab() {
       </div>
 
       {/* Activity selector */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-emerald-100">
-        <h3 className="font-semibold text-[#3d2b2b] mb-3">Ajouter une activité</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-emerald-100">
+        <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Ajouter une activité</h3>
 
         <div className="grid grid-cols-4 gap-2 mb-3">
           {ACTIVITIES.map((act) => (
@@ -170,11 +170,11 @@ export default function ExerciseTab() {
               className={`flex flex-col items-center py-2 px-1 rounded-2xl border-2 transition-all ${
                 selectedActivity === act.id
                   ? "bg-emerald-100 border-emerald-300 scale-105 shadow-md"
-                  : "border-gray-100 hover:border-emerald-200 bg-gray-50"
+                  : "border-gray-100 dark:border-gray-800 hover:border-emerald-200 bg-gray-50 dark:bg-gray-800"
               }`}
             >
               <span className="text-xl">{act.emoji}</span>
-              <span className="text-[9px] text-gray-500 mt-0.5 text-center leading-tight">{act.label}</span>
+              <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5 text-center leading-tight">{act.label}</span>
             </button>
           ))}
         </div>
@@ -182,7 +182,7 @@ export default function ExerciseTab() {
         {/* Duration + Intensity */}
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Durée (min)</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Durée (min)</label>
             <input
               type="number"
               min="5"
@@ -193,7 +193,7 @@ export default function ExerciseTab() {
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Intensité</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Intensité</label>
             <div className="flex gap-1">
               {INTENSITIES.map((int) => (
                 <button
@@ -202,7 +202,7 @@ export default function ExerciseTab() {
                   className={`flex-1 py-2 rounded-xl border-2 text-center transition-all ${
                     intensity === int.id
                       ? `${int.color} shadow-sm`
-                      : "border-gray-100 bg-gray-50"
+                      : "border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800"
                   }`}
                 >
                   <span className="text-sm">{int.emoji}</span>
@@ -224,7 +224,7 @@ export default function ExerciseTab() {
         <button
           onClick={handleSave}
           disabled={!selectedActivity || saving}
-          className="w-full bg-emerald-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-emerald-500 transition-colors"
+          className="w-full bg-emerald-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-emerald-50 dark:bg-emerald-950/300 transition-colors"
         >
           {saving ? "…" : success ? "✓ Ajoutée !" : "Ajouter l'activité"}
         </button>
@@ -232,8 +232,8 @@ export default function ExerciseTab() {
 
       {/* Weekly chart */}
       {weekEntries.length > 0 && (
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-emerald-100">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Cette semaine</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-emerald-100">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Cette semaine</h3>
           <div className="flex gap-1.5 items-end justify-around">
             {Array.from({ length: 7 }).map((_, i) => {
               const d = new Date();
@@ -245,13 +245,13 @@ export default function ExerciseTab() {
               return (
                 <div key={i} className="flex flex-col items-center flex-1">
                   {dayMins > 0 && (
-                    <span className="text-[9px] text-gray-500 mb-0.5">{dayMins}m</span>
+                    <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-0.5">{dayMins}m</span>
                   )}
                   <div
-                    className={`w-full rounded-t-lg ${dayMins > 0 ? "bg-emerald-300" : "bg-gray-100"}`}
+                    className={`w-full rounded-t-lg ${dayMins > 0 ? "bg-emerald-300" : "bg-gray-100 dark:bg-gray-800"}`}
                     style={{ height: `${barH}px` }}
                   />
-                  <span className="text-[9px] text-gray-400 mt-0.5">
+                  <span className="text-[9px] text-gray-400 dark:text-gray-500 mt-0.5">
                     {format(d, "EEE", { locale: fr }).slice(0, 2)}
                   </span>
                 </div>
@@ -264,22 +264,22 @@ export default function ExerciseTab() {
       {/* Recent entries */}
       {!loading && entries.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] px-1">Dernières activités</h3>
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 px-1">Dernières activités</h3>
           {entries.slice(0, 10).map((entry) => {
             const act = activityMap.get(entry.activity);
             const int = INTENSITIES.find((i) => i.id === entry.intensity);
             return (
               <div
                 key={entry.id}
-                className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-emerald-100 flex items-center justify-between"
+                className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-3 shadow-sm border border-emerald-100 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{act?.emoji ?? "✨"}</span>
                   <div>
-                    <p className="text-sm font-semibold text-[#3d2b2b]">
+                    <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">
                       {act?.label ?? entry.activity} · {entry.duration_minutes} min {int?.emoji}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 dark:text-gray-500">
                       {format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}
                       {entry.note && ` — ${entry.note}`}
                     </p>
@@ -287,7 +287,7 @@ export default function ExerciseTab() {
                 </div>
                 <button
                   onClick={() => setConfirmDelete(entry.id)}
-                  className="text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
+                  className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors flex-shrink-0"
                   aria-label="Supprimer"
                 >
                   <Trash2 className="w-4 h-4" />

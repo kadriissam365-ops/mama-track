@@ -7,9 +7,9 @@ import { getCurrentWeek, getWeekData } from "@/lib/pregnancy-data";
 import { ChevronDown, ChevronUp, Baby, Heart, Stethoscope, Star } from "lucide-react";
 
 const TRIMESTER_COLORS = {
-  1: { bg: "bg-pink-100", border: "border-pink-300", text: "text-pink-700", dot: "bg-pink-400", gradient: "from-pink-200 to-pink-50" },
-  2: { bg: "bg-purple-100", border: "border-purple-300", text: "text-purple-700", dot: "bg-purple-400", gradient: "from-purple-200 to-purple-50" },
-  3: { bg: "bg-indigo-100", border: "border-indigo-300", text: "text-indigo-700", dot: "bg-indigo-400", gradient: "from-indigo-200 to-indigo-50" },
+  1: { bg: "bg-pink-100 dark:bg-pink-900/30", border: "border-pink-300", text: "text-pink-700 dark:text-pink-300", dot: "bg-pink-400", gradient: "from-pink-200 to-pink-50" },
+  2: { bg: "bg-purple-100 dark:bg-purple-900/30", border: "border-purple-300", text: "text-purple-700 dark:text-purple-300", dot: "bg-purple-400", gradient: "from-purple-200 to-purple-50" },
+  3: { bg: "bg-indigo-100 dark:bg-indigo-900/30", border: "border-indigo-300", text: "text-indigo-700 dark:text-indigo-300", dot: "bg-indigo-400", gradient: "from-indigo-200 to-indigo-50" },
 };
 
 const MILESTONES: Record<number, { icon: string; label: string }> = {
@@ -46,10 +46,10 @@ export default function TimelinePage() {
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-[#3d2b2b] flex items-center gap-2">
+        <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
           📅 Ma grossesse
         </h1>
-        <p className="text-sm text-gray-400 mt-1">Semaine par semaine, de la conception à la naissance</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Semaine par semaine, de la conception à la naissance</p>
       </div>
 
       {/* Trimester legend */}
@@ -62,19 +62,19 @@ export default function TimelinePage() {
               <p className={`text-xs font-semibold ${colors.text}`}>
                 {t === 1 ? "1er" : t === 2 ? "2ème" : "3ème"} trimestre
               </p>
-              <p className="text-[10px] text-gray-400">{range}</p>
+              <p className="text-[10px] text-gray-400 dark:text-gray-500">{range}</p>
             </div>
           );
         })}
       </div>
 
       {/* Progress bar */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm border border-pink-100">
-        <div className="flex justify-between text-xs text-gray-400 mb-2">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">
+        <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mb-2">
           <span>Semaine {currentWeek}/40</span>
           <span>{Math.round((currentWeek / 40) * 100)}%</span>
         </div>
-        <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+        <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-3 overflow-hidden">
           <motion.div
             className="h-3 rounded-full bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400"
             initial={{ width: 0 }}
@@ -126,13 +126,13 @@ export default function TimelinePage() {
                           ? `${colors.dot} border-white shadow-lg ring-2 ring-pink-300`
                           : isPast
                           ? `${colors.bg} ${colors.border}`
-                          : "bg-gray-50 border-gray-200"
+                          : "bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
                       }`}
                     >
                       {milestone ? (
                         <span className="text-sm">{milestone.icon}</span>
                       ) : (
-                        <span className={`text-xs font-bold ${isCurrent ? "text-white" : isPast ? colors.text : "text-gray-300"}`}>
+                        <span className={`text-xs font-bold ${isCurrent ? "text-white" : isPast ? colors.text : "text-gray-300 dark:text-gray-500"}`}>
                           {week}
                         </span>
                       )}
@@ -151,28 +151,28 @@ export default function TimelinePage() {
                     isCurrent
                       ? `bg-gradient-to-r ${colors.gradient} border-2 ${colors.border} shadow-sm`
                       : isExpanded
-                      ? "bg-white border border-pink-100 shadow-sm"
+                      ? "bg-white dark:bg-gray-900 border border-pink-100 dark:border-pink-900/30 shadow-sm"
                       : isPast
-                      ? "bg-white/60"
-                      : "bg-gray-50/50"
+                      ? "bg-white/60 dark:bg-gray-800/60"
+                      : "bg-gray-50 dark:bg-gray-800/50"
                   }`}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="text-lg">{weekData.fruitEmoji}</span>
                         <div>
-                          <p className={`text-sm font-semibold ${isCurrent ? colors.text : isPast ? "text-[#3d2b2b]" : "text-gray-400"}`}>
+                          <p className={`text-sm font-semibold ${isCurrent ? colors.text : isPast ? "text-[#3d2b2b] dark:text-gray-100" : "text-gray-400 dark:text-gray-500"}`}>
                             Semaine {week}
                             {isCurrent && <span className="ml-2 text-xs bg-pink-400 text-white px-2 py-0.5 rounded-full">Vous êtes ici</span>}
                           </p>
-                          <p className={`text-xs ${isPast || isCurrent ? "text-gray-500" : "text-gray-300"}`}>
+                          <p className={`text-xs ${isPast || isCurrent ? "text-gray-500 dark:text-gray-400 dark:text-gray-500" : "text-gray-300 dark:text-gray-500"}`}>
                             {weekData.fruit} · {weekData.sizeMm >= 100 ? `${(weekData.sizeMm / 10).toFixed(0)} cm` : `${weekData.sizeMm} mm`} · {weekData.weightG >= 1000 ? `${(weekData.weightG / 1000).toFixed(1)} kg` : `${weekData.weightG} g`}
                           </p>
                         </div>
                       </div>
                       {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-gray-300" />
+                        <ChevronUp className="w-4 h-4 text-gray-300 dark:text-gray-500" />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-gray-300" />
+                        <ChevronDown className="w-4 h-4 text-gray-300 dark:text-gray-500" />
                       )}
                     </div>
 
@@ -201,16 +201,16 @@ export default function TimelinePage() {
                         <div className="flex items-start gap-2">
                           <Baby className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
                           <div>
-                            <p className="text-xs font-semibold text-[#3d2b2b] mb-0.5">Développement bébé</p>
-                            <p className="text-xs text-gray-600 leading-relaxed">{weekData.babyDevelopment}</p>
+                            <p className="text-xs font-semibold text-[#3d2b2b] dark:text-gray-100 mb-0.5">Développement bébé</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.babyDevelopment}</p>
                           </div>
                         </div>
 
                         <div className="flex items-start gap-2">
                           <Heart className="w-4 h-4 text-pink-400 mt-0.5 flex-shrink-0" />
                           <div>
-                            <p className="text-xs font-semibold text-[#3d2b2b] mb-0.5">Conseil maman</p>
-                            <p className="text-xs text-gray-600 leading-relaxed">{weekData.momTips}</p>
+                            <p className="text-xs font-semibold text-[#3d2b2b] dark:text-gray-100 mb-0.5">Conseil maman</p>
+                            <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.momTips}</p>
                           </div>
                         </div>
 
@@ -218,10 +218,10 @@ export default function TimelinePage() {
                           <div className="flex items-start gap-2">
                             <Stethoscope className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
                             <div>
-                              <p className="text-xs font-semibold text-[#3d2b2b] mb-1">Symptômes fréquents</p>
+                              <p className="text-xs font-semibold text-[#3d2b2b] dark:text-gray-100 mb-1">Symptômes fréquents</p>
                               <div className="flex flex-wrap gap-1">
                                 {weekData.weeklySymptoms.map((s, i) => (
-                                  <span key={i} className="text-[10px] bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
+                                  <span key={i} className="text-[10px] bg-green-50 dark:bg-green-950/30 text-green-600 px-2 py-0.5 rounded-full">
                                     {s}
                                   </span>
                                 ))}
@@ -231,10 +231,10 @@ export default function TimelinePage() {
                         )}
 
                         {weekData.testimonials && weekData.testimonials.length > 0 && (
-                          <div className="bg-pink-50 rounded-xl p-3">
+                          <div className="bg-pink-50 dark:bg-pink-950/30 rounded-xl p-3">
                             <p className="text-[10px] font-semibold text-pink-500 mb-1">Témoignages</p>
                             {weekData.testimonials.map((t, i) => (
-                              <p key={i} className="text-xs text-gray-600 italic mb-1 last:mb-0">&quot;{t}&quot;</p>
+                              <p key={i} className="text-xs text-gray-600 dark:text-gray-300 italic mb-1 last:mb-0">&quot;{t}&quot;</p>
                             ))}
                           </div>
                         )}
@@ -253,9 +253,9 @@ export default function TimelinePage() {
                 <span className="text-lg">👶</span>
               </div>
             </div>
-            <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-4 flex-1 border border-pink-200">
-              <h3 className="text-sm font-bold text-[#3d2b2b]">Naissance ! 🎉</h3>
-              <p className="text-xs text-gray-600 mt-1">Bienvenue au monde, bébé ! Le plus beau voyage commence maintenant.</p>
+            <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-4 flex-1 border border-pink-200 dark:border-pink-800/30">
+              <h3 className="text-sm font-bold text-[#3d2b2b] dark:text-gray-100">Naissance ! 🎉</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">Bienvenue au monde, bébé ! Le plus beau voyage commence maintenant.</p>
             </div>
           </div>
         </div>

@@ -47,8 +47,8 @@ export default function WeightTab() {
       exit={{ opacity: 0 }}
       className="space-y-4"
     >
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-purple-100">
-        <h3 className="font-semibold text-[#3d2b2b] mb-3">Ajouter une mesure</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-purple-100 dark:border-purple-900/30">
+        <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Ajouter une mesure</h3>
         <div className="flex gap-2 mb-2">
           <input
             type="number"
@@ -56,12 +56,12 @@ export default function WeightTab() {
             placeholder="Poids en kg"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
-            className="flex-1 border border-purple-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+            className="flex-1 border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
           />
           <button
             onClick={handleAdd}
             disabled={!weight}
-            className="bg-purple-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-500 transition-colors"
+            className="bg-purple-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300 transition-colors"
             aria-label="Ajouter le poids"
           >
             <Plus className="w-4 h-4" />
@@ -72,13 +72,13 @@ export default function WeightTab() {
           placeholder="Note (optionnel)"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="w-full border border-purple-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+          className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
         />
       </div>
 
       {chartData.length > 1 && (
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-purple-100">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Courbe de poids</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Courbe de poids</h3>
           <ResponsiveContainer width="100%" height={200}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#ede9fe" />
@@ -105,18 +105,18 @@ export default function WeightTab() {
           .map((entry) => (
             <div
               key={entry.id}
-              className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-purple-100 flex items-center justify-between"
+              className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-3 shadow-sm border border-purple-100 dark:border-purple-900/30 flex items-center justify-between"
             >
               <div>
-                <span className="text-lg font-bold text-[#3d2b2b]">{entry.weight} kg</span>
-                <p className="text-xs text-gray-400">
+                <span className="text-lg font-bold text-[#3d2b2b] dark:text-gray-100">{entry.weight} kg</span>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   {format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}
                   {entry.note && ` — ${entry.note}`}
                 </p>
               </div>
               <button
                 onClick={() => setConfirmDelete(entry.id)}
-                className="text-gray-300 hover:text-red-400 transition-colors"
+                className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors"
                 aria-label="Supprimer l'entrée de poids"
               >
                 <Trash2 className="w-4 h-4" />

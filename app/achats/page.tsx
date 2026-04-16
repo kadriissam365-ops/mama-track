@@ -40,9 +40,9 @@ const ACHATS_DEFAUT: AchatItem[] = [
 const CATEGORIES_ORDER = ['🛏️ Chambre', '👕 Vêtements', '🚿 Bain & Soin', '🍼 Alimentation', '🚗 Transport', '🎁 Divers'];
 
 const PRIORITE_COLORS: Record<string, string> = {
-  'Essentiel': 'bg-green-100 text-green-700 border border-green-200',
-  'Pratique': 'bg-orange-100 text-orange-700 border border-orange-200',
-  'Bonus': 'bg-gray-100 text-gray-600 border border-gray-200',
+  'Essentiel': 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800/30',
+  'Pratique': 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border border-orange-200',
+  'Bonus': 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700',
 };
 
 export default function AchatsPage() {
@@ -130,7 +130,7 @@ export default function AchatsPage() {
   const progress = items.length > 0 ? Math.round((items.filter(i => i.coche).length / items.length) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-[#0f0f1a] dark:via-[#0f0f1a] dark:to-purple-950/20 pb-24">
       {/* Header */}
       <div className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-4 pt-12 pb-6">
         <h1 className="text-2xl font-bold mb-1">🛒 Liste d&apos;achats bébé</h1>
@@ -147,36 +147,36 @@ export default function AchatsPage() {
       </div>
 
       {/* Budget summary */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-sm p-4">
+      <div className="mx-4 mt-4 bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-4">
         <div className="flex items-center gap-2 mb-3">
           <DollarSign className="w-5 h-5 text-pink-400" />
-          <h2 className="font-semibold text-gray-700">Résumé budget</h2>
+          <h2 className="font-semibold text-gray-700 dark:text-gray-300">Résumé budget</h2>
         </div>
         <div className="grid grid-cols-3 gap-3 mb-3">
           <div className="text-center">
-            <p className="text-xs text-gray-500">Budget estimé</p>
-            <p className="text-lg font-bold text-gray-700">{totalEstime}€</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Budget estimé</p>
+            <p className="text-lg font-bold text-gray-700 dark:text-gray-300">{totalEstime}€</p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-500">Déjà coché</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Déjà coché</p>
             <p className="text-lg font-bold text-pink-500">{totalCoche}€</p>
           </div>
           <div className="text-center">
-            <p className="text-xs text-gray-500">Restant</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Restant</p>
             <p className="text-lg font-bold text-purple-500">{totalEstime - totalCoche}€</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600 whitespace-nowrap">Mon budget :</label>
+          <label className="text-sm text-gray-600 dark:text-gray-300 whitespace-nowrap">Mon budget :</label>
           <div className="relative flex-1">
             <input
               type="number"
               value={budgetUser}
               onChange={e => setBudgetUser(e.target.value)}
               placeholder="ex: 1500"
-              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+              className="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">€</span>
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm">€</span>
           </div>
           {budgetNum > 0 && (
             <div className={`text-sm font-bold whitespace-nowrap ${diffColor}`}>
@@ -190,7 +190,7 @@ export default function AchatsPage() {
       <div className="mx-4 mt-3">
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="w-full flex items-center justify-center gap-2 bg-white border-2 border-dashed border-pink-300 text-pink-500 font-medium py-3 rounded-2xl hover:bg-pink-50 transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-900 border-2 border-dashed border-pink-300 text-pink-500 font-medium py-3 rounded-2xl hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Ajouter un article personnalisé
@@ -204,22 +204,22 @@ export default function AchatsPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mx-4 mt-2 bg-white rounded-2xl shadow-sm p-4 overflow-hidden"
+            className="mx-4 mt-2 bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-4 overflow-hidden"
           >
-            <h3 className="font-semibold text-gray-700 mb-3">Nouvel article</h3>
+            <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">Nouvel article</h3>
             <div className="space-y-3">
               <input
                 type="text"
                 value={newItem.nom}
                 onChange={e => setNewItem(p => ({ ...p, nom: e.target.value }))}
                 placeholder="Nom de l'article"
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                className="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
               />
               <div className="grid grid-cols-2 gap-2">
                 <select
                   value={newItem.categorie}
                   onChange={e => setNewItem(p => ({ ...p, categorie: e.target.value }))}
-                  className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
                 >
                   {CATEGORIES_ORDER.map(c => (
                     <option key={c} value={c}>{c}</option>
@@ -228,7 +228,7 @@ export default function AchatsPage() {
                 <select
                   value={newItem.priorite}
                   onChange={e => setNewItem(p => ({ ...p, priorite: e.target.value as 'Essentiel' | 'Pratique' | 'Bonus' }))}
-                  className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
                 >
                   <option value="Essentiel">Essentiel</option>
                   <option value="Pratique">Pratique</option>
@@ -241,7 +241,7 @@ export default function AchatsPage() {
                   value={newItem.budgetEstime}
                   onChange={e => setNewItem(p => ({ ...p, budgetEstime: e.target.value }))}
                   placeholder="Budget (€)"
-                  className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
                 />
                 <input
                   type="number"
@@ -249,19 +249,19 @@ export default function AchatsPage() {
                   onChange={e => setNewItem(p => ({ ...p, quantite: e.target.value }))}
                   placeholder="Quantité"
                   min="1"
-                  className="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
                 />
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={addCustomItem}
-                  className="flex-1 bg-pink-500 text-white py-2 rounded-xl text-sm font-medium hover:bg-pink-600 transition-colors"
+                  className="flex-1 bg-pink-50 dark:bg-pink-950/300 text-white py-2 rounded-xl text-sm font-medium hover:bg-pink-600 transition-colors"
                 >
                   Ajouter
                 </button>
                 <button
                   onClick={() => setShowAddForm(false)}
-                  className="px-4 bg-gray-100 text-gray-600 py-2 rounded-xl text-sm hover:bg-gray-200 transition-colors"
+                  className="px-4 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-2 rounded-xl text-sm hover:bg-gray-200 dark:bg-gray-700 transition-colors"
                 >
                   Annuler
                 </button>
@@ -281,21 +281,21 @@ export default function AchatsPage() {
           const catBudget = catItems.reduce((sum, i) => sum + i.budgetEstime, 0);
 
           return (
-            <div key={cat} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div key={cat} className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm overflow-hidden">
               {/* Category header */}
               <button
                 onClick={() => toggleCategorie(cat)}
-                className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+                className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-gray-700">{cat}</span>
-                  <span className="text-xs bg-pink-100 text-pink-600 px-2 py-0.5 rounded-full">
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">{cat}</span>
+                  <span className="text-xs bg-pink-100 dark:bg-pink-900/30 text-pink-600 px-2 py-0.5 rounded-full">
                     {cocheCount}/{catItems.length}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-400">{catBudget}€</span>
-                  {isOpen ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
+                  <span className="text-sm text-gray-400 dark:text-gray-500">{catBudget}€</span>
+                  {isOpen ? <ChevronUp className="w-4 h-4 text-gray-400 dark:text-gray-500" /> : <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />}
                 </div>
               </button>
 
@@ -313,15 +313,15 @@ export default function AchatsPage() {
                       {catItems.map(item => (
                         <div
                           key={item.id}
-                          className={`flex items-center gap-3 px-4 py-3 transition-colors ${item.coche ? 'bg-green-50' : 'hover:bg-gray-50'}`}
+                          className={`flex items-center gap-3 px-4 py-3 transition-colors ${item.coche ? 'bg-green-50 dark:bg-green-950/30' : 'hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800'}`}
                         >
                           {/* Checkbox */}
                           <button
                             onClick={() => toggleItem(item.id)}
                             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                               item.coche
-                                ? 'bg-green-500 border-green-500'
-                                : 'border-gray-300 hover:border-pink-400'
+                                ? 'bg-green-50 dark:bg-green-950/300 border-green-500'
+                                : 'border-gray-300 dark:border-gray-600 hover:border-pink-400'
                             }`}
                           >
                             {item.coche && <CheckCircle2 className="w-4 h-4 text-white" />}
@@ -329,16 +329,16 @@ export default function AchatsPage() {
 
                           {/* Info */}
                           <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-medium ${item.coche ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                            <p className={`text-sm font-medium ${item.coche ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>
                               {item.nom}
-                              {item.quantite > 1 && <span className="text-gray-400 ml-1">x{item.quantite}</span>}
+                              {item.quantite > 1 && <span className="text-gray-400 dark:text-gray-500 ml-1">x{item.quantite}</span>}
                             </p>
                             <div className="flex items-center gap-2 mt-0.5">
                               <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${PRIORITE_COLORS[item.priorite]}`}>
                                 {item.priorite}
                               </span>
                               {item.budgetEstime > 0 && (
-                                <span className="text-xs text-gray-400">~{item.budgetEstime}€</span>
+                                <span className="text-xs text-gray-400 dark:text-gray-500">~{item.budgetEstime}€</span>
                               )}
                             </div>
                           </div>
@@ -347,7 +347,7 @@ export default function AchatsPage() {
                           {item.custom && (
                             <button
                               onClick={() => deleteItem(item.id)}
-                              className="p-1 text-gray-300 hover:text-red-400 transition-colors"
+                              className="p-1 text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -365,12 +365,12 @@ export default function AchatsPage() {
 
       {/* Bottom summary */}
       <div className="fixed bottom-16 left-0 right-0 px-4">
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-gray-600">
+        <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-2xl shadow-lg px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300">
             <ShoppingCart className="w-4 h-4 text-pink-400" />
             <span className="text-sm font-medium">{items.filter(i => !i.coche).length} restants</span>
           </div>
-          <div className="text-sm font-bold text-gray-700">
+          <div className="text-sm font-bold text-gray-700 dark:text-gray-300">
             Total estimé : <span className="text-pink-500">{totalEstime}€</span>
           </div>
         </div>

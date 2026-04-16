@@ -116,16 +116,16 @@ function InviteContent() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-3xl p-8 shadow-xl border border-red-100 max-w-md w-full text-center"
+          className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-xl border border-red-100 dark:border-red-900/30 max-w-md w-full text-center"
         >
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <XCircle className="w-8 h-8 text-red-500" />
           </div>
-          <h1 className="text-xl font-bold text-gray-800 mb-2">Oups !</h1>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Oups !</h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
           <button
             onClick={() => router.push("/")}
-            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-500 transition-colors"
+            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
           >
             Retour à l&apos;accueil
           </button>
@@ -140,18 +140,18 @@ function InviteContent() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white rounded-3xl p-8 shadow-xl border border-green-100 max-w-md w-full text-center"
+          className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-xl border border-green-100 dark:border-green-900/30 max-w-md w-full text-center"
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring" }}
-            className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4"
           >
             <CheckCircle className="w-8 h-8 text-green-500" />
           </motion.div>
-          <h1 className="text-xl font-bold text-gray-800 mb-2">C&apos;est fait !</h1>
-          <p className="text-gray-600">
+          <h1 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">C&apos;est fait !</h1>
+          <p className="text-gray-600 dark:text-gray-300">
             Vous avez maintenant accès au suivi de grossesse.
           </p>
         </motion.div>
@@ -171,7 +171,7 @@ function InviteContent() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-3xl p-8 shadow-xl border border-pink-100 max-w-md w-full"
+        className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-xl border border-pink-100 dark:border-pink-900/30 max-w-md w-full"
       >
         {/* Header */}
         <div className="text-center mb-6">
@@ -184,24 +184,24 @@ function InviteContent() {
             <RoleIcon className="w-10 h-10 text-white" />
           </motion.div>
           
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">
             Invitation MamaTrack
           </h1>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500">
             Vous êtes invité(e) en tant que <span className="font-semibold text-pink-500">{roleInfo.label}</span>
           </p>
         </div>
 
         {/* Description */}
         <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 mb-6">
-          <p className="text-sm text-gray-600 text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-300 text-center">
             {roleInfo.description}
           </p>
         </div>
 
         {/* What you can do */}
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">Ce que vous pourrez voir :</h3>
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Ce que vous pourrez voir :</h3>
           <ul className="space-y-2">
             {[
               "📅 Semaine de grossesse et DPA",
@@ -215,7 +215,7 @@ function InviteContent() {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 + i * 0.1 }}
-                className="flex items-center gap-2 text-sm text-gray-600"
+                className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300"
               >
                 {item}
               </motion.li>
@@ -244,7 +244,7 @@ function InviteContent() {
           </button>
         ) : (
           <div className="space-y-3">
-            <p className="text-sm text-center text-gray-500">
+            <p className="text-sm text-center text-gray-500 dark:text-gray-400 dark:text-gray-500">
               Connectez-vous pour accepter cette invitation
             </p>
             <button

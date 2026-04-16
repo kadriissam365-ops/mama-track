@@ -32,7 +32,7 @@ export default function BottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-pink-100/80 bottom-nav-safe dark:bg-gray-900/95 dark:border-gray-800">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-pink-100 dark:border-pink-900/30/80 bottom-nav-safe dark:bg-gray-900/95 dark:border-gray-800">
       <div className="max-w-lg mx-auto flex items-center justify-around px-1 py-1.5">
         {navItems.map(({ href, labelKey, icon: Icon }) => {
           const active = isActive(href);
@@ -43,7 +43,7 @@ export default function BottomNav() {
               className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all duration-200 min-w-[60px] ${
                 active
                   ? "text-pink-600 dark:text-pink-400"
-                  : "text-gray-400 hover:text-pink-400 dark:text-gray-500 dark:hover:text-pink-400"
+                  : "text-gray-400 dark:text-gray-500 hover:text-pink-400 dark:text-gray-500 dark:text-gray-400 dark:text-gray-500 dark:hover:text-pink-400"
               }`}
             >
               {active && (

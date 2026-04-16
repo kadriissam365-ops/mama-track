@@ -77,14 +77,14 @@ export default function SignupPage() {
           >
             <CheckCircle2 className="w-10 h-10 text-white" />
           </motion.div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-3">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-3">
             Vérifiez votre email !
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             Nous avons envoyé un lien de confirmation à <br />
             <span className="font-medium text-pink-500">{email}</span>
           </p>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-6">
             Cliquez sur le lien dans l&apos;email pour activer votre compte et commencer votre suivi de grossesse.
           </p>
           <Link
@@ -115,8 +115,8 @@ export default function SignupPage() {
           >
             <Heart className="w-10 h-10 text-white fill-white" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-gray-800">MamaTrack</h1>
-          <p className="text-gray-500 mt-2">Créez votre compte</p>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">MamaTrack</h1>
+          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-2">Créez votre compte</p>
         </div>
 
         {/* Form */}
@@ -124,9 +124,9 @@ export default function SignupPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl shadow-xl p-8 border border-pink-100"
+          className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 border border-pink-100 dark:border-pink-900/30"
         >
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-6 text-center">
             Inscription
           </h2>
 
@@ -134,7 +134,7 @@ export default function SignupPage() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-red-50 text-red-600 text-sm p-3 rounded-xl mb-4 text-center"
+              className="bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-sm p-3 rounded-xl mb-4 text-center"
             >
               {error}
             </motion.div>
@@ -142,40 +142,40 @@ export default function SignupPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">
+              <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="votre@email.com"
                   required
-                  className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
+                  className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">
+              <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
                 Mot de passe
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimum 6 caractères"
                   required
-                  className="w-full pl-11 pr-11 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
+                  className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-300"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -183,18 +183,18 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">
+              <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
                 Confirmer le mot de passe
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Retapez votre mot de passe"
                   required
-                  className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
+                  className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -217,7 +217,7 @@ export default function SignupPage() {
 
 
 
-          <p className="text-center text-sm text-gray-500 mt-6">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-6">
             Déjà un compte ?{" "}
             <Link
               href="/auth/login"
@@ -228,7 +228,7 @@ export default function SignupPage() {
           </p>
         </motion.div>
 
-        <p className="text-center text-xs text-gray-400 mt-6">
+        <p className="text-center text-xs text-gray-400 dark:text-gray-500 mt-6">
           En créant un compte, vous acceptez nos conditions d&apos;utilisation
         </p>
       </motion.div>

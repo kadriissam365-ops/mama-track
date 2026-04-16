@@ -79,10 +79,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border shadow-lg max-w-sm ${colors[toast.type]}`}
             >
               {icons[toast.type]}
-              <p className="flex-1 text-sm text-gray-700">{toast.message}</p>
+              <p className="flex-1 text-sm text-gray-700 dark:text-gray-200">{toast.message}</p>
               <button
                 onClick={() => removeToast(toast.id)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>

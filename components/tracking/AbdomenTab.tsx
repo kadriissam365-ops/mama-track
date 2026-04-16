@@ -39,8 +39,8 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
     .join(" ");
 
   return (
-    <div className="bg-white rounded-3xl p-4 shadow-sm border border-purple-100">
-      <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">
+    <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30">
+      <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">
         📏 Évolution ({data.length} mesures)
       </h3>
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
@@ -186,11 +186,11 @@ export default function AbdomenTab() {
     >
       {/* Last reading */}
       {lastEntry && (
-        <div className="bg-purple-50 border border-purple-100 rounded-2xl px-4 py-3 flex items-center gap-3">
+        <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/30 rounded-2xl px-4 py-3 flex items-center gap-3">
           <span className="text-2xl">📏</span>
           <div>
-            <p className="text-xs text-gray-500">Dernière mesure</p>
-            <p className="text-lg font-bold text-purple-700">
+            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Dernière mesure</p>
+            <p className="text-lg font-bold text-purple-700 dark:text-purple-300">
               {lastEntry.circumference} cm
               {diff !== null && (
                 <span className={`text-sm font-normal ml-2 ${parseFloat(diff) >= 0 ? "text-orange-500" : "text-green-500"}`}>
@@ -203,10 +203,10 @@ export default function AbdomenTab() {
       )}
 
       {/* Form */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-purple-100">
-        <h3 className="font-semibold text-[#3d2b2b] mb-3">Ajouter une mesure</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-purple-100 dark:border-purple-900/30">
+        <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Ajouter une mesure</h3>
         {error && (
-          <p className="text-xs text-red-500 mb-2 bg-red-50 rounded-xl px-3 py-2">{error}</p>
+          <p className="text-xs text-red-500 mb-2 bg-red-50 dark:bg-red-950/30 rounded-xl px-3 py-2">{error}</p>
         )}
         <div className="flex gap-2 mb-2">
           <input
@@ -215,12 +215,12 @@ export default function AbdomenTab() {
             placeholder="Périmètre en cm (ex: 95)"
             value={circumference}
             onChange={(e) => setCircumference(e.target.value)}
-            className="flex-1 border border-purple-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+            className="flex-1 border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
           />
           <button
             onClick={handleAdd}
             disabled={!circumference || saving}
-            className="bg-purple-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-500 transition-colors"
+            className="bg-purple-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300 transition-colors"
             aria-label="Ajouter la mesure"
           >
             <Plus className="w-4 h-4" />
@@ -231,7 +231,7 @@ export default function AbdomenTab() {
           placeholder="Notes (optionnel)"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          className="w-full border border-purple-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+          className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
         />
       </div>
 
@@ -240,9 +240,9 @@ export default function AbdomenTab() {
 
       {/* History */}
       {loading ? (
-        <div className="text-center text-sm text-gray-400 py-4">Chargement…</div>
+        <div className="text-center text-sm text-gray-400 dark:text-gray-500 py-4">Chargement…</div>
       ) : entries.length === 0 ? (
-        <div className="text-center text-sm text-gray-400 py-6">
+        <div className="text-center text-sm text-gray-400 dark:text-gray-500 py-6">
           <p className="text-2xl mb-2">📏</p>
           <p>Aucune mesure enregistrée</p>
         </div>
@@ -251,20 +251,20 @@ export default function AbdomenTab() {
           {[...entries].reverse().map((entry) => (
             <div
               key={entry.id}
-              className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-purple-100 flex items-center justify-between"
+              className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-3 shadow-sm border border-purple-100 dark:border-purple-900/30 flex items-center justify-between"
             >
               <div>
-                <span className="text-lg font-bold text-[#3d2b2b]">
+                <span className="text-lg font-bold text-[#3d2b2b] dark:text-gray-100">
                   {entry.circumference} cm
                 </span>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   {format(new Date(entry.measured_at), "d MMMM yyyy à HH:mm", { locale: fr })}
                   {entry.notes && ` — ${entry.notes}`}
                 </p>
               </div>
               <button
                 onClick={() => setConfirmDelete(entry.id)}
-                className="text-gray-300 hover:text-red-400 transition-colors"
+                className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors"
                 aria-label="Supprimer"
               >
                 <Trash2 className="w-4 h-4" />

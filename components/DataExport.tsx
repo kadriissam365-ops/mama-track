@@ -436,23 +436,23 @@ export default function DataExport() {
   return (
     <div className="space-y-4">
       {/* Data overview card */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 space-y-4">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 space-y-4">
         <div className="flex items-center gap-2">
           <Shield className="w-5 h-5 text-purple-500" />
-          <h3 className="font-semibold text-[#3d2b2b]">Donnees & Confidentialite</h3>
+          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Donnees & Confidentialite</h3>
         </div>
 
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
           Conformement au RGPD, vous pouvez exporter ou supprimer toutes vos donnees personnelles a tout moment.
         </p>
 
         {/* Data summary */}
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100">
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100 dark:border-purple-900/30">
           <button
             onClick={() => setShowDetails(!showDetails)}
             className="w-full flex items-center justify-between"
           >
-            <span className="text-sm font-medium text-purple-800">
+            <span className="text-sm font-medium text-purple-800 dark:text-purple-300">
               {totalItems} elements stockes
             </span>
             {showDetails ? (
@@ -466,8 +466,8 @@ export default function DataExport() {
             <div className="mt-3 space-y-1.5">
               {categories.map((cat) => (
                 <div key={cat.key} className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600">{cat.label}</span>
-                  <span className="font-medium text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full">
+                  <span className="text-gray-600 dark:text-gray-300">{cat.label}</span>
+                  <span className="font-medium text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 rounded-full">
                     {cat.count}
                   </span>
                 </div>
@@ -478,14 +478,14 @@ export default function DataExport() {
 
         {/* Export buttons */}
         <div className="space-y-2">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wide">
             Exporter mes donnees
           </p>
           <div className="flex gap-2">
             <button
               onClick={handleExportJSON}
               disabled={loading}
-              className="flex-1 py-3 bg-purple-500 text-white rounded-xl font-medium hover:bg-purple-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+              className="flex-1 py-3 bg-purple-50 dark:bg-purple-950/300 text-white rounded-xl font-medium hover:bg-purple-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -497,7 +497,7 @@ export default function DataExport() {
             <button
               onClick={handleExportPDF}
               disabled={loading}
-              className="flex-1 py-3 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+              className="flex-1 py-3 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -507,25 +507,25 @@ export default function DataExport() {
               PDF
             </button>
           </div>
-          <p className="text-[10px] text-gray-400 text-center">
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center">
             Le fichier sera telecharge sur votre appareil
           </p>
         </div>
       </div>
 
       {/* Delete account */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-red-100 space-y-4">
-        <h3 className="font-semibold text-red-600 flex items-center gap-2 text-sm">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-red-100 dark:border-red-900/30 space-y-4">
+        <h3 className="font-semibold text-red-600 dark:text-red-400 flex items-center gap-2 text-sm">
           <Trash2 className="w-4 h-4" />
           Zone de danger
         </h3>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
           La suppression de votre compte est irreversible. Toutes vos donnees seront definitivement effacees.
         </p>
         <button
           onClick={() => setShowDeleteConfirm(true)}
           disabled={deleting}
-          className="w-full py-3 bg-white border-2 border-red-300 text-red-500 rounded-xl font-medium hover:bg-red-50 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+          className="w-full py-3 bg-white dark:bg-gray-900 border-2 border-red-300 dark:border-red-700 text-red-500 rounded-xl font-medium hover:bg-red-50 dark:bg-red-950/30 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
         >
           {deleting ? (
             <>

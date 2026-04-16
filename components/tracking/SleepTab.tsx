@@ -24,11 +24,11 @@ const QUALITY_LABELS = ["", "Très mal", "Mal", "Moyen", "Bien", "Très bien"];
 const QUALITY_EMOJIS = ["", "😫", "😣", "😐", "😊", "😴"];
 const QUALITY_COLORS = [
   "",
-  "bg-red-100 border-red-300",
-  "bg-orange-100 border-orange-300",
-  "bg-yellow-100 border-yellow-300",
-  "bg-green-100 border-green-300",
-  "bg-indigo-100 border-indigo-300",
+  "bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700",
+  "bg-orange-100 dark:bg-orange-900/30 border-orange-300",
+  "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300",
+  "bg-green-100 dark:bg-green-900/30 border-green-300",
+  "bg-indigo-100 dark:bg-indigo-900/30 border-indigo-300",
 ];
 
 function calcDuration(bedtime: string, waketime: string): number {
@@ -135,14 +135,14 @@ export default function SleepTab() {
       className="space-y-4"
     >
       {/* Today's sleep form */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-indigo-100">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-indigo-100 dark:border-indigo-900/30">
         <div className="flex items-center gap-2 mb-3">
           <Moon className="w-5 h-5 text-indigo-400" />
-          <h3 className="font-semibold text-[#3d2b2b]">Sommeil d&apos;aujourd&apos;hui</h3>
+          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Sommeil d&apos;aujourd&apos;hui</h3>
         </div>
 
         {todayEntry && (
-          <p className="text-xs text-gray-400 mb-3">
+          <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">
             Déjà enregistré : {formatDuration(calcDuration(todayEntry.bedtime, todayEntry.waketime))} — {QUALITY_EMOJIS[todayEntry.quality]} {QUALITY_LABELS[todayEntry.quality]}
           </p>
         )}
@@ -150,7 +150,7 @@ export default function SleepTab() {
         {/* Bedtime / Waketime */}
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Coucher</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Coucher</label>
             <input
               type="time"
               value={bedtime}
@@ -159,7 +159,7 @@ export default function SleepTab() {
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Réveil</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Réveil</label>
             <input
               type="time"
               value={waketime}
@@ -170,13 +170,13 @@ export default function SleepTab() {
         </div>
 
         {/* Duration display */}
-        <div className="bg-indigo-50 rounded-2xl px-4 py-2 mb-3 text-center">
+        <div className="bg-indigo-50 dark:bg-indigo-950/30 rounded-2xl px-4 py-2 mb-3 text-center">
           <span className="text-2xl font-bold text-indigo-500">{formatDuration(duration)}</span>
-          <span className="text-xs text-gray-400 ml-1">de sommeil</span>
+          <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">de sommeil</span>
         </div>
 
         {/* Quality selector */}
-        <label className="text-xs text-gray-500 mb-1.5 block">Qualité du sommeil</label>
+        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1.5 block">Qualité du sommeil</label>
         <div className="flex gap-1.5 mb-3">
           {[1, 2, 3, 4, 5].map((q) => (
             <button
@@ -185,11 +185,11 @@ export default function SleepTab() {
               className={`flex-1 flex flex-col items-center py-2 rounded-2xl border-2 transition-all ${
                 quality === q
                   ? `${QUALITY_COLORS[q]} scale-105 shadow-md`
-                  : "border-gray-100 hover:border-indigo-200 bg-gray-50"
+                  : "border-gray-100 dark:border-gray-800 hover:border-indigo-200 bg-gray-50 dark:bg-gray-800"
               }`}
             >
               <span className="text-lg">{QUALITY_EMOJIS[q]}</span>
-              <span className="text-[9px] text-gray-500 mt-0.5">{QUALITY_LABELS[q]}</span>
+              <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5">{QUALITY_LABELS[q]}</span>
             </button>
           ))}
         </div>
@@ -197,7 +197,7 @@ export default function SleepTab() {
         {/* Night wakings + naps */}
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Réveils nocturnes</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Réveils nocturnes</label>
             <input
               type="number"
               min="0"
@@ -208,7 +208,7 @@ export default function SleepTab() {
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Sieste (min)</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-1 block">Sieste (min)</label>
             <input
               type="number"
               min="0"
@@ -232,7 +232,7 @@ export default function SleepTab() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full bg-indigo-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-indigo-500 transition-colors"
+          className="w-full bg-indigo-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-indigo-50 dark:bg-indigo-950/300 transition-colors"
         >
           {saving ? "…" : success ? "✓ Enregistré !" : "Enregistrer"}
         </button>
@@ -241,21 +241,21 @@ export default function SleepTab() {
       {/* Stats */}
       {entries.length > 0 && (
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-indigo-100 text-center">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-indigo-100 dark:border-indigo-900/30 text-center">
             <p className="text-2xl font-bold text-indigo-500">{formatDuration(avgDuration)}</p>
-            <p className="text-xs text-gray-400">Moyenne / nuit</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Moyenne / nuit</p>
           </div>
-          <div className="bg-white rounded-2xl p-4 shadow-sm border border-indigo-100 text-center">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-indigo-100 dark:border-indigo-900/30 text-center">
             <p className="text-2xl font-bold text-indigo-500">{avgQuality}/5</p>
-            <p className="text-xs text-gray-400">Qualité moyenne</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Qualité moyenne</p>
           </div>
         </div>
       )}
 
       {/* Sleep chart (SVG) */}
       {entries.length > 1 && (
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-indigo-100">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Historique</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-indigo-100 dark:border-indigo-900/30">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Historique</h3>
           <div className="overflow-x-auto">
             <div className="flex gap-1.5 items-end" style={{ minWidth: `${Math.min(entries.length, 14) * 36}px` }}>
               {[...entries].reverse().slice(-14).map((e) => {
@@ -264,7 +264,7 @@ export default function SleepTab() {
                 const barH = Math.max(20, (dur / maxH) * 120);
                 return (
                   <div key={e.id} className="flex flex-col items-center flex-1 min-w-[28px]">
-                    <span className="text-[9px] text-gray-500 mb-0.5">{formatDuration(dur)}</span>
+                    <span className="text-[9px] text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-0.5">{formatDuration(dur)}</span>
                     <div
                       className="w-full rounded-t-lg bg-indigo-200"
                       style={{ height: `${barH}px` }}
@@ -277,7 +277,7 @@ export default function SleepTab() {
                         }}
                       />
                     </div>
-                    <span className="text-[8px] text-gray-400 mt-0.5">
+                    <span className="text-[8px] text-gray-400 dark:text-gray-500 mt-0.5">
                       {format(new Date(e.date), "dd/MM")}
                     </span>
                   </div>
@@ -291,32 +291,32 @@ export default function SleepTab() {
       {/* Recent entries */}
       {!loading && entries.length > 0 && (
         <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] px-1">Dernières nuits</h3>
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 px-1">Dernières nuits</h3>
           {entries.slice(0, 7).map((entry) => {
             const dur = calcDuration(entry.bedtime, entry.waketime);
             return (
               <div
                 key={entry.id}
-                className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-indigo-100 flex items-center justify-between"
+                className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-3 shadow-sm border border-indigo-100 dark:border-indigo-900/30 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{QUALITY_EMOJIS[entry.quality]}</span>
                   <div>
-                    <p className="text-sm font-semibold text-[#3d2b2b]">
+                    <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">
                       {formatDuration(dur)} — {QUALITY_LABELS[entry.quality]}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 dark:text-gray-500">
                       {format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}
                       {" · "}{entry.bedtime} → {entry.waketime}
                       {entry.night_wakings > 0 && ` · ${entry.night_wakings} réveil${entry.night_wakings > 1 ? "s" : ""}`}
                       {entry.naps_minutes > 0 && ` · sieste ${entry.naps_minutes}min`}
                     </p>
-                    {entry.note && <p className="text-xs text-gray-400 italic">{entry.note}</p>}
+                    {entry.note && <p className="text-xs text-gray-400 dark:text-gray-500 italic">{entry.note}</p>}
                   </div>
                 </div>
                 <button
                   onClick={() => setConfirmDelete(entry.id)}
-                  className="text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
+                  className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors flex-shrink-0"
                   aria-label="Supprimer"
                 >
                   <Trash2 className="w-4 h-4" />

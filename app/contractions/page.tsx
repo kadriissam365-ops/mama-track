@@ -165,7 +165,7 @@ export default function ContractionsPage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
-      <h1 className="text-xl font-bold text-[#3d2b2b] flex items-center gap-2">
+      <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
         <Timer className="w-6 h-6 text-pink-400" />
         Contractions
       </h1>
@@ -177,26 +177,26 @@ export default function ContractionsPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3"
+            className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-2xl p-4 flex items-start gap-3"
           >
             <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-600 font-medium">{analysis.warning}</p>
+            <p className="text-sm text-red-600 dark:text-red-400 font-medium">{analysis.warning}</p>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Contrôle principal */}
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-100 text-center">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-pink-100 dark:border-pink-900/30 text-center">
         {!isActive ? (
           <button
             onClick={startSession}
-            className="w-full py-4 bg-pink-400 text-white rounded-2xl font-semibold text-lg hover:bg-pink-500 transition-colors shadow-sm"
+            className="w-full py-4 bg-pink-400 text-white rounded-2xl font-semibold text-lg hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors shadow-sm"
           >
             🤱 Démarrer le suivi
           </button>
         ) : (
           <div className="space-y-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
               Durée de session : <span className="font-semibold text-pink-500">{formatDuration(elapsed)}</span>
             </div>
 
@@ -233,7 +233,7 @@ export default function ContractionsPage() {
 
             <button
               onClick={stopSession}
-              className="w-full py-3 bg-gray-100 text-gray-600 rounded-2xl font-medium hover:bg-gray-200 transition-colors"
+              className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-medium hover:bg-gray-200 dark:bg-gray-700 transition-colors"
             >
               Terminer la session
             </button>
@@ -254,11 +254,11 @@ export default function ContractionsPage() {
                   localStorage.setItem('duo-messages', JSON.stringify([...saved, msg]));
                   toast.success('Message envoyé à votre partenaire 💬');
                 }}
-                className="w-full flex items-center gap-3 bg-pink-50 border border-pink-200 rounded-2xl px-4 py-3 hover:bg-pink-100 transition-colors"
+                className="w-full flex items-center gap-3 bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800/30 rounded-2xl px-4 py-3 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30 transition-colors"
               >
                 <MessageCircle className="w-5 h-5 text-pink-500" />
                 <div className="text-left">
-                  <p className="text-sm font-semibold text-pink-700">Prévenir mon partenaire</p>
+                  <p className="text-sm font-semibold text-pink-700 dark:text-pink-300">Prévenir mon partenaire</p>
                   <p className="text-xs text-pink-400">Envoie un message automatique au Duo</p>
                 </div>
               </motion.button>
@@ -274,21 +274,21 @@ export default function ContractionsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="grid grid-cols-3 gap-3"
         >
-          <div className="bg-white rounded-2xl p-3 text-center shadow-sm border border-pink-100">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 text-center shadow-sm border border-pink-100 dark:border-pink-900/30">
             <p className="text-2xl font-bold text-pink-500">{localContractions.length}</p>
-            <p className="text-xs text-gray-400">Contractions</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Contractions</p>
           </div>
-          <div className="bg-white rounded-2xl p-3 text-center shadow-sm border border-purple-100">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 text-center shadow-sm border border-purple-100 dark:border-purple-900/30">
             <p className="text-lg font-bold text-purple-500">
               {analysis.avgDuration > 0 ? formatDuration(analysis.avgDuration) : "—"}
             </p>
-            <p className="text-xs text-gray-400">Durée moy.</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Durée moy.</p>
           </div>
-          <div className="bg-white rounded-2xl p-3 text-center shadow-sm border border-green-100">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 text-center shadow-sm border border-green-100 dark:border-green-900/30">
             <p className="text-lg font-bold text-green-500">
               {analysis.avgInterval > 0 ? formatInterval(analysis.avgInterval) : "—"}
             </p>
-            <p className="text-xs text-gray-400">Intervalle</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Intervalle</p>
           </div>
         </motion.div>
       )}
@@ -297,13 +297,13 @@ export default function ContractionsPage() {
       {isActive && localContractions.length >= 3 && (
         <div
           className={`rounded-2xl p-3 flex items-center gap-2 ${
-            analysis.regular ? "bg-green-50 border border-green-200" : "bg-yellow-50 border border-yellow-200"
+            analysis.regular ? "bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/30" : "bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800/30"
           }`}
         >
           {analysis.regular ? (
             <CheckCircle className="w-4 h-4 text-green-500" />
           ) : (
-            <AlertCircle className="w-4 h-4 text-yellow-500" />
+            <AlertCircle className="w-4 h-4 text-yellow-500 dark:text-yellow-400" />
           )}
           <span className="text-sm font-medium">
             {analysis.regular ? "Contractions régulières" : "Contractions irrégulières"}
@@ -313,14 +313,14 @@ export default function ContractionsPage() {
 
       {/* Tableau contractions */}
       {isActive && localContractions.length > 0 && (
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-pink-100">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">
+          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">
             Session en cours ({localContractions.length} contraction{localContractions.length > 1 ? "s" : ""})
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-gray-400">
+                <tr className="text-gray-400 dark:text-gray-500">
                   <th className="text-left pb-2 pr-3">#</th>
                   <th className="text-left pb-2 pr-3">Heure</th>
                   <th className="text-left pb-2 pr-3">Durée</th>
@@ -329,14 +329,14 @@ export default function ContractionsPage() {
               </thead>
               <tbody>
                 {localContractions.slice().reverse().map((c, i) => (
-                  <tr key={c.id} className="border-t border-gray-50">
+                  <tr key={c.id} className="border-t border-gray-50 dark:border-gray-800">
                     <td className="py-2 pr-3 font-semibold text-pink-400">
                       {localContractions.length - i}
                     </td>
-                    <td className="py-2 pr-3 text-gray-600">
+                    <td className="py-2 pr-3 text-gray-600 dark:text-gray-300">
                       {format(new Date(c.startTime), "HH:mm:ss")}
                     </td>
-                    <td className="py-2 pr-3 font-semibold text-[#3d2b2b]">
+                    <td className="py-2 pr-3 font-semibold text-[#3d2b2b] dark:text-gray-100">
                       {c.duration ? formatDuration(c.duration) : "—"}
                     </td>
                     <td className="py-2 text-purple-500">
@@ -353,26 +353,26 @@ export default function ContractionsPage() {
       {/* Sessions passées */}
       {pastSessions.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider">
             Sessions passées
           </h2>
           {pastSessions.map((session) => {
             const sessionAnalysis = analyzeContractions(session.contractions);
             return (
-              <div key={session.id} className="bg-white rounded-2xl p-4 shadow-sm border border-pink-100">
+              <div key={session.id} className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-semibold text-[#3d2b2b]">
+                  <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">
                     {format(new Date(session.date), "d MMMM yyyy", { locale: fr })}
                   </p>
                   <button
                     onClick={() => store.removeContractionSession(session.id)}
-                    className="text-gray-300 hover:text-red-400"
+                    className="text-gray-300 dark:text-gray-500 hover:text-red-400"
                     aria-label="Supprimer la session"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="flex gap-4 text-xs text-gray-500">
+                <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">
                   <span>{session.contractions.length} contractions</span>
                   {sessionAnalysis.avgDuration > 0 && (
                     <span>Durée moy : {formatDuration(sessionAnalysis.avgDuration)}</span>

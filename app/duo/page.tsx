@@ -158,9 +158,9 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
 
   if (!partnerName) {
     return (
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-100 text-center">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-pink-100 dark:border-pink-900/30 text-center">
         <MessageCircle className="w-10 h-10 text-pink-200 mx-auto mb-2" />
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
           Invitez votre partenaire pour activer le chat
         </p>
       </div>
@@ -168,20 +168,20 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
   }
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-pink-100 overflow-hidden">
+    <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-pink-100 dark:border-pink-900/30 overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-pink-100 bg-gradient-to-r from-pink-50 to-purple-50">
-        <h2 className="font-semibold text-[#3d2b2b] flex items-center gap-2">
+      <div className="px-4 py-3 border-b border-pink-100 dark:border-pink-900/30 bg-gradient-to-r from-pink-50 to-purple-50">
+        <h2 className="font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
           <MessageCircle className="w-4 h-4 text-pink-400" />
           💬 Chat avec {partnerName}
         </h2>
       </div>
 
       {/* Messages */}
-      <div className="h-64 overflow-y-auto px-4 py-3 flex flex-col gap-2 bg-gray-50">
+      <div className="h-64 overflow-y-auto px-4 py-3 flex flex-col gap-2 bg-gray-50 dark:bg-gray-800">
         {messages.length === 0 && (
           <div className="flex-1 flex items-center justify-center">
-            <p className="text-xs text-gray-400">Commencez la conversation ✨</p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">Commencez la conversation ✨</p>
           </div>
         )}
         {messages.map((msg) => (
@@ -190,11 +190,11 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
               className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
                 msg.isOwn
                   ? "bg-pink-400 text-white rounded-br-sm"
-                  : "bg-gray-100 text-gray-800 rounded-bl-sm"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-bl-sm"
               }`}
             >
               <p>{msg.content}</p>
-              <p className={`text-[10px] mt-0.5 ${msg.isOwn ? "text-pink-100" : "text-gray-400"}`}>
+              <p className={`text-[10px] mt-0.5 ${msg.isOwn ? "text-pink-100" : "text-gray-400 dark:text-gray-500"}`}>
                 {formatTime(msg.createdAt)}
               </p>
             </div>
@@ -217,19 +217,19 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
       </div>
 
       {/* Input */}
-      <div className="flex gap-2 px-4 py-3 border-t border-pink-100">
+      <div className="flex gap-2 px-4 py-3 border-t border-pink-100 dark:border-pink-900/30">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Votre message..."
-          className="flex-1 px-3 py-2 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+          className="flex-1 px-3 py-2 border border-pink-200 dark:border-pink-800/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
         />
         <button
           onClick={() => sendMessage(input)}
           disabled={!input.trim()}
-          className="bg-pink-400 text-white px-3 py-2 rounded-xl hover:bg-pink-500 transition-colors disabled:opacity-40"
+          className="bg-pink-400 text-white px-3 py-2 rounded-xl hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-40"
         >
           <Send className="w-4 h-4" />
         </button>
@@ -382,20 +382,20 @@ export default function DuoPage() {
       <div className="flex justify-end">
         <button
           onClick={() => router.push('/partner')}
-          className="flex items-center gap-2 bg-gradient-to-r from-pink-100 to-purple-100 text-purple-700 px-4 py-2 rounded-xl text-sm font-medium hover:from-pink-200 hover:to-purple-200 transition-colors border border-purple-100"
+          className="flex items-center gap-2 bg-gradient-to-r from-pink-100 to-purple-100 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-xl text-sm font-medium hover:from-pink-200 hover:to-purple-200 transition-colors border border-purple-100 dark:border-purple-900/30"
         >
           <Eye className="w-4 h-4" /> Voir la vue partenaire
         </button>
       </div>
 
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-[#3d2b2b] flex items-center gap-2">
+        <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
           <Users className="w-6 h-6 text-pink-400" />
           Mode Duo
         </h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 transition-colors"
+          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
         >
           <UserPlus className="w-4 h-4" />
           Inviter
@@ -403,8 +403,8 @@ export default function DuoPage() {
       </div>
 
       {/* Intro */}
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 border border-pink-100">
-        <p className="text-sm text-gray-600">
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 border border-pink-100 dark:border-pink-900/30">
+        <p className="text-sm text-gray-600 dark:text-gray-300">
           Partagez votre suivi de grossesse avec votre partenaire, sage-femme ou famille. 
           Ils pourront suivre votre progression en lecture seule.
         </p>
@@ -417,12 +417,12 @@ export default function DuoPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 overflow-hidden"
+            className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 overflow-hidden"
           >
-            <h3 className="font-semibold text-[#3d2b2b] mb-4">Nouvelle invitation</h3>
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-4">Nouvelle invitation</h3>
             
             {/* Role selection */}
-            <label className="text-xs text-gray-500 block mb-2">Type de partage</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-2">Type de partage</label>
             <div className="grid grid-cols-3 gap-2 mb-4">
               {(Object.keys(ROLE_LABELS) as Role[]).map((r) => {
                 const { label, icon: Icon, color } = ROLE_LABELS[r];
@@ -434,12 +434,12 @@ export default function DuoPage() {
                     className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all ${
                       selected
                         ? `border-${color}-400 bg-${color}-50`
-                        : "border-gray-200 hover:border-gray-300"
+                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:border-gray-600"
                     }`}
                     style={selected ? { borderColor: `var(--color-${color}-400)` } : undefined}
                   >
-                    <Icon className={`w-5 h-5 ${selected ? `text-${color}-500` : "text-gray-400"}`} />
-                    <span className={`text-xs font-medium ${selected ? `text-${color}-600` : "text-gray-500"}`}>
+                    <Icon className={`w-5 h-5 ${selected ? `text-${color}-500` : "text-gray-400 dark:text-gray-500"}`} />
+                    <span className={`text-xs font-medium ${selected ? `text-${color}-600` : "text-gray-500 dark:text-gray-400 dark:text-gray-500"}`}>
                       {label}
                     </span>
                   </button>
@@ -448,22 +448,22 @@ export default function DuoPage() {
             </div>
 
             {/* Email input */}
-            <label className="text-xs text-gray-500 block mb-1.5">Email</label>
+            <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1.5">Email</label>
             <div className="flex gap-2">
               <div className="relative flex-1">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="email@exemple.com"
-                  className="w-full pl-10 pr-3 py-2.5 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="w-full pl-10 pr-3 py-2.5 border border-pink-200 dark:border-pink-800/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
                 />
               </div>
               <button
                 onClick={handleSendInvitation}
                 disabled={!email.trim() || sending}
-                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 {sending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -473,7 +473,7 @@ export default function DuoPage() {
               </button>
             </div>
 
-            <p className="text-xs text-gray-400 mt-3">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
               Un lien d&apos;invitation sera généré. Partagez-le avec la personne de votre choix.
             </p>
           </motion.div>
@@ -483,7 +483,7 @@ export default function DuoPage() {
       {/* Pending Invitations */}
       {invitations.length > 0 && (
         <div>
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
             Invitations en attente ({invitations.length})
           </h2>
           <div className="space-y-2">
@@ -497,7 +497,7 @@ export default function DuoPage() {
                   key={inv.id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="bg-white rounded-2xl p-4 shadow-sm border border-yellow-100"
+                  className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-yellow-100 dark:border-yellow-900/30"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
@@ -505,21 +505,21 @@ export default function DuoPage() {
                         <Icon className={`w-4 h-4 text-${color}-500`} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-800">{inv.email}</p>
-                        <p className="text-xs text-gray-400">{label} • En attente</p>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{inv.email}</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500">{label} • En attente</p>
                       </div>
                     </div>
                     <div className="flex gap-1">
                       <button
                         onClick={() => copyInviteUrl(inv.token)}
-                        className="p-2 rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors"
+                        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:bg-gray-700 transition-colors"
                         aria-label="Copier le lien d'invitation"
                       >
                         {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
                       </button>
                       <button
                         onClick={() => handleCancelInvitation(inv.id)}
-                        className="p-2 rounded-lg bg-red-50 text-red-400 hover:bg-red-100 transition-colors"
+                        className="p-2 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-400 hover:bg-red-100 dark:bg-red-900/30 transition-colors"
                         aria-label="Annuler l'invitation"
                       >
                         <X className="w-4 h-4" />
@@ -536,7 +536,7 @@ export default function DuoPage() {
       {/* Active Partners */}
       {partners.length > 0 && (
         <div>
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">
             Partenaires actifs ({partners.length})
           </h2>
           <div className="space-y-2">
@@ -548,7 +548,7 @@ export default function DuoPage() {
                   key={partner.id}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="bg-white rounded-2xl p-4 shadow-sm border border-green-100"
+                  className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-green-100 dark:border-green-900/30"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -556,13 +556,13 @@ export default function DuoPage() {
                         <Icon className={`w-4 h-4 text-${color}-500`} />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-800">{label}</p>
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{label}</p>
                         <p className="text-xs text-green-500">✓ Connecté</p>
                       </div>
                     </div>
                     <button
                       onClick={() => handleRevokeAccess(partner.id)}
-                      className="p-2 rounded-lg bg-red-50 text-red-400 hover:bg-red-100 transition-colors"
+                      className="p-2 rounded-lg bg-red-50 dark:bg-red-950/30 text-red-400 hover:bg-red-100 dark:bg-red-900/30 transition-colors"
                       aria-label="Révoquer l'accès partenaire"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -577,15 +577,15 @@ export default function DuoPage() {
 
       {/* Empty state */}
       {invitations.length === 0 && partners.length === 0 && (
-        <div className="bg-white rounded-3xl p-8 text-center border border-pink-100 shadow-sm">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 text-center border border-pink-100 dark:border-pink-900/30 shadow-sm">
           <Users className="w-12 h-12 text-pink-200 mx-auto mb-3" />
-          <h3 className="font-semibold text-gray-800 mb-1">Aucun partage actif</h3>
-          <p className="text-sm text-gray-500 mb-4">
+          <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Aucun partage actif</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-4">
             Invitez votre partenaire ou sage-femme à suivre votre grossesse.
           </p>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-500 transition-colors"
+            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
           >
             Créer une invitation
           </button>
@@ -601,8 +601,8 @@ export default function DuoPage() {
       )}
 
       {/* Messages de soutien */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100">
-        <h3 className="font-semibold text-[#3d2b2b] mb-3 flex items-center gap-2">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30">
+        <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3 flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-pink-400" />
           Messages de soutien
         </h3>
@@ -611,7 +611,7 @@ export default function DuoPage() {
         <div className="flex gap-2 flex-wrap mb-3">
           {SUPPORT_MESSAGES.map(msg => (
             <button key={msg.text} onClick={() => sendSupportMessage(msg.text)}
-              className="text-xs bg-pink-50 hover:bg-pink-100 text-pink-600 rounded-full px-3 py-1.5 transition-colors">
+              className="text-xs bg-pink-50 dark:bg-pink-950/30 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30 text-pink-600 rounded-full px-3 py-1.5 transition-colors">
               {msg.emoji} {msg.text}
             </button>
           ))}
@@ -622,7 +622,7 @@ export default function DuoPage() {
           {supportMessages.map(msg => (
             <div key={msg.id} className={`flex ${msg.isOwn ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
-                msg.isOwn ? 'bg-pink-400 text-white' : 'bg-gray-100 text-gray-700'
+                msg.isOwn ? 'bg-pink-400 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
               }`}>
                 {msg.content}
                 <div className="text-xs opacity-60 mt-0.5">{formatSupportTime(msg.createdAt)}</div>
@@ -630,7 +630,7 @@ export default function DuoPage() {
             </div>
           ))}
           {supportMessages.length === 0 && (
-            <p className="text-center text-sm text-gray-400 py-4">
+            <p className="text-center text-sm text-gray-400 dark:text-gray-500 py-4">
               Envoyez un premier message de soutien 💕
             </p>
           )}
@@ -641,7 +641,7 @@ export default function DuoPage() {
           <input value={newMessage} onChange={e => setNewMessage(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && sendSupportMessage(newMessage)}
             placeholder="Écrire un message..."
-            className="flex-1 border border-pink-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300" />
+            className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300" />
           <button onClick={() => sendSupportMessage(newMessage)}
             disabled={!newMessage.trim()}
             className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-40">

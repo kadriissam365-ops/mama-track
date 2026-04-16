@@ -42,7 +42,7 @@ export default function JournalPage() {
       color: "from-rose-100 to-pink-50",
       border: "border-rose-200",
       iconColor: "text-rose-500",
-      bg: "bg-rose-500",
+      bg: "bg-rose-50 dark:bg-rose-950/300",
     },
     {
       href: "/journal/notes",
@@ -54,7 +54,7 @@ export default function JournalPage() {
       color: "from-amber-100 to-yellow-50",
       border: "border-amber-200",
       iconColor: "text-amber-600",
-      bg: "bg-amber-500",
+      bg: "bg-amber-50 dark:bg-amber-950/300",
     },
     {
       href: "/journal/galerie",
@@ -66,20 +66,20 @@ export default function JournalPage() {
       color: "from-violet-100 to-purple-50",
       border: "border-violet-200",
       iconColor: "text-violet-600",
-      bg: "bg-violet-500",
+      bg: "bg-violet-50 dark:bg-violet-950/300",
     },
   ];
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6" style={{ background: "#fdfaf6", minHeight: "100vh" }}>
+    <div className="max-w-lg mx-auto px-4 py-6 min-h-screen bg-background">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <h1 className="text-2xl font-bold text-gray-800 mb-1">Journal 📖</h1>
-        <p className="text-sm text-gray-500">Tes souvenirs précieux de grossesse</p>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-1">Journal 📖</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Tes souvenirs précieux de grossesse</p>
       </motion.div>
 
       {/* Hero polaroid preview */}
@@ -89,15 +89,15 @@ export default function JournalPage() {
         transition={{ delay: 0.1 }}
         className="mb-8 relative"
       >
-        <div className="bg-white rounded-3xl p-6 shadow-sm border border-pink-100 text-center">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-pink-100 dark:border-pink-900/30 text-center">
           <div className="text-5xl mb-3">🤰</div>
-          <p className="text-gray-700 font-semibold">Semaine {currentWeek}</p>
-          <p className="text-gray-400 text-sm mt-1">Ta grossesse en images et en mots</p>
+          <p className="text-gray-700 dark:text-gray-300 font-semibold">Semaine {currentWeek}</p>
+          <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Ta grossesse en images et en mots</p>
           <div className="flex justify-center gap-3 mt-4">
-            <span className="text-xs bg-rose-100 text-rose-600 rounded-full px-3 py-1">
+            <span className="text-xs bg-rose-100 dark:bg-rose-900/30 text-rose-600 rounded-full px-3 py-1">
               📸 {photoCount} photo{photoCount !== 1 ? "s" : ""}
             </span>
-            <span className="text-xs bg-amber-100 text-amber-600 rounded-full px-3 py-1">
+            <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-full px-3 py-1">
               📝 {noteCount} note{noteCount !== 1 ? "s" : ""}
             </span>
           </div>
@@ -121,14 +121,14 @@ export default function JournalPage() {
                   <span className="text-2xl">{card.emoji}</span>
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-800">{card.title}</p>
-                  <p className="text-xs text-gray-500">{card.subtitle}</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">{card.title}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">{card.subtitle}</p>
                   <p className="text-xs font-medium mt-1" style={{ color: "inherit" }}>
                     <span className={card.iconColor}>{card.stat}</span>
                   </p>
                 </div>
               </div>
-              <ArrowRight className="w-5 h-5 text-gray-400" />
+              <ArrowRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
             </div>
           </motion.button>
         ))}

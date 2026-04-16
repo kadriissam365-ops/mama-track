@@ -19,7 +19,7 @@ export default function ConfidentialitePage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent">
             Politique de Confidentialit&eacute;
           </h1>
-          <p className="text-sm text-gray-400">Derni&egrave;re mise &agrave; jour : 15 avril 2026</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">Derni&egrave;re mise &agrave; jour : 15 avril 2026</p>
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Introduction</h2>
@@ -49,11 +49,11 @@ export default function ConfidentialitePage() {
             <div className="space-y-2">
               <div className="bg-purple-50 dark:bg-purple-950/30 rounded-xl p-4 border border-purple-100 dark:border-purple-900">
                 <h3 className="font-medium text-purple-700 dark:text-purple-300 text-sm mb-1">Donn&eacute;es d&apos;identification</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-xs">Adresse email, pr&eacute;nom, pr&eacute;nom du b&eacute;b&eacute; (optionnel)</p>
+                <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-xs">Adresse email, pr&eacute;nom, pr&eacute;nom du b&eacute;b&eacute; (optionnel)</p>
               </div>
               <div className="bg-pink-50 dark:bg-pink-950/30 rounded-xl p-4 border border-pink-100 dark:border-pink-900">
                 <h3 className="font-medium text-pink-700 dark:text-pink-300 text-sm mb-1">Donn&eacute;es de sant&eacute;</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-xs">
+                <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-xs">
                   Date pr&eacute;vue d&apos;accouchement, poids, sympt&ocirc;mes, contractions, mode de conception,
                   rendez-vous m&eacute;dicaux, hydratation, m&eacute;dicaments. Ces donn&eacute;es sont consid&eacute;r&eacute;es
                   comme des donn&eacute;es sensibles au sens de l&apos;article 9 du RGPD.
@@ -61,7 +61,7 @@ export default function ConfidentialitePage() {
               </div>
               <div className="bg-emerald-50 dark:bg-emerald-950/30 rounded-xl p-4 border border-emerald-100 dark:border-emerald-900">
                 <h3 className="font-medium text-emerald-700 dark:text-emerald-300 text-sm mb-1">Donn&eacute;es techniques</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-xs">
+                <p className="text-gray-600 dark:text-gray-400 dark:text-gray-500 text-xs">
                   Donn&eacute;es de navigation (type de navigateur, appareil), strictement n&eacute;cessaires au fonctionnement de l&apos;application.
                 </p>
               </div>
@@ -149,7 +149,7 @@ export default function ConfidentialitePage() {
               ].map((right) => (
                 <div key={right.title} className="bg-gray-50 dark:bg-[#0f0f1a] rounded-xl p-3 border border-gray-100 dark:border-gray-800">
                   <p className="font-medium text-gray-800 dark:text-gray-100 text-sm">{right.title}</p>
-                  <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5">{right.desc}</p>
+                  <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-xs mt-0.5">{right.desc}</p>
                 </div>
               ))}
             </div>

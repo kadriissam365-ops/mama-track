@@ -51,18 +51,18 @@ const POST_TYPES: Record<
   question: {
     label: "Question",
     emoji: "❓",
-    color: "bg-yellow-50 border-yellow-200",
+    color: "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800/30",
   },
-  vecu: { label: "Vecu", emoji: "💬", color: "bg-blue-50 border-blue-200" },
+  vecu: { label: "Vecu", emoji: "💬", color: "bg-blue-50 dark:bg-blue-950/30 border-blue-200" },
   conseil: {
     label: "Conseil",
     emoji: "💡",
-    color: "bg-green-50 border-green-200",
+    color: "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/30",
   },
   soutien: {
     label: "Soutien",
     emoji: "🤗",
-    color: "bg-pink-50 border-pink-200",
+    color: "bg-pink-50 dark:bg-pink-950/30 border-pink-200 dark:border-pink-800/30",
   },
 };
 
@@ -307,7 +307,7 @@ export default function CommunityContent() {
     <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-[#3d2b2b] flex items-center gap-2">
+        <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
           <MessageCircle className="w-6 h-6 text-pink-400" />
           Communaute
         </h1>
@@ -315,7 +315,7 @@ export default function CommunityContent() {
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center justify-center w-9 h-9 rounded-xl text-gray-400 hover:text-pink-400 hover:bg-pink-50 transition-colors disabled:opacity-50"
+            className="flex items-center justify-center w-9 h-9 rounded-xl text-gray-400 dark:text-gray-500 hover:text-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors disabled:opacity-50"
             title="Rafraichir"
           >
             <RefreshCw
@@ -328,7 +328,7 @@ export default function CommunityContent() {
               setShowModal(true);
             }}
             disabled={!isAuthenticated}
-            className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title={
               !isAuthenticated ? "Connectez-vous pour partager" : "Partager"
             }
@@ -341,7 +341,7 @@ export default function CommunityContent() {
 
       {/* Auth prompt for unauthenticated users */}
       {!isAuthenticated && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 text-xs text-amber-700 flex items-center gap-2">
+        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 rounded-2xl p-3 text-xs text-amber-700 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>
             Connectez-vous pour publier, reagir et signaler des posts.
@@ -350,20 +350,20 @@ export default function CommunityContent() {
       )}
 
       {/* Stats banner */}
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 flex items-center justify-around border border-pink-100">
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 flex items-center justify-around border border-pink-100 dark:border-pink-900/30">
         <div className="text-center">
           <p className="text-lg font-bold text-pink-500">{posts.length}</p>
-          <p className="text-[10px] text-gray-500">Publications</p>
+          <p className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">Publications</p>
         </div>
         <div className="w-px h-8 bg-pink-200" />
         <div className="text-center">
           <p className="text-lg font-bold text-purple-500">{totalReactions}</p>
-          <p className="text-[10px] text-gray-500">Reactions</p>
+          <p className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">Reactions</p>
         </div>
         <div className="w-px h-8 bg-pink-200" />
         <div className="text-center">
           <p className="text-lg font-bold text-emerald-500">{uniqueAuthors}</p>
-          <p className="text-[10px] text-gray-500">Mamans</p>
+          <p className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500">Mamans</p>
         </div>
       </div>
 
@@ -374,7 +374,7 @@ export default function CommunityContent() {
           className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
             tab === "week"
               ? "bg-pink-400 text-white"
-              : "bg-gray-100 text-gray-600"
+              : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
           }`}
         >
           Semaine {currentWeek}
@@ -384,7 +384,7 @@ export default function CommunityContent() {
           className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
             tab === "all"
               ? "bg-pink-400 text-white"
-              : "bg-gray-100 text-gray-600"
+              : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
           }`}
         >
           Toutes
@@ -403,7 +403,7 @@ export default function CommunityContent() {
               className={`flex-shrink-0 flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
                 active
                   ? "bg-pink-400 text-white border-pink-400"
-                  : "bg-white text-gray-600 border-gray-200"
+                  : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700"
               }`}
             >
               {emoji} {label}
@@ -414,9 +414,9 @@ export default function CommunityContent() {
 
       {/* Error state */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-center space-y-2">
+        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-2xl p-4 text-center space-y-2">
           <AlertCircle className="w-6 h-6 text-red-400 mx-auto" />
-          <p className="text-sm text-red-600">{error}</p>
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
           <button
             onClick={handleRefresh}
             className="text-sm text-pink-500 font-medium hover:underline"
@@ -437,7 +437,7 @@ export default function CommunityContent() {
       <div className="space-y-3">
         {!loading && !error && filteredPosts.length === 0 && (
           <div className="text-center py-10 space-y-2">
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-400 dark:text-gray-500 text-sm">
               Aucun post pour l&apos;instant.
             </p>
             {isAuthenticated && (
@@ -463,7 +463,7 @@ export default function CommunityContent() {
               className={`rounded-2xl p-4 border ${color} space-y-2`}
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-gray-700">
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                   {post.author_name}
                 </span>
                 <div className="flex items-center gap-2">
@@ -472,15 +472,15 @@ export default function CommunityContent() {
                   >
                     {typeEmoji} {typeLabel}
                   </span>
-                  <span className="text-[10px] text-gray-400">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500">
                     S{post.week}
                   </span>
-                  <span className="text-[10px] text-gray-400">
+                  <span className="text-[10px] text-gray-400 dark:text-gray-500">
                     {timeAgo(post.created_at)}
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-gray-700 leading-relaxed">
+              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
                 {post.content}
               </p>
               <div className="flex items-center gap-2 pt-1">
@@ -494,8 +494,8 @@ export default function CommunityContent() {
                       disabled={!isAuthenticated}
                       className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs transition-colors ${
                         reacted
-                          ? "bg-pink-200 text-pink-700"
-                          : "bg-white/60 text-gray-600 hover:bg-pink-50"
+                          ? "bg-pink-200 text-pink-700 dark:text-pink-300"
+                          : "bg-white/60 dark:bg-gray-800/60 text-gray-600 dark:text-gray-300 hover:bg-pink-50 dark:hover:bg-pink-950/30"
                       } ${!isAuthenticated ? "cursor-default" : ""}`}
                     >
                       {reactionEmoji} {count > 0 && <span>{count}</span>}
@@ -508,8 +508,8 @@ export default function CommunityContent() {
                     disabled={isReported}
                     className={`ml-auto transition-colors ${
                       isReported
-                        ? "text-gray-300 cursor-default"
-                        : "text-gray-300 hover:text-red-400"
+                        ? "text-gray-300 dark:text-gray-500 cursor-default"
+                        : "text-gray-300 dark:text-gray-500 hover:text-red-400"
                     }`}
                     title={isReported ? "Deja signale" : "Signaler"}
                   >
@@ -527,7 +527,7 @@ export default function CommunityContent() {
         <button
           onClick={handleLoadMore}
           disabled={loadingMore}
-          className="w-full flex items-center justify-center gap-2 py-3 text-sm text-pink-500 font-medium hover:bg-pink-50 rounded-xl transition-colors disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 py-3 text-sm text-pink-500 font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 rounded-xl transition-colors disabled:opacity-50"
         >
           {loadingMore ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -561,7 +561,7 @@ export default function CommunityContent() {
                   Partager avec la communaute
                 </h2>
                 <button onClick={() => setShowModal(false)}>
-                  <X className="w-5 h-5 text-gray-400" />
+                  <X className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 </button>
               </div>
 
@@ -575,12 +575,12 @@ export default function CommunityContent() {
                       onClick={() => setNewType(type)}
                       className={`flex flex-col items-center gap-1 p-2 rounded-xl border-2 text-center transition-all ${
                         selected
-                          ? "border-pink-400 bg-pink-50"
-                          : "border-gray-200"
+                          ? "border-pink-400 bg-pink-50 dark:bg-pink-950/30"
+                          : "border-gray-200 dark:border-gray-700"
                       }`}
                     >
                       <span className="text-lg">{emoji}</span>
-                      <span className="text-[10px] font-medium text-gray-600">
+                      <span className="text-[10px] font-medium text-gray-600 dark:text-gray-300">
                         {label}
                       </span>
                     </button>
@@ -594,14 +594,14 @@ export default function CommunityContent() {
                   onChange={(e) => setNewContent(e.target.value.slice(0, 500))}
                   placeholder="Partagez votre experience, question ou conseil..."
                   rows={4}
-                  className="w-full px-3 py-2.5 border border-pink-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none dark:bg-[#0f0f1a] dark:border-gray-700 dark:text-gray-100"
+                  className="w-full px-3 py-2.5 border border-pink-200 dark:border-pink-800/30 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none dark:bg-[#0f0f1a] dark:border-gray-700 dark:text-gray-100"
                 />
-                <p className="text-xs text-gray-400 text-right mt-1">
+                <p className="text-xs text-gray-400 dark:text-gray-500 text-right mt-1">
                   {newContent.length}/500
                 </p>
               </div>
 
-              <div className="bg-pink-50 dark:bg-pink-950/30 rounded-xl p-3 text-xs text-gray-600 dark:text-gray-400 flex items-center gap-2">
+              <div className="bg-pink-50 dark:bg-pink-950/30 rounded-xl p-3 text-xs text-gray-600 dark:text-gray-400 dark:text-gray-500 flex items-center gap-2">
                 <Heart className="w-4 h-4 text-pink-400 flex-shrink-0" />
                 <span>
                   Publie en tant que : <strong>{myPseudo}</strong>
@@ -611,7 +611,7 @@ export default function CommunityContent() {
               <button
                 onClick={handleSubmit}
                 disabled={!newContent.trim() || submitting}
-                className="w-full bg-pink-400 text-white py-3 rounded-xl font-medium hover:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full bg-pink-400 text-white py-3 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                 Publier
@@ -642,13 +642,13 @@ export default function CommunityContent() {
               {reportSubmitted ? (
                 <>
                   <div className="text-center space-y-3 py-4">
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto">
                       <Flag className="w-5 h-5 text-green-600" />
                     </div>
                     <h3 className="font-bold text-[#3d2b2b] dark:text-gray-100">
                       Merci pour votre signalement
                     </h3>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">
                       Notre equipe examinera ce post dans les plus brefs delais.
                     </p>
                   </div>
@@ -680,8 +680,8 @@ export default function CommunityContent() {
                         onClick={() => setReportReason(reason)}
                         className={`w-full text-left px-4 py-2.5 rounded-xl text-sm border transition-colors ${
                           reportReason === reason
-                            ? "border-red-400 bg-red-50 text-red-700"
-                            : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                            ? "border-red-400 bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300"
+                            : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800"
                         }`}
                       >
                         {reason}
@@ -691,7 +691,7 @@ export default function CommunityContent() {
                   <div className="flex gap-2">
                     <button
                       onClick={closeReportModal}
-                      className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 border border-gray-200"
+                      className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
                     >
                       Annuler
                     </button>

@@ -42,15 +42,15 @@ export default function TrackingPage() {
   return (
     <div className="max-w-lg mx-auto px-4 py-6">
       {/* Tabs */}
-      <div className="flex gap-1 bg-pink-50 rounded-2xl p-1 mb-4 overflow-x-auto scrollbar-hide">
+      <div className="flex gap-1 bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-1 mb-4 overflow-x-auto scrollbar-hide">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-shrink-0 flex-1 py-1.5 text-xs font-medium rounded-xl transition-all whitespace-nowrap ${
               activeTab === tab.id
-                ? "bg-white text-pink-600 shadow-sm"
-                : "text-gray-500 hover:text-pink-400"
+                ? "bg-white dark:bg-gray-900 text-pink-600 shadow-sm"
+                : "text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-pink-400"
             }`}
           >
             {tab.label}
@@ -61,13 +61,13 @@ export default function TrackingPage() {
       {/* Contractions shortcut */}
       <button
         onClick={() => router.push("/contractions")}
-        className="w-full flex items-center gap-3 bg-purple-50 border border-purple-100 rounded-2xl px-4 py-3 mb-5 hover:bg-purple-100 transition-colors"
+        className="w-full flex items-center gap-3 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/30 rounded-2xl px-4 py-3 mb-5 hover:bg-purple-100 dark:hover:bg-purple-900/30 dark:bg-purple-900/30 transition-colors"
       >
         <div className="w-9 h-9 bg-purple-400 rounded-xl flex items-center justify-center flex-shrink-0">
           <Timer className="w-5 h-5 text-white" />
         </div>
         <div className="text-left">
-          <p className="text-sm font-semibold text-purple-700">Contractions</p>
+          <p className="text-sm font-semibold text-purple-700 dark:text-purple-300">Contractions</p>
           <p className="text-xs text-purple-400">Chronomètre & suivi des contractions</p>
         </div>
         <span className="ml-auto text-purple-300 text-lg">›</span>

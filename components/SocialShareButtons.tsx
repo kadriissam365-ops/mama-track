@@ -211,7 +211,7 @@ export default function SocialShareButtons({ content, onImageGenerate, compact =
       key: "download",
       label: "Telecharger",
       icon: <Download className="w-4 h-4" />,
-      color: "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600",
+      color: "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600",
       onClick: handleDownload,
     },
   ];
@@ -256,12 +256,12 @@ export default function SocialShareButtons({ content, onImageGenerate, compact =
           exit={{ opacity: 0 }}
           className={`text-center text-xs font-medium py-2 rounded-xl ${
             status === "copied"
-              ? "bg-green-50 text-green-600"
+              ? "bg-green-50 dark:bg-green-950/30 text-green-600"
               : status === "done"
-              ? "bg-blue-50 text-blue-600"
+              ? "bg-blue-50 dark:bg-blue-950/30 text-blue-600"
               : status === "error"
-              ? "bg-red-50 text-red-600"
-              : "bg-gray-50 text-gray-500"
+              ? "bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400"
+              : "bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500"
           }`}
         >
           {status === "copied" && <Check className="w-3 h-3 inline mr-1" />}

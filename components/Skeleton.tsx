@@ -9,7 +9,7 @@ interface SkeletonProps {
 export function Skeleton({ className = "" }: SkeletonProps) {
   return (
     <motion.div
-      className={`bg-gray-200 rounded-xl ${className}`}
+      className={`bg-gray-200 dark:bg-gray-700 rounded-xl ${className}`}
       animate={{ opacity: [0.5, 0.8, 0.5] }}
       transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
     />
@@ -18,7 +18,7 @@ export function Skeleton({ className = "" }: SkeletonProps) {
 
 export function CardSkeleton() {
   return (
-    <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 space-y-3">
+    <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 space-y-3">
       <div className="flex items-center gap-3">
         <Skeleton className="w-10 h-10 rounded-full" />
         <Skeleton className="h-4 w-24" />
@@ -33,7 +33,7 @@ export function DashboardSkeleton() {
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
       {/* Hero Card Skeleton */}
-      <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-3xl p-6 shadow-sm border border-pink-100">
+      <div className="bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/20 rounded-3xl p-6 shadow-sm border border-pink-100 dark:border-pink-900/30">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <Skeleton className="h-3 w-24" />
@@ -68,7 +68,7 @@ export function ListSkeleton({ count = 3 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="bg-white rounded-2xl px-4 py-3 shadow-sm border border-pink-100 flex items-center gap-3"
+          className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-3 shadow-sm border border-pink-100 dark:border-pink-900/30 flex items-center gap-3"
         >
           <Skeleton className="w-8 h-8 rounded-full" />
           <div className="flex-1 space-y-2">
@@ -91,7 +91,7 @@ export function TrackingSkeleton() {
       <Skeleton className="h-12 w-full rounded-2xl" />
       
       {/* Chart */}
-      <div className="bg-white rounded-3xl p-4 shadow-sm border border-pink-100">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">
         <Skeleton className="h-4 w-32 mb-4" />
         <Skeleton className="h-40 w-full rounded-xl" />
       </div>
@@ -104,7 +104,7 @@ export function TrackingSkeleton() {
 
 export function PhotosSkeleton() {
   return (
-    <div className="max-w-lg mx-auto" style={{ background: "#fdfaf6", minHeight: "100vh" }}>
+    <div className="max-w-lg mx-auto min-h-screen bg-background">
       <div className="px-4 py-3">
         <div className="flex items-center gap-3 mb-6">
           <Skeleton className="w-9 h-9 rounded-xl" />
@@ -131,7 +131,7 @@ export function PhotosSkeleton() {
 
 export function GalerieSkeleton() {
   return (
-    <div className="max-w-lg mx-auto" style={{ background: "#fdfaf6", minHeight: "100vh" }}>
+    <div className="max-w-lg mx-auto min-h-screen bg-background">
       <div className="px-4 py-3">
         <div className="flex items-center gap-3 mb-6">
           <Skeleton className="w-9 h-9 rounded-xl" />
@@ -152,7 +152,7 @@ export function GalerieSkeleton() {
 
 export function NotesSkeleton() {
   return (
-    <div className="max-w-lg mx-auto" style={{ background: "#fdfaf6", minHeight: "100vh" }}>
+    <div className="max-w-lg mx-auto min-h-screen bg-background">
       <div className="px-4 py-3">
         <div className="flex items-center gap-3 mb-6">
           <Skeleton className="w-9 h-9 rounded-xl" />
@@ -165,7 +165,7 @@ export function NotesSkeleton() {
         <Skeleton className="h-10 w-full rounded-2xl mb-4" />
         <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-2">
+            <div key={i} className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 space-y-2">
               <Skeleton className="h-4 w-3/4" />
               <Skeleton className="h-3 w-full" />
               <Skeleton className="h-3 w-2/3" />
@@ -199,7 +199,7 @@ export function CommunitySkeleton() {
       </div>
       <div className="space-y-3">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="rounded-2xl p-4 border border-pink-100 space-y-2">
+          <div key={i} className="rounded-2xl p-4 border border-pink-100 dark:border-pink-900/30 space-y-2">
             <div className="flex items-center justify-between">
               <Skeleton className="h-3 w-32" />
               <Skeleton className="h-3 w-16" />
@@ -228,7 +228,7 @@ export function ChecklistSkeleton() {
       </div>
       
       {/* Progress */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30">
         <div className="flex items-center justify-between mb-3">
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-8 w-12" />
@@ -238,7 +238,7 @@ export function ChecklistSkeleton() {
       
       {/* Categories */}
       {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="rounded-3xl border border-pink-100 overflow-hidden">
+        <div key={i} className="rounded-3xl border border-pink-100 dark:border-pink-900/30 overflow-hidden">
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-3 flex-1">
               <div className="flex-1 space-y-2">

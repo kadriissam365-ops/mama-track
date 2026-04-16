@@ -38,15 +38,15 @@ export default function GalerieContent() {
   }, [loadPhotos]);
 
   return (
-    <div className="max-w-lg mx-auto" style={{ background: "#fdfaf6", minHeight: "100vh" }}>
+    <div className="max-w-lg mx-auto min-h-screen bg-background">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-violet-100 px-4 py-3">
+      <div className="sticky top-0 z-10 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-violet-100 px-4 py-3">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 rounded-xl hover:bg-violet-50">
-            <ChevronLeft className="w-5 h-5 text-gray-600" />
+          <button onClick={() => router.back()} className="p-2 rounded-xl hover:bg-violet-50 dark:bg-violet-950/30">
+            <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
           <div>
-            <h1 className="text-lg font-bold text-gray-800">Galerie</h1>
+            <h1 className="text-lg font-bold text-gray-800 dark:text-gray-200">Galerie</h1>
             <p className="text-xs text-violet-500">
               {photos.length} photo{photos.length !== 1 ? "s" : ""} -- retrospective
             </p>
@@ -62,7 +62,7 @@ export default function GalerieContent() {
         ) : photos.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-5xl mb-4">🎞️</p>
-            <p className="text-gray-500 text-sm">Aucune photo pour l&apos;instant</p>
+            <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">Aucune photo pour l&apos;instant</p>
             <button
               onClick={() => router.push("/journal/photos")}
               className="mt-4 text-sm text-violet-500 underline"
@@ -72,7 +72,7 @@ export default function GalerieContent() {
           </div>
         ) : (
           <>
-            <p className="text-xs text-gray-400 mb-4 text-center">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mb-4 text-center">
               Ton evolution de la semaine {photos[0]?.week} a la semaine{" "}
               {photos[photos.length - 1]?.week}
             </p>
@@ -84,7 +84,7 @@ export default function GalerieContent() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: idx * 0.04 }}
                   onClick={() => setModal(photo)}
-                  className="relative bg-white rounded-2xl overflow-hidden shadow-sm border border-violet-100 active:scale-95 transition-transform"
+                  className="relative bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm border border-violet-100 active:scale-95 transition-transform"
                 >
                   <div className="relative" style={{ aspectRatio: "1/1" }}>
                     <Image
@@ -100,7 +100,7 @@ export default function GalerieContent() {
                   </div>
                   {photo.note && (
                     <div className="px-2 py-1.5">
-                      <p className="text-[10px] text-gray-500 line-clamp-2">{photo.note}</p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500 line-clamp-2">{photo.note}</p>
                     </div>
                   )}
                 </motion.button>
@@ -127,11 +127,11 @@ export default function GalerieContent() {
               className="relative max-w-sm w-full mx-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-white p-4 rounded-2xl shadow-2xl">
+              <div className="bg-white dark:bg-gray-900 p-4 rounded-2xl shadow-2xl">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="font-semibold text-gray-700">Semaine {modal.week}</span>
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">Semaine {modal.week}</span>
                   <button onClick={() => setModal(null)}>
-                    <X className="w-5 h-5 text-gray-500" />
+                    <X className="w-5 h-5 text-gray-500 dark:text-gray-400 dark:text-gray-500" />
                   </button>
                 </div>
                 <div className="relative w-full" style={{ aspectRatio: "3/4" }}>
@@ -144,8 +144,8 @@ export default function GalerieContent() {
                     priority
                   />
                 </div>
-                {modal.note && <p className="mt-3 text-sm text-gray-600">{modal.note}</p>}
-                <p className="mt-2 text-xs text-gray-300 text-right">
+                {modal.note && <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">{modal.note}</p>}
+                <p className="mt-2 text-xs text-gray-400 dark:text-gray-500 text-right">
                   {new Date(modal.captured_at).toLocaleDateString("fr-FR")}
                 </p>
               </div>

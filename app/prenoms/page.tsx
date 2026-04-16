@@ -8,9 +8,9 @@ import { prenoms, type Prenom } from "@/lib/prenoms-data";
 const STORAGE_KEY = "prenom-favoris";
 
 const GENRE_CONFIG = {
-  F: { label: "Fille 💗", border: "border-pink-300", bg: "bg-pink-50", badge: "bg-pink-100 text-pink-600", dot: "bg-pink-400" },
-  M: { label: "Garçon 💙", border: "border-blue-300", bg: "bg-blue-50", badge: "bg-blue-100 text-blue-600", dot: "bg-blue-400" },
-  mixte: { label: "Mixte 💛", border: "border-yellow-300", bg: "bg-yellow-50", badge: "bg-yellow-100 text-yellow-600", dot: "bg-yellow-400" },
+  F: { label: "Fille 💗", border: "border-pink-300", bg: "bg-pink-50 dark:bg-pink-950/30", badge: "bg-pink-100 dark:bg-pink-900/30 text-pink-600", dot: "bg-pink-400" },
+  M: { label: "Garçon 💙", border: "border-blue-300", bg: "bg-blue-50 dark:bg-blue-950/30", badge: "bg-blue-100 dark:bg-blue-900/30 text-blue-600", dot: "bg-blue-400" },
+  mixte: { label: "Mixte 💛", border: "border-yellow-300", bg: "bg-yellow-50 dark:bg-yellow-950/30", badge: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600", dot: "bg-yellow-400" },
 };
 
 const ORIGINES = Array.from(new Set(prenoms.map((p) => p.origine))).sort();
@@ -31,11 +31,11 @@ function PrenomsCard({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className={`bg-white rounded-3xl p-4 shadow-sm border-l-4 ${config.border} border border-gray-100 flex flex-col gap-2`}
+      className={`bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border-l-4 ${config.border} border border-gray-100 dark:border-gray-800 flex flex-col gap-2`}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <h3 className="text-xl font-bold text-[#3d2b2b] truncate">{prenom.nom}</h3>
+          <h3 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 truncate">{prenom.nom}</h3>
           <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full mt-1 ${config.badge}`}>
             {prenom.genre === "F" ? "Fille" : prenom.genre === "M" ? "Garçon" : "Mixte"}
           </span>
@@ -43,22 +43,22 @@ function PrenomsCard({
         <button
           onClick={() => onToggle(prenom.nom)}
           className={`w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center transition-all ${
-            isFavori ? "bg-pink-100 text-pink-500" : "bg-gray-100 text-gray-400 hover:bg-pink-50 hover:text-pink-400"
+            isFavori ? "bg-pink-100 dark:bg-pink-900/30 text-pink-500" : "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 hover:text-pink-400"
           }`}
         >
           <Heart className={`w-4 h-4 ${isFavori ? "fill-pink-400" : ""}`} />
         </button>
       </div>
-      <p className="text-xs text-gray-500 font-medium">{prenom.origine}</p>
-      <p className="text-xs text-gray-400 leading-relaxed line-clamp-2">{prenom.signification}</p>
+      <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 font-medium">{prenom.origine}</p>
+      <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed line-clamp-2">{prenom.signification}</p>
       <div className="flex items-center gap-1 mt-1">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className={`w-1.5 h-1.5 rounded-full ${i <= prenom.popularite ? config.dot : "bg-gray-200"}`}
+            className={`w-1.5 h-1.5 rounded-full ${i <= prenom.popularite ? config.dot : "bg-gray-200 dark:bg-gray-700"}`}
           />
         ))}
-        <span className="text-xs text-gray-300 ml-1">popularité</span>
+        <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">popularité</span>
       </div>
     </motion.div>
   );
@@ -114,12 +114,12 @@ export default function PrenomsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#3d2b2b]">💛 Prénoms</h1>
-          <p className="text-sm text-gray-400">{prenoms.length} prénoms disponibles</p>
+          <h1 className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">💛 Prénoms</h1>
+          <p className="text-sm text-gray-400 dark:text-gray-500">{prenoms.length} prénoms disponibles</p>
         </div>
         <button
           onClick={handleSurprise}
-          className="flex items-center gap-2 bg-yellow-50 border border-yellow-200 text-yellow-700 rounded-2xl px-3 py-2 text-sm font-medium hover:bg-yellow-100 transition-colors"
+          className="flex items-center gap-2 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800/30 text-yellow-700 dark:text-yellow-300 rounded-2xl px-3 py-2 text-sm font-medium hover:bg-yellow-100 dark:hover:bg-yellow-900/30 dark:bg-yellow-900/30 transition-colors"
         >
           <Shuffle className="w-4 h-4" />
           Surprise
@@ -127,11 +127,11 @@ export default function PrenomsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex bg-gray-100 rounded-2xl p-1">
+      <div className="flex bg-gray-100 dark:bg-gray-800 rounded-2xl p-1">
         <button
           onClick={() => setTab("tous")}
           className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${
-            tab === "tous" ? "bg-white shadow-sm text-[#3d2b2b]" : "text-gray-500"
+            tab === "tous" ? "bg-white dark:bg-gray-900 shadow-sm text-[#3d2b2b] dark:text-gray-100" : "text-gray-500 dark:text-gray-400 dark:text-gray-500"
           }`}
         >
           Tous ({filtered.length})
@@ -139,7 +139,7 @@ export default function PrenomsPage() {
         <button
           onClick={() => setTab("favoris")}
           className={`flex-1 py-2 rounded-xl text-sm font-medium transition-all ${
-            tab === "favoris" ? "bg-white shadow-sm text-[#3d2b2b]" : "text-gray-500"
+            tab === "favoris" ? "bg-white dark:bg-gray-900 shadow-sm text-[#3d2b2b] dark:text-gray-100" : "text-gray-500 dark:text-gray-400 dark:text-gray-500"
           }`}
         >
           ❤️ Favoris ({favoris.length})
@@ -150,17 +150,17 @@ export default function PrenomsPage() {
         <>
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
             <input
               type="text"
               placeholder="Rechercher un prénom..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
+              className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
             />
             {search && (
               <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2">
-                <X className="w-4 h-4 text-gray-400" />
+                <X className="w-4 h-4 text-gray-400 dark:text-gray-500" />
               </button>
             )}
           </div>
@@ -174,7 +174,7 @@ export default function PrenomsPage() {
                 className={`px-3 py-1.5 rounded-2xl text-sm font-medium transition-all ${
                   genreFilter === g
                     ? "bg-[#3d2b2b] text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:bg-gray-700"
                 }`}
               >
                 {g === "" ? "Tous" : g === "M" ? "Garçon 💙" : g === "F" ? "Fille 💗" : "Mixte 💛"}
@@ -186,7 +186,7 @@ export default function PrenomsPage() {
           <select
             value={origineFilter}
             onChange={(e) => setOrigineFilter(e.target.value)}
-            className="w-full bg-white border border-gray-100 rounded-2xl px-4 py-2.5 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="w-full bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl px-4 py-2.5 text-sm text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-200"
           >
             <option value="">Toutes les origines</option>
             {ORIGINES.map((o) => (
@@ -205,7 +205,7 @@ export default function PrenomsPage() {
                 className={`w-7 h-7 rounded-lg text-xs font-medium transition-all ${
                   lettreFilter === l
                     ? "bg-pink-400 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:bg-gray-700"
                 }`}
               >
                 {l}
@@ -228,7 +228,7 @@ export default function PrenomsPage() {
           </div>
 
           {filtered.length === 0 && (
-            <div className="text-center py-12 text-gray-400">
+            <div className="text-center py-12 text-gray-400 dark:text-gray-500">
               <p className="text-4xl mb-3">🔍</p>
               <p className="text-sm">Aucun prénom trouvé</p>
             </div>
@@ -239,7 +239,7 @@ export default function PrenomsPage() {
       {tab === "favoris" && (
         <>
           {favorisData.length === 0 ? (
-            <div className="text-center py-16 text-gray-400">
+            <div className="text-center py-16 text-gray-400 dark:text-gray-500">
               <p className="text-5xl mb-4">💔</p>
               <p className="text-sm font-medium">Aucun favori pour l'instant</p>
               <p className="text-xs mt-1">Appuie sur ❤️ pour sauvegarder un prénom</p>
@@ -276,34 +276,34 @@ export default function PrenomsPage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className={`bg-white rounded-3xl p-8 max-w-xs w-full shadow-2xl border-t-4 ${GENRE_CONFIG[surprisePrenom.genre].border}`}
+              className={`bg-white dark:bg-gray-900 rounded-3xl p-8 max-w-xs w-full shadow-2xl border-t-4 ${GENRE_CONFIG[surprisePrenom.genre].border}`}
             >
               <p className="text-center text-4xl mb-2">🎲</p>
-              <h2 className="text-3xl font-bold text-[#3d2b2b] text-center mb-1">{surprisePrenom.nom}</h2>
+              <h2 className="text-3xl font-bold text-[#3d2b2b] dark:text-gray-100 text-center mb-1">{surprisePrenom.nom}</h2>
               <p className={`text-center text-sm font-medium mb-4 ${GENRE_CONFIG[surprisePrenom.genre].badge.split(" ")[1]}`}>
                 {surprisePrenom.origine}
               </p>
-              <p className="text-sm text-gray-500 text-center mb-6">{surprisePrenom.signification}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 text-center mb-6">{surprisePrenom.signification}</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => {
                     toggleFavori(surprisePrenom.nom);
                     setSurprisePrenom(null);
                   }}
-                  className="flex-1 bg-pink-100 text-pink-600 rounded-2xl py-3 text-sm font-medium hover:bg-pink-200 transition-colors"
+                  className="flex-1 bg-pink-100 dark:bg-pink-900/30 text-pink-600 rounded-2xl py-3 text-sm font-medium hover:bg-pink-200 transition-colors"
                 >
                   ❤️ Ajouter aux favoris
                 </button>
                 <button
                   onClick={handleSurprise}
-                  className="flex-1 bg-yellow-100 text-yellow-700 rounded-2xl py-3 text-sm font-medium hover:bg-yellow-200 transition-colors"
+                  className="flex-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-2xl py-3 text-sm font-medium hover:bg-yellow-200 transition-colors"
                 >
                   🎲 Autre
                 </button>
               </div>
               <button
                 onClick={() => setSurprisePrenom(null)}
-                className="w-full mt-3 text-gray-400 text-sm py-2"
+                className="w-full mt-3 text-gray-400 dark:text-gray-500 text-sm py-2"
               >
                 Fermer
               </button>

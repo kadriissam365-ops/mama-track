@@ -68,12 +68,12 @@ const SECTIONS = [
 
 function BooleanField({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className="flex items-center justify-between py-2.5 border-b border-gray-100 last:border-0">
-      <span className="text-sm text-gray-700">{label}</span>
+    <div className="flex items-center justify-between py-2.5 border-b border-gray-100 dark:border-gray-800 last:border-0">
+      <span className="text-sm text-gray-700 dark:text-gray-300">{label}</span>
       <button
         onClick={() => onChange(!value)}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-          value ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-400"
+          value ? "bg-green-100 dark:bg-green-900/30 text-green-600" : "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500"
         }`}
       >
         {value ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
@@ -90,15 +90,15 @@ function RadioField({ label, value, options, onChange }: {
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="py-2.5 border-b border-gray-100 last:border-0">
-      <p className="text-sm text-gray-700 mb-2">{label}</p>
+    <div className="py-2.5 border-b border-gray-100 dark:border-gray-800 last:border-0">
+      <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{label}</p>
       <div className="flex gap-2 flex-wrap">
         {options.map(opt => (
           <button
             key={opt.value}
             onClick={() => onChange(opt.value)}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              value === opt.value ? "bg-pink-400 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+              value === opt.value ? "bg-pink-400 text-white" : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:bg-gray-700"
             }`}
           >
             {opt.label}
@@ -263,8 +263,8 @@ export default function NaissancePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#3d2b2b]">🌸 Projet de naissance</h1>
-          <p className="text-sm text-gray-500">Prépare et partage tes souhaits</p>
+          <h1 className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">🌸 Projet de naissance</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500">Prépare et partage tes souhaits</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -273,7 +273,7 @@ export default function NaissancePage() {
           disabled={loading}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all shadow-sm ${
             success
-              ? "bg-green-100 text-green-600"
+              ? "bg-green-100 dark:bg-green-900/30 text-green-600"
               : "bg-gradient-to-r from-pink-400 to-purple-400 text-white"
           } disabled:opacity-60`}
         >
@@ -284,16 +284,16 @@ export default function NaissancePage() {
 
       {/* Sections */}
       {SECTIONS.map(section => (
-        <div key={section.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div key={section.id} className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
           <button
             onClick={() => toggleSection(section.id)}
-            className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50"
+            className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800"
           >
-            <h2 className="font-semibold text-[#3d2b2b] text-sm">{section.title}</h2>
+            <h2 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm">{section.title}</h2>
             {expandedSections.has(section.id) ? (
-              <ChevronUp className="w-4 h-4 text-gray-400" />
+              <ChevronUp className="w-4 h-4 text-gray-400 dark:text-gray-500" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-gray-400" />
+              <ChevronDown className="w-4 h-4 text-gray-400 dark:text-gray-500" />
             )}
           </button>
 
@@ -309,25 +309,25 @@ export default function NaissancePage() {
                   {section.id === 1 && (
                     <>
                       {(["mamanNom", "papaPartenaireNom", "maternite", "medecin"] as const).map((key, i) => (
-                        <div key={key} className="py-2.5 border-b border-gray-100 last:border-0">
-                          <label className="text-xs text-gray-500 block mb-1">
+                        <div key={key} className="py-2.5 border-b border-gray-100 dark:border-gray-800 last:border-0">
+                          <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">
                             {["Prénom de la maman", "Prénom du papa/partenaire", "Nom de la maternité", "Médecin/Sage-femme"][i]}
                           </label>
                           <input
                             type="text"
                             value={projet[key]}
                             onChange={e => update(key, e.target.value)}
-                            className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
+                            className="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
                           />
                         </div>
                       ))}
                       <div className="py-2.5">
-                        <label className="text-xs text-gray-500 block mb-1">Date prévue d&apos;accouchement</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Date prévue d&apos;accouchement</label>
                         <input
                           type="date"
                           value={projet.datePrevu}
                           onChange={e => update("datePrevu", e.target.value)}
-                          className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
+                          className="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
                         />
                       </div>
                     </>
@@ -335,12 +335,12 @@ export default function NaissancePage() {
 
                   {section.id === 2 && (
                     <>
-                      <div className="py-2.5 border-b border-gray-100">
-                        <label className="text-xs text-gray-500 block mb-1">Type de salle</label>
+                      <div className="py-2.5 border-b border-gray-100 dark:border-gray-800">
+                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Type de salle</label>
                         <select
                           value={projet.typeSalle}
                           onChange={e => update("typeSalle", e.target.value)}
-                          className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
+                          className="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
                         >
                           <option>Salle classique</option>
                           <option>Salle nature/baignoire</option>
@@ -350,22 +350,22 @@ export default function NaissancePage() {
                       <BooleanField label="Lumière tamisée" value={projet.lumiereTamisee} onChange={v => update("lumiereTamisee", v)} />
                       <BooleanField label="Musique de mon choix" value={projet.musique} onChange={v => update("musique", v)} />
                       {projet.musique && (
-                        <div className="py-2 border-b border-gray-100">
+                        <div className="py-2 border-b border-gray-100 dark:border-gray-800">
                           <input
                             placeholder="Playlist, genre musical..."
                             value={projet.musiqueDetails}
                             onChange={e => update("musiqueDetails", e.target.value)}
-                            className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
+                            className="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
                           />
                         </div>
                       )}
                       <div className="py-2.5">
-                        <label className="text-xs text-gray-500 block mb-1">Accompagnants souhaités</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Accompagnants souhaités</label>
                         <input
                           placeholder="ex: conjoint, ma mère..."
                           value={projet.accompagnants}
                           onChange={e => update("accompagnants", e.target.value)}
-                          className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
+                          className="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200"
                         />
                       </div>
                     </>
@@ -387,12 +387,12 @@ export default function NaissancePage() {
                       <BooleanField label="Bain / douche de relaxation" value={projet.bain} onChange={v => update("bain", v)} />
                       <BooleanField label="Massage par le/la partenaire" value={projet.massage} onChange={v => update("massage", v)} />
                       <div className="py-2.5">
-                        <label className="text-xs text-gray-500 block mb-1">Autres demandes</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Autres demandes</label>
                         <textarea
                           value={projet.autresDouleur}
                           onChange={e => update("autresDouleur", e.target.value)}
                           rows={2}
-                          className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
+                          className="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
                         />
                       </div>
                     </>
@@ -445,13 +445,13 @@ export default function NaissancePage() {
                       <BooleanField label="Peau à peau au bloc opératoire" value={projet.cesariennePeauPeau} onChange={v => update("cesariennePeauPeau", v)} />
                       <BooleanField label="Partenaire présent(e) au bloc" value={projet.cesariennePartenaire} onChange={v => update("cesariennePartenaire", v)} />
                       <div className="py-2.5">
-                        <label className="text-xs text-gray-500 block mb-1">Notes spécifiques</label>
+                        <label className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 block mb-1">Notes spécifiques</label>
                         <textarea
                           value={projet.cesarienneNotesLibres}
                           onChange={e => update("cesarienneNotesLibres", e.target.value)}
                           rows={2}
                           placeholder="Vos souhaits spécifiques..."
-                          className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
+                          className="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
                         />
                       </div>
                     </>
@@ -464,7 +464,7 @@ export default function NaissancePage() {
                         onChange={e => update("notes", e.target.value)}
                         rows={5}
                         placeholder="Toutes vos remarques, questions, souhaits particuliers..."
-                        className="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
+                        className="w-full px-3 py-1.5 border border-gray-200 dark:border-gray-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
                       />
                     </div>
                   )}
@@ -487,7 +487,7 @@ export default function NaissancePage() {
         {success ? "PDF téléchargé ! 🎉" : "Exporter le projet de naissance en PDF"}
       </motion.button>
 
-      <p className="text-center text-xs text-gray-400 pb-4">
+      <p className="text-center text-xs text-gray-400 dark:text-gray-500 pb-4">
         📄 Le PDF sera lisible par votre maternité et votre équipe médicale
       </p>
     </div>

@@ -103,7 +103,7 @@ export default function BabyIllustration({ week, compact = false }: BabyIllustra
         {/* Week label badge */}
         {!compact && (
           <motion.div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-0.5 border border-pink-200 shadow-sm"
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-0.5 border border-pink-200 dark:border-pink-800/30 shadow-sm"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}

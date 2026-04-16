@@ -73,7 +73,7 @@ export default function AppleHealthSync() {
       key: "weight" as ExportType,
       icon: Scale,
       color: "text-pink-600",
-      bg: "bg-pink-50 border-pink-200 hover:bg-pink-100",
+      bg: "bg-pink-50 dark:bg-pink-950/30 border-pink-200 dark:border-pink-800/30 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30",
       title: "Poids (CSV)",
       subtitle: `${store.weightEntries.length} mesure${store.weightEntries.length !== 1 ? "s" : ""}`,
       desc: "Compatible Apple Santé & Google Fit",
@@ -83,7 +83,7 @@ export default function AppleHealthSync() {
       key: "symptoms" as ExportType,
       icon: Activity,
       color: "text-violet-600",
-      bg: "bg-violet-50 border-violet-200 hover:bg-violet-100",
+      bg: "bg-violet-50 dark:bg-violet-950/30 border-violet-200 hover:bg-violet-100",
       title: "Symptômes (CSV)",
       subtitle: `${store.symptomEntries.length} entrée${store.symptomEntries.length !== 1 ? "s" : ""}`,
       desc: "Historique complet avec dates",
@@ -93,7 +93,7 @@ export default function AppleHealthSync() {
       key: "all" as ExportType,
       icon: Download,
       color: "text-emerald-600",
-      bg: "bg-emerald-50 border-emerald-200 hover:bg-emerald-100",
+      bg: "bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 hover:bg-emerald-100",
       title: "Export complet (JSON)",
       subtitle: "Toutes les données",
       desc: "Poids, symptômes, contractions, RDV...",
@@ -109,7 +109,7 @@ export default function AppleHealthSync() {
         </div>
         <div>
           <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Apple Santé / Google Fit</h3>
-          <p className="text-xs text-gray-400">Exportez et synchronisez vos données</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500">Exportez et synchronisez vos données</p>
         </div>
       </div>
 
@@ -126,7 +126,7 @@ export default function AppleHealthSync() {
             <Icon className={`w-5 h-5 ${color}`} />
             <div className="text-left flex-1">
               <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">{title}</p>
-              <p className="text-xs text-gray-400">{subtitle} · {desc}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{subtitle} · {desc}</p>
             </div>
           </button>
         ))}

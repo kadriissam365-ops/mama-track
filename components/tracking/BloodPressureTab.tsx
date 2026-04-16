@@ -20,11 +20,11 @@ interface BPEntry {
 
 function getBPZone(sys: number, dias: number): { label: string; color: string; bg: string } {
   if (sys >= 140 || dias >= 90) {
-    return { label: "Haute ⚠️", color: "text-red-600", bg: "bg-red-50 border-red-200" };
+    return { label: "Haute ⚠️", color: "text-red-600 dark:text-red-400", bg: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800/30" };
   } else if (sys >= 120 || dias >= 80) {
-    return { label: "Élevée", color: "text-orange-600", bg: "bg-orange-50 border-orange-200" };
+    return { label: "Élevée", color: "text-orange-600", bg: "bg-orange-50 dark:bg-orange-950/30 border-orange-200" };
   }
-  return { label: "Normale ✓", color: "text-green-600", bg: "bg-green-50 border-green-200" };
+  return { label: "Normale ✓", color: "text-green-600", bg: "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/30" };
 }
 
 // Simple SVG chart for blood pressure evolution
@@ -55,8 +55,8 @@ function BPChart({ entries }: { entries: BPEntry[] }) {
     .join(" ");
 
   return (
-    <div className="bg-white rounded-3xl p-4 shadow-sm border border-pink-100">
-      <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3 flex items-center gap-2">
+    <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">
+      <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3 flex items-center gap-2">
         <Heart className="w-4 h-4 text-pink-400" />
         Évolution (dernières {data.length} mesures)
       </h3>
@@ -217,7 +217,7 @@ export default function BloodPressureTab() {
         <div className={`rounded-2xl px-4 py-3 border ${latestZone.bg} flex items-center gap-3`}>
           <Heart className="w-5 h-5 flex-shrink-0 text-pink-400" />
           <div>
-            <p className="text-xs text-gray-500">Dernière mesure</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500">Dernière mesure</p>
             <p className={`text-sm font-semibold ${latestZone.color}`}>
               {entries[entries.length - 1].systolic}/{entries[entries.length - 1].diastolic} mmHg
               {" — "}{latestZone.label}
@@ -227,30 +227,30 @@ export default function BloodPressureTab() {
       )}
 
       {/* Form */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100">
-        <h3 className="font-semibold text-[#3d2b2b] mb-3">Ajouter une mesure</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30">
+        <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Ajouter une mesure</h3>
         {error && (
-          <p className="text-xs text-red-500 mb-2 bg-red-50 rounded-xl px-3 py-2">{error}</p>
+          <p className="text-xs text-red-500 mb-2 bg-red-50 dark:bg-red-950/30 rounded-xl px-3 py-2">{error}</p>
         )}
         <div className="grid grid-cols-2 gap-2 mb-2">
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">Systolique (mmHg)</label>
+            <label className="text-xs text-gray-400 dark:text-gray-500 mb-1 block">Systolique (mmHg)</label>
             <input
               type="number"
               placeholder="ex: 120"
               value={systolic}
               onChange={(e) => setSystolic(e.target.value)}
-              className="w-full border border-pink-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+              className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
             />
           </div>
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">Diastolique (mmHg)</label>
+            <label className="text-xs text-gray-400 dark:text-gray-500 mb-1 block">Diastolique (mmHg)</label>
             <input
               type="number"
               placeholder="ex: 80"
               value={diastolic}
               onChange={(e) => setDiastolic(e.target.value)}
-              className="w-full border border-pink-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+              className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
             />
           </div>
         </div>
@@ -260,7 +260,7 @@ export default function BloodPressureTab() {
             placeholder="Pouls (bpm, optionnel)"
             value={pulse}
             onChange={(e) => setPulse(e.target.value)}
-            className="flex-1 border border-pink-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+            className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
           />
         </div>
         <div className="flex gap-2">
@@ -269,12 +269,12 @@ export default function BloodPressureTab() {
             placeholder="Notes (optionnel)"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="flex-1 border border-pink-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+            className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
           />
           <button
             onClick={handleAdd}
             disabled={!systolic || !diastolic || saving}
-            className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-500 transition-colors"
+            className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
             aria-label="Ajouter la mesure"
           >
             <Plus className="w-4 h-4" />
@@ -283,17 +283,17 @@ export default function BloodPressureTab() {
 
         {/* BP zones legend */}
         <div className="mt-3 grid grid-cols-3 gap-1 text-xs">
-          <div className="bg-green-50 border border-green-200 rounded-xl px-2 py-1.5 text-center">
+          <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/30 rounded-xl px-2 py-1.5 text-center">
             <div className="font-semibold text-green-600">Normale</div>
-            <div className="text-gray-400">&lt;120 / &lt;80</div>
+            <div className="text-gray-400 dark:text-gray-500">&lt;120 / &lt;80</div>
           </div>
-          <div className="bg-orange-50 border border-orange-200 rounded-xl px-2 py-1.5 text-center">
+          <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 rounded-xl px-2 py-1.5 text-center">
             <div className="font-semibold text-orange-600">Élevée</div>
-            <div className="text-gray-400">120-139 / 80-89</div>
+            <div className="text-gray-400 dark:text-gray-500">120-139 / 80-89</div>
           </div>
-          <div className="bg-red-50 border border-red-200 rounded-xl px-2 py-1.5 text-center">
-            <div className="font-semibold text-red-600">Haute</div>
-            <div className="text-gray-400">≥140 / ≥90</div>
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-xl px-2 py-1.5 text-center">
+            <div className="font-semibold text-red-600 dark:text-red-400">Haute</div>
+            <div className="text-gray-400 dark:text-gray-500">≥140 / ≥90</div>
           </div>
         </div>
       </div>
@@ -303,7 +303,7 @@ export default function BloodPressureTab() {
 
       {/* History */}
       {loading ? (
-        <div className="text-center text-sm text-gray-400 py-4">Chargement…</div>
+        <div className="text-center text-sm text-gray-400 dark:text-gray-500 py-4">Chargement…</div>
       ) : (
         <div className="space-y-2">
           {[...entries].reverse().map((entry) => {
@@ -315,15 +315,15 @@ export default function BloodPressureTab() {
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-[#3d2b2b]">
+                    <span className="text-lg font-bold text-[#3d2b2b] dark:text-gray-100">
                       {entry.systolic}/{entry.diastolic}
-                      <span className="text-sm font-normal text-gray-400"> mmHg</span>
+                      <span className="text-sm font-normal text-gray-400 dark:text-gray-500"> mmHg</span>
                     </span>
                     {entry.pulse && (
-                      <span className="text-xs text-gray-400">💓 {entry.pulse} bpm</span>
+                      <span className="text-xs text-gray-400 dark:text-gray-500">💓 {entry.pulse} bpm</span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-gray-400 dark:text-gray-500">
                     {format(new Date(entry.measured_at), "d MMMM yyyy à HH:mm", { locale: fr })}
                     {entry.notes && ` — ${entry.notes}`}
                   </p>
@@ -331,7 +331,7 @@ export default function BloodPressureTab() {
                 </div>
                 <button
                   onClick={() => setConfirmDelete(entry.id)}
-                  className="text-gray-300 hover:text-red-400 transition-colors ml-2"
+                  className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors ml-2"
                   aria-label="Supprimer"
                 >
                   <Trash2 className="w-4 h-4" />

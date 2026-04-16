@@ -33,7 +33,7 @@ const EXERCISES: BreathingExercise[] = [
     holdAfter: 0,
     rounds: 8,
     color: "text-blue-600",
-    bgColor: "bg-blue-50",
+    bgColor: "bg-blue-50 dark:bg-blue-950/30",
     borderColor: "border-blue-200",
   },
   {
@@ -48,8 +48,8 @@ const EXERCISES: BreathingExercise[] = [
     holdAfter: 0,
     rounds: 10,
     color: "text-pink-600",
-    bgColor: "bg-pink-50",
-    borderColor: "border-pink-200",
+    bgColor: "bg-pink-50 dark:bg-pink-950/30",
+    borderColor: "border-pink-200 dark:border-pink-800/30",
   },
   {
     id: "energy",
@@ -63,7 +63,7 @@ const EXERCISES: BreathingExercise[] = [
     holdAfter: 0,
     rounds: 4,
     color: "text-orange-600",
-    bgColor: "bg-orange-50",
+    bgColor: "bg-orange-50 dark:bg-orange-950/30",
     borderColor: "border-orange-200",
   },
   {
@@ -78,7 +78,7 @@ const EXERCISES: BreathingExercise[] = [
     holdAfter: 0,
     rounds: 4,
     color: "text-indigo-600",
-    bgColor: "bg-indigo-50",
+    bgColor: "bg-indigo-50 dark:bg-indigo-950/30",
     borderColor: "border-indigo-200",
   },
   {
@@ -93,8 +93,8 @@ const EXERCISES: BreathingExercise[] = [
     holdAfter: 2,
     rounds: 6,
     color: "text-purple-600",
-    bgColor: "bg-purple-50",
-    borderColor: "border-purple-200",
+    bgColor: "bg-purple-50 dark:bg-purple-950/30",
+    borderColor: "border-purple-200 dark:border-purple-800/30",
   },
   {
     id: "sophrologie",
@@ -108,8 +108,8 @@ const EXERCISES: BreathingExercise[] = [
     holdAfter: 2,
     rounds: 10,
     color: "text-green-600",
-    bgColor: "bg-green-50",
-    borderColor: "border-green-200",
+    bgColor: "bg-green-50 dark:bg-green-950/30",
+    borderColor: "border-green-200 dark:border-green-800/30",
   },
 ];
 
@@ -235,11 +235,11 @@ export default function RespirationPage() {
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-[#3d2b2b] flex items-center gap-2">
+        <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
           <Wind className="w-6 h-6 text-blue-400" />
           Respiration
         </h1>
-        <p className="text-sm text-gray-400 mt-1">Exercices de respiration pour la grossesse et l&apos;accouchement</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Exercices de respiration pour la grossesse et l&apos;accouchement</p>
       </div>
 
       {/* Active exercise */}
@@ -249,16 +249,16 @@ export default function RespirationPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-white rounded-3xl p-6 shadow-sm border border-pink-100"
+            className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-pink-100 dark:border-pink-900/30"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{selectedExercise.emoji}</span>
-                <h2 className="font-semibold text-[#3d2b2b]">{selectedExercise.name}</h2>
+                <h2 className="font-semibold text-[#3d2b2b] dark:text-gray-100">{selectedExercise.name}</h2>
               </div>
               <button
                 onClick={() => { setSelectedExercise(null); setIsRunning(false); }}
-                className="text-gray-300 hover:text-gray-500 text-sm"
+                className="text-gray-300 hover:text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm"
               >
                 ✕
               </button>
@@ -308,7 +308,7 @@ export default function RespirationPage() {
                     {PHASE_LABELS[phase]}
                   </motion.p>
                   {phase !== "done" && (
-                    <p className="text-3xl font-bold text-[#3d2b2b] mt-1">
+                    <p className="text-3xl font-bold text-[#3d2b2b] dark:text-gray-100 mt-1">
                       {getPhaseMax() - phaseTime}
                     </p>
                   )}
@@ -316,7 +316,7 @@ export default function RespirationPage() {
                 </motion.div>
               </div>
 
-              <div className="flex items-center gap-4 mt-4 text-xs text-gray-400">
+              <div className="flex items-center gap-4 mt-4 text-xs text-gray-400 dark:text-gray-500">
                 <div className="flex items-center gap-1">
                   <Timer className="w-3 h-3" />
                   {Math.floor(totalSeconds / 60)}:{String(totalSeconds % 60).padStart(2, "0")}
@@ -331,10 +331,10 @@ export default function RespirationPage() {
             {/* Pattern display */}
             <div className="flex justify-center gap-3 mb-5">
               {[
-                { label: "Inspire", val: selectedExercise.inhale, color: "bg-blue-100 text-blue-600" },
-                ...(selectedExercise.hold > 0 ? [{ label: "Retient", val: selectedExercise.hold, color: "bg-purple-100 text-purple-600" }] : []),
-                { label: "Expire", val: selectedExercise.exhale, color: "bg-pink-100 text-pink-600" },
-                ...(selectedExercise.holdAfter > 0 ? [{ label: "Pause", val: selectedExercise.holdAfter, color: "bg-gray-100 text-gray-600" }] : []),
+                { label: "Inspire", val: selectedExercise.inhale, color: "bg-blue-100 dark:bg-blue-900/30 text-blue-600" },
+                ...(selectedExercise.hold > 0 ? [{ label: "Retient", val: selectedExercise.hold, color: "bg-purple-100 dark:bg-purple-900/30 text-purple-600" }] : []),
+                { label: "Expire", val: selectedExercise.exhale, color: "bg-pink-100 dark:bg-pink-900/30 text-pink-600" },
+                ...(selectedExercise.holdAfter > 0 ? [{ label: "Pause", val: selectedExercise.holdAfter, color: "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300" }] : []),
               ].map((step) => (
                 <div key={step.label} className={`${step.color} px-3 py-1.5 rounded-xl text-center`}>
                   <p className="text-lg font-bold">{step.val}s</p>
@@ -347,9 +347,9 @@ export default function RespirationPage() {
             <div className="flex gap-3 justify-center">
               <button
                 onClick={reset}
-                className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
+                className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:bg-gray-700 transition-colors"
               >
-                <RotateCcw className="w-5 h-5 text-gray-500" />
+                <RotateCcw className="w-5 h-5 text-gray-500 dark:text-gray-400 dark:text-gray-500" />
               </button>
               <button
                 onClick={togglePause}
@@ -369,7 +369,7 @@ export default function RespirationPage() {
 
       {/* Exercise list */}
       <div className="space-y-2">
-        <h2 className="font-semibold text-[#3d2b2b] text-sm">Choisir un exercice</h2>
+        <h2 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm">Choisir un exercice</h2>
         {EXERCISES.map((exercise) => (
           <motion.button
             key={exercise.id}
@@ -383,32 +383,32 @@ export default function RespirationPage() {
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{exercise.emoji}</span>
                 <div>
-                  <p className="text-sm font-semibold text-[#3d2b2b]">{exercise.name}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{exercise.when}</p>
+                  <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">{exercise.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 mt-0.5">{exercise.when}</p>
                   <div className="flex gap-1 mt-1">
-                    <span className="text-[10px] bg-white/60 px-1.5 py-0.5 rounded-full text-gray-500">
+                    <span className="text-[10px] bg-white/60 dark:bg-gray-800/60 px-1.5 py-0.5 rounded-full text-gray-500 dark:text-gray-400 dark:text-gray-500">
                       {exercise.inhale}-{exercise.hold}-{exercise.exhale}
                       {exercise.holdAfter > 0 ? `-${exercise.holdAfter}` : ""}
                     </span>
-                    <span className="text-[10px] bg-white/60 px-1.5 py-0.5 rounded-full text-gray-500">
+                    <span className="text-[10px] bg-white/60 dark:bg-gray-800/60 px-1.5 py-0.5 rounded-full text-gray-500 dark:text-gray-400 dark:text-gray-500">
                       {exercise.rounds} cycles
                     </span>
                   </div>
                 </div>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-300" />
+              <ChevronRight className="w-5 h-5 text-gray-300 dark:text-gray-500" />
             </div>
           </motion.button>
         ))}
       </div>
 
       {/* Tips */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-5 border border-blue-100">
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-5 border border-blue-100 dark:border-blue-900/30">
         <div className="flex items-start gap-3">
           <span className="text-2xl">💡</span>
           <div>
-            <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Conseils respiration</h3>
-            <ul className="text-sm text-gray-600 space-y-1.5 leading-relaxed">
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm mb-1">Conseils respiration</h3>
+            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1.5 leading-relaxed">
               <li>• <strong>Position :</strong> Assise confortable ou allongée sur le côté gauche</li>
               <li>• <strong>Nez :</strong> Inspirez toujours par le nez</li>
               <li>• <strong>Bouche :</strong> Expirez par la bouche, lèvres légèrement entrouvertes</li>

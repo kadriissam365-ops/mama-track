@@ -49,20 +49,20 @@ export default function ForgotPasswordPage() {
           >
             <Heart className="w-10 h-10 text-white fill-white" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-gray-800">MamaTrack</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">MamaTrack</h1>
         </div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-3xl shadow-xl p-8 border border-pink-100"
+          className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8 border border-pink-100 dark:border-pink-900/30"
         >
           {sent ? (
             <div className="text-center space-y-4">
               <CheckCircle className="w-16 h-16 text-green-400 mx-auto" />
-              <h2 className="text-xl font-semibold text-gray-800">Email envoyé !</h2>
-              <p className="text-gray-500 text-sm">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Email envoyé !</h2>
+              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm">
                 Un lien de réinitialisation a été envoyé à <strong>{email}</strong>. Vérifiez aussi vos spams.
               </p>
               <Link
@@ -75,10 +75,10 @@ export default function ForgotPasswordPage() {
             </div>
           ) : (
             <>
-              <h2 className="text-xl font-semibold text-gray-800 mb-2 text-center">
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2 text-center">
                 Mot de passe oublié ?
               </h2>
-              <p className="text-gray-500 text-sm text-center mb-6">
+              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-500 text-sm text-center mb-6">
                 Entrez votre email pour recevoir un lien de réinitialisation
               </p>
 
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-red-50 text-red-600 text-sm p-3 rounded-xl mb-4 text-center"
+                  className="bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-sm p-3 rounded-xl mb-4 text-center"
                 >
                   {error}
                 </motion.div>
@@ -94,16 +94,16 @@ export default function ForgotPasswordPage() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 mb-1.5">Email</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">Email</label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="votre@email.com"
                       required
-                      className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
+                      className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
@@ -123,7 +123,7 @@ export default function ForgotPasswordPage() {
 
               <Link
                 href="/auth/login"
-                className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-pink-500 mt-6"
+                className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-pink-500 mt-6"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Retour à la connexion

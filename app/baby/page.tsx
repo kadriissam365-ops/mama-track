@@ -44,10 +44,10 @@ export default function BabyPage() {
 
   const trimesterColor =
     weekData.trimester === 1
-      ? "bg-pink-100 text-pink-600"
+      ? "bg-pink-100 dark:bg-pink-900/30 text-pink-600"
       : weekData.trimester === 2
-      ? "bg-purple-100 text-purple-600"
-      : "bg-green-100 text-green-600";
+      ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600"
+      : "bg-green-100 dark:bg-green-900/30 text-green-600";
 
   const sizeDisplay =
     weekData.sizeMm >= 100
@@ -68,14 +68,14 @@ export default function BabyPage() {
           disabled={selectedWeek <= 1}
           aria-label="Semaine précédente"
           title="Semaine précédente"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-pink-200 text-pink-400 disabled:opacity-30 hover:bg-pink-50 transition-colors shadow-sm"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-900 border border-pink-200 dark:border-pink-800/30 text-pink-400 disabled:opacity-30 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors shadow-sm"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
 
         <div className="flex-1 text-center">
-          <p className="text-xs text-gray-400 uppercase tracking-wider">Semaine</p>
-          <p className="text-4xl font-bold text-[#3d2b2b]">{selectedWeek}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider">Semaine</p>
+          <p className="text-4xl font-bold text-[#3d2b2b] dark:text-gray-100">{selectedWeek}</p>
           <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${trimesterColor}`}>
             {trimesterLabel}
           </span>
@@ -86,16 +86,16 @@ export default function BabyPage() {
           disabled={selectedWeek >= 42}
           aria-label="Semaine suivante"
           title="Semaine suivante"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-pink-200 text-pink-400 disabled:opacity-30 hover:bg-pink-50 transition-colors shadow-sm"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-900 border border-pink-200 dark:border-pink-800/30 text-pink-400 disabled:opacity-30 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors shadow-sm"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
       {/* Illustration du bébé */}
-      <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 rounded-3xl border border-pink-100 shadow-sm overflow-hidden">
+      <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-pink-950/30 rounded-3xl border border-pink-100 dark:border-pink-900/30 shadow-sm overflow-hidden">
         <BabyVisual key={selectedWeek} week={selectedWeek} />
-        <p className="text-center text-xs text-gray-400 pb-3 -mt-2">
+        <p className="text-center text-xs text-gray-400 dark:text-gray-500 pb-3 -mt-2">
           Illustration de votre bébé
         </p>
       </div>
@@ -123,8 +123,8 @@ export default function BabyPage() {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="bg-white dark:bg-[#1a1a2e] rounded-3xl p-4 shadow-sm border border-pink-100">
-              <p className="text-xs text-gray-500 text-center mb-3">Partager sur vos réseaux</p>
+            <div className="bg-white dark:bg-[#1a1a2e] rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">
+              <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-3">Partager sur vos réseaux</p>
               <SocialShareButtons
                 compact
                 content={{
@@ -139,57 +139,56 @@ export default function BabyPage() {
 
       {/* Taille et poids */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100 text-center">
-          <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 text-center">
+          <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
             <Ruler className="w-6 h-6 text-pink-500" />
           </div>
-          <p className="text-2xl font-bold text-[#3d2b2b]">{sizeDisplay}</p>
-          <p className="text-xs text-gray-400 mt-1">Taille (CR)</p>
+          <p className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">{sizeDisplay}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Taille (CR)</p>
         </div>
 
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-purple-100 text-center">
-          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-purple-100 dark:border-purple-900/30 text-center">
+          <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
             <Weight className="w-6 h-6 text-purple-500" />
           </div>
-          <p className="text-2xl font-bold text-[#3d2b2b]">{weightDisplay}</p>
-          <p className="text-xs text-gray-400 mt-1">Poids estimé</p>
+          <p className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">{weightDisplay}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Poids estimé</p>
         </div>
       </div>
 
       {/* Développement bébé */}
       <div
-        className="bg-white rounded-3xl p-5 shadow-sm border border-green-100"
-        style={{ borderColor: "#d1fae5" }}
+        className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-green-100 dark:border-green-900/30"
       >
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xl">🧬</span>
-          <h3 className="font-semibold text-[#3d2b2b]">Développement de bébé</h3>
+          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Développement de bébé</h3>
         </div>
-        <p className="text-sm text-gray-600 leading-relaxed">{weekData.babyDevelopment}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.babyDevelopment}</p>
       </div>
 
       {/* Conseil maman */}
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100">
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30 rounded-3xl p-5 border border-pink-100 dark:border-pink-900/30">
         <div className="flex items-start gap-3">
           <span className="text-2xl">💝</span>
           <div>
-            <h3 className="font-semibold text-[#3d2b2b] text-sm mb-1">Conseil pour maman</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">{weekData.momTips}</p>
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm mb-1">Conseil pour maman</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.momTips}</p>
           </div>
         </div>
       </div>
 
       {/* Témoignages de la semaine */}
       {weekData.testimonials && weekData.testimonials.length > 0 && (
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-pink-100">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-xl">💬</span>
-            <h3 className="font-semibold text-[#3d2b2b]">Mamans à la semaine {selectedWeek}</h3>
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Mamans à la semaine {selectedWeek}</h3>
           </div>
           <div className="space-y-3">
             {weekData.testimonials.map((t: string, i: number) => (
-              <div key={i} className="bg-pink-50 rounded-2xl p-3 border border-pink-100">
-                <p className="text-sm text-gray-600 italic leading-relaxed">&quot;{t}&quot;</p>
+              <div key={i} className="bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-3 border border-pink-100 dark:border-pink-900/30">
+                <p className="text-sm text-gray-600 dark:text-gray-300 italic leading-relaxed">&quot;{t}&quot;</p>
               </div>
             ))}
           </div>
@@ -197,8 +196,8 @@ export default function BabyPage() {
       )}
 
       {/* Timeline trimestres */}
-      <div className="bg-white rounded-3xl p-4 shadow-sm border border-pink-100">
-        <h3 className="text-sm font-semibold text-[#3d2b2b] mb-3">Toutes les semaines</h3>
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">
+        <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Toutes les semaines</h3>
         <div className="flex gap-1 flex-wrap">
           {pregnancyData.map((d) => (
             <button
@@ -208,10 +207,10 @@ export default function BabyPage() {
                 d.week === selectedWeek
                   ? "bg-pink-400 text-white shadow-sm scale-110"
                   : d.trimester === 1
-                  ? "bg-pink-100 text-pink-600 hover:bg-pink-200"
+                  ? "bg-pink-100 dark:bg-pink-900/30 text-pink-600 hover:bg-pink-200"
                   : d.trimester === 2
-                  ? "bg-purple-100 text-purple-600 hover:bg-purple-200"
-                  : "bg-green-100 text-green-600 hover:bg-green-200"
+                  ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 hover:bg-purple-200"
+                  : "bg-green-100 dark:bg-green-900/30 text-green-600 hover:bg-green-200"
               }`}
             >
               {d.week}

@@ -16,29 +16,29 @@ interface EmptyStateProps {
 
 const variants = {
   default: {
-    iconBg: "bg-gray-100",
-    iconColor: "text-gray-400",
-    buttonBg: "bg-pink-400 hover:bg-pink-500",
+    iconBg: "bg-gray-100 dark:bg-gray-800",
+    iconColor: "text-gray-400 dark:text-gray-500",
+    buttonBg: "bg-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300",
   },
   pink: {
-    iconBg: "bg-pink-100",
+    iconBg: "bg-pink-100 dark:bg-pink-900/30",
     iconColor: "text-pink-400",
-    buttonBg: "bg-pink-400 hover:bg-pink-500",
+    buttonBg: "bg-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300",
   },
   purple: {
-    iconBg: "bg-purple-100",
+    iconBg: "bg-purple-100 dark:bg-purple-900/30",
     iconColor: "text-purple-400",
-    buttonBg: "bg-purple-400 hover:bg-purple-500",
+    buttonBg: "bg-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300",
   },
   green: {
-    iconBg: "bg-green-100",
+    iconBg: "bg-green-100 dark:bg-green-900/30",
     iconColor: "text-green-400",
-    buttonBg: "bg-green-400 hover:bg-green-500",
+    buttonBg: "bg-green-400 hover:bg-green-50 dark:bg-green-950/300",
   },
   blue: {
-    iconBg: "bg-blue-100",
+    iconBg: "bg-blue-100 dark:bg-blue-900/30",
     iconColor: "text-blue-400",
-    buttonBg: "bg-blue-400 hover:bg-blue-500",
+    buttonBg: "bg-blue-400 hover:bg-blue-50 dark:bg-blue-950/300",
   },
 };
 
@@ -55,7 +55,7 @@ export default function EmptyState({
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-white rounded-3xl p-8 text-center border border-pink-100 shadow-sm"
+      className="bg-white dark:bg-gray-900 rounded-3xl p-8 text-center border border-pink-100 dark:border-pink-900/30 shadow-sm"
     >
       <motion.div
         initial={{ scale: 0 }}
@@ -70,7 +70,7 @@ export default function EmptyState({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="font-semibold text-gray-800 mb-2"
+        className="font-semibold text-gray-800 dark:text-gray-200 mb-2"
       >
         {title}
       </motion.h3>
@@ -79,7 +79,7 @@ export default function EmptyState({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-sm text-gray-500 mb-4"
+        className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-500 mb-4"
       >
         {description}
       </motion.p>
@@ -130,7 +130,7 @@ export function NoAppointments({ onAction }: { onAction: () => void }) {
 
 export function NoSymptoms() {
   return (
-    <div className="text-center py-6 text-gray-400">
+    <div className="text-center py-6 text-gray-400 dark:text-gray-500">
       <Smile className="w-8 h-8 mx-auto mb-2 text-green-300" />
       <p className="text-sm">Pas de symptômes enregistrés</p>
     </div>
