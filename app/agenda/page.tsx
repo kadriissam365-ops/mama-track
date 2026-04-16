@@ -81,9 +81,9 @@ export default function AgendaPage() {
   };
 
   const trimesterHeaderColors: Record<1 | 2 | 3, string> = {
-    1: "text-pink-600 bg-pink-100 dark:bg-pink-900/30",
-    2: "text-purple-600 bg-purple-100 dark:bg-purple-900/30",
-    3: "text-green-600 bg-green-100 dark:bg-green-900/30",
+    1: "text-pink-600 dark:text-pink-400 bg-pink-100 dark:bg-pink-900/30",
+    2: "text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30",
+    3: "text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30",
   };
 
   return (
@@ -95,7 +95,7 @@ export default function AgendaPage() {
         </h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Ajouter
@@ -158,7 +158,7 @@ export default function AgendaPage() {
               <button
                 onClick={handleSubmit}
                 disabled={!form.title || !form.date}
-                className="w-full py-3 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+                className="w-full py-3 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
               >
                 Enregistrer
               </button>

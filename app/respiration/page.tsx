@@ -32,9 +32,9 @@ const EXERCISES: BreathingExercise[] = [
     exhale: 6,
     holdAfter: 0,
     rounds: 8,
-    color: "text-blue-600",
+    color: "text-blue-600 dark:text-blue-400",
     bgColor: "bg-blue-50 dark:bg-blue-950/30",
-    borderColor: "border-blue-200",
+    borderColor: "border-blue-200 dark:border-blue-800/30",
   },
   {
     id: "labor",
@@ -47,7 +47,7 @@ const EXERCISES: BreathingExercise[] = [
     exhale: 8,
     holdAfter: 0,
     rounds: 10,
-    color: "text-pink-600",
+    color: "text-pink-600 dark:text-pink-400",
     bgColor: "bg-pink-50 dark:bg-pink-950/30",
     borderColor: "border-pink-200 dark:border-pink-800/30",
   },
@@ -62,9 +62,9 @@ const EXERCISES: BreathingExercise[] = [
     exhale: 8,
     holdAfter: 0,
     rounds: 4,
-    color: "text-orange-600",
+    color: "text-orange-600 dark:text-orange-400",
     bgColor: "bg-orange-50 dark:bg-orange-950/30",
-    borderColor: "border-orange-200",
+    borderColor: "border-orange-200 dark:border-orange-800/30",
   },
   {
     id: "sleep",
@@ -77,9 +77,9 @@ const EXERCISES: BreathingExercise[] = [
     exhale: 8,
     holdAfter: 0,
     rounds: 4,
-    color: "text-indigo-600",
+    color: "text-indigo-600 dark:text-indigo-400",
     bgColor: "bg-indigo-50 dark:bg-indigo-950/30",
-    borderColor: "border-indigo-200",
+    borderColor: "border-indigo-200 dark:border-indigo-800/30",
   },
   {
     id: "push",
@@ -92,7 +92,7 @@ const EXERCISES: BreathingExercise[] = [
     exhale: 7,
     holdAfter: 2,
     rounds: 6,
-    color: "text-purple-600",
+    color: "text-purple-600 dark:text-purple-400",
     bgColor: "bg-purple-50 dark:bg-purple-950/30",
     borderColor: "border-purple-200 dark:border-purple-800/30",
   },
@@ -107,7 +107,7 @@ const EXERCISES: BreathingExercise[] = [
     exhale: 5,
     holdAfter: 2,
     rounds: 10,
-    color: "text-green-600",
+    color: "text-green-600 dark:text-green-400",
     bgColor: "bg-green-50 dark:bg-green-950/30",
     borderColor: "border-green-200 dark:border-green-800/30",
   },
@@ -331,9 +331,9 @@ export default function RespirationPage() {
             {/* Pattern display */}
             <div className="flex justify-center gap-3 mb-5">
               {[
-                { label: "Inspire", val: selectedExercise.inhale, color: "bg-blue-100 dark:bg-blue-900/30 text-blue-600" },
-                ...(selectedExercise.hold > 0 ? [{ label: "Retient", val: selectedExercise.hold, color: "bg-purple-100 dark:bg-purple-900/30 text-purple-600" }] : []),
-                { label: "Expire", val: selectedExercise.exhale, color: "bg-pink-100 dark:bg-pink-900/30 text-pink-600" },
+                { label: "Inspire", val: selectedExercise.inhale, color: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" },
+                ...(selectedExercise.hold > 0 ? [{ label: "Retient", val: selectedExercise.hold, color: "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400" }] : []),
+                { label: "Expire", val: selectedExercise.exhale, color: "bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400" },
                 ...(selectedExercise.holdAfter > 0 ? [{ label: "Pause", val: selectedExercise.holdAfter, color: "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300" }] : []),
               ].map((step) => (
                 <div key={step.label} className={`${step.color} px-3 py-1.5 rounded-xl text-center`}>

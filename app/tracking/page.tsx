@@ -68,7 +68,7 @@ export default function TrackingPage() {
         </div>
         <div className="text-left">
           <p className="text-sm font-semibold text-purple-700 dark:text-purple-300">Contractions</p>
-          <p className="text-xs text-purple-400">Chronomètre & suivi des contractions</p>
+          <p className="text-xs text-purple-400 dark:text-purple-300">Chronomètre & suivi des contractions</p>
         </div>
         <span className="ml-auto text-purple-300 text-lg">›</span>
       </button>

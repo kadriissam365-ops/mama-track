@@ -80,7 +80,7 @@ function SizeRuler({ sizeMm, week }: { sizeMm: number; week: number }) {
               <span className="text-[9px] text-gray-400 dark:text-gray-500 mb-0.5">{t.label}</span>
             )}
             <div
-              className={`w-px ${t.isMajor ? "h-2.5 bg-gray-400" : "h-1.5 bg-gray-300"}`}
+              className={`w-px ${t.isMajor ? "h-2.5 bg-gray-400 dark:bg-gray-600" : "h-1.5 bg-gray-300 dark:bg-gray-700"}`}
             />
           </div>
         ))}

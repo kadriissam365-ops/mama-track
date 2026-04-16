@@ -6,13 +6,13 @@ import { useStore } from "@/lib/store";
 import { CheckSquare, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
 const CATEGORY_COLORS: Record<string, { bg: string; border: string; text: string; check: string }> = {
-  Administratif: { bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-200", text: "text-blue-600", check: "bg-blue-400" },
-  Médical: { bg: "bg-pink-50 dark:bg-pink-950/30", border: "border-pink-200 dark:border-pink-800/30", text: "text-pink-600", check: "bg-pink-400" },
-  "Chambre bébé": { bg: "bg-purple-50 dark:bg-purple-950/30", border: "border-purple-200 dark:border-purple-800/30", text: "text-purple-600", check: "bg-purple-400" },
-  "Valise maternité": { bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-200 dark:border-green-800/30", text: "text-green-600", check: "bg-green-400" },
+  Administratif: { bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-200 dark:border-blue-800/30", text: "text-blue-600 dark:text-blue-400", check: "bg-blue-400" },
+  Médical: { bg: "bg-pink-50 dark:bg-pink-950/30", border: "border-pink-200 dark:border-pink-800/30", text: "text-pink-600 dark:text-pink-400", check: "bg-pink-400" },
+  "Chambre bébé": { bg: "bg-purple-50 dark:bg-purple-950/30", border: "border-purple-200 dark:border-purple-800/30", text: "text-purple-600 dark:text-purple-400", check: "bg-purple-400" },
+  "Valise maternité": { bg: "bg-green-50 dark:bg-green-950/30", border: "border-green-200 dark:border-green-800/30", text: "text-green-600 dark:text-green-400", check: "bg-green-400" },
 };
 
-const DEFAULT_COLORS = { bg: "bg-orange-50 dark:bg-orange-950/30", border: "border-orange-200", text: "text-orange-600", check: "bg-orange-400" };
+const DEFAULT_COLORS = { bg: "bg-orange-50 dark:bg-orange-950/30", border: "border-orange-200 dark:border-orange-800/30", text: "text-orange-600 dark:text-orange-400", check: "bg-orange-400" };
 
 export default function ChecklistPage() {
   const store = useStore();
@@ -61,7 +61,7 @@ export default function ChecklistPage() {
         </h1>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Ajouter
@@ -125,7 +125,7 @@ export default function ChecklistPage() {
               <button
                 onClick={handleAddItem}
                 disabled={!newLabel.trim()}
-                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
               >
                 OK
               </button>

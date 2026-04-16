@@ -188,7 +188,7 @@ export default function SettingsPage() {
             <button
               onClick={handleSaveProfile}
               disabled={saving}
-              className="w-full py-3 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {saving ? (
                 <>
@@ -226,8 +226,8 @@ export default function SettingsPage() {
               <span
                 className={`text-xs font-medium px-2 py-1 rounded-full ${
                   store.synced
-                    ? "bg-green-100 dark:bg-green-900/30 text-green-600"
-                    : "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600"
+                    ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                    : "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400"
                 }`}
               >
                 {store.synced ? `✓ ${t("settings.synced")}` : t("settings.offlineMode")}
@@ -268,7 +268,7 @@ export default function SettingsPage() {
               <button
                 onClick={handleChangePassword}
                 disabled={savingPwd || !newPassword}
-                className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+                className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
               >
                 {savingPwd ? <><Loader2 className="w-4 h-4 animate-spin" />{t("settings.updating")}</> : t("settings.update")}
               </button>

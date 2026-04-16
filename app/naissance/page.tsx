@@ -73,7 +73,7 @@ function BooleanField({ label, value, onChange }: { label: string; value: boolea
       <button
         onClick={() => onChange(!value)}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-          value ? "bg-green-100 dark:bg-green-900/30 text-green-600" : "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500"
+          value ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400" : "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500"
         }`}
       >
         {value ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}

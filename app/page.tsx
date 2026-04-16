@@ -128,7 +128,7 @@ export default function DashboardPage() {
             />
             <button
               onClick={handleSaveDueDate}
-              className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+              className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
             >
               OK
             </button>
@@ -325,7 +325,7 @@ export default function DashboardPage() {
               {recentSymptoms.slice(-1).map((s) => (
                 <div key={s.id} className="flex flex-wrap gap-1">
                   {s.symptoms.slice(0, 2).map((sym) => (
-                    <span key={sym} className="text-xs bg-green-50 dark:bg-green-950/30 text-green-600 px-2 py-0.5 rounded-full">
+                    <span key={sym} className="text-xs bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full">
                       {sym}
                     </span>
                   ))}

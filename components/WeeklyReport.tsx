@@ -72,7 +72,7 @@ export default function WeeklyReport({ onClose }: { onClose: () => void }) {
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">⚖️ Poids</span>
               {weightDiff && (
-                <span className={`text-sm font-bold flex items-center gap-1 ${parseFloat(weightDiff) > 0 ? 'text-orange-500' : 'text-green-500'}`}>
+                <span className={`text-sm font-bold flex items-center gap-1 ${parseFloat(weightDiff) > 0 ? 'text-orange-500 dark:text-orange-400' : 'text-green-500 dark:text-green-400'}`}>
                   {parseFloat(weightDiff) > 0 ? <TrendingUp className="w-3 h-3" /> : parseFloat(weightDiff) < 0 ? <TrendingDown className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
                   {parseFloat(weightDiff) > 0 ? '+' : ''}{weightDiff} kg
                 </span>
