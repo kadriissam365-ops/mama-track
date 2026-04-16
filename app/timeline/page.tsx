@@ -7,9 +7,9 @@ import { getCurrentWeek, getWeekData } from "@/lib/pregnancy-data";
 import { ChevronDown, ChevronUp, Baby, Heart, Stethoscope, Star } from "lucide-react";
 
 const TRIMESTER_COLORS = {
-  1: { bg: "bg-pink-100 dark:bg-pink-900/30", border: "border-pink-300", text: "text-pink-700 dark:text-pink-300", dot: "bg-pink-400", gradient: "from-pink-200 to-pink-50" },
-  2: { bg: "bg-purple-100 dark:bg-purple-900/30", border: "border-purple-300", text: "text-purple-700 dark:text-purple-300", dot: "bg-purple-400", gradient: "from-purple-200 to-purple-50" },
-  3: { bg: "bg-indigo-100 dark:bg-indigo-900/30", border: "border-indigo-300", text: "text-indigo-700 dark:text-indigo-300", dot: "bg-indigo-400", gradient: "from-indigo-200 to-indigo-50" },
+  1: { bg: "bg-pink-100 dark:bg-pink-900/30", border: "border-pink-300 dark:border-pink-700", text: "text-pink-700 dark:text-pink-300", dot: "bg-pink-400", gradient: "from-pink-200 to-pink-50 dark:from-pink-900/50 dark:to-pink-950/30" },
+  2: { bg: "bg-purple-100 dark:bg-purple-900/30", border: "border-purple-300 dark:border-purple-700", text: "text-purple-700 dark:text-purple-300", dot: "bg-purple-400", gradient: "from-purple-200 to-purple-50 dark:from-purple-900/50 dark:to-purple-950/30" },
+  3: { bg: "bg-indigo-100 dark:bg-indigo-900/30", border: "border-indigo-300 dark:border-indigo-700", text: "text-indigo-700 dark:text-indigo-300", dot: "bg-indigo-400", gradient: "from-indigo-200 to-indigo-50 dark:from-indigo-900/50 dark:to-indigo-950/30" },
 };
 
 const MILESTONES: Record<number, { icon: string; label: string }> = {
@@ -221,7 +221,7 @@ export default function TimelinePage() {
                               <p className="text-xs font-semibold text-[#3d2b2b] dark:text-gray-100 mb-1">Symptômes fréquents</p>
                               <div className="flex flex-wrap gap-1">
                                 {weekData.weeklySymptoms.map((s, i) => (
-                                  <span key={i} className="text-[10px] bg-green-50 dark:bg-green-950/30 text-green-600 px-2 py-0.5 rounded-full">
+                                  <span key={i} className="text-[10px] bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full">
                                     {s}
                                   </span>
                                 ))}
@@ -253,7 +253,7 @@ export default function TimelinePage() {
                 <span className="text-lg">👶</span>
               </div>
             </div>
-            <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-4 flex-1 border border-pink-200 dark:border-pink-800/30">
+            <div className="bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/40 dark:to-purple-900/40 rounded-2xl p-4 flex-1 border border-pink-200 dark:border-pink-800/30">
               <h3 className="text-sm font-bold text-[#3d2b2b] dark:text-gray-100">Naissance ! 🎉</h3>
               <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">Bienvenue au monde, bébé ! Le plus beau voyage commence maintenant.</p>
             </div>

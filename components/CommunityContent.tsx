@@ -328,7 +328,7 @@ export default function CommunityContent() {
               setShowModal(true);
             }}
             disabled={!isAuthenticated}
-            className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title={
               !isAuthenticated ? "Connectez-vous pour partager" : "Partager"
             }
@@ -341,7 +341,7 @@ export default function CommunityContent() {
 
       {/* Auth prompt for unauthenticated users */}
       {!isAuthenticated && (
-        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 rounded-2xl p-3 text-xs text-amber-700 flex items-center gap-2">
+        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/30 rounded-2xl p-3 text-xs text-amber-700 dark:text-amber-400 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>
             Connectez-vous pour publier, reagir et signaler des posts.
@@ -350,7 +350,7 @@ export default function CommunityContent() {
       )}
 
       {/* Stats banner */}
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-2xl p-4 flex items-center justify-around border border-pink-100 dark:border-pink-900/30">
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30 rounded-2xl p-4 flex items-center justify-around border border-pink-100 dark:border-pink-900/30">
         <div className="text-center">
           <p className="text-lg font-bold text-pink-500">{posts.length}</p>
           <p className="text-[10px] text-gray-500 dark:text-gray-400">Publications</p>
@@ -611,7 +611,7 @@ export default function CommunityContent() {
               <button
                 onClick={handleSubmit}
                 disabled={!newContent.trim() || submitting}
-                className="w-full bg-pink-400 text-white py-3 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full bg-pink-400 text-white py-3 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                 Publier

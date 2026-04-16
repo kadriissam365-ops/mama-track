@@ -44,10 +44,10 @@ export default function BabyPage() {
 
   const trimesterColor =
     weekData.trimester === 1
-      ? "bg-pink-100 dark:bg-pink-900/30 text-pink-600"
+      ? "bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400"
       : weekData.trimester === 2
-      ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600"
-      : "bg-green-100 dark:bg-green-900/30 text-green-600";
+      ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+      : "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400";
 
   const sizeDisplay =
     weekData.sizeMm >= 100
@@ -207,10 +207,10 @@ export default function BabyPage() {
                 d.week === selectedWeek
                   ? "bg-pink-400 text-white shadow-sm scale-110"
                   : d.trimester === 1
-                  ? "bg-pink-100 dark:bg-pink-900/30 text-pink-600 hover:bg-pink-200"
+                  ? "bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 hover:bg-pink-200"
                   : d.trimester === 2
-                  ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 hover:bg-purple-200"
-                  : "bg-green-100 dark:bg-green-900/30 text-green-600 hover:bg-green-200"
+                  ? "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-200"
+                  : "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200"
               }`}
             >
               {d.week}

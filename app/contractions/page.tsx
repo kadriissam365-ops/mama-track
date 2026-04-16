@@ -190,7 +190,7 @@ export default function ContractionsPage() {
         {!isActive ? (
           <button
             onClick={startSession}
-            className="w-full py-4 bg-pink-400 text-white rounded-2xl font-semibold text-lg hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors shadow-sm"
+            className="w-full py-4 bg-pink-400 text-white rounded-2xl font-semibold text-lg hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors shadow-sm"
           >
             🤱 Démarrer le suivi
           </button>

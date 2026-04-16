@@ -151,7 +151,7 @@ export default function UrgencesPage() {
         </div>
         <a
           href="tel:15"
-          className="flex items-center gap-2 bg-red-50 dark:bg-red-950/300 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
+          className="flex items-center gap-2 bg-red-50 dark:bg-red-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
         >
           <Phone className="w-4 h-4" />
           SAMU 15
@@ -183,7 +183,7 @@ export default function UrgencesPage() {
           </h3>
           <button
             onClick={() => { resetForm(); setShowAdd(true); }}
-            className="w-7 h-7 bg-pink-400 rounded-lg flex items-center justify-center text-white hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+            className="w-7 h-7 bg-pink-400 rounded-lg flex items-center justify-center text-white hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -209,7 +209,7 @@ export default function UrgencesPage() {
               <div className="flex items-center gap-1 flex-shrink-0">
                 <a
                   href={`tel:${contact.phone}`}
-                  className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center hover:bg-green-50 dark:bg-green-950/300 transition-colors"
+                  className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center hover:bg-green-50 dark:bg-green-500 transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5 text-white" />
                 </a>
@@ -274,7 +274,7 @@ export default function UrgencesPage() {
                   <button
                     onClick={addContact}
                     disabled={!name.trim() || !phone.trim()}
-                    className="flex-1 flex items-center justify-center gap-1 bg-pink-400 text-white py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1 bg-pink-400 text-white py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
                   >
                     <Save className="w-3.5 h-3.5" />
                     {editId ? "Modifier" : "Ajouter"}

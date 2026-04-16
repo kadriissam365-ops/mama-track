@@ -229,7 +229,7 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
         <button
           onClick={() => sendMessage(input)}
           disabled={!input.trim()}
-          className="bg-pink-400 text-white px-3 py-2 rounded-xl hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-40"
+          className="bg-pink-400 text-white px-3 py-2 rounded-xl hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-40"
         >
           <Send className="w-4 h-4" />
         </button>
@@ -395,7 +395,7 @@ export default function DuoPage() {
         </h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
         >
           <UserPlus className="w-4 h-4" />
           Inviter
@@ -463,7 +463,7 @@ export default function DuoPage() {
               <button
                 onClick={handleSendInvitation}
                 disabled={!email.trim() || sending}
-                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 {sending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -585,7 +585,7 @@ export default function DuoPage() {
           </p>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
           >
             Créer une invitation
           </button>

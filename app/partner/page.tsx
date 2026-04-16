@@ -336,7 +336,7 @@ export default function PartnerViewPage() {
         <motion.div
           {...anim}
           transition={{ delay: 0.25 }}
-          className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-emerald-100 text-center"
+          className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-emerald-100 dark:border-emerald-900/30 text-center"
         >
           <Activity className="w-5 h-5 text-emerald-500 mx-auto mb-1" />
           <p className="text-lg font-bold text-[#2b3d3d] dark:text-gray-100">
@@ -407,7 +407,7 @@ export default function PartnerViewPage() {
       )}
 
       {/* Mood / Symptom Summary */}
-      <motion.div {...anim} transition={{ delay: 0.35 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-violet-100">
+      <motion.div {...anim} transition={{ delay: 0.35 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-violet-100 dark:border-violet-900/30">
         <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
           <Smile className="w-5 h-5 text-violet-500" /> Humeur et symptômes
         </h3>
@@ -423,7 +423,7 @@ export default function PartnerViewPage() {
                   className="flex items-center gap-1.5 bg-violet-50 dark:bg-violet-950/30 rounded-full px-3 py-1.5"
                 >
                   <span className="text-base">{m.mood_emoji}</span>
-                  <span className="text-xs text-violet-600">{m.mood_label}</span>
+                  <span className="text-xs text-violet-600 dark:text-violet-400">{m.mood_label}</span>
                   <span className="text-[10px] text-gray-400 dark:text-gray-500">
                     {new Date(m.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                   </span>
@@ -526,8 +526,8 @@ export default function PartnerViewPage() {
               disabled={supportSent !== null}
               className={`text-sm rounded-2xl px-3 py-3 font-medium transition-all ${
                 supportSent === `${msg.emoji} ${msg.text}`
-                  ? "bg-teal-100 dark:bg-teal-900/30 text-teal-700 scale-95"
-                  : "bg-teal-50 dark:bg-teal-950/30 text-teal-700 hover:bg-teal-100 dark:bg-teal-900/30 active:scale-95"
+                  ? "bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 scale-95"
+                  : "bg-teal-50 dark:bg-teal-950/30 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/30 active:scale-95"
               }`}
             >
               <span className="text-lg block mb-0.5">{msg.emoji}</span>

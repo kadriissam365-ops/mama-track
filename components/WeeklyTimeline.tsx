@@ -77,10 +77,10 @@ function WeekNode({
 }) {
   const trimesterBg =
     weekData.trimester === 1
-      ? "from-pink-100 to-pink-200"
+      ? "from-pink-100 to-pink-200 dark:from-pink-900/50 dark:to-pink-900/30"
       : weekData.trimester === 2
-      ? "from-purple-100 to-purple-200"
-      : "from-green-100 to-green-200";
+      ? "from-purple-100 to-purple-200 dark:from-purple-900/50 dark:to-purple-900/30"
+      : "from-green-100 to-green-200 dark:from-green-900/50 dark:to-green-900/30";
 
   const trimesterBorder =
     weekData.trimester === 1
@@ -91,10 +91,10 @@ function WeekNode({
 
   const trimesterText =
     weekData.trimester === 1
-      ? "text-pink-600"
+      ? "text-pink-600 dark:text-pink-400"
       : weekData.trimester === 2
-      ? "text-purple-600"
-      : "text-green-600";
+      ? "text-purple-600 dark:text-purple-400"
+      : "text-green-600 dark:text-green-400";
 
   return (
     <div

@@ -121,7 +121,7 @@ export default function BumpPage() {
           )}
           <button
             onClick={() => setShowCamera(true)}
-            className="w-10 h-10 bg-pink-400 rounded-xl flex items-center justify-center text-white hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors shadow-sm"
+            className="w-10 h-10 bg-pink-400 rounded-xl flex items-center justify-center text-white hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors shadow-sm"
           >
             <Camera className="w-5 h-5" />
           </button>
@@ -157,7 +157,7 @@ export default function BumpPage() {
                   <select
                     value={compareLeft ?? ""}
                     onChange={(e) => setCompareLeft(Number(e.target.value))}
-                    className="w-full text-xs border border-purple-200 dark:border-purple-800/30 rounded-xl px-2 py-1.5 mb-2"
+                    className="w-full text-xs bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-purple-200 dark:border-purple-800/30 rounded-xl px-2 py-1.5 mb-2"
                   >
                     <option value="">Semaine...</option>
                     {weekNumbers.map((w) => (
@@ -189,7 +189,7 @@ export default function BumpPage() {
                   <select
                     value={compareRight ?? ""}
                     onChange={(e) => setCompareRight(Number(e.target.value))}
-                    className="w-full text-xs border border-purple-200 dark:border-purple-800/30 rounded-xl px-2 py-1.5 mb-2"
+                    className="w-full text-xs bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-purple-200 dark:border-purple-800/30 rounded-xl px-2 py-1.5 mb-2"
                   >
                     <option value="">Semaine...</option>
                     {weekNumbers.map((w) => (
@@ -263,7 +263,7 @@ export default function BumpPage() {
           </p>
           <button
             onClick={() => setShowCamera(true)}
-            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
           >
             Prendre ma première photo
           </button>
@@ -327,7 +327,7 @@ export default function BumpPage() {
                 onChange={(e) => setNote(e.target.value.slice(0, 200))}
                 placeholder="Note (optionnel) — comment vous sentez-vous ?"
                 rows={2}
-                className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none mb-3"
+                className="w-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none mb-3"
               />
 
               <button

@@ -42,7 +42,7 @@ export default function JournalPage() {
       color: "from-rose-100 to-pink-50",
       border: "border-rose-200",
       iconColor: "text-rose-500",
-      bg: "bg-rose-50 dark:bg-rose-950/300",
+      bg: "bg-rose-50 dark:bg-rose-500",
     },
     {
       href: "/journal/notes",
@@ -54,7 +54,7 @@ export default function JournalPage() {
       color: "from-amber-100 to-yellow-50",
       border: "border-amber-200",
       iconColor: "text-amber-600",
-      bg: "bg-amber-50 dark:bg-amber-950/300",
+      bg: "bg-amber-50 dark:bg-amber-500",
     },
     {
       href: "/journal/galerie",
@@ -66,7 +66,7 @@ export default function JournalPage() {
       color: "from-violet-100 to-purple-50",
       border: "border-violet-200",
       iconColor: "text-violet-600",
-      bg: "bg-violet-50 dark:bg-violet-950/300",
+      bg: "bg-violet-50 dark:bg-violet-500",
     },
   ];
 

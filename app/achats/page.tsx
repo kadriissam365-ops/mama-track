@@ -255,7 +255,7 @@ export default function AchatsPage() {
               <div className="flex gap-2">
                 <button
                   onClick={addCustomItem}
-                  className="flex-1 bg-pink-50 dark:bg-pink-950/300 text-white py-2 rounded-xl text-sm font-medium hover:bg-pink-600 transition-colors"
+                  className="flex-1 bg-pink-50 dark:bg-pink-500 text-white py-2 rounded-xl text-sm font-medium hover:bg-pink-600 transition-colors"
                 >
                   Ajouter
                 </button>
@@ -320,7 +320,7 @@ export default function AchatsPage() {
                             onClick={() => toggleItem(item.id)}
                             className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                               item.coche
-                                ? 'bg-green-50 dark:bg-green-950/300 border-green-500'
+                                ? 'bg-green-50 dark:bg-green-500 border-green-500'
                                 : 'border-gray-300 dark:border-gray-600 hover:border-pink-400'
                             }`}
                           >

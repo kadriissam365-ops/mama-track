@@ -168,7 +168,7 @@ export default function MedicamentsPage() {
         </div>
         <button
           onClick={() => { setShowAdd(true); setShowPresets(true); }}
-          className="w-9 h-9 bg-purple-400 rounded-xl flex items-center justify-center text-white hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300 transition-colors"
+          className="w-9 h-9 bg-purple-400 rounded-xl flex items-center justify-center text-white hover:bg-purple-50 dark:hover:bg-purple-600 dark:bg-purple-500 transition-colors"
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -294,7 +294,7 @@ export default function MedicamentsPage() {
           </p>
           <button
             onClick={() => { setShowAdd(true); setShowPresets(true); }}
-            className="bg-purple-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300 transition-colors"
+            className="bg-purple-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-purple-50 dark:hover:bg-purple-600 dark:bg-purple-500 transition-colors"
           >
             Ajouter un médicament
           </button>
@@ -425,7 +425,7 @@ export default function MedicamentsPage() {
                   <button
                     onClick={() => { if (newName.trim()) addMedication(newName.trim(), newDosage.trim()); }}
                     disabled={!newName.trim()}
-                    className="w-full bg-purple-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300 transition-colors"
+                    className="w-full bg-purple-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-50 dark:hover:bg-purple-600 dark:bg-purple-500 transition-colors"
                   >
                     Ajouter
                   </button>

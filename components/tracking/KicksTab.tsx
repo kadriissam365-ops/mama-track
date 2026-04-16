@@ -95,7 +95,7 @@ export default function KicksTab({ today }: KicksTabProps) {
           <div className="mt-4 space-y-3">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Total aujourd&apos;hui :{" "}
-              <span className="font-bold text-green-600">
+              <span className="font-bold text-green-600 dark:text-green-400">
                 {totalToday} mouvements
               </span>
             </p>

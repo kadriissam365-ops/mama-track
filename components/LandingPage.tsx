@@ -260,7 +260,7 @@ export default function LandingPage() {
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-600 text-xs font-semibold px-4 py-2 rounded-full shadow-sm">
+          <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/40 dark:to-purple-900/40 text-pink-600 dark:text-pink-400 text-xs font-semibold px-4 py-2 rounded-full shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
             100% gratuit &middot; Sans pub &middot; Sans abonnement
           </span>
@@ -490,9 +490,9 @@ export default function LandingPage() {
                   <div className="w-12 h-1.5 bg-gray-700 rounded-full" />
                 </div>
                 {/* Screen */}
-                <div className="bg-gradient-to-b from-pink-50 to-white rounded-[2rem] p-4 pt-6 space-y-3">
+                <div className="bg-gradient-to-b from-pink-50 to-white dark:from-[#1a1a2e] dark:to-[#0f0f1a] rounded-[2rem] p-4 pt-6 space-y-3">
                   {/* Progress ring + week */}
-                  <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-4 text-center relative">
+                  <div className="bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/40 dark:to-purple-900/40 rounded-2xl p-4 text-center relative">
                     <div className="flex items-center justify-center mb-2">
                       <svg className="w-20 h-20" viewBox="0 0 80 80">
                         <circle cx="40" cy="40" r="34" fill="none" stroke="#e5e7eb" strokeWidth="5" />
@@ -635,7 +635,7 @@ export default function LandingPage() {
               {/* Numbered icon circle */}
               <div className={`relative w-20 h-20 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center shadow-lg mb-4`}>
                 <step.icon className="w-8 h-8 text-white" />
-                <div className="absolute -top-2 -right-2 w-7 h-7 bg-white dark:bg-gray-900 rounded-full flex items-center justify-center shadow-md border-2 border-pink-100 dark:border-pink-900/30">
+                <div className="absolute -top-2 -right-2 w-7 h-7 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center shadow-md border-2 border-pink-100 dark:border-pink-900/30">
                   <span className="text-xs font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">{i + 1}</span>
                 </div>
               </div>
@@ -698,7 +698,7 @@ export default function LandingPage() {
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed italic">&ldquo;{t.text}&rdquo;</p>
               {t.feature && (
-                <span className="inline-block mt-3 text-[10px] font-semibold bg-gradient-to-r from-pink-50 to-purple-50 text-purple-500 px-2.5 py-1 rounded-full border border-purple-100 dark:border-purple-900/30">
+                <span className="inline-block mt-3 text-[10px] font-semibold bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30 text-purple-500 dark:text-purple-400 px-2.5 py-1 rounded-full border border-purple-100 dark:border-purple-900/30">
                   {t.feature}
                 </span>
               )}
@@ -869,7 +869,7 @@ export default function LandingPage() {
             <input
               type="email"
               placeholder="votre@email.com"
-              className="flex-1 px-5 py-3.5 rounded-xl border border-pink-200 dark:border-pink-800/30 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-300 bg-pink-50 dark:bg-pink-950/30/50 placeholder:text-gray-400 dark:placeholder:text-gray-600 dark:text-gray-500"
+              className="flex-1 px-5 py-3.5 rounded-xl border border-pink-200 dark:border-pink-800/30 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-300 bg-pink-50 dark:bg-pink-950/30 placeholder:text-gray-400 dark:placeholder:text-gray-500 dark:text-gray-100"
               required
             />
             <button

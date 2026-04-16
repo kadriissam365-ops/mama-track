@@ -224,7 +224,7 @@ export default function ExerciseTab() {
         <button
           onClick={handleSave}
           disabled={!selectedActivity || saving}
-          className="w-full bg-emerald-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-emerald-50 dark:bg-emerald-950/300 transition-colors"
+          className="w-full bg-emerald-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-emerald-50 dark:bg-emerald-500 transition-colors"
         >
           {saving ? "…" : success ? "✓ Ajoutée !" : "Ajouter l'activité"}
         </button>

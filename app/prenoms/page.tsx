@@ -8,9 +8,9 @@ import { prenoms, type Prenom } from "@/lib/prenoms-data";
 const STORAGE_KEY = "prenom-favoris";
 
 const GENRE_CONFIG = {
-  F: { label: "Fille 💗", border: "border-pink-300", bg: "bg-pink-50 dark:bg-pink-950/30", badge: "bg-pink-100 dark:bg-pink-900/30 text-pink-600", dot: "bg-pink-400" },
-  M: { label: "Garçon 💙", border: "border-blue-300", bg: "bg-blue-50 dark:bg-blue-950/30", badge: "bg-blue-100 dark:bg-blue-900/30 text-blue-600", dot: "bg-blue-400" },
-  mixte: { label: "Mixte 💛", border: "border-yellow-300", bg: "bg-yellow-50 dark:bg-yellow-950/30", badge: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600", dot: "bg-yellow-400" },
+  F: { label: "Fille 💗", border: "border-pink-300", bg: "bg-pink-50 dark:bg-pink-950/30", badge: "bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400", dot: "bg-pink-400" },
+  M: { label: "Garçon 💙", border: "border-blue-300", bg: "bg-blue-50 dark:bg-blue-950/30", badge: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400", dot: "bg-blue-400" },
+  mixte: { label: "Mixte 💛", border: "border-yellow-300", bg: "bg-yellow-50 dark:bg-yellow-950/30", badge: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400", dot: "bg-yellow-400" },
 };
 
 const ORIGINES = Array.from(new Set(prenoms.map((p) => p.origine))).sort();
@@ -290,7 +290,7 @@ export default function PrenomsPage() {
                     toggleFavori(surprisePrenom.nom);
                     setSurprisePrenom(null);
                   }}
-                  className="flex-1 bg-pink-100 dark:bg-pink-900/30 text-pink-600 rounded-2xl py-3 text-sm font-medium hover:bg-pink-200 transition-colors"
+                  className="flex-1 bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 rounded-2xl py-3 text-sm font-medium hover:bg-pink-200 transition-colors"
                 >
                   ❤️ Ajouter aux favoris
                 </button>

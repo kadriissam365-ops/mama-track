@@ -232,7 +232,7 @@ export default function SleepTab() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full bg-indigo-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-indigo-50 dark:bg-indigo-950/300 transition-colors"
+          className="w-full bg-indigo-400 text-white py-2.5 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-indigo-50 dark:bg-indigo-500 transition-colors"
         >
           {saving ? "…" : success ? "✓ Enregistré !" : "Enregistrer"}
         </button>

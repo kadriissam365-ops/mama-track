@@ -79,7 +79,7 @@ function NoteForm({
           <button
             onClick={handleSubmit}
             disabled={!body.trim() || saving}
-            className="flex items-center gap-1 px-3 py-1.5 bg-amber-50 dark:bg-amber-950/300 text-white text-sm rounded-xl disabled:opacity-50"
+            className="flex items-center gap-1 px-3 py-1.5 bg-amber-50 dark:bg-amber-500 text-white text-sm rounded-xl disabled:opacity-50"
           >
             {saving ? (
               <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
@@ -177,7 +177,7 @@ export default function NotesContent() {
           </div>
           <button
             onClick={() => { setShowForm(true); setEditNote(null); }}
-            className="p-2 bg-amber-50 dark:bg-amber-950/300 rounded-xl text-white"
+            className="p-2 bg-amber-50 dark:bg-amber-500 rounded-xl text-white"
           >
             <Plus className="w-5 h-5" />
           </button>
@@ -313,7 +313,7 @@ export default function NotesContent() {
                 </button>
                 <button
                   onClick={() => handleDelete(deleteId)}
-                  className="flex-1 py-3 rounded-2xl bg-red-50 dark:bg-red-950/300 text-white font-medium"
+                  className="flex-1 py-3 rounded-2xl bg-red-50 dark:bg-red-500 text-white font-medium"
                 >
                   Supprimer
                 </button>

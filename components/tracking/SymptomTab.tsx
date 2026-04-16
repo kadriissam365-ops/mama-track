@@ -69,7 +69,7 @@ export default function SymptomTab() {
     >
       <button
         onClick={() => setShowForm(!showForm)}
-        className="w-full py-3 bg-pink-400 text-white rounded-2xl font-medium flex items-center justify-center gap-2 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors shadow-sm"
+        className="w-full py-3 bg-pink-400 text-white rounded-2xl font-medium flex items-center justify-center gap-2 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors shadow-sm"
       >
         <Plus className="w-4 h-4" />
         Ajouter des symptômes
@@ -132,7 +132,7 @@ export default function SymptomTab() {
             <button
               onClick={handleSubmit}
               disabled={selectedSymptoms.length === 0}
-              className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+              className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
             >
               Enregistrer
             </button>

@@ -277,7 +277,7 @@ export default function BloodPressureTab() {
           <button
             onClick={handleAdd}
             disabled={!systolic || !diastolic || saving}
-            className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+            className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
             aria-label="Ajouter la mesure"
           >
             <Plus className="w-4 h-4" />

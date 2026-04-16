@@ -331,7 +331,7 @@ export default function PhotosContent() {
                     const slot = slots.find((s) => s.week === deleteConfirm);
                     if (slot) handleDelete(slot);
                   }}
-                  className="flex-1 py-3 rounded-2xl bg-red-50 dark:bg-red-950/300 text-white font-medium"
+                  className="flex-1 py-3 rounded-2xl bg-red-50 dark:bg-red-500 text-white font-medium"
                 >
                   Supprimer
                 </button>

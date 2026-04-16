@@ -254,7 +254,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={handleRequestPermission}
-        className="w-full bg-pink-400 text-white rounded-2xl p-4 flex items-center justify-center gap-3 shadow-sm hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300 transition-colors"
+        className="w-full bg-pink-400 text-white rounded-2xl p-4 flex items-center justify-center gap-3 shadow-sm hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
       >
         <Bell className="w-5 h-5" />
         <span className="font-medium">Activer les notifications</span>

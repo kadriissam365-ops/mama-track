@@ -64,7 +64,7 @@ export default function WeightTab() {
           <button
             onClick={handleAdd}
             disabled={!weight}
-            className="bg-purple-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300 transition-colors"
+            className="bg-purple-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-50 dark:hover:bg-purple-600 dark:bg-purple-500 transition-colors"
             aria-label="Ajouter le poids"
           >
             <Plus className="w-4 h-4" />

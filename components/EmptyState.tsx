@@ -18,27 +18,27 @@ const variants = {
   default: {
     iconBg: "bg-gray-100 dark:bg-gray-800",
     iconColor: "text-gray-400 dark:text-gray-500",
-    buttonBg: "bg-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300",
+    buttonBg: "bg-pink-400 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500",
   },
   pink: {
     iconBg: "bg-pink-100 dark:bg-pink-900/30",
     iconColor: "text-pink-400",
-    buttonBg: "bg-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/300",
+    buttonBg: "bg-pink-400 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500",
   },
   purple: {
     iconBg: "bg-purple-100 dark:bg-purple-900/30",
     iconColor: "text-purple-400",
-    buttonBg: "bg-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/300",
+    buttonBg: "bg-purple-400 hover:bg-purple-50 dark:hover:bg-purple-600 dark:bg-purple-500",
   },
   green: {
     iconBg: "bg-green-100 dark:bg-green-900/30",
     iconColor: "text-green-400",
-    buttonBg: "bg-green-400 hover:bg-green-50 dark:bg-green-950/300",
+    buttonBg: "bg-green-400 hover:bg-green-50 dark:bg-green-500",
   },
   blue: {
     iconBg: "bg-blue-100 dark:bg-blue-900/30",
     iconColor: "text-blue-400",
-    buttonBg: "bg-blue-400 hover:bg-blue-50 dark:bg-blue-950/300",
+    buttonBg: "bg-blue-400 hover:bg-blue-50 dark:bg-blue-500",
   },
 };
 

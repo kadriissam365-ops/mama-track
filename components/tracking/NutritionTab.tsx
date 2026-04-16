@@ -46,14 +46,14 @@ const NUTRIENTS: NutrientItem[] = [
     emoji: "🐟",
     label: "Oméga-3",
     description: "Poisson gras 2x/sem ou noix/lin",
-    color: "bg-cyan-100 border-cyan-300 text-cyan-700",
+    color: "bg-cyan-100 dark:bg-cyan-900/30 border-cyan-300 text-cyan-700 dark:text-cyan-300",
   },
   {
     id: "fiber",
     emoji: "🌾",
     label: "Fibres",
     description: "Légumes, fruits, céréales complètes",
-    color: "bg-amber-100 dark:bg-amber-900/30 border-amber-300 text-amber-700",
+    color: "bg-amber-100 dark:bg-amber-900/30 border-amber-300 text-amber-700 dark:text-amber-300",
   },
 ];
 
@@ -203,7 +203,7 @@ export default function NutritionTab() {
 
       {/* Daily tip */}
       <div className="bg-amber-50 dark:bg-amber-950/30 rounded-2xl border border-amber-100 dark:border-amber-900/30 p-3">
-        <p className="text-xs text-amber-700">
+        <p className="text-xs text-amber-700 dark:text-amber-400">
           💡 <strong>Rappel :</strong> Ces besoins sont en plus d'une alimentation équilibrée variée. En cas de doute, parlez-en à votre sage-femme ou médecin.
         </p>
       </div>
