@@ -218,7 +218,7 @@ export default function AbdomenTab() {
             placeholder="Périmètre en cm (ex: 95)"
             value={circumference}
             onChange={(e) => setCircumference(e.target.value)}
-            className="flex-1 border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+            className="flex-1 border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 dark:bg-gray-800 dark:text-white"
           />
           <button
             onClick={handleAdd}
@@ -234,7 +234,7 @@ export default function AbdomenTab() {
           placeholder="Notes (optionnel)"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+          className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 dark:bg-gray-800 dark:text-white"
         />
       </div>
 

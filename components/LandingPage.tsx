@@ -735,7 +735,7 @@ export default function LandingPage() {
             >
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="w-full px-6 py-5 text-left text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center justify-between hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30/50 transition-colors"
+                className="w-full px-6 py-5 text-left text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center justify-between hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors"
               >
                 {item.q}
                 <motion.span

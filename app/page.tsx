@@ -124,7 +124,7 @@ export default function DashboardPage() {
               type="date"
               value={dateInput}
               onChange={(e) => setDateInput(e.target.value)}
-              className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+              className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
             />
             <button
               onClick={handleSaveDueDate}

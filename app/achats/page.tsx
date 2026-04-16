@@ -174,7 +174,7 @@ export default function AchatsPage() {
               value={budgetUser}
               onChange={e => setBudgetUser(e.target.value)}
               placeholder="ex: 1500"
-              className="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+              className="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 text-sm">€</span>
           </div>
@@ -213,13 +213,13 @@ export default function AchatsPage() {
                 value={newItem.nom}
                 onChange={e => setNewItem(p => ({ ...p, nom: e.target.value }))}
                 placeholder="Nom de l'article"
-                className="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                className="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
               />
               <div className="grid grid-cols-2 gap-2">
                 <select
                   value={newItem.categorie}
                   onChange={e => setNewItem(p => ({ ...p, categorie: e.target.value }))}
-                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 >
                   {CATEGORIES_ORDER.map(c => (
                     <option key={c} value={c}>{c}</option>
@@ -228,7 +228,7 @@ export default function AchatsPage() {
                 <select
                   value={newItem.priorite}
                   onChange={e => setNewItem(p => ({ ...p, priorite: e.target.value as 'Essentiel' | 'Pratique' | 'Bonus' }))}
-                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 >
                   <option value="Essentiel">Essentiel</option>
                   <option value="Pratique">Pratique</option>
@@ -241,7 +241,7 @@ export default function AchatsPage() {
                   value={newItem.budgetEstime}
                   onChange={e => setNewItem(p => ({ ...p, budgetEstime: e.target.value }))}
                   placeholder="Budget (€)"
-                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 />
                 <input
                   type="number"
@@ -249,7 +249,7 @@ export default function AchatsPage() {
                   onChange={e => setNewItem(p => ({ ...p, quantite: e.target.value }))}
                   placeholder="Quantité"
                   min="1"
-                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 />
               </div>
               <div className="flex gap-2">

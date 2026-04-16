@@ -641,7 +641,7 @@ export default function DuoPage() {
           <input value={newMessage} onChange={e => setNewMessage(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && sendSupportMessage(newMessage)}
             placeholder="Écrire un message..."
-            className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300" />
+            className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white" />
           <button onClick={() => sendSupportMessage(newMessage)}
             disabled={!newMessage.trim()}
             className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-40">

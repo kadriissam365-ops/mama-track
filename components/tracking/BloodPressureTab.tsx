@@ -243,7 +243,7 @@ export default function BloodPressureTab() {
               placeholder="ex: 120"
               value={systolic}
               onChange={(e) => setSystolic(e.target.value)}
-              className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+              className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -253,7 +253,7 @@ export default function BloodPressureTab() {
               placeholder="ex: 80"
               value={diastolic}
               onChange={(e) => setDiastolic(e.target.value)}
-              className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+              className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white"
             />
           </div>
         </div>
@@ -263,7 +263,7 @@ export default function BloodPressureTab() {
             placeholder="Pouls (bpm, optionnel)"
             value={pulse}
             onChange={(e) => setPulse(e.target.value)}
-            className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+            className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white"
           />
         </div>
         <div className="flex gap-2">
@@ -272,7 +272,7 @@ export default function BloodPressureTab() {
             placeholder="Notes (optionnel)"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
+            className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white"
           />
           <button
             onClick={handleAdd}

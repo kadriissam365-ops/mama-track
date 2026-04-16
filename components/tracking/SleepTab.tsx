@@ -155,7 +155,7 @@ export default function SleepTab() {
               type="time"
               value={bedtime}
               onChange={(e) => setBedtime(e.target.value)}
-              className="w-full border border-indigo-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-indigo-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -164,7 +164,7 @@ export default function SleepTab() {
               type="time"
               value={waketime}
               onChange={(e) => setWaketime(e.target.value)}
-              className="w-full border border-indigo-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-indigo-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:bg-gray-800 dark:text-white"
             />
           </div>
         </div>
@@ -204,7 +204,7 @@ export default function SleepTab() {
               max="20"
               value={nightWakings}
               onChange={(e) => setNightWakings(e.target.value)}
-              className="w-full border border-indigo-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-indigo-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -215,7 +215,7 @@ export default function SleepTab() {
               placeholder="0"
               value={naps}
               onChange={(e) => setNaps(e.target.value)}
-              className="w-full border border-indigo-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              className="w-full border border-indigo-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:bg-gray-800 dark:text-white"
             />
           </div>
         </div>

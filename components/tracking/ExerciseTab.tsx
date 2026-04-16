@@ -189,7 +189,7 @@ export default function ExerciseTab() {
               step="5"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              className="w-full border border-emerald-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300"
+              className="w-full border border-emerald-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -218,7 +218,7 @@ export default function ExerciseTab() {
           value={note}
           onChange={(e) => setNote(e.target.value.slice(0, 200))}
           rows={2}
-          className="w-full border border-emerald-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none mb-2"
+          className="w-full border border-emerald-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 resize-none mb-2 dark:bg-gray-800 dark:text-white"
         />
 
         <button

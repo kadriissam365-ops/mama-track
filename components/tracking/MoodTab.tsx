@@ -160,7 +160,7 @@ export default function MoodTab() {
           value={note}
           onChange={(e) => setNote(e.target.value.slice(0, 200))}
           rows={2}
-          className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none mb-2"
+          className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none mb-2 dark:bg-gray-800 dark:text-white"
         />
         <div className="flex items-center justify-between">
           <span className="text-xs text-gray-400 dark:text-gray-500">{note.length}/200</span>

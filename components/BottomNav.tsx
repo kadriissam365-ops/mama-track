@@ -32,7 +32,7 @@ export default function BottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-pink-100 dark:border-pink-900/30/80 bottom-nav-safe dark:bg-gray-900/95 dark:border-gray-800">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-pink-100 dark:border-pink-900/80 bottom-nav-safe dark:bg-gray-900/95 dark:border-gray-800">
       <div className="max-w-lg mx-auto flex items-center justify-around px-1 py-1.5">
         {navItems.map(({ href, labelKey, icon: Icon }) => {
           const active = isActive(href);

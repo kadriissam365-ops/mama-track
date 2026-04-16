@@ -373,7 +373,7 @@ export default function MedicamentsPage() {
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
                       placeholder="Ex: Spasfon, Gaviscon..."
-                      className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+                      className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -384,7 +384,7 @@ export default function MedicamentsPage() {
                         value={newDosage}
                         onChange={(e) => setNewDosage(e.target.value)}
                         placeholder="Ex: 500 mg"
-                        className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+                        className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                       />
                     </div>
                     <div>
@@ -393,7 +393,7 @@ export default function MedicamentsPage() {
                         type="time"
                         value={newTime}
                         onChange={(e) => setNewTime(e.target.value)}
-                        className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
+                        className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                       />
                     </div>
                   </div>
@@ -420,7 +420,7 @@ export default function MedicamentsPage() {
                     value={newNotes}
                     onChange={(e) => setNewNotes(e.target.value.slice(0, 200))}
                     rows={2}
-                    className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 resize-none"
+                    className="w-full border border-purple-200 dark:border-purple-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 resize-none dark:bg-gray-800 dark:text-white dark:border-gray-600"
                   />
                   <button
                     onClick={() => { if (newName.trim()) addMedication(newName.trim(), newDosage.trim()); }}
