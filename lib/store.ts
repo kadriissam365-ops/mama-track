@@ -130,6 +130,17 @@ function loadFromStorage(): Partial<StoreState> {
   }
 }
 
+// Merge remote (authoritative) with local items not yet synced.
+// Prevents silent data loss when a Supabase write failed but the
+// item is still in localStorage — a legit concern on flaky connections
+// or short-lived auth errors.
+function mergeById<T extends { id: string }>(remote: T[], local: T[] | undefined): T[] {
+  if (!local || local.length === 0) return remote;
+  const remoteIds = new Set(remote.map((x) => x.id));
+  const unsynced = local.filter((x) => !remoteIds.has(x.id));
+  return [...remote, ...unsynced];
+}
+
 function saveToStorage(state: Partial<StoreState>) {
   if (typeof window === "undefined") return;
   try {
@@ -183,34 +194,32 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         });
       }
 
+      // Merge remote + any local items that never reached Supabase.
+      // Source of truth = remote, but we do not discard unsynced local items.
+      const local = loadFromStorage();
+      const mergedWater: WaterIntakeDay = { ...(local.waterIntake ?? {}), ...data.waterIntake };
+
+      const merged = {
+        dueDate: data.profile?.dueDate ?? local.dueDate ?? null,
+        mamaName: data.profile?.mamaName ?? local.mamaName ?? null,
+        babyName: data.profile?.babyName ?? local.babyName ?? null,
+        weightEntries: mergeById(data.weightEntries, local.weightEntries),
+        symptomEntries: mergeById(data.symptomEntries, local.symptomEntries),
+        kickSessions: mergeById(data.kickSessions, local.kickSessions),
+        contractionSessions: mergeById(data.contractionSessions, local.contractionSessions),
+        appointments: mergeById(data.appointments, local.appointments),
+        waterIntake: mergedWater,
+        checklistItems: mergeById(data.checklistItems, local.checklistItems),
+      };
+
       setState({
-        dueDate: data.profile?.dueDate ?? null,
-        mamaName: data.profile?.mamaName ?? null,
-        babyName: data.profile?.babyName ?? null,
-        weightEntries: data.weightEntries,
-        symptomEntries: data.symptomEntries,
-        kickSessions: data.kickSessions,
-        contractionSessions: data.contractionSessions,
-        appointments: data.appointments,
-        waterIntake: data.waterIntake,
-        checklistItems: data.checklistItems,
+        ...merged,
         loading: false,
         synced: true,
       });
 
-      // Save to localStorage as backup
-      saveToStorage({
-        dueDate: data.profile?.dueDate ?? null,
-        mamaName: data.profile?.mamaName ?? null,
-        babyName: data.profile?.babyName ?? null,
-        weightEntries: data.weightEntries,
-        symptomEntries: data.symptomEntries,
-        kickSessions: data.kickSessions,
-        contractionSessions: data.contractionSessions,
-        appointments: data.appointments,
-        waterIntake: data.waterIntake,
-        checklistItems: data.checklistItems,
-      });
+      // Save merged state back to localStorage
+      saveToStorage(merged);
     } catch (error) {
       captureError(error, { context: "loadFromSupabase" });
       // Fallback to localStorage
