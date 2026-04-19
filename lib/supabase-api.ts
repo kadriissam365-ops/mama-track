@@ -836,3 +836,389 @@ export async function deleteJournalNote(noteId: string, userId: string): Promise
     .eq('user_id', userId);
   return !error;
 }
+
+// ============== BABY NAME FAVORITES ==============
+
+export async function getBabyNameFavorites(userId: string): Promise<string[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('baby_name_favorites')
+    .select('nom')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: true });
+
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => r.nom as string);
+}
+
+export async function addBabyNameFavorite(userId: string, nom: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('baby_name_favorites')
+    .upsert({ user_id: userId, nom }, { onConflict: 'user_id,nom' });
+  return !error;
+}
+
+export async function removeBabyNameFavorite(userId: string, nom: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('baby_name_favorites')
+    .delete()
+    .eq('user_id', userId)
+    .eq('nom', nom);
+  return !error;
+}
+
+// ============== SHOPPING LIST ==============
+
+export interface ShoppingItem {
+  id: string;
+  categorie: string;
+  nom: string;
+  quantite: number;
+  priorite: 'Essentiel' | 'Pratique' | 'Bonus';
+  budgetEstime: number;
+  coche: boolean;
+  custom: boolean;
+}
+
+export async function getShoppingItems(userId: string): Promise<ShoppingItem[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('shopping_items')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: true });
+
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    id: r.id,
+    categorie: r.categorie,
+    nom: r.nom,
+    quantite: r.quantite,
+    priorite: r.priorite as ShoppingItem['priorite'],
+    budgetEstime: Number(r.budget_estime),
+    coche: r.coche,
+    custom: r.custom,
+  }));
+}
+
+export async function upsertShoppingItem(userId: string, item: ShoppingItem): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('shopping_items')
+    .upsert({
+      id: item.id,
+      user_id: userId,
+      categorie: item.categorie,
+      nom: item.nom,
+      quantite: item.quantite,
+      priorite: item.priorite,
+      budget_estime: item.budgetEstime,
+      coche: item.coche,
+      custom: item.custom,
+    }, { onConflict: 'id' });
+  return !error;
+}
+
+export async function deleteShoppingItem(userId: string, id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('shopping_items')
+    .delete()
+    .eq('user_id', userId)
+    .eq('id', id);
+  return !error;
+}
+
+export async function bulkInsertShoppingItems(userId: string, items: ShoppingItem[]): Promise<boolean> {
+  if (items.length === 0) return true;
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('shopping_items')
+    .upsert(items.map((item) => ({
+      id: item.id,
+      user_id: userId,
+      categorie: item.categorie,
+      nom: item.nom,
+      quantite: item.quantite,
+      priorite: item.priorite,
+      budget_estime: item.budgetEstime,
+      coche: item.coche,
+      custom: item.custom,
+    })), { onConflict: 'id' });
+  return !error;
+}
+
+export async function getShoppingBudget(userId: string): Promise<number | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('shopping_budget')
+    .select('budget')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (error || !data) return null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return Number((data as any).budget);
+}
+
+export async function setShoppingBudget(userId: string, budget: number): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('shopping_budget')
+    .upsert({ user_id: userId, budget, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+  return !error;
+}
+
+// ============== MEDICATIONS ==============
+
+export interface Medication {
+  id: string;
+  name: string;
+  dosage: string;
+  frequency: string;
+  time: string;
+  notes: string;
+  color: string;
+  active: boolean;
+}
+
+export interface MedicationLog {
+  medId: string;
+  date: string;
+  taken: boolean;
+}
+
+export async function getMedications(userId: string): Promise<Medication[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('medications')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: true });
+
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    id: r.id,
+    name: r.name,
+    dosage: r.dosage ?? '',
+    frequency: r.frequency ?? '1x',
+    time: r.time ?? '08:00',
+    notes: r.notes ?? '',
+    color: r.color ?? '',
+    active: r.active ?? true,
+  }));
+}
+
+export async function addMedication(userId: string, med: Omit<Medication, 'id'>): Promise<Medication | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('medications')
+    .insert({
+      user_id: userId,
+      name: med.name,
+      dosage: med.dosage,
+      frequency: med.frequency,
+      time: med.time,
+      notes: med.notes || null,
+      color: med.color,
+      active: med.active,
+    })
+    .select()
+    .single();
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    name: data.name,
+    dosage: data.dosage ?? '',
+    frequency: data.frequency ?? '1x',
+    time: data.time ?? '08:00',
+    notes: data.notes ?? '',
+    color: data.color ?? '',
+    active: data.active ?? true,
+  };
+}
+
+export async function deleteMedication(id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from('medications').delete().eq('id', id);
+  return !error;
+}
+
+export async function getMedicationLogs(userId: string): Promise<MedicationLog[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('medication_logs')
+    .select('med_id, date, taken')
+    .eq('user_id', userId);
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    medId: r.med_id,
+    date: r.date,
+    taken: r.taken,
+  }));
+}
+
+export async function upsertMedicationLog(
+  userId: string,
+  medId: string,
+  date: string,
+  taken: boolean
+): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('medication_logs')
+    .upsert({ user_id: userId, med_id: medId, date, taken }, { onConflict: 'user_id,med_id,date' });
+  return !error;
+}
+
+export async function deleteMedicationLog(userId: string, medId: string, date: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('medication_logs')
+    .delete()
+    .eq('user_id', userId)
+    .eq('med_id', medId)
+    .eq('date', date);
+  return !error;
+}
+
+// ============== EMERGENCY CONTACTS ==============
+
+export interface EmergencyContact {
+  id: string;
+  name: string;
+  phone: string;
+  role: string;
+  emoji: string;
+}
+
+export async function getEmergencyContacts(userId: string): Promise<EmergencyContact[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('emergency_contacts')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: true });
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    id: r.id,
+    name: r.name,
+    phone: r.phone,
+    role: r.role ?? 'Autre',
+    emoji: r.emoji ?? '📞',
+  }));
+}
+
+export async function addEmergencyContact(
+  userId: string,
+  contact: Omit<EmergencyContact, 'id'>
+): Promise<EmergencyContact | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('emergency_contacts')
+    .insert({
+      user_id: userId,
+      name: contact.name,
+      phone: contact.phone,
+      role: contact.role,
+      emoji: contact.emoji,
+    })
+    .select()
+    .single();
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    name: data.name,
+    phone: data.phone,
+    role: data.role ?? 'Autre',
+    emoji: data.emoji ?? '📞',
+  };
+}
+
+export async function updateEmergencyContact(
+  id: string,
+  contact: Partial<Omit<EmergencyContact, 'id'>>
+): Promise<boolean> {
+  const supabase = getSupabase();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const updateData: Record<string, any> = {};
+  if (contact.name !== undefined) updateData.name = contact.name;
+  if (contact.phone !== undefined) updateData.phone = contact.phone;
+  if (contact.role !== undefined) updateData.role = contact.role;
+  if (contact.emoji !== undefined) updateData.emoji = contact.emoji;
+  const { error } = await supabase
+    .from('emergency_contacts')
+    .update(updateData)
+    .eq('id', id);
+  return !error;
+}
+
+export async function deleteEmergencyContact(id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from('emergency_contacts').delete().eq('id', id);
+  return !error;
+}
+
+// ============== BIRTH PLAN ==============
+
+export async function getBirthPlan<T>(userId: string): Promise<T | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('birth_plan')
+    .select('data')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (error || !data) return null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return ((data as any).data ?? null) as T | null;
+}
+
+export async function saveBirthPlan<T>(userId: string, data: T): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('birth_plan')
+    .upsert(
+      { user_id: userId, data, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id' }
+    );
+  return !error;
+}
+
+// ============== DAILY NUTRITION ==============
+
+export async function getNutritionChecks(
+  userId: string,
+  date: string
+): Promise<Record<string, boolean>> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('nutrition_checks')
+    .select('checks')
+    .eq('user_id', userId)
+    .eq('date', date)
+    .maybeSingle();
+  if (error || !data) return {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return ((data as any).checks ?? {}) as Record<string, boolean>;
+}
+
+export async function saveNutritionChecks(
+  userId: string,
+  date: string,
+  checks: Record<string, boolean>
+): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase
+    .from('nutrition_checks')
+    .upsert(
+      { user_id: userId, date, checks, updated_at: new Date().toISOString() },
+      { onConflict: 'user_id,date' }
+    );
+  return !error;
+}

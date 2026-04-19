@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileDown, ChevronDown, ChevronUp, Check, X, Loader2, CheckCircle2 } from "lucide-react";
 import type jsPDFType from "jspdf";
 import { notifyPartner } from "@/lib/partner-notify-client";
+import { useAuth } from "@/lib/auth";
+import { getBirthPlan, saveBirthPlan } from "@/lib/supabase-api";
 
 interface ProjetNaissance {
   // Section 1 - Infos
@@ -111,11 +113,14 @@ function RadioField({ label, value, options, onChange }: {
 }
 
 export default function NaissancePage() {
+  const { user } = useAuth();
   const [projet, setProjet] = useState<ProjetNaissance>(DEFAULT_PROJET);
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([1]));
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Hydrate: localStorage first (instant), then Supabase override (authoritative).
   useEffect(() => {
     const stored = localStorage.getItem("mamatrack-projet-naissance");
     if (stored) {
@@ -123,10 +128,29 @@ export default function NaissancePage() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      const remote = await getBirthPlan<ProjetNaissance>(user.id);
+      if (cancelled || !remote) return;
+      setProjet(prev => ({ ...prev, ...remote }));
+      localStorage.setItem("mamatrack-projet-naissance", JSON.stringify({ ...DEFAULT_PROJET, ...remote }));
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
+
   const update = <K extends keyof ProjetNaissance>(key: K, value: ProjetNaissance[K]) => {
     setProjet(prev => {
       const next = { ...prev, [key]: value };
       localStorage.setItem("mamatrack-projet-naissance", JSON.stringify(next));
+      // Debounced remote save (rapid typing → one network call).
+      if (user) {
+        if (saveTimer.current) clearTimeout(saveTimer.current);
+        saveTimer.current = setTimeout(() => {
+          saveBirthPlan(user.id, next).catch(() => { /* silent: localStorage is authoritative offline */ });
+        }, 600);
+      }
       return next;
     });
   };

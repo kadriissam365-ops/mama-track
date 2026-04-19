@@ -240,15 +240,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    
+
     // Load from localStorage first for immediate display
     const localData = loadFromStorage();
     if (Object.keys(localData).length > 0) {
       setState(s => ({
         ...s,
         ...localData,
-        checklistItems: localData.checklistItems?.length 
-          ? localData.checklistItems 
+        checklistItems: localData.checklistItems?.length
+          ? localData.checklistItems
           : DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` })),
       }));
     } else {
@@ -260,10 +260,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // Load remote data ONLY when auth has resolved and a real user is present.
+  // Critically, when auth is still resolving or user is absent, we DO NOT
+  // touch state (leaves localStorage cache intact). This prevents the race
+  // "auth flickers → load runs with user=null → remote fetches fail silently
+  // → empty state overwrites localStorage".
   useEffect(() => {
-    if (mounted && !authLoading && user) {
+    if (!mounted) return;
+    if (authLoading) return;
+    if (user) {
       loadData();
-    } else if (mounted && !authLoading && !user) {
+    } else {
+      // Signed-out: stop the loading spinner but do NOT wipe local state.
       setState(s => ({ ...s, loading: false }));
     }
   }, [mounted, authLoading, user, loadData]);
