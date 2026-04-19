@@ -15,6 +15,10 @@ export type {
   Appointment,
   WaterIntakeDay,
   ChecklistItem,
+  ShoppingItem,
+  Medication,
+  MedicationLog,
+  EmergencyContact,
 } from "./supabase-api";
 
 import type {
@@ -25,7 +29,14 @@ import type {
   Appointment,
   WaterIntakeDay,
   ChecklistItem,
+  ShoppingItem,
+  Medication,
+  MedicationLog,
+  EmergencyContact,
 } from "./supabase-api";
+
+export type BirthPlanData = Record<string, unknown>;
+export type NutritionChecks = Record<string, Record<string, boolean>>;
 
 export interface StoreState {
   dueDate: string | null;
@@ -38,6 +49,14 @@ export interface StoreState {
   appointments: Appointment[];
   waterIntake: WaterIntakeDay;
   checklistItems: ChecklistItem[];
+  babyNameFavorites: string[];
+  shoppingItems: ShoppingItem[];
+  shoppingBudget: number | null;
+  medications: Medication[];
+  medicationLogs: MedicationLog[];
+  emergencyContacts: EmergencyContact[];
+  birthPlan: BirthPlanData | null;
+  nutritionChecks: NutritionChecks;
   loading: boolean;
   synced: boolean;
 }
@@ -62,6 +81,19 @@ export interface StoreActions {
   toggleChecklistItem: (id: string) => Promise<void>;
   addChecklistItem: (item: Omit<ChecklistItem, "id">) => Promise<void>;
   removeChecklistItem: (id: string) => Promise<void>;
+  toggleBabyNameFavorite: (nom: string) => Promise<void>;
+  setShoppingItems: (items: ShoppingItem[]) => Promise<void>;
+  upsertShoppingItem: (item: ShoppingItem) => Promise<void>;
+  removeShoppingItem: (id: string) => Promise<void>;
+  setShoppingBudgetValue: (budget: number) => Promise<void>;
+  addMedicationEntry: (med: Omit<Medication, "id">) => Promise<void>;
+  removeMedicationEntry: (id: string) => Promise<void>;
+  toggleMedicationTaken: (medId: string, date: string) => Promise<void>;
+  addEmergencyContactEntry: (contact: Omit<EmergencyContact, "id">) => Promise<void>;
+  updateEmergencyContactEntry: (id: string, contact: Partial<Omit<EmergencyContact, "id">>) => Promise<void>;
+  removeEmergencyContactEntry: (id: string) => Promise<void>;
+  saveBirthPlanData: (data: BirthPlanData) => Promise<void>;
+  setNutritionChecksForDate: (date: string, checks: Record<string, boolean>) => Promise<void>;
   refreshData: () => Promise<void>;
 }
 
@@ -107,6 +139,14 @@ const initialState: StoreState = {
   appointments: [],
   waterIntake: {},
   checklistItems: DEFAULT_CHECKLIST_ITEMS,
+  babyNameFavorites: [],
+  shoppingItems: [],
+  shoppingBudget: null,
+  medications: [],
+  medicationLogs: [],
+  emergencyContacts: [],
+  birthPlan: null,
+  nutritionChecks: {},
   loading: true,
   synced: false,
 };
@@ -139,6 +179,30 @@ function mergeById<T extends { id: string }>(remote: T[], local: T[] | undefined
   const remoteIds = new Set(remote.map((x) => x.id));
   const unsynced = local.filter((x) => !remoteIds.has(x.id));
   return [...remote, ...unsynced];
+}
+
+// Merge two string arrays (union). Used for baby_name_favorites where
+// remote is authoritative but local may have unsynced adds.
+function mergeStringSet(remote: string[], local: string[] | undefined): string[] {
+  if (!local || local.length === 0) return remote;
+  const set = new Set(remote);
+  for (const s of local) set.add(s);
+  return Array.from(set);
+}
+
+// Merge MedicationLogs by (medId, date) composite key.
+function mergeMedLogs(remote: MedicationLog[], local: MedicationLog[] | undefined): MedicationLog[] {
+  if (!local || local.length === 0) return remote;
+  const key = (l: MedicationLog) => `${l.medId}|${l.date}`;
+  const remoteKeys = new Set(remote.map(key));
+  const unsynced = local.filter((x) => !remoteKeys.has(key(x)));
+  return [...remote, ...unsynced];
+}
+
+// Merge NutritionChecks: remote date entries win, local dates not in remote preserved.
+function mergeNutrition(remote: NutritionChecks, local: NutritionChecks | undefined): NutritionChecks {
+  if (!local || Object.keys(local).length === 0) return remote;
+  return { ...local, ...remote };
 }
 
 function saveToStorage(state: Partial<StoreState>) {
@@ -194,6 +258,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         });
       }
 
+      // Phase 3: extra tables (persistence migration 20260419).
+      // Fetched separately to keep loadAllUserData untouched and fail-soft.
+      const todayDate = new Date().toISOString().slice(0, 10);
+      const [
+        babyNameFavorites,
+        shoppingItems,
+        shoppingBudget,
+        medications,
+        medicationLogs,
+        emergencyContacts,
+        birthPlan,
+        todayNutrition,
+      ] = await Promise.all([
+        api.getBabyNameFavorites(user.id).catch(() => [] as string[]),
+        api.getShoppingItems(user.id).catch(() => [] as api.ShoppingItem[]),
+        api.getShoppingBudget(user.id).catch(() => null),
+        api.getMedications(user.id).catch(() => [] as api.Medication[]),
+        api.getMedicationLogs(user.id).catch(() => [] as api.MedicationLog[]),
+        api.getEmergencyContacts(user.id).catch(() => [] as api.EmergencyContact[]),
+        api.getBirthPlan<BirthPlanData>(user.id).catch(() => null),
+        api.getNutritionChecks(user.id, todayDate).catch(() => ({} as Record<string, boolean>)),
+      ]);
+
       // Merge remote + any local items that never reached Supabase.
       // Source of truth = remote, but we do not discard unsynced local items.
       const local = loadFromStorage();
@@ -210,6 +297,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         appointments: mergeById(data.appointments, local.appointments),
         waterIntake: mergedWater,
         checklistItems: mergeById(data.checklistItems, local.checklistItems),
+        babyNameFavorites: mergeStringSet(babyNameFavorites, local.babyNameFavorites),
+        shoppingItems: mergeById(shoppingItems, local.shoppingItems),
+        shoppingBudget: shoppingBudget ?? local.shoppingBudget ?? null,
+        medications: mergeById(medications, local.medications),
+        medicationLogs: mergeMedLogs(medicationLogs, local.medicationLogs),
+        emergencyContacts: mergeById(emergencyContacts, local.emergencyContacts),
+        birthPlan: (birthPlan ?? local.birthPlan ?? null) as BirthPlanData | null,
+        nutritionChecks: mergeNutrition(
+          Object.keys(todayNutrition).length ? { [todayDate]: todayNutrition } : {},
+          local.nutritionChecks,
+        ),
       };
 
       setState({
@@ -660,6 +758,190 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     });
   }, [user]);
 
+  // ============== BABY NAME FAVORITES ==============
+
+  const toggleBabyNameFavorite = useCallback(async (nom: string) => {
+    let willAdd = false;
+    setState(s => {
+      const has = s.babyNameFavorites.includes(nom);
+      willAdd = !has;
+      const next = has
+        ? s.babyNameFavorites.filter(n => n !== nom)
+        : [...s.babyNameFavorites, nom];
+      saveToStorage({ babyNameFavorites: next });
+      return { ...s, babyNameFavorites: next };
+    });
+
+    if (user) {
+      if (willAdd) await api.addBabyNameFavorite(user.id, nom);
+      else await api.removeBabyNameFavorite(user.id, nom);
+    }
+  }, [user]);
+
+  // ============== SHOPPING ==============
+
+  const setShoppingItems = useCallback(async (items: ShoppingItem[]) => {
+    setState(s => ({ ...s, shoppingItems: items }));
+    saveToStorage({ shoppingItems: items });
+    if (user) {
+      await api.bulkInsertShoppingItems(user.id, items);
+    }
+  }, [user]);
+
+  const upsertShoppingItem = useCallback(async (item: ShoppingItem) => {
+    setState(s => {
+      const exists = s.shoppingItems.some(i => i.id === item.id);
+      const next = exists
+        ? s.shoppingItems.map(i => (i.id === item.id ? item : i))
+        : [...s.shoppingItems, item];
+      saveToStorage({ shoppingItems: next });
+      return { ...s, shoppingItems: next };
+    });
+    if (user) {
+      await api.upsertShoppingItem(user.id, item);
+    }
+  }, [user]);
+
+  const removeShoppingItem = useCallback(async (id: string) => {
+    setState(s => {
+      const next = s.shoppingItems.filter(i => i.id !== id);
+      saveToStorage({ shoppingItems: next });
+      return { ...s, shoppingItems: next };
+    });
+    if (user) {
+      await api.deleteShoppingItem(user.id, id);
+    }
+  }, [user]);
+
+  const setShoppingBudgetValue = useCallback(async (budget: number) => {
+    setState(s => ({ ...s, shoppingBudget: budget }));
+    saveToStorage({ shoppingBudget: budget });
+    if (user) {
+      await api.setShoppingBudget(user.id, budget);
+    }
+  }, [user]);
+
+  // ============== MEDICATIONS ==============
+
+  const addMedicationEntry = useCallback(async (med: Omit<Medication, "id">) => {
+    const tempId = generateId();
+    const newMed: Medication = { ...med, id: tempId };
+    setState(s => {
+      const next = [...s.medications, newMed];
+      saveToStorage({ medications: next });
+      return { ...s, medications: next };
+    });
+
+    if (user) {
+      const result = await api.addMedication(user.id, med);
+      if (result) {
+        setState(s => {
+          const next = s.medications.map(m => (m.id === tempId ? result : m));
+          saveToStorage({ medications: next });
+          return { ...s, medications: next };
+        });
+      }
+    }
+  }, [user]);
+
+  const removeMedicationEntry = useCallback(async (id: string) => {
+    setState(s => {
+      const next = s.medications.filter(m => m.id !== id);
+      const nextLogs = s.medicationLogs.filter(l => l.medId !== id);
+      saveToStorage({ medications: next, medicationLogs: nextLogs });
+      return { ...s, medications: next, medicationLogs: nextLogs };
+    });
+    if (user) {
+      await api.deleteMedication(id);
+    }
+  }, [user]);
+
+  const toggleMedicationTaken = useCallback(async (medId: string, date: string) => {
+    let willTake = false;
+    setState(s => {
+      const existing = s.medicationLogs.find(l => l.medId === medId && l.date === date);
+      willTake = !existing;
+      const next = existing
+        ? s.medicationLogs.filter(l => !(l.medId === medId && l.date === date))
+        : [...s.medicationLogs, { medId, date, taken: true }];
+      saveToStorage({ medicationLogs: next });
+      return { ...s, medicationLogs: next };
+    });
+
+    if (user) {
+      if (willTake) await api.upsertMedicationLog(user.id, medId, date, true);
+      else await api.deleteMedicationLog(user.id, medId, date);
+    }
+  }, [user]);
+
+  // ============== EMERGENCY CONTACTS ==============
+
+  const addEmergencyContactEntry = useCallback(async (contact: Omit<EmergencyContact, "id">) => {
+    const tempId = generateId();
+    const newContact: EmergencyContact = { ...contact, id: tempId };
+    setState(s => {
+      const next = [...s.emergencyContacts, newContact];
+      saveToStorage({ emergencyContacts: next });
+      return { ...s, emergencyContacts: next };
+    });
+
+    if (user) {
+      const result = await api.addEmergencyContact(user.id, contact);
+      if (result) {
+        setState(s => {
+          const next = s.emergencyContacts.map(c => (c.id === tempId ? result : c));
+          saveToStorage({ emergencyContacts: next });
+          return { ...s, emergencyContacts: next };
+        });
+      }
+    }
+  }, [user]);
+
+  const updateEmergencyContactEntry = useCallback(async (id: string, update: Partial<Omit<EmergencyContact, "id">>) => {
+    setState(s => {
+      const next = s.emergencyContacts.map(c => (c.id === id ? { ...c, ...update } : c));
+      saveToStorage({ emergencyContacts: next });
+      return { ...s, emergencyContacts: next };
+    });
+    if (user) {
+      await api.updateEmergencyContact(id, update);
+    }
+  }, [user]);
+
+  const removeEmergencyContactEntry = useCallback(async (id: string) => {
+    setState(s => {
+      const next = s.emergencyContacts.filter(c => c.id !== id);
+      saveToStorage({ emergencyContacts: next });
+      return { ...s, emergencyContacts: next };
+    });
+    if (user) {
+      await api.deleteEmergencyContact(id);
+    }
+  }, [user]);
+
+  // ============== BIRTH PLAN ==============
+
+  const saveBirthPlanData = useCallback(async (data: BirthPlanData) => {
+    setState(s => ({ ...s, birthPlan: data }));
+    saveToStorage({ birthPlan: data });
+    if (user) {
+      await api.saveBirthPlan(user.id, data);
+    }
+  }, [user]);
+
+  // ============== NUTRITION CHECKS ==============
+
+  const setNutritionChecksForDate = useCallback(async (date: string, checks: Record<string, boolean>) => {
+    setState(s => {
+      const next = { ...s.nutritionChecks, [date]: checks };
+      saveToStorage({ nutritionChecks: next });
+      return { ...s, nutritionChecks: next };
+    });
+    if (user) {
+      await api.saveNutritionChecks(user.id, date, checks);
+    }
+  }, [user]);
+
   const refreshData = useCallback(async () => {
     await loadData();
   }, [loadData]);
@@ -685,6 +967,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     toggleChecklistItem,
     addChecklistItem,
     removeChecklistItem,
+    toggleBabyNameFavorite,
+    setShoppingItems,
+    upsertShoppingItem,
+    removeShoppingItem,
+    setShoppingBudgetValue,
+    addMedicationEntry,
+    removeMedicationEntry,
+    toggleMedicationTaken,
+    addEmergencyContactEntry,
+    updateEmergencyContactEntry,
+    removeEmergencyContactEntry,
+    saveBirthPlanData,
+    setNutritionChecksForDate,
     refreshData,
   };
 

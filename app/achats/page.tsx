@@ -1,19 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, ChevronDown, ChevronUp, Trash2, ShoppingCart, DollarSign, CheckCircle2 } from "lucide-react";
+import { useStore, type ShoppingItem } from "@/lib/store";
 
-interface AchatItem {
-  id: string;
-  categorie: string;
-  nom: string;
-  quantite: number;
-  priorite: 'Essentiel' | 'Pratique' | 'Bonus';
-  budgetEstime: number;
-  coche: boolean;
-  custom: boolean;
-}
+type AchatItem = ShoppingItem;
 
 const ACHATS_DEFAUT: AchatItem[] = [
   { id: 'c1', categorie: '🛏️ Chambre', nom: 'Lit bébé / berceau', quantite: 1, priorite: 'Essentiel', budgetEstime: 150, coche: false, custom: false },
@@ -46,7 +38,17 @@ const PRIORITE_COLORS: Record<string, string> = {
 };
 
 export default function AchatsPage() {
-  const [items, setItems] = useState<AchatItem[]>([]);
+  const {
+    shoppingItems,
+    shoppingBudget,
+    setShoppingItems,
+    upsertShoppingItem,
+    removeShoppingItem,
+    setShoppingBudgetValue,
+    loading,
+    synced,
+  } = useStore();
+  const items = shoppingItems;
   const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
   const [budgetUser, setBudgetUser] = useState<string>('');
   const [showAddForm, setShowAddForm] = useState(false);
@@ -57,49 +59,57 @@ export default function AchatsPage() {
     budgetEstime: '',
     quantite: '1',
   });
+  const seededRef = useRef(false);
+  const budgetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load from localStorage
+  // First mount: open all categories.
   useEffect(() => {
-    const saved = localStorage.getItem('achats-bebe');
-    if (saved) {
-      try {
-        setItems(JSON.parse(saved));
-      } catch {
-        setItems(ACHATS_DEFAUT);
-      }
-    } else {
-      setItems(ACHATS_DEFAUT);
-    }
-    const savedBudget = localStorage.getItem('achats-bebe-budget');
-    if (savedBudget) setBudgetUser(savedBudget);
-
-    // Open all categories by default
     const open: Record<string, boolean> = {};
     CATEGORIES_ORDER.forEach(c => { open[c] = true; });
     setOpenCategories(open);
   }, []);
 
-  // Save to localStorage whenever items change
+  // Hydrate budget display from store once authoritative value is available.
   useEffect(() => {
-    if (items.length > 0) {
-      localStorage.setItem('achats-bebe', JSON.stringify(items));
-    }
-  }, [items]);
+    if (shoppingBudget != null) setBudgetUser(String(shoppingBudget));
+  }, [shoppingBudget]);
 
+  // Seed defaults once the first load completes and both remote + local are empty.
+  // synced gates this so we never replace a valid remote list with defaults.
   useEffect(() => {
-    localStorage.setItem('achats-bebe-budget', budgetUser);
-  }, [budgetUser]);
+    if (loading || seededRef.current) return;
+    if (!synced) return;
+    if (items.length === 0) {
+      seededRef.current = true;
+      void setShoppingItems(ACHATS_DEFAUT);
+    } else {
+      seededRef.current = true;
+    }
+  }, [loading, synced, items.length, setShoppingItems]);
 
   const toggleItem = (id: string) => {
-    setItems(prev => prev.map(item => item.id === id ? { ...item, coche: !item.coche } : item));
+    const it = items.find(i => i.id === id);
+    if (!it) return;
+    void upsertShoppingItem({ ...it, coche: !it.coche });
   };
 
   const deleteItem = (id: string) => {
-    setItems(prev => prev.filter(item => item.id !== id));
+    void removeShoppingItem(id);
   };
 
   const toggleCategorie = (cat: string) => {
     setOpenCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
+  };
+
+  const commitBudget = (value: string) => {
+    setBudgetUser(value);
+    const n = parseFloat(value);
+    if (!isNaN(n)) {
+      if (budgetTimer.current) clearTimeout(budgetTimer.current);
+      budgetTimer.current = setTimeout(() => {
+        void setShoppingBudgetValue(n);
+      }, 500);
+    }
   };
 
   const addCustomItem = () => {
@@ -114,7 +124,7 @@ export default function AchatsPage() {
       coche: false,
       custom: true,
     };
-    setItems(prev => [...prev, item]);
+    void upsertShoppingItem(item);
     setNewItem({ nom: '', categorie: '🎁 Divers', priorite: 'Pratique', budgetEstime: '', quantite: '1' });
     setShowAddForm(false);
   };
@@ -172,7 +182,7 @@ export default function AchatsPage() {
             <input
               type="number"
               value={budgetUser}
-              onChange={e => setBudgetUser(e.target.value)}
+              onChange={e => commitBudget(e.target.value)}
               placeholder="ex: 1500"
               className="w-full border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
             />

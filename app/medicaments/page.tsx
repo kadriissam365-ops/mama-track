@@ -1,28 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Pill, Plus, Check, Trash2, Clock, Bell } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import ConfirmDialog from "@/components/ConfirmDialog";
-
-interface Medication {
-  id: string;
-  name: string;
-  dosage: string;
-  frequency: string;
-  time: string;
-  notes: string;
-  color: string;
-  active: boolean;
-}
-
-interface MedLog {
-  medId: string;
-  date: string;
-  taken: boolean;
-}
+import { useStore, type Medication } from "@/lib/store";
 
 const PRESET_MEDS = [
   { name: "Acide folique", dosage: "400 µg", emoji: "💊", desc: "Prévention anomalies du tube neural" },
@@ -55,31 +39,14 @@ const FREQUENCIES = [
   { id: "semaine", label: "1x/semaine" },
 ];
 
-function loadMeds(): Medication[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(localStorage.getItem("mt-medications") || "[]");
-  } catch { return []; }
-}
-
-function saveMeds(meds: Medication[]) {
-  localStorage.setItem("mt-medications", JSON.stringify(meds));
-}
-
-function loadLogs(): MedLog[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(localStorage.getItem("mt-med-logs") || "[]");
-  } catch { return []; }
-}
-
-function saveLogs(logs: MedLog[]) {
-  localStorage.setItem("mt-med-logs", JSON.stringify(logs));
-}
-
 export default function MedicamentsPage() {
-  const [medications, setMedications] = useState<Medication[]>([]);
-  const [logs, setLogs] = useState<MedLog[]>([]);
+  const {
+    medications,
+    medicationLogs: logs,
+    addMedicationEntry,
+    removeMedicationEntry,
+    toggleMedicationTaken,
+  } = useStore();
   const [showAdd, setShowAdd] = useState(false);
   const [showPresets, setShowPresets] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -92,14 +59,8 @@ export default function MedicamentsPage() {
 
   const today = format(new Date(), "yyyy-MM-dd");
 
-  useEffect(() => {
-    setMedications(loadMeds());
-    setLogs(loadLogs());
-  }, []);
-
   function addMedication(name: string, dosage: string) {
-    const med: Medication = {
-      id: crypto.randomUUID(),
+    void addMedicationEntry({
       name,
       dosage,
       frequency: newFrequency,
@@ -107,10 +68,7 @@ export default function MedicamentsPage() {
       notes: newNotes,
       color: MED_COLORS[medications.length % MED_COLORS.length],
       active: true,
-    };
-    const updated = [...medications, med];
-    setMedications(updated);
-    saveMeds(updated);
+    });
     setNewName("");
     setNewDosage("");
     setNewNotes("");
@@ -118,25 +76,12 @@ export default function MedicamentsPage() {
   }
 
   function removeMedication(id: string) {
-    const updated = medications.filter((m) => m.id !== id);
-    setMedications(updated);
-    saveMeds(updated);
-    const updatedLogs = logs.filter((l) => l.medId !== id);
-    setLogs(updatedLogs);
-    saveLogs(updatedLogs);
+    void removeMedicationEntry(id);
     setConfirmDelete(null);
   }
 
   function toggleTaken(medId: string) {
-    const existing = logs.find((l) => l.medId === medId && l.date === today);
-    let updated: MedLog[];
-    if (existing) {
-      updated = logs.filter((l) => !(l.medId === medId && l.date === today));
-    } else {
-      updated = [...logs, { medId, date: today, taken: true }];
-    }
-    setLogs(updated);
-    saveLogs(updated);
+    void toggleMedicationTaken(medId, today);
   }
 
   function isTakenToday(medId: string): boolean {

@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Heart, Shuffle, X } from "lucide-react";
 import { prenoms, type Prenom } from "@/lib/prenoms-data";
-
-const STORAGE_KEY = "prenom-favoris";
+import { useStore } from "@/lib/store";
 
 const GENRE_CONFIG = {
   F: { label: "Fille 💗", border: "border-pink-300", bg: "bg-pink-50 dark:bg-pink-950/30", badge: "bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400", dot: "bg-pink-400" },
@@ -65,29 +64,17 @@ function PrenomsCard({
 }
 
 export default function PrenomsPage() {
+  const { babyNameFavorites, toggleBabyNameFavorite } = useStore();
   const [tab, setTab] = useState<"tous" | "favoris">("tous");
   const [genreFilter, setGenreFilter] = useState<"" | "M" | "F" | "mixte">("");
   const [origineFilter, setOrigineFilter] = useState("");
   const [lettreFilter, setLettreFilter] = useState("");
   const [search, setSearch] = useState("");
-  const [favoris, setFavoris] = useState<string[]>([]);
   const [surprisePrenom, setSurprisePrenom] = useState<Prenom | null>(null);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setFavoris(JSON.parse(stored));
-      } catch {}
-    }
-  }, []);
-
+  const favoris = babyNameFavorites;
   const toggleFavori = (nom: string) => {
-    setFavoris((prev) => {
-      const next = prev.includes(nom) ? prev.filter((n) => n !== nom) : [...prev, nom];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      return next;
-    });
+    void toggleBabyNameFavorite(nom);
   };
 
   const filtered = useMemo(() => {

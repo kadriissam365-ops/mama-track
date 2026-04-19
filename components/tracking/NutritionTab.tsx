@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
+import { useStore } from "@/lib/store";
 
 interface NutrientItem {
   id: string;
@@ -57,10 +58,6 @@ const NUTRIENTS: NutrientItem[] = [
   },
 ];
 
-function getStorageKey(date: string) {
-  return `nutrition-${date}`;
-}
-
 function getScoreMessage(score: number, total: number): { text: string; emoji: string } {
   const ratio = score / total;
   if (ratio === 1) return { text: "Parfait ! Bébé est comblé 💗", emoji: "🌟" };
@@ -72,30 +69,15 @@ function getScoreMessage(score: number, total: number): { text: string; emoji: s
 
 export default function NutritionTab() {
   const today = format(new Date(), "yyyy-MM-dd");
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const { nutritionChecks, setNutritionChecksForDate } = useStore();
+  const checked = nutritionChecks[today] ?? {};
   const [loaded, setLoaded] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const key = getStorageKey(today);
-      const saved = localStorage.getItem(key);
-      if (saved) {
-        try {
-          setChecked(JSON.parse(saved));
-        } catch {
-          setChecked({});
-        }
-      }
-      setLoaded(true);
-    }
-  }, [today]);
+  useEffect(() => { setLoaded(true); }, []);
 
   const toggleItem = (id: string) => {
-    const newChecked = { ...checked, [id]: !checked[id] };
-    setChecked(newChecked);
-    if (typeof window !== "undefined") {
-      localStorage.setItem(getStorageKey(today), JSON.stringify(newChecked));
-    }
+    const next = { ...checked, [id]: !checked[id] };
+    void setNutritionChecksForDate(today, next);
   };
 
   const score = NUTRIENTS.filter((n) => checked[n.id]).length;

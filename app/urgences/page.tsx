@@ -1,17 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, Plus, Trash2, AlertTriangle, Hospital, Heart, Siren, Edit3, Save, X } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
-
-interface EmergencyContact {
-  id: string;
-  name: string;
-  phone: string;
-  role: string;
-  emoji: string;
-}
+import { useStore, type EmergencyContact } from "@/lib/store";
 
 const PRESET_ROLES = [
   { role: "Maternité", emoji: "🏥" },
@@ -68,19 +61,13 @@ const EMERGENCY_SIGNS = [
   },
 ];
 
-function loadContacts(): EmergencyContact[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(localStorage.getItem("mt-emergency-contacts") || "[]");
-  } catch { return []; }
-}
-
-function saveContacts(contacts: EmergencyContact[]) {
-  localStorage.setItem("mt-emergency-contacts", JSON.stringify(contacts));
-}
-
 export default function UrgencesPage() {
-  const [contacts, setContacts] = useState<EmergencyContact[]>([]);
+  const {
+    emergencyContacts: contacts,
+    addEmergencyContactEntry,
+    updateEmergencyContactEntry,
+    removeEmergencyContactEntry,
+  } = useStore();
   const [showAdd, setShowAdd] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -90,35 +77,24 @@ export default function UrgencesPage() {
   const [phone, setPhone] = useState("");
   const [selectedRole, setSelectedRole] = useState(PRESET_ROLES[0]);
 
-  useEffect(() => {
-    setContacts(loadContacts());
-  }, []);
-
   function addContact() {
     if (!name.trim() || !phone.trim()) return;
-    const contact: EmergencyContact = {
-      id: editId || crypto.randomUUID(),
+    const payload = {
       name: name.trim(),
       phone: phone.trim(),
       role: selectedRole.role,
       emoji: selectedRole.emoji,
     };
-
-    let updated: EmergencyContact[];
     if (editId) {
-      updated = contacts.map((c) => (c.id === editId ? contact : c));
+      void updateEmergencyContactEntry(editId, payload);
     } else {
-      updated = [...contacts, contact];
+      void addEmergencyContactEntry(payload);
     }
-    setContacts(updated);
-    saveContacts(updated);
     resetForm();
   }
 
   function removeContact(id: string) {
-    const updated = contacts.filter((c) => c.id !== id);
-    setContacts(updated);
-    saveContacts(updated);
+    void removeEmergencyContactEntry(id);
     setConfirmDelete(null);
   }
 
