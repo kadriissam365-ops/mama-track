@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const STATIC_CACHE = `mamatrack-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `mamatrack-dynamic-${CACHE_VERSION}`;
 
@@ -34,12 +34,19 @@ self.addEventListener('activate', (event) => {
 // Stratégie fetch différenciée
 self.addEventListener('fetch', (event) => {
   const { request } = event;
+
+  // Only GET is cacheable. Let everything else pass through untouched —
+  // cache.put() throws on POST/PUT/DELETE/PATCH responses, and intercepting
+  // mutations risks double-consuming the response body.
+  if (request.method !== 'GET') return;
+
   const url = new URL(request.url);
 
-  // API Supabase : network only (jamais cacher les données)
-  if (url.hostname.includes('supabase.co')) {
-    return; // laisser passer sans cache
-  }
+  // Skip cross-origin APIs entirely (Supabase, third-party).
+  if (url.origin !== self.location.origin) return;
+
+  // Skip app API routes — they shouldn't be cached.
+  if (url.pathname.startsWith('/api/')) return;
 
   // Navigation HTML : network first, fallback cache
   if (request.mode === 'navigate') {
@@ -47,7 +54,7 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then(response => {
           const clone = response.clone();
-          caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, clone));
+          caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, clone)).catch(() => {});
           return response;
         })
         .catch(() => caches.match(request).then(r => r || caches.match('/')))
@@ -61,7 +68,8 @@ self.addEventListener('fetch', (event) => {
       caches.match(request).then(cached => {
         if (cached) return cached;
         return fetch(request).then(response => {
-          caches.open(STATIC_CACHE).then(cache => cache.put(request, response.clone()));
+          const clone = response.clone();
+          caches.open(STATIC_CACHE).then(cache => cache.put(request, clone)).catch(() => {});
           return response;
         });
       })
@@ -74,7 +82,8 @@ self.addEventListener('fetch', (event) => {
     fetch(request)
       .then(response => {
         if (response.ok) {
-          caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, response.clone()));
+          const clone = response.clone();
+          caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, clone)).catch(() => {});
         }
         return response;
       })
