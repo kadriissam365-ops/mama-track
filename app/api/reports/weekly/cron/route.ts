@@ -15,7 +15,7 @@ interface PushSub {
 }
 
 async function sendPushForUser(
-  webpush: typeof import("web-push").default,
+  webpush: typeof import("web-push"),
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: any,
   userId: string,
