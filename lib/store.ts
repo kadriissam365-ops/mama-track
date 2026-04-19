@@ -484,9 +484,18 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           ...s,
           appointments: s.appointments.map(a => a.id === tempId ? result : a),
         }));
+        // Fire-and-forget: notify opted-in duo partners. Ignored if user has none.
+        fetch("/api/partner-notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "appointment",
+            details: { appointmentTitle: result.title },
+          }),
+        }).catch(() => {});
       }
     }
-    
+
     setState(s => {
       saveToStorage({ appointments: s.appointments });
       return s;

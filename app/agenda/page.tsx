@@ -7,6 +7,7 @@ import { format, isPast, isToday, isFuture } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Plus, Calendar, Check, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { notifyPartner } from "@/lib/partner-notify-client";
 
 interface ChecklistExam {
   trimester: 1 | 2 | 3;
@@ -56,6 +57,7 @@ export default function AgendaPage() {
       ...form,
       done: false,
     });
+    notifyPartner("appointment", { appointmentTitle: form.title });
     setForm({ title: "", date: "", time: "09:00", doctor: "", location: "", notes: "" });
     setShowForm(false);
   };
@@ -289,6 +291,7 @@ export default function AgendaPage() {
                                   time: "09:00",
                                   done: false,
                                 });
+                                notifyPartner("appointment", { appointmentTitle: title });
                               }
                             }}
                             className="text-xs bg-pink-100 dark:bg-pink-900/30 text-pink-600 px-2 py-1 rounded-lg hover:bg-pink-200 transition-colors"

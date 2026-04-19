@@ -36,6 +36,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Prenez 400 µg d'acide folique par jour pour protéger le tube neural de bébé. C'est le moment le plus important pour ce supplément.",
     weeklySymptoms: ["Aucun symptôme visible", "Légère fatigue possible", "Règles absentes"],
     weeklyMilestone: "Le voyage commence ! ✨",
+    testimonials: ["Je ne sais même pas encore si je suis enceinte mais j'ai commencé l'acide folique 🤞", "On essaie depuis 6 mois, cette fois-ci j'y crois à fond 💫"],
     dailyTips: [
       "Prenez votre acide folique dès le matin avec un grand verre d'eau.",
       "Notez la date de vos dernières règles, elle sera importante pour votre médecin.",
@@ -64,6 +65,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 1,
     weeklyTip: "Hydratez-vous bien (1,5 à 2 litres d'eau par jour) et continuez vos compléments d'acide folique sans interruption.",
     weeklySymptoms: ["Implantation (légères crampes)", "Spotting d'implantation possible", "Seins sensibles"],
+    testimonials: ["J'ai eu un léger spotting, j'ai paniqué avant de comprendre que c'était l'implantation 😅", "Mes seins sont super sensibles, je sens que quelque chose a changé 💕"],
     dailyTips: [
       "Un léger saignement d'implantation est normal, ne paniquez pas.",
       "Buvez au moins 1,5 litre d'eau aujourd'hui pour favoriser l'implantation.",
@@ -93,6 +95,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Évitez la charcuterie crue, les fromages à pâte molle et les œufs crus dès maintenant pour protéger bébé des infections.",
     weeklySymptoms: ["Fatigue inhabituelle", "Légères nausées", "Seins gonflés"],
     weeklyMilestone: "Le système nerveux se met en place !",
+    testimonials: ["Je dors 12h par nuit et je pourrais encore faire la sieste, c'est dingue 😴", "Les odeurs que j'adorais me donnent la nausée maintenant, trop bizarre !"],
     dailyTips: [
       "Reposez-vous autant que possible, votre corps travaille énormément.",
       "Continuez l'acide folique sans interruption.",
@@ -138,6 +141,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Contre les nausées : grignotez des crackers avant de lever, buvez du gingembre en infusion, fractionnez vos repas en 5-6 petites prises.",
     weeklySymptoms: ["Nausées matinales", "Fatigue intense", "Sautes d'humeur"],
     weeklyMilestone: "Le cœur de bébé bat pour la première fois ! 💓",
+    testimonials: ["Premier écho, j'ai vu le petit cœur qui battait... j'ai pleuré 😭❤️", "Les nausées arrivent tôt le matin, j'ai toujours une biscotte près du lit 🍞"],
   },
   {
     week: 6,
@@ -167,6 +171,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 1,
     weeklyTip: "Misez sur les légumes verts (épinards, brocolis) riches en folates naturels, en plus de votre supplément d'acide folique.",
     weeklySymptoms: ["Ballonnements", "Constipation", "Salive excessive"],
+    testimonials: ["Mon jean ne ferme déjà plus à cause des ballonnements... bienvenue les pantalons stretch 👖", "Je rêve de bébé toutes les nuits, mon cerveau est déjà en mode maman 🌸"],
   },
   {
     week: 8,
@@ -197,6 +202,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 1,
     weeklyTip: "Consultez un dentiste si besoin : les hormones fragilisent les gencives. La santé dentaire est liée à la santé de bébé.",
     weeklySymptoms: ["Fatigue extrême", "Gencives sensibles", "Pertes blanches légères"],
+    testimonials: ["Mes gencives saignent quand je me brosse les dents, RDV chez le dentiste pris 🦷", "Je pleure pour une pub de papier toilette, les hormones sont en folie 😂"],
   },
   {
     week: 10,
@@ -211,6 +217,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 1,
     weeklyTip: "Intégrez des protéines à chaque repas : œufs, légumineuses, viande maigre. Elles sont essentielles à la croissance de bébé.",
     weeklySymptoms: ["Nausées qui s'atténuent", "Légère prise de poids", "Moins de fatigue"],
+    testimonials: ["Les nausées s'apaisent enfin, je recommence à aimer la vie 🌈", "J'ai enfin retrouvé de l'appétit, je rattrape les semaines perdues 🍽️"],
   },
   {
     week: 11,
@@ -226,6 +233,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Bientôt le dépistage du 1er trimestre ! Assurez-vous d'avoir un rendez-vous pour la clarté nucale entre SA 11 et SA 13+6.",
     weeklySymptoms: ["Nausées en diminution", "Constipation", "Légères douleurs ligamentaires"],
     weeklyMilestone: "Dépistage T1 à programmer 🩺",
+    testimonials: ["Clarté nucale ce matin, tout va bien ! Je respire enfin 🙏", "Bébé ressemble vraiment à un bébé sur l'écho, c'est magique ✨"],
   },
   {
     week: 12,
@@ -257,6 +265,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Bienvenue au 2ème trimestre ! Augmentez votre apport en fer avec des épinards, lentilles et viande rouge maigre.",
     weeklySymptoms: ["Regain d'énergie", "Appétit qui revient", "Légère congestion nasale"],
     weeklyMilestone: "Entrée dans le 2ème trimestre 🌸",
+    testimonials: ["Bienvenue au 2ème trimestre ! Je me sens revivre 💪✨", "J'ai repris le sport doux, c'est fou comme ça fait du bien 🧘‍♀️"],
   },
   {
     week: 14,
@@ -271,6 +280,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 2,
     weeklyTip: "Consommez du calcium quotidiennement : 3-4 portions de produits laitiers ou équivalents végétaux (amandes, tofu, brocolis).",
     weeklySymptoms: ["Énergie retrouvée", "Appétit augmenté", "Ventre qui s'arrondit"],
+    testimonials: ["Mon ventre commence à se voir, je peux enfin porter mes robes de grossesse 👗", "Première séance de yoga prénatal, j'ai adoré me reconnecter à bébé 🕉️"],
   },
   {
     week: 15,
@@ -285,6 +295,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 2,
     weeklyTip: "La marche 30 min/jour est idéale à ce stade. Elle améliore la circulation, réduit les œdèmes et prépare votre corps à l'accouchement.",
     weeklySymptoms: ["Ventre visible", "Fourmillements dans les mains", "Légers maux de dos"],
+    testimonials: ["J'ai annoncé la grossesse au boulot, tout le monde est aux petits soins 🥰", "On va bientôt connaître le sexe, on a choisi de ne pas savoir... enfin on hésite 😅"],
   },
   {
     week: 16,
@@ -315,6 +326,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 2,
     weeklyTip: "Les douleurs ligamentaires sont normales. Le yoga prénatal et les étirements doux soulagent considérablement ces tensions.",
     weeklySymptoms: ["Douleurs ligamentaires", "Léger gain de poids", "Nez bouché"],
+    testimonials: ["Douleurs dans le bas du ventre quand je me lève trop vite, c'est les ligaments qui travaillent 😣", "J'ai fait mes premiers achats bébé, je craque sur tous les petits pyjamas 🥺"],
   },
   {
     week: 18,
@@ -330,6 +342,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Augmentez votre apport en oméga-3 avec du saumon, des sardines ou des noix. Ils sont essentiels au développement cérébral de bébé.",
     weeklySymptoms: ["Premiers mouvements perceptibles", "Douleurs dans le bas du dos", "Constipation"],
     weeklyMilestone: "Les premiers coups de pied approchent ! 🥊",
+    testimonials: ["On a pris RDV pour l'écho morpho, je suis excitée et nerveuse à la fois 🤰", "Pour la première fois j'ai senti bébé bouger, comme un petit papillon 🦋"],
   },
   {
     week: 19,
@@ -344,6 +357,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 2,
     weeklyTip: "Sentez les premiers papillonnements ? Notez chaque jour les mouvements de bébé – cela vous aidera à connaître son rythme.",
     weeklySymptoms: ["Premiers mouvements (papillonnements)", "Vertige léger", "Gonflement des pieds"],
+    testimonials: ["Les papillonnements sont confirmés, c'est bien bébé qui bouge ! Magique 💞", "Mon chéri pose sa main sur mon ventre tous les soirs en espérant sentir quelque chose 🤍"],
   },
   {
     week: 20,
@@ -374,6 +388,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 2,
     weeklyTip: "Dormez sur le côté gauche : cela améliore la circulation vers bébé et réduit les gonflements. Un coussin de grossesse est votre meilleure amie !",
     weeklySymptoms: ["Mouvements foetaux fréquents", "Reflux gastriques", "Chevilles gonflées"],
+    testimonials: ["Bébé a son rythme, il bouge surtout la nuit quand je veux dormir 😴", "On a commencé à préparer la chambre, peinture choisie, c'est vrai là 🎨"],
   },
   {
     week: 22,
@@ -388,6 +403,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 2,
     weeklyTip: "Les crampes nocturnes ? Le magnésium (amandes, chocolat noir, bananes) peut aider. Parlez-en à votre sage-femme.",
     weeklySymptoms: ["Crampes nocturnes", "Douleurs pelviennes", "Varices légères"],
+    testimonials: ["Crampes dans les mollets à 3h du matin, je me lève d'un bond ! 😩", "Bas de contention enfilés tous les jours, adieu les varices 💪"],
   },
   {
     week: 23,
@@ -402,6 +418,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 2,
     weeklyTip: "Massez votre ventre avec de l'huile de rose musquée ou d'argan chaque soir – cela prévient les vergetures et renforce le lien avec bébé.",
     weeklySymptoms: ["Vergetures possibles", "Insomnie légère", "Brûlures d'estomac"],
+    testimonials: ["Je crème mon ventre 3 fois par jour, je croise les doigts pour les vergetures 🤞", "On ressent la lumière à travers mon ventre maintenant, j'ai testé avec une lampe 💡"],
   },
   {
     week: 24,
@@ -451,6 +468,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Les yeux de bébé s'ouvrent ! Éclairez doucement votre ventre avec une lampe de poche – bébé peut réagir à la lumière.",
     weeklySymptoms: ["Crampes dans les jambes", "Fourmillements (syndrome du canal carpien)", "Prise de poids régulière"],
     weeklyMilestone: "Bébé ouvre les yeux ! 👀",
+    testimonials: ["Bébé ouvre les yeux, je lui parle tous les soirs en éclairant doucement mon ventre 💡💕", "Prénom choisi ! On le garde secret mais c'est décidé, on a hâte 🤫"],
   },
   {
     week: 27,
@@ -465,6 +483,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 2,
     weeklyTip: "Bébé reconnaît votre voix ! Parlez-lui de votre journée, lisez-lui des histoires – c'est le début de votre relation.",
     weeklySymptoms: ["Douleurs sciatiques", "Gêne abdominale", "Mouvements rythmiques (hoquet fœtal)"],
+    testimonials: ["Le hoquet de bébé c'est trop mignon, ça fait des petits 'poc poc' réguliers 🥹", "La sciatique me tue, je marche comme un pingouin mais je m'en fiche 🐧"],
   },
   {
     week: 28,
@@ -495,6 +514,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 3,
     weeklyTip: "Mangez de petits repas fréquents (5-6/jour) pour éviter les brûlures d'estomac. Évitez de vous allonger juste après manger.",
     weeklySymptoms: ["Brûlures d'estomac intenses", "Dos douloureux", "Fatigue retour"],
+    testimonials: ["Les brûlures d'estomac sont terribles, je dors quasi assise maintenant 😩", "J'ai commandé mon coussin de grossesse, game changer pour les nuits 🛏️"],
   },
   {
     week: 30,
@@ -509,6 +529,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 3,
     weeklyTip: "Commencez les exercices de Kegel : 3 séries de 10 contractions par jour pour renforcer le périnée et préparer l'accouchement.",
     weeklySymptoms: ["Souffle court", "Fréquence urinaire élevée", "Douleurs pelviennes"],
+    testimonials: ["Je monte 2 marches et je suis essoufflée, bébé prend toute la place 🫁", "Le Kegel tous les jours, je me sens prête à tout affronter 💪"],
   },
   {
     week: 31,
@@ -523,6 +544,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 3,
     weeklyTip: "Rédigez votre plan de naissance : péridurale ou non, positions souhaitées, peau-à-peau, allaitement. Partagez-le avec l'équipe médicale.",
     weeklySymptoms: ["Contractions de Braxton-Hicks plus fréquentes", "Lourdeur des jambes", "Œdèmes des chevilles"],
+    testimonials: ["Premières Braxton-Hicks, mon ventre devient tout dur, c'est perturbant 😳", "Plan de naissance en cours de rédaction, on a plein de questions pour la sage-femme 📋"],
   },
   {
     week: 32,
@@ -553,6 +575,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 3,
     weeklyTip: "Préparez votre valise de maternité ! Checklist : documents, vêtements confortables, affaires de bébé, snacks pour le travail.",
     weeklySymptoms: ["Lourdeur abdominale", "Difficultés à dormir", "Brûlures d'estomac persistantes"],
+    testimonials: ["Valise de maternité en cours, je check et recheck la liste tous les jours 🎒", "Bébé est positionné tête en bas, soulagement énorme 🙏"],
   },
   {
     week: 34,
@@ -567,6 +590,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 3,
     weeklyTip: "Connaissez les signes du travail : contractions régulières toutes les 5 min, perte des eaux, diminution des mouvements. N'hésitez pas à appeler la maternité.",
     weeklySymptoms: ["Descente de bébé possible", "Pression pelvienne accrue", "Épuisement"],
+    testimonials: ["Mon ventre a descendu d'un coup, je respire mieux mais je cours aux toilettes 😅", "Dernier mois, je suis à la fois impatiente et angoissée, vivement le jour J 💛"],
   },
   {
     week: 35,
@@ -581,6 +605,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 3,
     weeklyTip: "Mangez des aliments riches en vitamine K (brocolis, choux, épinards) pour une bonne coagulation sanguine à l'accouchement.",
     weeklySymptoms: ["Fréquence urinaire très élevée", "Douleurs pubis (SPD)", "Fatigue importante"],
+    testimonials: ["La douleur au pubis m'empêche presque de marcher, vivement la fin 😣", "Mon conjoint refait la déco de la chambre de bébé, effet nesting à deux 💕"],
   },
   {
     week: 36,
@@ -612,6 +637,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Bébé est à terme précoce ! Finalisez tout : valise prête, trajet maternité répété, téléphones chargés, personnes prévenues.",
     weeklySymptoms: ["Contractions irrégulières fréquentes", "Bouchon muqueux possible", "Pelvienne lourde"],
     weeklyMilestone: "À terme précoce ! Bébé peut arriver 🏥",
+    testimonials: ["Je regarde mon téléphone toutes les 5 min, prête à partir à la maternité 📱", "Le bouchon muqueux est parti ce matin, ça peut être bientôt ! 😳"],
   },
   {
     week: 38,
@@ -642,6 +668,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Restez attentive à la perte des eaux (liquide clair et abondant) et aux contractions régulières toutes les 5 min. C'est LE signal !",
     weeklySymptoms: ["Contractions régulières possibles", "Perte des eaux possible", "Nesting (envie de tout préparer)"],
     weeklyMilestone: "Bébé est prêt ! L'accouchement est imminent 🌅",
+    testimonials: ["Je range toute la maison à 2h du matin, effet nesting au max 🧹", "Chaque contraction je chronomètre, je suis devenue une machine à stats ⏱️"],
   },
   {
     week: 40,
@@ -672,6 +699,7 @@ export const pregnancyData: WeekData[] = [
     trimester: 3,
     weeklyTip: "Des rendez-vous de surveillance rapprochée sont prévus. Restez sereine – votre équipe médicale veille sur vous et bébé.",
     weeklySymptoms: ["Surveillance médicale renforcée", "Anxiété de l'attente", "Contractions sporadiques"],
+    testimonials: ["Monitoring tous les 2 jours, bébé va bien mais il prend son temps 😤", "J'ai essayé tous les trucs de grand-mère : marche, ananas, curry... on verra bien 🍍"],
   },
   {
     week: 42,
@@ -687,6 +715,7 @@ export const pregnancyData: WeekData[] = [
     weeklyTip: "Un déclenchement sera très probablement proposé. C'est une décision médicale sage pour le bien de bébé et de vous. Faites confiance à votre équipe.",
     weeklySymptoms: ["Déclenchement probable", "Fatigue de fin de grossesse", "Impatience"],
     weeklyMilestone: "La naissance est toute proche – vous avez été formidable ! 💪",
+    testimonials: ["Déclenchement demain matin, bébé arrive enfin ! 💖", "42 semaines, j'y suis presque, bientôt je tiendrai mon petit dans mes bras 🥹"],
   },
 ];
 

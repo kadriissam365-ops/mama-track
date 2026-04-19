@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek, getWeekData, pregnancyData } from "@/lib/pregnancy-data";
+import { getTestimonialsForWeek } from "@/lib/testimonials-data";
 import { ChevronLeft, ChevronRight, Ruler, Weight, Share2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/Skeleton";
@@ -179,21 +180,28 @@ export default function BabyPage() {
       </div>
 
       {/* Témoignages de la semaine */}
-      {weekData.testimonials && weekData.testimonials.length > 0 && (
-        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xl">💬</span>
-            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Mamans à la semaine {selectedWeek}</h3>
+      {(() => {
+        const weekTestis = getTestimonialsForWeek(selectedWeek);
+        if (weekTestis.length === 0) return null;
+        return (
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-xl">💬</span>
+              <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Mamans à la semaine {selectedWeek}</h3>
+            </div>
+            <div className="space-y-3">
+              {weekTestis.map((t, i) => (
+                <div key={i} className="bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-3 border border-pink-100 dark:border-pink-900/30">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 italic leading-relaxed">&quot;{t.text}&quot;</p>
+                  {t.author && (
+                    <p className="mt-1 text-xs font-medium text-pink-500 dark:text-pink-300 not-italic">— {t.author}</p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="space-y-3">
-            {weekData.testimonials.map((t: string, i: number) => (
-              <div key={i} className="bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-3 border border-pink-100 dark:border-pink-900/30">
-                <p className="text-sm text-gray-600 dark:text-gray-300 italic leading-relaxed">&quot;{t}&quot;</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Timeline trimestres */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30">

@@ -1,6 +1,8 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { X, TrendingUp, TrendingDown, Minus, Mail, ExternalLink, Loader2 } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek, getWeekData } from "@/lib/pregnancy-data";
 import { format, subDays } from "date-fns";
