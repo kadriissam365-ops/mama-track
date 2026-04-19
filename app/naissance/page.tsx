@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileDown, ChevronDown, ChevronUp, Check, X, Loader2, CheckCircle2 } from "lucide-react";
 import type jsPDFType from "jspdf";
+import { notifyPartner } from "@/lib/partner-notify-client";
 
 interface ProjetNaissance {
   // Section 1 - Infos
@@ -249,6 +250,7 @@ export default function NaissancePage() {
       }
 
       doc.save(`mamatrack-projet-naissance.pdf`);
+      notifyPartner("milestone", { milestone: "Projet de naissance finalisé" });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek, getWeekData } from "@/lib/pregnancy-data";
+import { getTestimonialsForWeek } from "@/lib/testimonials-data";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 type Tab = "week" | "nutrition" | "sport" | "faq";
@@ -575,6 +576,30 @@ export default function ConseilsPage() {
               <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">🌷 Pour vous</p>
               <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.momTips}</p>
             </div>
+
+            {/* Témoignages mamans */}
+            {(() => {
+              const weekTestis = getTestimonialsForWeek(week);
+              if (weekTestis.length === 0) return null;
+              return (
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-pink-100 dark:border-pink-900/30 p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-lg">💬</span>
+                    <p className="text-sm font-bold text-gray-700 dark:text-gray-300">Mamans à la semaine {week}</p>
+                  </div>
+                  <div className="space-y-2">
+                    {weekTestis.map((t, i) => (
+                      <div key={i} className="bg-pink-50 dark:bg-pink-950/30 rounded-xl p-3 border border-pink-100 dark:border-pink-900/30">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 italic leading-relaxed">&quot;{t.text}&quot;</p>
+                        {t.author && (
+                          <p className="mt-1 text-xs font-medium text-pink-500 dark:text-pink-300 not-italic">— {t.author}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Symptoms */}
             {weekData.weeklySymptoms && weekData.weeklySymptoms.length > 0 && (

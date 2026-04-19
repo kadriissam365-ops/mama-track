@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek, getWeekData } from "@/lib/pregnancy-data";
+import { getTestimonialsForWeek } from "@/lib/testimonials-data";
 import { ChevronDown, ChevronUp, Baby, Heart, Stethoscope, Star } from "lucide-react";
 
 const TRIMESTER_COLORS = {
@@ -230,14 +231,21 @@ export default function TimelinePage() {
                           </div>
                         )}
 
-                        {weekData.testimonials && weekData.testimonials.length > 0 && (
-                          <div className="bg-pink-50 dark:bg-pink-950/30 rounded-xl p-3">
-                            <p className="text-[10px] font-semibold text-pink-500 mb-1">Témoignages</p>
-                            {weekData.testimonials.map((t, i) => (
-                              <p key={i} className="text-xs text-gray-600 dark:text-gray-300 italic mb-1 last:mb-0">&quot;{t}&quot;</p>
-                            ))}
-                          </div>
-                        )}
+                        {(() => {
+                          const weekTestis = getTestimonialsForWeek(week);
+                          if (weekTestis.length === 0) return null;
+                          return (
+                            <div className="bg-pink-50 dark:bg-pink-950/30 rounded-xl p-3">
+                              <p className="text-[10px] font-semibold text-pink-500 mb-1">Témoignages</p>
+                              {weekTestis.map((t, i) => (
+                                <p key={i} className="text-xs text-gray-600 dark:text-gray-300 italic mb-1 last:mb-0">
+                                  &quot;{t.text}&quot;
+                                  {t.author && <span className="not-italic font-medium text-pink-400"> — {t.author}</span>}
+                                </p>
+                              ))}
+                            </div>
+                          );
+                        })()}
                       </motion.div>
                     )}
                   </div>
