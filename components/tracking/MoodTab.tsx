@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
@@ -89,13 +89,14 @@ export default function MoodTab() {
     if (!user || !selectedMood) return;
     setSaving(true);
 
+    const trimmedNote = note.trim();
     const { data, error } = await supabase
       .from("mood_entries")
       .upsert({
         user_id: user.id,
         mood_emoji: selectedMood.emoji,
         mood_label: selectedMood.label,
-        note: note || null,
+        note: trimmedNote || null,
         date: today,
       }, { onConflict: "user_id,date" })
       .select()
@@ -250,6 +251,16 @@ export default function MoodTab() {
           ))}
         </div>
       </div>
+
+      {/* Empty state */}
+      {!loading && entries.length === 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-6 text-center border border-pink-100 dark:border-pink-900/30">
+          <p className="text-2xl mb-1">💗</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Commencez à enregistrer votre humeur pour voir vos tendances.
+          </p>
+        </div>
+      )}
 
       {/* Recent entries list */}
       {!loading && entries.length > 0 && (

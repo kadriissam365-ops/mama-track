@@ -42,11 +42,12 @@ export default function SymptomTab() {
 
   const handleSubmit = () => {
     if (selectedSymptoms.length === 0) return;
+    const trimmedNote = note.trim();
     store.addSymptomEntry({
       date: format(new Date(), "yyyy-MM-dd"),
       symptoms: selectedSymptoms,
       severity,
-      note: note || undefined,
+      note: trimmedNote || undefined,
     });
     setSelectedSymptoms([]);
     setSeverity(3);
@@ -152,6 +153,15 @@ export default function SymptomTab() {
               <Bar dataKey="sévérité" fill={isDark ? "#f472b6" : "#F9A8D4"} radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+      )}
+
+      {store.symptomEntries.length === 0 && !showForm && (
+        <div className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-6 text-center border border-pink-100 dark:border-pink-900/30">
+          <p className="text-2xl mb-1">🌸</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Aucun symptôme enregistré. Ajoutez-en un ci-dessus pour suivre votre ressenti.
+          </p>
         </div>
       )}
 

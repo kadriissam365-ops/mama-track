@@ -28,11 +28,12 @@ export default function WeightTab() {
 
   const handleAdd = () => {
     const w = parseFloat(weight);
-    if (isNaN(w) || w <= 0) return;
+    if (isNaN(w) || w < 20 || w > 300) return;
+    const trimmedNote = note.trim();
     store.addWeightEntry({
       date: format(new Date(), "yyyy-MM-dd"),
       weight: w,
-      note: note || undefined,
+      note: trimmedNote || undefined,
     });
     setWeight("");
     setNote("");
@@ -56,6 +57,9 @@ export default function WeightTab() {
           <input
             type="number"
             step="0.1"
+            min="20"
+            max="300"
+            inputMode="decimal"
             placeholder="Poids en kg"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
@@ -98,6 +102,15 @@ export default function WeightTab() {
               />
             </LineChart>
           </ResponsiveContainer>
+        </div>
+      )}
+
+      {store.weightEntries.length === 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-6 text-center border border-purple-100 dark:border-purple-900/30">
+          <p className="text-2xl mb-1">⚖️</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Aucune mesure enregistrée. Ajoutez votre première pesée ci-dessus.
+          </p>
         </div>
       )}
 

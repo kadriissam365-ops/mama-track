@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Activity, Baby, Calendar, MoreHorizontal } from "lucide-react";
+import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 
 const navItems = [
@@ -47,7 +48,11 @@ export default function BottomNav() {
               }`}
             >
               {active && (
-                <span className="absolute inset-0 bg-gradient-to-b from-pink-100 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/20 rounded-2xl" />
+                <motion.span
+                  layoutId="bottomNavIndicator"
+                  className="absolute inset-0 bg-gradient-to-b from-pink-100 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/20 rounded-2xl"
+                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                />
               )}
               <Icon
                 className={`relative w-5 h-5 ${active ? "fill-pink-200 dark:fill-pink-800" : ""}`}

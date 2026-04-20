@@ -76,6 +76,9 @@ export default function ExerciseTab() {
     if (!user || !selectedActivity) return;
     setSaving(true);
     const today = format(new Date(), "yyyy-MM-dd");
+    const dur = parseInt(duration);
+    const safeDur = isNaN(dur) || dur < 1 ? 30 : Math.min(dur, 600);
+    const trimmedNote = note.trim();
 
     const { data, error } = await supabase
       .from("exercise_entries")
@@ -83,9 +86,9 @@ export default function ExerciseTab() {
         user_id: user.id,
         date: today,
         activity: selectedActivity,
-        duration_minutes: parseInt(duration) || 30,
+        duration_minutes: safeDur,
         intensity,
-        note: note || null,
+        note: trimmedNote || null,
       })
       .select()
       .single();
@@ -186,7 +189,9 @@ export default function ExerciseTab() {
             <input
               type="number"
               min="5"
+              max="600"
               step="5"
+              inputMode="numeric"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
               className="w-full border border-emerald-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:bg-gray-800 dark:text-white"
@@ -258,6 +263,16 @@ export default function ExerciseTab() {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!loading && entries.length === 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-6 text-center border border-emerald-100">
+          <p className="text-2xl mb-1">🚶‍♀️</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Aucune activité enregistrée. Ajoutez votre première séance ci-dessus.
+          </p>
         </div>
       )}
 

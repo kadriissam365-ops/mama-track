@@ -177,6 +177,7 @@ export default function BloodPressureTab() {
     setError(null);
     setSaving(true);
 
+    const trimmedNotes = notes.trim();
     const { data, error: insertError } = await supabase
       .from("blood_pressure_entries")
       .insert({
@@ -185,7 +186,7 @@ export default function BloodPressureTab() {
         diastolic: parseInt(diastolic),
         pulse: pulse ? parseInt(pulse) : null,
         measured_at: new Date().toISOString(),
-        notes: notes || null,
+        notes: trimmedNotes || null,
       })
       .select()
       .single();
@@ -240,6 +241,10 @@ export default function BloodPressureTab() {
             <label className="text-xs text-gray-400 dark:text-gray-500 mb-1 block">Systolique (mmHg)</label>
             <input
               type="number"
+              min="60"
+              max="200"
+              step="1"
+              inputMode="numeric"
               placeholder="ex: 120"
               value={systolic}
               onChange={(e) => setSystolic(e.target.value)}
@@ -250,6 +255,10 @@ export default function BloodPressureTab() {
             <label className="text-xs text-gray-400 dark:text-gray-500 mb-1 block">Diastolique (mmHg)</label>
             <input
               type="number"
+              min="40"
+              max="130"
+              step="1"
+              inputMode="numeric"
               placeholder="ex: 80"
               value={diastolic}
               onChange={(e) => setDiastolic(e.target.value)}
@@ -260,6 +269,10 @@ export default function BloodPressureTab() {
         <div className="flex gap-2 mb-2">
           <input
             type="number"
+            min="30"
+            max="250"
+            step="1"
+            inputMode="numeric"
             placeholder="Pouls (bpm, optionnel)"
             value={pulse}
             onChange={(e) => setPulse(e.target.value)}
@@ -307,6 +320,13 @@ export default function BloodPressureTab() {
       {/* History */}
       {loading ? (
         <div className="text-center text-sm text-gray-400 dark:text-gray-500 py-4">Chargement…</div>
+      ) : entries.length === 0 ? (
+        <div className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-6 text-center border border-pink-100 dark:border-pink-900/30">
+          <Heart className="w-6 h-6 mx-auto mb-2 text-pink-300" />
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Aucune mesure enregistrée. Ajoutez votre première tension ci-dessus.
+          </p>
+        </div>
       ) : (
         <div className="space-y-2">
           {[...entries].reverse().map((entry) => {

@@ -47,15 +47,23 @@ export default function SocialShareButtons({ content, onImageGenerate, compact =
         }
       }
 
-      await navigator.share(shareData);
+      await navigator.share?.(shareData);
       setStatus("done");
       setStatusMessage("Partagé !");
     } catch (err: unknown) {
-      if (err instanceof Error && err.name !== "AbortError") {
-        setStatus("error");
-        setStatusMessage("Erreur de partage");
-      } else {
+      if (err instanceof Error && err.name === "AbortError") {
         setStatus("idle");
+      } else {
+        // Fallback: copy URL (or text) to clipboard
+        try {
+          const fallbackText = content.url ?? (typeof window !== "undefined" ? window.location.href : content.text);
+          await navigator.clipboard.writeText(fallbackText);
+          setStatus("copied");
+          setStatusMessage("Lien copié dans le presse-papier");
+        } catch {
+          setStatus("error");
+          setStatusMessage("Erreur de partage");
+        }
       }
     }
     resetStatus();
@@ -211,7 +219,7 @@ export default function SocialShareButtons({ content, onImageGenerate, compact =
       key: "download",
       label: "Telecharger",
       icon: <Download className="w-4 h-4" />,
-      color: "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600",
+      color: "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700",
       onClick: handleDownload,
     },
   ];

@@ -149,13 +149,14 @@ export default function AbdomenTab() {
     setError(null);
     setSaving(true);
 
+    const trimmedNotes = notes.trim();
     const { data, error: insertError } = await supabase
       .from("abdomen_entries")
       .insert({
         user_id: user.id,
         circumference: val,
         measured_at: new Date().toISOString(),
-        notes: notes || null,
+        notes: trimmedNotes || null,
       })
       .select()
       .single();
@@ -215,6 +216,9 @@ export default function AbdomenTab() {
           <input
             type="number"
             step="0.5"
+            min="50"
+            max="200"
+            inputMode="decimal"
             placeholder="Périmètre en cm (ex: 95)"
             value={circumference}
             onChange={(e) => setCircumference(e.target.value)}

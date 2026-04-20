@@ -85,6 +85,10 @@ export default function SleepTab() {
     if (!user) return;
     setSaving(true);
 
+    const napsVal = parseInt(naps);
+    const wakingsVal = parseInt(nightWakings);
+    const trimmedNote = note.trim();
+
     const { data, error } = await supabase
       .from("sleep_entries")
       .upsert({
@@ -93,9 +97,9 @@ export default function SleepTab() {
         bedtime,
         waketime,
         quality,
-        naps_minutes: parseInt(naps) || 0,
-        night_wakings: parseInt(nightWakings) || 0,
-        note: note || null,
+        naps_minutes: isNaN(napsVal) || napsVal < 0 ? 0 : Math.min(napsVal, 720),
+        night_wakings: isNaN(wakingsVal) || wakingsVal < 0 ? 0 : Math.min(wakingsVal, 20),
+        note: trimmedNote || null,
       }, { onConflict: "user_id,date" })
       .select()
       .single();
@@ -212,6 +216,9 @@ export default function SleepTab() {
             <input
               type="number"
               min="0"
+              max="720"
+              step="5"
+              inputMode="numeric"
               placeholder="0"
               value={naps}
               onChange={(e) => setNaps(e.target.value)}
@@ -226,7 +233,7 @@ export default function SleepTab() {
           value={note}
           onChange={(e) => setNote(e.target.value.slice(0, 200))}
           rows={2}
-          className="w-full border border-indigo-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none mb-2"
+          className="w-full border border-indigo-200 dark:border-gray-600 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none mb-2 dark:bg-gray-800 dark:text-white"
         />
 
         <button
@@ -285,6 +292,16 @@ export default function SleepTab() {
               })}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!loading && entries.length === 0 && (
+        <div className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-6 text-center border border-indigo-100 dark:border-indigo-900/30">
+          <Moon className="w-6 h-6 mx-auto mb-2 text-indigo-300" />
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Aucune nuit enregistrée. Notez votre première nuit ci-dessus.
+          </p>
         </div>
       )}
 

@@ -86,6 +86,11 @@ export default function WaterTab({ today }: WaterTabProps) {
       {/* Historique 7 jours */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-blue-100 dark:border-blue-900/30">
         <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">7 derniers jours</h3>
+        {Object.keys(store.waterIntake).length === 0 && (
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-2">
+            Commencez à enregistrer votre hydratation 💧
+          </p>
+        )}
         {Object.entries(store.waterIntake)
           .sort((a, b) => b[0].localeCompare(a[0]))
           .slice(0, 7)

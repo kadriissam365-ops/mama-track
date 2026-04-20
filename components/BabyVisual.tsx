@@ -96,7 +96,7 @@ function EmbryoVisual({ week, size }: { week: number; size: number }) {
     >
       <div className="relative">
         <div
-          className="rounded-full bg-gradient-to-br from-pink-100 via-pink-200 to-purple-100 border border-pink-200 dark:border-pink-800/30/60 flex items-center justify-center"
+          className="rounded-full bg-gradient-to-br from-pink-100 via-pink-200 to-purple-100 border border-pink-200 dark:border-pink-800/60 flex items-center justify-center"
           style={{
             width: `${size * 0.7}rem`,
             height: `${size * 0.7}rem`,
