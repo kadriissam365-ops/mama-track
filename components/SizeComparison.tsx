@@ -263,12 +263,14 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
         style={{ transformStyle: "preserve-3d" }}
-        className="relative h-[280px]"
+        className="relative min-h-[300px]"
       >
         {/* Front face */}
-        <div
+        <motion.div
+          animate={{ opacity: flipped ? 0 : 1 }}
+          transition={{ duration: 0.25, delay: flipped ? 0 : 0.25 }}
           className="absolute inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-green-950/30 rounded-3xl border border-pink-100 dark:border-pink-900/30 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center"
-          style={{ backfaceVisibility: "hidden" }}
+          style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", pointerEvents: flipped ? "none" : "auto" }}
         >
           {/* Decorative blurred blobs */}
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-200/30 rounded-full blur-2xl pointer-events-none" />
@@ -305,12 +307,14 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
             <RotateCw className="w-3 h-3 text-gray-300 dark:text-gray-500" />
             <span className="text-[10px] text-gray-300 dark:text-gray-500">Toucher pour retourner</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Back face */}
-        <div
-          className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-green-50 dark:from-purple-950/30 dark:via-pink-950/30 dark:to-green-950/30 rounded-3xl border border-purple-200 dark:border-purple-800/30 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center"
-          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+        <motion.div
+          animate={{ opacity: flipped ? 1 : 0 }}
+          transition={{ duration: 0.25, delay: flipped ? 0.25 : 0 }}
+          className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-green-50 dark:from-purple-950/30 dark:via-pink-950/30 dark:to-green-950/30 rounded-3xl border border-purple-200 dark:border-purple-800/30 shadow-sm p-6 overflow-y-auto flex flex-col items-center justify-center"
+          style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)", pointerEvents: flipped ? "auto" : "none" }}
         >
           <div className="absolute -top-10 -left-10 w-32 h-32 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
 
@@ -328,7 +332,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
               {weekData.sizeMm > 0 ? `${sizeCm} — ${formatWeight(weekData.weightG)}` : "Tout petit !"}
             </span>
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mt-3 text-center leading-relaxed max-w-[260px] line-clamp-3">
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-3 text-center leading-relaxed max-w-[260px]">
             {weekData.babyDevelopment}
           </p>
 
@@ -336,7 +340,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
             <RotateCw className="w-3 h-3 text-gray-300 dark:text-gray-500" />
             <span className="text-[10px] text-gray-300 dark:text-gray-500">Toucher pour retourner</span>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );
