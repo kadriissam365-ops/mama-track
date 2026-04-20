@@ -264,7 +264,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
       onKeyDown={(e) => e.key === "Enter" && toggle()}
       aria-label="Toucher pour retourner"
     >
-      <div className="relative" style={{ minHeight: flipped && expanded ? 460 : 300 }}>
+      <div className="relative">
         <AnimatePresence mode="wait" initial={false}>
           {!flipped ? (
             <motion.div
@@ -273,7 +273,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-green-950/30 rounded-3xl border border-pink-100 dark:border-pink-900/30 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center min-h-[300px]"
+              className="relative bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-green-950/30 rounded-3xl border border-pink-100 dark:border-pink-900/30 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center min-h-[300px]"
             >
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-200/30 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
@@ -311,7 +311,7 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="bg-gradient-to-br from-purple-50 via-pink-50 to-green-50 dark:from-purple-950/30 dark:via-pink-950/30 dark:to-green-950/30 rounded-3xl border border-purple-200 dark:border-purple-800/30 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center min-h-[300px]"
+              className="relative bg-gradient-to-br from-purple-50 via-pink-50 to-green-50 dark:from-purple-950/30 dark:via-pink-950/30 dark:to-green-950/30 rounded-3xl border border-purple-200 dark:border-purple-800/30 shadow-sm p-6 pb-8 overflow-hidden flex flex-col items-center justify-start min-h-[300px]"
             >
               <div className="absolute -top-10 -left-10 w-32 h-32 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
 
