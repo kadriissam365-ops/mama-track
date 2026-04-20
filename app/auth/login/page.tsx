@@ -9,20 +9,30 @@ import { Mail, Lock, Eye, EyeOff, Heart, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    const trimmedEmail = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError("Adresse email invalide");
+      return;
+    }
+    if (!password) {
+      setError("Veuillez saisir votre mot de passe");
+      return;
+    }
+
     setLoading(true);
 
-    const { error } = await signInWithEmail(email, password);
+    const { error } = await signInWithEmail(trimmedEmail, password);
     
     if (error) {
       setError(
@@ -40,16 +50,6 @@ export default function LoginPage() {
       } else {
         router.push("/");
       }
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setError(null);
-    setGoogleLoading(true);
-    const { error } = await signInWithGoogle();
-    if (error) {
-      setError("Erreur de connexion avec Google");
-      setGoogleLoading(false);
     }
   };
 
@@ -135,13 +135,12 @@ export default function LoginPage() {
             </div>
 
             <div className="flex justify-end">
-              <a
+              <Link
                 href="/auth/forgot-password"
                 className="text-xs text-pink-500 dark:text-pink-400 hover:text-pink-600 dark:hover:text-pink-300 cursor-pointer select-none"
-                onClick={(e) => { e.stopPropagation(); }}
               >
                 Mot de passe oublié ?
-              </a>
+              </Link>
             </div>
 
             <button

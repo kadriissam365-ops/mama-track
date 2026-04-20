@@ -187,20 +187,37 @@ export default function PartnerViewPage() {
 
   const handleSendEncouragement = (text: string) => {
     setSupportSent(text);
+    const msgId = crypto.randomUUID();
+    const createdAt = new Date().toISOString();
+    const senderId = user?.id ?? "partner";
     // Store the message in localStorage for the duo chat
     try {
       const storageKey = user ? `duo-messages-${user.id}` : "duo-messages-local";
       const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
       existing.push({
-        id: crypto.randomUUID(),
-        senderId: user?.id ?? "partner",
+        id: msgId,
+        senderId,
         content: text,
-        createdAt: new Date().toISOString(),
+        createdAt,
         isOwn: true,
       });
       localStorage.setItem(storageKey, JSON.stringify(existing));
     } catch {
       // ignore
+    }
+    // Persist to Supabase so the duo chat sees it via Realtime
+    if (user) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const supabase = createClient() as any;
+        supabase
+          .from("duo_messages")
+          .insert({ id: msgId, sender_id: senderId, content: text, created_at: createdAt })
+          .then(() => {})
+          .catch(() => {});
+      } catch {
+        // ignore
+      }
     }
     setTimeout(() => setSupportSent(null), 2500);
   };

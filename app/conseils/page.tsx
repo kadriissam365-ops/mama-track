@@ -312,7 +312,7 @@ function NutritionGuide() {
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
               activeTrimestre === t
                 ? `bg-gradient-to-r ${content[t].color} text-white shadow-md`
-                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:bg-gray-700"
+                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
             T{t}
@@ -410,7 +410,7 @@ function SportGuide() {
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
               activeTrimestre === t
                 ? "bg-gradient-to-r from-pink-400 to-rose-500 text-white shadow-md"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:bg-gray-700"
+                : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
             }`}
           >
             T{t}

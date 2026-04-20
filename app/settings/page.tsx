@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { useStore } from "@/lib/store";
@@ -26,6 +27,7 @@ import { createClient } from "@/lib/supabase";
 import { useTranslation, LanguageSwitcher } from "@/lib/i18n";
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { user, signOut } = useAuth();
   const store = useStore();
   const toast = useToast();
@@ -67,8 +69,9 @@ export default function SettingsPage() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
     toast.info(t("settings.signingOut"));
+    await signOut();
+    router.push("/auth/login");
   };
 
   const handleChangePassword = async () => {
@@ -188,7 +191,7 @@ export default function SettingsPage() {
             <button
               onClick={handleSaveProfile}
               disabled={saving}
-              className="w-full py-3 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-3 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {saving ? (
                 <>
@@ -235,8 +238,8 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Change password */}
-          {user?.app_metadata?.provider === "email" && (
+          {/* Change password — available for email-based accounts (no Google SSO) */}
+          {user && user.app_metadata?.provider !== "google" && (
             <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 space-y-4">
               <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
                 <Lock className="w-4 h-4 text-pink-400" />
@@ -268,7 +271,7 @@ export default function SettingsPage() {
               <button
                 onClick={handleChangePassword}
                 disabled={savingPwd || !newPassword}
-                className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+                className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
               >
                 {savingPwd ? <><Loader2 className="w-4 h-4 animate-spin" />{t("settings.updating")}</> : t("settings.update")}
               </button>
@@ -287,7 +290,7 @@ export default function SettingsPage() {
           {/* Sign out */}
           <button
             onClick={handleSignOut}
-            className="w-full py-3 bg-white dark:bg-gray-900 border border-red-200 dark:border-red-800/30 text-red-500 rounded-xl font-medium hover:bg-red-50 dark:bg-red-950/30 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3 bg-white dark:bg-gray-900 border border-red-200 dark:border-red-800/30 text-red-500 rounded-xl font-medium hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors flex items-center justify-center gap-2"
           >
             <LogOut className="w-4 h-4" />
             {t("settings.signOut")}

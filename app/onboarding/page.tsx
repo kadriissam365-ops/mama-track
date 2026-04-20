@@ -598,7 +598,8 @@ export default function OnboardingPage() {
           {step > 1 ? (
             <button
               onClick={handleBack}
-              className="flex items-center gap-2 px-5 py-3 text-gray-600 dark:text-gray-300 font-medium hover:text-gray-800 dark:text-gray-200 transition-colors"
+              type="button"
+              className="flex items-center gap-2 px-5 py-3 text-gray-600 dark:text-gray-300 font-medium hover:text-gray-800 dark:hover:text-gray-100 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               Retour

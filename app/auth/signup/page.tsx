@@ -9,19 +9,24 @@ import { Mail, Lock, Eye, EyeOff, Heart, Loader2, CheckCircle2 } from "lucide-re
 
 export default function SignupPage() {
   const router = useRouter();
-  const { signUpWithEmail, signInWithGoogle } = useAuth();
+  const { signUpWithEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    const trimmedEmail = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError("Adresse email invalide");
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Les mots de passe ne correspondent pas");
@@ -35,7 +40,7 @@ export default function SignupPage() {
 
     setLoading(true);
 
-    const { error } = await signUpWithEmail(email, password);
+    const { error } = await signUpWithEmail(trimmedEmail, password);
     
     if (error) {
       if (error.message.includes("already registered")) {
@@ -48,16 +53,6 @@ export default function SignupPage() {
       // Afficher l'écran de confirmation d'email
       setSuccess(true);
       setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setError(null);
-    setGoogleLoading(true);
-    const { error } = await signInWithGoogle();
-    if (error) {
-      setError("Erreur de connexion avec Google");
-      setGoogleLoading(false);
     }
   };
 

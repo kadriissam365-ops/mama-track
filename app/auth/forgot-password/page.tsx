@@ -15,13 +15,20 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    const trimmedEmail = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError("Adresse email invalide");
+      return;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
     // Passe par /auth/callback pour que le code PKCE soit échangé côté serveur
     // puis redirigé vers /auth/reset-password avec la session déjà établie
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
       redirectTo: `${appUrl}/auth/callback?next=/auth/reset-password`,
     });
 

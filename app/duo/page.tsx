@@ -74,9 +74,37 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
       // ignore
     }
 
-    // Try Supabase Realtime
+    // Try Supabase Realtime + initial fetch
     try {
       const supabase = createClient();
+
+      // Initial fetch: pick up messages posted from another device/browser
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase.from as any)("duo_messages")
+        .select("id, sender_id, content, created_at")
+        .order("created_at", { ascending: true })
+        .limit(100)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .then(({ data }: { data: any }) => {
+          if (!data || !Array.isArray(data)) return;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const remote: DuoMessage[] = data.map((r: any) => ({
+            id: r.id,
+            senderId: r.sender_id,
+            content: r.content,
+            createdAt: r.created_at,
+            isOwn: r.sender_id === userId,
+          }));
+          setMessages((prev) => {
+            const ids = new Set(prev.map((m) => m.id));
+            const merged = [...prev, ...remote.filter((m) => !ids.has(m.id))];
+            merged.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+            try { localStorage.setItem(storageKey, JSON.stringify(merged)); } catch { /* ignore */ }
+            return merged;
+          });
+        })
+        .catch(() => { /* ignore */ });
+
       const channel = supabase
         .channel("duo-chat")
         .on(
@@ -92,6 +120,8 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
               isOwn: row.sender_id === userId,
             };
             setMessages((prev) => {
+              // Dedup: realtime may echo back messages we already inserted locally
+              if (prev.some((m) => m.id === msg.id)) return prev;
               const updated = [...prev, msg];
               try { localStorage.setItem(storageKey, JSON.stringify(updated)); } catch { /* ignore */ }
               return updated;
