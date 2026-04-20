@@ -3,7 +3,7 @@
 import { useRef, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { pregnancyData, type WeekData } from "@/lib/pregnancy-data";
-import { Ruler, ChevronRight, RotateCw } from "lucide-react";
+import { Ruler, ChevronRight, RotateCw, ChevronDown } from "lucide-react";
 
 interface SizeComparisonProps {
   currentWeek: number;
@@ -246,6 +246,7 @@ function GrowthSparkline({ currentWeek }: { currentWeek: number }) {
 /* ------------------------------------------------------------------ */
 function FlipCard({ weekData }: { weekData: WeekData }) {
   const [flipped, setFlipped] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const sizeCm = formatSize(weekData.sizeMm);
 
@@ -262,8 +263,8 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
       <motion.div
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        style={{ transformStyle: "preserve-3d" }}
-        className="relative min-h-[300px]"
+        style={{ transformStyle: "preserve-3d", minHeight: expanded && flipped ? 460 : 300 }}
+        className="relative"
       >
         {/* Front face */}
         <motion.div
@@ -332,9 +333,29 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
               {weekData.sizeMm > 0 ? `${sizeCm} — ${formatWeight(weekData.weightG)}` : "Tout petit !"}
             </span>
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-300 mt-3 text-center leading-relaxed max-w-[260px]">
-            {weekData.babyDevelopment}
-          </p>
+          <div className="w-full max-w-[260px] mt-3">
+            <p
+              className={`text-sm text-gray-600 dark:text-gray-300 text-center leading-relaxed ${
+                expanded ? "" : "line-clamp-2"
+              }`}
+            >
+              {weekData.babyDevelopment}
+            </p>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded((v) => !v);
+              }}
+              className="mt-1.5 mx-auto flex items-center gap-1 text-[11px] font-semibold text-purple-500 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+              aria-expanded={expanded}
+            >
+              {expanded ? "Voir moins" : "Voir plus"}
+              <ChevronDown
+                className={`w-3 h-3 transition-transform ${expanded ? "rotate-180" : ""}`}
+              />
+            </button>
+          </div>
 
           <div className="flex items-center gap-1 mt-3">
             <RotateCw className="w-3 h-3 text-gray-300 dark:text-gray-500" />
