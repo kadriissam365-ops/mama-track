@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const STATIC_CACHE = `mamatrack-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `mamatrack-dynamic-${CACHE_VERSION}`;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { pregnancyData, type WeekData } from "@/lib/pregnancy-data";
 import { Ruler, ChevronRight, RotateCw, ChevronDown } from "lucide-react";
 
@@ -250,119 +250,117 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
 
   const sizeCm = formatSize(weekData.sizeMm);
 
+  const toggle = () => {
+    setFlipped((f) => !f);
+    setExpanded(false);
+  };
+
   return (
     <div
       className="relative w-full cursor-pointer select-none"
-      style={{ perspective: "1000px" }}
-      onClick={() => setFlipped((f) => !f)}
+      onClick={toggle}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && setFlipped((f) => !f)}
-      aria-label="Tap to flip card"
+      onKeyDown={(e) => e.key === "Enter" && toggle()}
+      aria-label="Toucher pour retourner"
     >
-      <motion.div
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-        style={{ transformStyle: "preserve-3d", minHeight: expanded && flipped ? 460 : 300 }}
-        className="relative"
-      >
-        {/* Front face */}
-        <motion.div
-          animate={{ opacity: flipped ? 0 : 1 }}
-          transition={{ duration: 0.25, delay: flipped ? 0 : 0.25 }}
-          className="absolute inset-0 bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-green-950/30 rounded-3xl border border-pink-100 dark:border-pink-900/30 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center"
-          style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", pointerEvents: flipped ? "none" : "auto" }}
-        >
-          {/* Decorative blurred blobs */}
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-200/30 rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
-
-          <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider text-center mb-2 z-10">
-            Taille comparable à
-          </p>
-
-          {/* Fruit emoji */}
-          <div className="flex justify-center z-10">
-            <span className="text-8xl select-none inline-block drop-shadow-lg">
-              {weekData.fruitEmoji}
-            </span>
-          </div>
-
-          {/* Fruit name */}
-          <h2
-              className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 text-center mt-3 z-10"
+      <div className="relative" style={{ minHeight: flipped && expanded ? 460 : 300 }}>
+        <AnimatePresence mode="wait" initial={false}>
+          {!flipped ? (
+            <motion.div
+              key="front"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-green-950/30 rounded-3xl border border-pink-100 dark:border-pink-900/30 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center min-h-[300px]"
             >
-              {weekData.fruit}
-            </h2>
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-200/30 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
 
-          {/* Size badge */}
-          <div className="flex justify-center mt-3 z-10">
-            <span className="inline-flex items-center gap-1.5 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-[#3d2b2b] dark:text-gray-100 text-sm font-semibold px-4 py-1.5 rounded-full border border-pink-200 dark:border-pink-800/30 shadow-sm">
-              <Ruler className="w-4 h-4 text-pink-400" />
-              {sizeCm}
-            </span>
-          </div>
+              <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider text-center mb-2 z-10">
+                Taille comparable à
+              </p>
 
-          {/* Tap hint */}
-          <div className="flex items-center gap-1 mt-3 z-10">
-            <RotateCw className="w-3 h-3 text-gray-300 dark:text-gray-500" />
-            <span className="text-[10px] text-gray-300 dark:text-gray-500">Toucher pour retourner</span>
-          </div>
-        </motion.div>
+              <div className="flex justify-center z-10">
+                <span className="text-8xl select-none inline-block">
+                  {weekData.fruitEmoji}
+                </span>
+              </div>
 
-        {/* Back face */}
-        <motion.div
-          animate={{ opacity: flipped ? 1 : 0 }}
-          transition={{ duration: 0.25, delay: flipped ? 0.25 : 0 }}
-          className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-green-50 dark:from-purple-950/30 dark:via-pink-950/30 dark:to-green-950/30 rounded-3xl border border-purple-200 dark:border-purple-800/30 shadow-sm p-6 overflow-y-auto flex flex-col items-center justify-center"
-          style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden", transform: "rotateY(180deg)", pointerEvents: flipped ? "auto" : "none" }}
-        >
-          <div className="absolute -top-10 -left-10 w-32 h-32 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
+              <h2 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 text-center mt-3 z-10">
+                {weekData.fruit}
+              </h2>
 
-          <span className="text-4xl mb-3">{weekData.funComparisonEmoji}</span>
-          <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
-            Le saviez-vous ?
-          </p>
-          <p className="text-center text-sm text-[#3d2b2b] dark:text-gray-100 leading-relaxed max-w-[240px]">
-            Votre bébé fait environ la taille{" "}
-            <span className="font-bold text-pink-500 dark:text-pink-400">{deContraction(weekData.funComparison)}</span>{" "}
-            {weekData.funComparisonEmoji}
-          </p>
-          <div className="mt-3 text-center">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              {weekData.sizeMm > 0 ? `${sizeCm} — ${formatWeight(weekData.weightG)}` : "Tout petit !"}
-            </span>
-          </div>
-          <div className="w-full max-w-[260px] mt-3">
-            <p
-              className={`text-sm text-gray-600 dark:text-gray-300 text-center leading-relaxed ${
-                expanded ? "" : "line-clamp-2"
-              }`}
+              <div className="flex justify-center mt-3 z-10">
+                <span className="inline-flex items-center gap-1.5 bg-white/80 dark:bg-gray-900/80 text-[#3d2b2b] dark:text-gray-100 text-sm font-semibold px-4 py-1.5 rounded-full border border-pink-200 dark:border-pink-800/30 shadow-sm">
+                  <Ruler className="w-4 h-4 text-pink-400" />
+                  {sizeCm}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1 mt-3 z-10">
+                <RotateCw className="w-3 h-3 text-gray-300 dark:text-gray-500" />
+                <span className="text-[10px] text-gray-300 dark:text-gray-500">Toucher pour retourner</span>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="back"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="bg-gradient-to-br from-purple-50 via-pink-50 to-green-50 dark:from-purple-950/30 dark:via-pink-950/30 dark:to-green-950/30 rounded-3xl border border-purple-200 dark:border-purple-800/30 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center min-h-[300px]"
             >
-              {weekData.babyDevelopment}
-            </p>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setExpanded((v) => !v);
-              }}
-              className="mt-1.5 mx-auto flex items-center gap-1 text-[11px] font-semibold text-purple-500 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
-              aria-expanded={expanded}
-            >
-              {expanded ? "Voir moins" : "Voir plus"}
-              <ChevronDown
-                className={`w-3 h-3 transition-transform ${expanded ? "rotate-180" : ""}`}
-              />
-            </button>
-          </div>
+              <div className="absolute -top-10 -left-10 w-32 h-32 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
 
-          <div className="flex items-center gap-1 mt-3">
-            <RotateCw className="w-3 h-3 text-gray-300 dark:text-gray-500" />
-            <span className="text-[10px] text-gray-300 dark:text-gray-500">Toucher pour retourner</span>
-          </div>
-        </motion.div>
-      </motion.div>
+              <span className="text-4xl mb-3">{weekData.funComparisonEmoji}</span>
+              <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
+                Le saviez-vous ?
+              </p>
+              <p className="text-center text-sm text-[#3d2b2b] dark:text-gray-100 leading-relaxed max-w-[240px]">
+                Votre bébé fait environ la taille{" "}
+                <span className="font-bold text-pink-500 dark:text-pink-400">{deContraction(weekData.funComparison)}</span>{" "}
+                {weekData.funComparisonEmoji}
+              </p>
+              <div className="mt-3 text-center">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {weekData.sizeMm > 0 ? `${sizeCm} — ${formatWeight(weekData.weightG)}` : "Tout petit !"}
+                </span>
+              </div>
+              <div className="w-full max-w-[260px] mt-3">
+                <p
+                  className={`text-sm text-gray-600 dark:text-gray-300 text-center leading-relaxed ${
+                    expanded ? "" : "line-clamp-2"
+                  }`}
+                >
+                  {weekData.babyDevelopment}
+                </p>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setExpanded((v) => !v);
+                  }}
+                  className="mt-1.5 mx-auto flex items-center gap-1 text-[11px] font-semibold text-purple-500 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+                  aria-expanded={expanded}
+                >
+                  {expanded ? "Voir moins" : "Voir plus"}
+                  <ChevronDown
+                    className={`w-3 h-3 transition-transform ${expanded ? "rotate-180" : ""}`}
+                  />
+                </button>
+              </div>
+
+              <div className="flex items-center gap-1 mt-3">
+                <RotateCw className="w-3 h-3 text-gray-300 dark:text-gray-500" />
+                <span className="text-[10px] text-gray-300 dark:text-gray-500">Toucher pour retourner</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
