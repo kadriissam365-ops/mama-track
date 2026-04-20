@@ -273,33 +273,33 @@ function FlipCard({ weekData }: { weekData: WeekData }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="relative bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-green-950/30 rounded-3xl border border-pink-100 dark:border-pink-900/30 shadow-sm p-6 overflow-hidden flex flex-col items-center justify-center min-h-[300px]"
+              className="relative bg-gradient-to-br from-pink-50 via-purple-50 to-green-50 dark:from-pink-950/30 dark:via-purple-950/30 dark:to-green-950/30 rounded-3xl border border-pink-100 dark:border-pink-900/30 shadow-sm px-6 py-8 overflow-hidden flex flex-col items-center justify-center min-h-[340px] gap-3"
             >
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-200/30 rounded-full blur-2xl pointer-events-none" />
               <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-purple-200/30 rounded-full blur-2xl pointer-events-none" />
 
-              <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider text-center mb-2 z-10">
+              <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider text-center z-10">
                 Taille comparable à
               </p>
 
               <div className="flex justify-center z-10">
-                <span className="text-8xl select-none inline-block">
+                <span className="text-7xl leading-none select-none inline-block">
                   {weekData.fruitEmoji}
                 </span>
               </div>
 
-              <h2 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 text-center mt-3 z-10">
+              <h2 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 text-center z-10">
                 {weekData.fruit}
               </h2>
 
-              <div className="flex justify-center mt-3 z-10">
+              <div className="flex justify-center z-10">
                 <span className="inline-flex items-center gap-1.5 bg-white/80 dark:bg-gray-900/80 text-[#3d2b2b] dark:text-gray-100 text-sm font-semibold px-4 py-1.5 rounded-full border border-pink-200 dark:border-pink-800/30 shadow-sm">
                   <Ruler className="w-4 h-4 text-pink-400" />
                   {sizeCm}
                 </span>
               </div>
 
-              <div className="flex items-center gap-1 mt-3 z-10">
+              <div className="flex items-center gap-1 z-10">
                 <RotateCw className="w-3 h-3 text-gray-300 dark:text-gray-500" />
                 <span className="text-[10px] text-gray-300 dark:text-gray-500">Toucher pour retourner</span>
               </div>

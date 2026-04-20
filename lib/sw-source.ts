@@ -1,8 +1,9 @@
-const CACHE_VERSION = 'v5';
-const STATIC_CACHE = `mamatrack-static-${CACHE_VERSION}`;
-const DYNAMIC_CACHE = `mamatrack-dynamic-${CACHE_VERSION}`;
+// Service worker source served by app/sw.js/route.ts
+// Keep this file in sync — do NOT reference public/sw.js (deleted to bypass Vercel edge cache).
+export const SW_SOURCE = `const CACHE_VERSION = 'v6';
+const STATIC_CACHE = \`mamatrack-static-\${CACHE_VERSION}\`;
+const DYNAMIC_CACHE = \`mamatrack-dynamic-\${CACHE_VERSION}\`;
 
-// Au install : pre-cache les assets critiques
 const PRECACHE_URLS = [
   '/',
   '/tracking',
@@ -18,7 +19,6 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Au activate : nettoyer les vieux caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -31,24 +31,17 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Stratégie fetch différenciée
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // Only GET is cacheable. Let everything else pass through untouched —
-  // cache.put() throws on POST/PUT/DELETE/PATCH responses, and intercepting
-  // mutations risks double-consuming the response body.
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
 
-  // Skip cross-origin APIs entirely (Supabase, third-party).
   if (url.origin !== self.location.origin) return;
-
-  // Skip app API routes — they shouldn't be cached.
   if (url.pathname.startsWith('/api/')) return;
+  if (url.pathname === '/sw.js') return;
 
-  // Navigation HTML : network first, fallback cache
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -62,7 +55,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // JS/CSS chunks Next.js : cache first (content-addressable)
   if (url.pathname.includes('/_next/static/')) {
     event.respondWith(
       caches.match(request).then(cached => {
@@ -77,7 +69,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Reste : network first avec fallback cache
   event.respondWith(
     fetch(request)
       .then(response => {
@@ -91,19 +82,16 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Listen for messages from the app
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
 });
 
-// Push notification handler
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {};
   const title = data.title || 'MamaTrack';
 
-  // Map tags to relevant action buttons when not provided by the payload
   const defaultActions = {
     'daily-tip':          [{ action: 'open', title: 'Lire' }, { action: 'dismiss', title: 'OK' }],
     'hydration-reminder': [{ action: 'log-water', title: "J'ai bu" }, { action: 'dismiss', title: 'Plus tard' }],
@@ -127,14 +115,11 @@ self.addEventListener('push', (event) => {
   event.waitUntil(self.registration.showNotification(title, options));
 });
 
-// Periodic sync for automatic reminders (hydration, medication)
-// Only fires when the browser supports periodic background sync
 self.addEventListener('periodicsync', (event) => {
   if (event.tag === 'hydration-reminder') {
     event.waitUntil(
       (async () => {
         const hour = new Date().getHours();
-        // Only remind between 8am and 10pm
         if (hour >= 8 && hour < 22) {
           await self.registration.showNotification('Hydratation !', {
             body: "N'oubliez pas de boire de l'eau. Votre corps et bebe en ont besoin !",
@@ -173,17 +158,15 @@ self.addEventListener('periodicsync', (event) => {
   }
 });
 
-// Notification click handler — routes based on action and tag
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  var action = event.action; // e.g. 'open', 'log-water', 'start-count', 'dismiss'
+  var action = event.action;
   var data = event.notification.data || {};
   var tag = data.tag || '';
   var url = data.url || '/';
 
-  // Handle specific actions
-  if (action === 'dismiss') return; // just close the notification
+  if (action === 'dismiss') return;
 
   if (action === 'log-water') {
     url = '/tracking?action=log-water';
@@ -208,3 +191,4 @@ self.addEventListener('notificationclick', (event) => {
     })
   );
 });
+`;
