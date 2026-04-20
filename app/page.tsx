@@ -256,11 +256,13 @@ export default function DashboardPage() {
       {/* Cards résumé */}
       <div className="grid grid-cols-2 gap-3">
         {/* Poids */}
-        <motion.div
+        <motion.button
+          type="button"
+          onClick={() => router.push("/tracking?tab=weight")}
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30"
+          className="text-left bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30 hover:shadow-md hover:border-pink-200 dark:hover:border-pink-800/50 transition-all active:scale-[0.98]"
         >
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
@@ -280,14 +282,16 @@ export default function DashboardPage() {
           ) : (
             <p className="text-sm text-gray-400 dark:text-gray-500">Aucune mesure</p>
           )}
-        </motion.div>
+        </motion.button>
 
         {/* Eau */}
-        <motion.div
+        <motion.button
+          type="button"
+          onClick={() => router.push("/tracking?tab=water")}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.25 }}
-          className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30"
+          className="text-left bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30 hover:shadow-md hover:border-purple-200 dark:hover:border-purple-800/50 transition-all active:scale-[0.98]"
         >
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
@@ -305,7 +309,7 @@ export default function DashboardPage() {
             />
           </div>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">objectif {waterGoal} ml</p>
-        </motion.div>
+        </motion.button>
 
         {/* Symptômes */}
         <motion.div

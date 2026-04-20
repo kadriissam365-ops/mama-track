@@ -6,6 +6,9 @@ import { Camera, Trash2, ChevronLeft, ChevronRight, Image, Calendar, ArrowLeftRi
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useStore } from "@/lib/store";
+import { useAuth } from "@/lib/auth";
+import { useToast } from "@/lib/toast";
+import * as api from "@/lib/supabase-api";
 import { getCurrentWeek } from "@/lib/pregnancy-data";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
@@ -15,6 +18,7 @@ interface BumpPhoto {
   date: string;
   dataUrl: string;
   note: string;
+  storagePath?: string;
 }
 
 function loadPhotos(): BumpPhoto[] {
@@ -30,6 +34,8 @@ function savePhotos(photos: BumpPhoto[]) {
 
 export default function BumpPage() {
   const { dueDate } = useStore();
+  const { user } = useAuth();
+  const toast = useToast();
   const currentWeek = dueDate ? getCurrentWeek(new Date(dueDate)) : 20;
   const [photos, setPhotos] = useState<BumpPhoto[]>([]);
   const [showCamera, setShowCamera] = useState(false);
@@ -42,8 +48,38 @@ export default function BumpPage() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    // Seed with localStorage immediately (offline-first)
     setPhotos(loadPhotos());
   }, []);
+
+  // Hydrate from Supabase once user is available.
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const remote = await api.getBumpPhotos(user.id);
+        if (cancelled || remote.length === 0) return;
+        const withUrls = await Promise.all(
+          remote.map(async (p) => {
+            const url = await api.getBumpPhotoSignedUrl(p.storage_path);
+            return {
+              id: p.id,
+              week: p.week,
+              date: p.captured_at,
+              dataUrl: url ?? "",
+              note: p.note ?? "",
+              storagePath: p.storage_path,
+            } as BumpPhoto;
+          }),
+        );
+        if (!cancelled) setPhotos(withUrls.sort((a, b) => a.week - b.week));
+      } catch (err) {
+        console.error("[bump] remote load failed", err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -52,7 +88,7 @@ export default function BumpPage() {
     const reader = new FileReader();
     reader.onload = () => {
       const img = document.createElement("img");
-      img.onload = () => {
+      img.onload = async () => {
         const canvas = document.createElement("canvas");
         const maxSize = 800;
         let w = img.width;
@@ -75,11 +111,34 @@ export default function BumpPage() {
           note: note.trim(),
         };
 
-        const updated = [...photos, photo].sort((a, b) => a.week - b.week);
+        const updated = [...photos.filter((p) => p.week !== currentWeek), photo].sort(
+          (a, b) => a.week - b.week,
+        );
         setPhotos(updated);
         savePhotos(updated);
         setShowCamera(false);
         setNote("");
+
+        // Upload to Supabase storage (fire-and-forget; localStorage already saved).
+        if (user) {
+          try {
+            const blob = await new Promise<Blob | null>((resolve) =>
+              canvas.toBlob((b) => resolve(b), "image/jpeg", 0.7),
+            );
+            if (!blob) throw new Error("Canvas.toBlob returned null");
+            const saved = await api.upsertBumpPhoto(user.id, currentWeek, blob, note.trim());
+            if (saved) {
+              toast.success("Photo enregistrée 📸");
+            } else {
+              toast.warning("Photo sauvegardée localement uniquement");
+            }
+          } catch (err) {
+            console.error("[bump] upload failed", err);
+            toast.error("Upload échoué — photo conservée localement");
+          }
+        } else {
+          toast.info("Photo sauvegardée localement");
+        }
       };
       img.src = reader.result as string;
     };
@@ -88,11 +147,15 @@ export default function BumpPage() {
   }
 
   function deletePhoto(id: string) {
+    const target = photos.find((p) => p.id === id);
     const updated = photos.filter((p) => p.id !== id);
     setPhotos(updated);
     savePhotos(updated);
     setConfirmDelete(null);
     setViewPhoto(null);
+    if (user && target?.storagePath) {
+      void api.deleteBumpPhoto(user.id, target.week, target.storagePath);
+    }
   }
 
   const weekNumbers = Array.from(new Set(photos.map((p) => p.week))).sort((a, b) => a - b);

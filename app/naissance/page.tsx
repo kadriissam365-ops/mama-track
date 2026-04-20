@@ -6,6 +6,7 @@ import { FileDown, ChevronDown, ChevronUp, Check, X, Loader2, CheckCircle2 } fro
 import type jsPDFType from "jspdf";
 import { notifyPartner } from "@/lib/partner-notify-client";
 import { useStore } from "@/lib/store";
+import { useToast } from "@/lib/toast";
 
 interface ProjetNaissance {
   // Section 1 - Infos
@@ -113,6 +114,7 @@ function RadioField({ label, value, options, onChange }: {
 
 export default function NaissancePage() {
   const { birthPlan, saveBirthPlanData } = useStore();
+  const toast = useToast();
   const [projet, setProjet] = useState<ProjetNaissance>(DEFAULT_PROJET);
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([1]));
   const [loading, setLoading] = useState(false);
@@ -258,9 +260,11 @@ export default function NaissancePage() {
       doc.save(`mamatrack-projet-naissance.pdf`);
       notifyPartner("milestone", { milestone: "Projet de naissance finalisé" });
       setSuccess(true);
+      toast.success("PDF téléchargé 🎉");
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       console.error(err);
+      toast.error("Impossible de générer le PDF, réessaye.");
     } finally {
       setLoading(false);
     }

@@ -207,7 +207,8 @@ export default function RespirationPage() {
     setPhaseTime(0);
     setCurrentRound(1);
     setTotalSeconds(0);
-    setIsRunning(false);
+    // Auto-start the timer so the ▶️ play button is not needed to begin.
+    setIsRunning(true);
   }
 
   function togglePause() {

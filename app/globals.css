@@ -76,9 +76,18 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-geist-sans), system-ui, sans-serif;
+  }
+  /* Contain any decorative gradients/absolute elements inside the scrolling main. */
+  main {
+    overflow-x: hidden;
   }
 }
 

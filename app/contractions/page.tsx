@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Timer, Trash2, AlertCircle, CheckCircle, MessageCircle } from "lucide-react";
+import { Timer, Trash2, AlertCircle, CheckCircle, MessageCircle, ArrowLeft } from "lucide-react";
 import { useToast } from "@/lib/toast";
 import type { ContractionEntry } from "@/lib/store";
 
@@ -59,6 +60,7 @@ function analyzeContractions(contractions: ContractionEntry[]): {
 export default function ContractionsPage() {
   const store = useStore();
   const toast = useToast();
+  const router = useRouter();
   const [isActive, setIsActive] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
@@ -87,15 +89,20 @@ export default function ContractionsPage() {
     setLocalContractions([]);
     lastContractionEndRef.current = null;
 
+    // Snapshot current session count so we can resolve the new session ID
+    // after store append (addContractionSession appends a temp-ID session synchronously).
+    const prevCount = store.contractionSessions.length;
     const newSession = {
       date: format(new Date(), "yyyy-MM-dd"),
-      contractions: [],
+      contractions: [] as ContractionEntry[],
     };
-    store.addContractionSession(newSession);
-    // Get the last added session ID
-    const sessions = store.contractionSessions;
-    const lastId = sessions[sessions.length - 1]?.id ?? null;
-    setCurrentSessionId(lastId);
+    void store.addContractionSession(newSession);
+    // Defer read so the state flush commits.
+    setTimeout(() => {
+      const sessions = store.contractionSessions;
+      const added = sessions[prevCount] ?? sessions[sessions.length - 1];
+      if (added) setCurrentSessionId(added.id);
+    }, 0);
 
     intervalRef.current = setInterval(() => {
       if (sessionStartRef.current) {
@@ -104,15 +111,16 @@ export default function ContractionsPage() {
     }, 1000);
   };
 
-  const stopSession = () => {
+  const endSession = () => {
     setIsActive(false);
     setInContraction(false);
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (contractionIntervalRef.current) clearInterval(contractionIntervalRef.current);
     if (currentSessionId) {
-      store.updateContractionSession(currentSessionId, { contractions: localContractions });
+      void store.updateContractionSession(currentSessionId, { contractions: localContractions });
     }
     setCurrentSessionId(null);
+    toast.success(`Session terminée (${localContractions.length} contraction${localContractions.length > 1 ? "s" : ""})`);
   };
 
   const startContraction = () => {
@@ -165,10 +173,19 @@ export default function ContractionsPage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
-      <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
-        <Timer className="w-6 h-6 text-pink-400" />
-        Contractions
-      </h1>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => router.back()}
+          aria-label="Retour"
+          className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
+          <Timer className="w-6 h-6 text-pink-400" />
+          Contractions
+        </h1>
+      </div>
 
       {/* Avertissement */}
       <AnimatePresence>
@@ -232,7 +249,7 @@ export default function ContractionsPage() {
             </motion.button>
 
             <button
-              onClick={stopSession}
+              onClick={endSession}
               className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-medium hover:bg-gray-200 dark:bg-gray-700 transition-colors"
             >
               Terminer la session
