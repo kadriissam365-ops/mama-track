@@ -125,7 +125,7 @@ function InviteContent() {
           <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
           <button
             onClick={() => router.push("/")}
-            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
           >
             Retour à l&apos;accueil
           </button>

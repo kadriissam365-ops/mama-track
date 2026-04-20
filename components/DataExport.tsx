@@ -497,7 +497,7 @@ export default function DataExport() {
             <button
               onClick={handleExportPDF}
               disabled={loading}
-              className="flex-1 py-3 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+              className="flex-1 py-3 bg-pink-400 text-white rounded-xl font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

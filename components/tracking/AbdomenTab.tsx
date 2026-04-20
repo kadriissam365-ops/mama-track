@@ -223,7 +223,7 @@ export default function AbdomenTab() {
           <button
             onClick={handleAdd}
             disabled={!circumference || saving}
-            className="bg-purple-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-50 dark:hover:bg-purple-600 dark:bg-purple-500 transition-colors"
+            className="bg-purple-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-500 dark:hover:bg-purple-600 dark:bg-purple-500 transition-colors"
             aria-label="Ajouter la mesure"
           >
             <Plus className="w-4 h-4" />

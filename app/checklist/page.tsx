@@ -61,7 +61,7 @@ export default function ChecklistPage() {
         </h1>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Ajouter
@@ -125,7 +125,7 @@ export default function ChecklistPage() {
               <button
                 onClick={handleAddItem}
                 disabled={!newLabel.trim()}
-                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
               >
                 OK
               </button>

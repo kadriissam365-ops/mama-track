@@ -18,17 +18,17 @@ const variants = {
   default: {
     iconBg: "bg-gray-100 dark:bg-gray-800",
     iconColor: "text-gray-400 dark:text-gray-500",
-    buttonBg: "bg-pink-400 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500",
+    buttonBg: "bg-pink-400 hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500",
   },
   pink: {
     iconBg: "bg-pink-100 dark:bg-pink-900/30",
     iconColor: "text-pink-400",
-    buttonBg: "bg-pink-400 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500",
+    buttonBg: "bg-pink-400 hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500",
   },
   purple: {
     iconBg: "bg-purple-100 dark:bg-purple-900/30",
     iconColor: "text-purple-400",
-    buttonBg: "bg-purple-400 hover:bg-purple-50 dark:hover:bg-purple-600 dark:bg-purple-500",
+    buttonBg: "bg-purple-400 hover:bg-purple-500 dark:hover:bg-purple-600 dark:bg-purple-500",
   },
   green: {
     iconBg: "bg-green-100 dark:bg-green-900/30",

@@ -34,6 +34,7 @@ export default function PhotosContent() {
   const [modalSlot, setModalSlot] = useState<WeekSlot | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   const [editNote, setEditNote] = useState<{ week: number; value: string } | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const uploadWeekRef = useRef<number>(0);
 
@@ -68,16 +69,31 @@ export default function PhotosContent() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
+    // Guard: Supabase bucket is 8MB max, images only
+    if (file.size > 8 * 1024 * 1024) {
+      setUploadError("Image trop lourde (max 8 Mo)");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+    if (!/^image\/(jpeg|png|webp)$/i.test(file.type)) {
+      setUploadError("Format accepte : JPG, PNG ou WebP");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
     const week = uploadWeekRef.current;
     setUploading(week);
+    setUploadError(null);
     try {
       const compressed = await compressImage(file);
       const result = await upsertBumpPhoto(user.id, week, compressed);
       if (result) {
         await loadPhotos();
+      } else {
+        setUploadError("Echec de l'envoi. Reessaie dans un instant.");
       }
     } catch (err) {
       console.error("Upload error:", err);
+      setUploadError("Erreur pendant l'envoi de la photo.");
     } finally {
       setUploading(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -111,7 +127,7 @@ export default function PhotosContent() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-pink-100 dark:border-pink-900/30 px-4 py-3">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 rounded-xl hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30">
+          <button onClick={() => router.back()} className="p-2 rounded-xl hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-colors">
             <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
           <div>
@@ -124,6 +140,18 @@ export default function PhotosContent() {
       </div>
 
       <div className="px-4 py-4">
+        {uploadError && (
+          <div className="mb-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-xl px-3 py-2 text-xs text-red-600 dark:text-red-300 flex items-center justify-between gap-2">
+            <span>{uploadError}</span>
+            <button
+              onClick={() => setUploadError(null)}
+              className="p-1 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+              aria-label="Fermer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
         {loading ? (
           <div className="flex justify-center py-16">
             <div className="w-8 h-8 rounded-full border-2 border-pink-400 border-t-transparent animate-spin" />
@@ -206,7 +234,7 @@ export default function PhotosContent() {
                               onClick={() =>
                                 setEditNote({ week: slot.week, value: slot.photo?.note || "" })
                               }
-                              className="flex-shrink-0 p-1 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 rounded-lg"
+                              className="flex-shrink-0 p-1 hover:bg-pink-50 dark:hover:bg-pink-950/30 rounded-lg transition-colors"
                             >
                               <Edit3 className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
                             </button>
@@ -229,7 +257,7 @@ export default function PhotosContent() {
                       <button
                         onClick={() => triggerUpload(slot.week)}
                         disabled={uploading !== null}
-                        className="w-full bg-white dark:bg-gray-900 border-2 border-dashed border-pink-200 dark:border-pink-800/30 rounded-2xl p-6 flex flex-col items-center gap-2 hover:border-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-all"
+                        className="w-full bg-white dark:bg-gray-900 border-2 border-dashed border-pink-200 dark:border-pink-800/30 rounded-2xl p-6 flex flex-col items-center gap-2 hover:border-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-all"
                       >
                         {uploading === slot.week ? (
                           <div className="w-6 h-6 rounded-full border-2 border-pink-400 border-t-transparent animate-spin" />
@@ -331,7 +359,7 @@ export default function PhotosContent() {
                     const slot = slots.find((s) => s.week === deleteConfirm);
                     if (slot) handleDelete(slot);
                   }}
-                  className="flex-1 py-3 rounded-2xl bg-red-50 dark:bg-red-500 text-white font-medium"
+                  className="flex-1 py-3 rounded-2xl bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 text-white font-medium transition-colors"
                 >
                   Supprimer
                 </button>

@@ -79,7 +79,7 @@ function NoteForm({
           <button
             onClick={handleSubmit}
             disabled={!body.trim() || saving}
-            className="flex items-center gap-1 px-3 py-1.5 bg-amber-50 dark:bg-amber-500 text-white text-sm rounded-xl disabled:opacity-50"
+            className="flex items-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-600 text-white text-sm rounded-xl disabled:opacity-50 transition-colors"
           >
             {saving ? (
               <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
@@ -168,7 +168,7 @@ export default function NotesContent() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-yellow-100 dark:border-yellow-900/30 px-4 py-3">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()} className="p-2 rounded-xl hover:bg-yellow-50 dark:bg-yellow-950/30">
+          <button onClick={() => router.back()} className="p-2 rounded-xl hover:bg-yellow-50 dark:hover:bg-yellow-950/30 transition-colors">
             <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </button>
           <div className="flex-1">
@@ -177,7 +177,7 @@ export default function NotesContent() {
           </div>
           <button
             onClick={() => { setShowForm(true); setEditNote(null); }}
-            className="p-2 bg-amber-50 dark:bg-amber-500 rounded-xl text-white"
+            className="p-2 bg-amber-500 hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-600 rounded-xl text-white transition-colors"
           >
             <Plus className="w-5 h-5" />
           </button>
@@ -264,7 +264,7 @@ export default function NotesContent() {
                         </button>
                         <button
                           onClick={() => setDeleteId(note.id)}
-                          className="p-1.5 hover:bg-red-50 dark:bg-red-950/30 rounded-lg"
+                          className="p-1.5 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5 text-red-400" />
                         </button>
@@ -313,7 +313,7 @@ export default function NotesContent() {
                 </button>
                 <button
                   onClick={() => handleDelete(deleteId)}
-                  className="flex-1 py-3 rounded-2xl bg-red-50 dark:bg-red-500 text-white font-medium"
+                  className="flex-1 py-3 rounded-2xl bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 text-white font-medium transition-colors"
                 >
                   Supprimer
                 </button>

@@ -128,7 +128,7 @@ export default function DashboardPage() {
             />
             <button
               onClick={handleSaveDueDate}
-              className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+              className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
             >
               OK
             </button>

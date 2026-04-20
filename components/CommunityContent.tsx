@@ -315,7 +315,7 @@ export default function CommunityContent() {
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center justify-center w-9 h-9 rounded-xl text-gray-400 dark:text-gray-500 hover:text-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors disabled:opacity-50"
+            className="flex items-center justify-center w-9 h-9 rounded-xl text-gray-400 dark:text-gray-500 hover:text-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-colors disabled:opacity-50"
             title="Rafraichir"
           >
             <RefreshCw
@@ -328,7 +328,7 @@ export default function CommunityContent() {
               setShowModal(true);
             }}
             disabled={!isAuthenticated}
-            className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             title={
               !isAuthenticated ? "Connectez-vous pour partager" : "Partager"
             }
@@ -527,7 +527,7 @@ export default function CommunityContent() {
         <button
           onClick={handleLoadMore}
           disabled={loadingMore}
-          className="w-full flex items-center justify-center gap-2 py-3 text-sm text-pink-500 font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 rounded-xl transition-colors disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 py-3 text-sm text-pink-500 font-medium hover:bg-pink-50 dark:hover:bg-pink-950/30 rounded-xl transition-colors disabled:opacity-50"
         >
           {loadingMore ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -611,7 +611,7 @@ export default function CommunityContent() {
               <button
                 onClick={handleSubmit}
                 disabled={!newContent.trim() || submitting}
-                className="w-full bg-pink-400 text-white py-3 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full bg-pink-400 text-white py-3 rounded-xl font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
                 Publier

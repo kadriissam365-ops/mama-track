@@ -159,7 +159,7 @@ export default function UrgencesPage() {
           </h3>
           <button
             onClick={() => { resetForm(); setShowAdd(true); }}
-            className="w-7 h-7 bg-pink-400 rounded-lg flex items-center justify-center text-white hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+            className="w-7 h-7 bg-pink-400 rounded-lg flex items-center justify-center text-white hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -250,7 +250,7 @@ export default function UrgencesPage() {
                   <button
                     onClick={addContact}
                     disabled={!name.trim() || !phone.trim()}
-                    className="flex-1 flex items-center justify-center gap-1 bg-pink-400 text-white py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-1 bg-pink-400 text-white py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
                   >
                     <Save className="w-3.5 h-3.5" />
                     {editId ? "Modifier" : "Ajouter"}
