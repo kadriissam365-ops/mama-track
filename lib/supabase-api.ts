@@ -65,16 +65,18 @@ export async function upsertProfile(userId: string, profile: Partial<Omit<Profil
   if (profile.mamaName !== undefined) assertValid(validateName(profile.mamaName));
 
   const supabase = getSupabase();
-  const { error } = await supabase
-    .from('profiles')
-    .upsert({
-      id: userId,
-      due_date: profile.dueDate,
-      baby_name: profile.babyName,
-      mama_name: profile.mamaName,
-    });
-  
-  return !error;
+  const payload: Record<string, unknown> = { id: userId };
+  if (profile.dueDate !== undefined) payload.due_date = profile.dueDate;
+  if (profile.babyName !== undefined) payload.baby_name = profile.babyName;
+  if (profile.mamaName !== undefined) payload.mama_name = profile.mamaName;
+
+  const { error } = await supabase.from('profiles').upsert(payload);
+
+  if (error) {
+    console.error('[upsertProfile] Supabase error:', error.message, error.details, error.hint);
+    throw new Error(error.message || "Échec de l'enregistrement du profil");
+  }
+  return true;
 }
 
 // ============== WEIGHT ENTRIES ==============

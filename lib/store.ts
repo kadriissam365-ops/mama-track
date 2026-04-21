@@ -448,25 +448,53 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   // ============== ACTIONS ==============
 
   const setDueDate = useCallback(async (date: string) => {
-    setState(s => ({ ...s, dueDate: date }));
+    let previousDate: string | null = null;
+    setState(s => {
+      previousDate = s.dueDate;
+      return { ...s, dueDate: date };
+    });
     saveToStorage({ dueDate: date });
-    
+
     if (user) {
-      await api.upsertProfile(user.id, { dueDate: date });
+      try {
+        await api.upsertProfile(user.id, { dueDate: date });
+      } catch (err) {
+        setState(s => ({ ...s, dueDate: previousDate }));
+        saveToStorage({ dueDate: previousDate ?? undefined });
+        throw err;
+      }
     }
   }, [user]);
 
   const setProfile = useCallback(async (profile: { dueDate?: string; mamaName?: string; babyName?: string }) => {
-    setState(s => ({
-      ...s,
-      dueDate: profile.dueDate ?? s.dueDate,
-      mamaName: profile.mamaName ?? s.mamaName,
-      babyName: profile.babyName ?? s.babyName,
-    }));
+    type ProfileSnapshot = { dueDate: string | null; mamaName: string | null; babyName: string | null };
+    let previous: ProfileSnapshot | null = null;
+    setState(s => {
+      previous = { dueDate: s.dueDate, mamaName: s.mamaName, babyName: s.babyName } as ProfileSnapshot;
+      return {
+        ...s,
+        dueDate: profile.dueDate ?? s.dueDate,
+        mamaName: profile.mamaName ?? s.mamaName,
+        babyName: profile.babyName ?? s.babyName,
+      };
+    });
     saveToStorage(profile);
-    
+
     if (user) {
-      await api.upsertProfile(user.id, profile);
+      try {
+        await api.upsertProfile(user.id, profile);
+      } catch (err) {
+        const prev = previous as ProfileSnapshot | null;
+        if (prev) {
+          setState(s => ({ ...s, dueDate: prev.dueDate, mamaName: prev.mamaName, babyName: prev.babyName }));
+          saveToStorage({
+            dueDate: prev.dueDate ?? undefined,
+            mamaName: prev.mamaName ?? undefined,
+            babyName: prev.babyName ?? undefined,
+          });
+        }
+        throw err;
+      }
     }
   }, [user]);
 

@@ -97,12 +97,21 @@ export default function SettingsPage() {
   };
 
   const previewDpa = computedDpa();
+  const [applyingDpa, setApplyingDpa] = useState(false);
 
-  const applyComputedDpa = () => {
-    if (previewDpa) {
+  const applyComputedDpa = async () => {
+    if (!previewDpa) return;
+    setApplyingDpa(true);
+    try {
+      await store.setProfile({ dueDate: previewDpa });
       setDueDate(previewDpa);
       setDpaOpen(false);
-      toast.success("DPA calculée appliquée. N'oubliez pas d'enregistrer.");
+      toast.success("DPA enregistrée ✓");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Enregistrement impossible";
+      toast.error(msg);
+    } finally {
+      setApplyingDpa(false);
     }
   };
 
@@ -121,8 +130,9 @@ export default function SettingsPage() {
         dueDate: dueDate || undefined,
       });
       toast.success(t("settings.profileUpdated"));
-    } catch {
-      toast.error(t("settings.saveError"));
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : t("settings.saveError");
+      toast.error(msg);
     } finally {
       setSaving(false);
     }
@@ -407,9 +417,10 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={applyComputedDpa}
-                        className="mt-2 w-full py-1.5 bg-purple-500 text-white rounded-lg text-xs font-medium hover:bg-purple-600 transition-colors"
+                        disabled={applyingDpa}
+                        className="mt-2 w-full py-1.5 bg-purple-500 text-white rounded-lg text-xs font-medium hover:bg-purple-600 transition-colors disabled:opacity-60 flex items-center justify-center gap-1.5"
                       >
-                        Utiliser cette date
+                        {applyingDpa ? <><Loader2 className="w-3 h-3 animate-spin" />Enregistrement…</> : "Utiliser et enregistrer"}
                       </button>
                     </div>
                   )}
