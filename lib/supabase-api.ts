@@ -1222,3 +1222,401 @@ export async function saveNutritionChecks(
     );
   return !error;
 }
+
+// ============== SLEEP ENTRIES ==============
+
+export interface SleepEntry {
+  id: string;
+  date: string;
+  hours: number;
+  quality: number;
+  note?: string;
+  createdAt?: string;
+}
+
+export async function getSleepEntries(userId: string): Promise<SleepEntry[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('sleep_entries')
+    .select('*')
+    .eq('user_id', userId)
+    .order('date', { ascending: false });
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    id: r.id,
+    date: r.date,
+    hours: Number(r.hours),
+    quality: r.quality,
+    note: r.note ?? undefined,
+    createdAt: r.created_at,
+  }));
+}
+
+export async function addSleepEntry(
+  userId: string,
+  entry: Omit<SleepEntry, 'id' | 'createdAt'>
+): Promise<SleepEntry | null> {
+  if (entry.note) assertValid(validateNote(entry.note));
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('sleep_entries')
+    .insert({
+      user_id: userId,
+      date: entry.date,
+      hours: entry.hours,
+      quality: entry.quality,
+      note: entry.note ?? null,
+    })
+    .select()
+    .single();
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    date: data.date,
+    hours: Number(data.hours),
+    quality: data.quality,
+    note: data.note ?? undefined,
+    createdAt: data.created_at,
+  };
+}
+
+export async function deleteSleepEntry(id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from('sleep_entries').delete().eq('id', id);
+  return !error;
+}
+
+// ============== MOOD ENTRIES ==============
+
+export interface MoodEntry {
+  id: string;
+  date: string;
+  moodEmoji: string;
+  moodLabel: string;
+  note?: string;
+  createdAt?: string;
+}
+
+export async function getMoodEntries(userId: string): Promise<MoodEntry[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('mood_entries')
+    .select('*')
+    .eq('user_id', userId)
+    .order('date', { ascending: false });
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    id: r.id,
+    date: r.date,
+    moodEmoji: r.mood_emoji,
+    moodLabel: r.mood_label,
+    note: r.note ?? undefined,
+    createdAt: r.created_at,
+  }));
+}
+
+export async function getPartnerMoodEntries(partnerUserId: string): Promise<MoodEntry[]> {
+  return getMoodEntries(partnerUserId);
+}
+
+export async function addMoodEntry(
+  userId: string,
+  entry: Omit<MoodEntry, 'id' | 'createdAt'>
+): Promise<MoodEntry | null> {
+  if (entry.note) assertValid(validateNote(entry.note));
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('mood_entries')
+    .upsert(
+      {
+        user_id: userId,
+        date: entry.date,
+        mood_emoji: entry.moodEmoji,
+        mood_label: entry.moodLabel,
+        note: entry.note ?? null,
+      },
+      { onConflict: 'user_id,date' }
+    )
+    .select()
+    .single();
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    date: data.date,
+    moodEmoji: data.mood_emoji,
+    moodLabel: data.mood_label,
+    note: data.note ?? undefined,
+    createdAt: data.created_at,
+  };
+}
+
+export async function deleteMoodEntry(id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from('mood_entries').delete().eq('id', id);
+  return !error;
+}
+
+// ============== BLOOD PRESSURE ENTRIES ==============
+
+export interface BloodPressureEntry {
+  id: string;
+  date: string;
+  systolic: number;
+  diastolic: number;
+  pulse?: number;
+  note?: string;
+  createdAt?: string;
+}
+
+export async function getBloodPressureEntries(userId: string): Promise<BloodPressureEntry[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('blood_pressure_entries')
+    .select('*')
+    .eq('user_id', userId)
+    .order('date', { ascending: false });
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    id: r.id,
+    date: r.date,
+    systolic: r.systolic,
+    diastolic: r.diastolic,
+    pulse: r.pulse ?? undefined,
+    note: r.note ?? undefined,
+    createdAt: r.created_at,
+  }));
+}
+
+export async function addBloodPressureEntry(
+  userId: string,
+  entry: Omit<BloodPressureEntry, 'id' | 'createdAt'>
+): Promise<BloodPressureEntry | null> {
+  if (entry.note) assertValid(validateNote(entry.note));
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('blood_pressure_entries')
+    .insert({
+      user_id: userId,
+      date: entry.date,
+      systolic: entry.systolic,
+      diastolic: entry.diastolic,
+      pulse: entry.pulse ?? null,
+      note: entry.note ?? null,
+    })
+    .select()
+    .single();
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    date: data.date,
+    systolic: data.systolic,
+    diastolic: data.diastolic,
+    pulse: data.pulse ?? undefined,
+    note: data.note ?? undefined,
+    createdAt: data.created_at,
+  };
+}
+
+export async function deleteBloodPressureEntry(id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from('blood_pressure_entries').delete().eq('id', id);
+  return !error;
+}
+
+// ============== ABDOMEN MEASUREMENTS ==============
+
+export interface AbdomenMeasurement {
+  id: string;
+  date: string;
+  circumferenceCm: number;
+  note?: string;
+  createdAt?: string;
+}
+
+export async function getAbdomenMeasurements(userId: string): Promise<AbdomenMeasurement[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('abdomen_measurements')
+    .select('*')
+    .eq('user_id', userId)
+    .order('date', { ascending: false });
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    id: r.id,
+    date: r.date,
+    circumferenceCm: Number(r.circumference_cm),
+    note: r.note ?? undefined,
+    createdAt: r.created_at,
+  }));
+}
+
+export async function addAbdomenMeasurement(
+  userId: string,
+  entry: Omit<AbdomenMeasurement, 'id' | 'createdAt'>
+): Promise<AbdomenMeasurement | null> {
+  if (entry.note) assertValid(validateNote(entry.note));
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('abdomen_measurements')
+    .insert({
+      user_id: userId,
+      date: entry.date,
+      circumference_cm: entry.circumferenceCm,
+      note: entry.note ?? null,
+    })
+    .select()
+    .single();
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    date: data.date,
+    circumferenceCm: Number(data.circumference_cm),
+    note: data.note ?? undefined,
+    createdAt: data.created_at,
+  };
+}
+
+export async function deleteAbdomenMeasurement(id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from('abdomen_measurements').delete().eq('id', id);
+  return !error;
+}
+
+// ============== EXERCISE SESSIONS ==============
+
+export interface ExerciseSession {
+  id: string;
+  date: string;
+  activity: string;
+  durationMin: number;
+  intensity: string;
+  note?: string;
+  createdAt?: string;
+}
+
+export async function getExerciseSessions(userId: string): Promise<ExerciseSession[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('exercise_sessions')
+    .select('*')
+    .eq('user_id', userId)
+    .order('date', { ascending: false });
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    id: r.id,
+    date: r.date,
+    activity: r.activity,
+    durationMin: r.duration_min,
+    intensity: r.intensity,
+    note: r.note ?? undefined,
+    createdAt: r.created_at,
+  }));
+}
+
+export async function addExerciseSession(
+  userId: string,
+  entry: Omit<ExerciseSession, 'id' | 'createdAt'>
+): Promise<ExerciseSession | null> {
+  if (entry.note) assertValid(validateNote(entry.note));
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('exercise_sessions')
+    .insert({
+      user_id: userId,
+      date: entry.date,
+      activity: entry.activity,
+      duration_min: entry.durationMin,
+      intensity: entry.intensity,
+      note: entry.note ?? null,
+    })
+    .select()
+    .single();
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    date: data.date,
+    activity: data.activity,
+    durationMin: data.duration_min,
+    intensity: data.intensity,
+    note: data.note ?? undefined,
+    createdAt: data.created_at,
+  };
+}
+
+export async function deleteExerciseSession(id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from('exercise_sessions').delete().eq('id', id);
+  return !error;
+}
+
+// ============== BREATHING SESSIONS ==============
+
+export interface BreathingSession {
+  id: string;
+  startedAt: string;
+  durationSec: number;
+  pattern: string;
+  rounds: number;
+  completed: boolean;
+  createdAt?: string;
+}
+
+export async function getBreathingSessions(userId: string): Promise<BreathingSession[]> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('breathing_sessions')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  if (error || !data) return [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data as any[]).map((r) => ({
+    id: r.id,
+    startedAt: r.started_at,
+    durationSec: r.duration_sec,
+    pattern: r.pattern,
+    rounds: r.rounds,
+    completed: r.completed,
+    createdAt: r.created_at,
+  }));
+}
+
+export async function addBreathingSession(
+  userId: string,
+  session: Omit<BreathingSession, 'id' | 'createdAt'>
+): Promise<BreathingSession | null> {
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from('breathing_sessions')
+    .insert({
+      user_id: userId,
+      started_at: session.startedAt,
+      duration_sec: session.durationSec,
+      pattern: session.pattern,
+      rounds: session.rounds,
+      completed: session.completed,
+    })
+    .select()
+    .single();
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    startedAt: data.started_at,
+    durationSec: data.duration_sec,
+    pattern: data.pattern,
+    rounds: data.rounds,
+    completed: data.completed,
+    createdAt: data.created_at,
+  };
+}
+
+export async function deleteBreathingSession(id: string): Promise<boolean> {
+  const supabase = getSupabase();
+  const { error } = await supabase.from('breathing_sessions').delete().eq('id', id);
+  return !error;
+}

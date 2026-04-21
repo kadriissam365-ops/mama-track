@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, RotateCcw, Wind, Timer, Heart, ChevronRight } from "lucide-react";
+import { useStore } from "@/lib/store";
 
 interface BreathingExercise {
   id: string;
@@ -132,6 +133,7 @@ const PHASE_COLORS: Record<Phase, string> = {
 };
 
 export default function RespirationPage() {
+  const store = useStore();
   const [selectedExercise, setSelectedExercise] = useState<BreathingExercise | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [phase, setPhase] = useState<Phase>("inhale");
@@ -139,6 +141,22 @@ export default function RespirationPage() {
   const [currentRound, setCurrentRound] = useState(1);
   const [totalSeconds, setTotalSeconds] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const sessionStartRef = useRef<string | null>(null);
+  const persistedRef = useRef<boolean>(false);
+
+  const persistSession = useCallback((exercise: BreathingExercise, durationSec: number, rounds: number, completed: boolean) => {
+    if (persistedRef.current) return;
+    if (durationSec < 5) return;
+    persistedRef.current = true;
+    const pattern = `${exercise.inhale}-${exercise.hold}-${exercise.exhale}${exercise.holdAfter > 0 ? `-${exercise.holdAfter}` : ""}`;
+    store.addBreathingSession({
+      startedAt: sessionStartRef.current ?? new Date().toISOString(),
+      durationSec,
+      pattern,
+      rounds,
+      completed,
+    }).catch(() => {});
+  }, [store]);
 
   const getPhaseMax = useCallback(() => {
     if (!selectedExercise) return 0;
@@ -178,8 +196,9 @@ export default function RespirationPage() {
     } else {
       setPhase("done");
       setIsRunning(false);
+      persistSession(selectedExercise, totalSeconds, selectedExercise.rounds, true);
     }
-  }, [selectedExercise, phase, currentRound]);
+  }, [selectedExercise, phase, currentRound, totalSeconds, persistSession]);
 
   useEffect(() => {
     if (!isRunning || phase === "done") return;
@@ -207,8 +226,17 @@ export default function RespirationPage() {
     setPhaseTime(0);
     setCurrentRound(1);
     setTotalSeconds(0);
-    // Auto-start the timer so the ▶️ play button is not needed to begin.
+    sessionStartRef.current = new Date().toISOString();
+    persistedRef.current = false;
     setIsRunning(true);
+  }
+
+  function dismissExercise() {
+    if (selectedExercise && !persistedRef.current && totalSeconds > 0) {
+      persistSession(selectedExercise, totalSeconds, currentRound, phase === "done");
+    }
+    setSelectedExercise(null);
+    setIsRunning(false);
   }
 
   function togglePause() {
@@ -258,7 +286,7 @@ export default function RespirationPage() {
                 <h2 className="font-semibold text-[#3d2b2b] dark:text-gray-100">{selectedExercise.name}</h2>
               </div>
               <button
-                onClick={() => { setSelectedExercise(null); setIsRunning(false); }}
+                onClick={dismissExercise}
                 className="text-gray-300 hover:text-gray-500 dark:text-gray-400 text-sm"
               >
                 ✕

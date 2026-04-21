@@ -19,6 +19,14 @@ export type {
   Medication,
   MedicationLog,
   EmergencyContact,
+  SleepEntry,
+  MoodEntry,
+  BloodPressureEntry,
+  AbdomenMeasurement,
+  ExerciseSession,
+  BreathingSession,
+  JournalNote,
+  BumpPhoto,
 } from "./supabase-api";
 
 import type {
@@ -33,6 +41,14 @@ import type {
   Medication,
   MedicationLog,
   EmergencyContact,
+  SleepEntry,
+  MoodEntry,
+  BloodPressureEntry,
+  AbdomenMeasurement,
+  ExerciseSession,
+  BreathingSession,
+  JournalNote,
+  BumpPhoto,
 } from "./supabase-api";
 
 export type BirthPlanData = Record<string, unknown>;
@@ -57,6 +73,14 @@ export interface StoreState {
   emergencyContacts: EmergencyContact[];
   birthPlan: BirthPlanData | null;
   nutritionChecks: NutritionChecks;
+  sleepEntries: SleepEntry[];
+  moodEntries: MoodEntry[];
+  bloodPressureEntries: BloodPressureEntry[];
+  abdomenMeasurements: AbdomenMeasurement[];
+  exerciseSessions: ExerciseSession[];
+  journalNotes: JournalNote[];
+  bumpPhotos: BumpPhoto[];
+  breathingSessions: BreathingSession[];
   loading: boolean;
   synced: boolean;
 }
@@ -94,6 +118,21 @@ export interface StoreActions {
   removeEmergencyContactEntry: (id: string) => Promise<void>;
   saveBirthPlanData: (data: BirthPlanData) => Promise<void>;
   setNutritionChecksForDate: (date: string, checks: Record<string, boolean>) => Promise<void>;
+  addSleepEntry: (entry: Omit<SleepEntry, "id" | "createdAt">) => Promise<void>;
+  deleteSleepEntry: (id: string) => Promise<void>;
+  addMoodEntry: (entry: Omit<MoodEntry, "id" | "createdAt">) => Promise<void>;
+  deleteMoodEntry: (id: string) => Promise<void>;
+  addBloodPressureEntry: (entry: Omit<BloodPressureEntry, "id" | "createdAt">) => Promise<void>;
+  deleteBloodPressureEntry: (id: string) => Promise<void>;
+  addAbdomenMeasurement: (entry: Omit<AbdomenMeasurement, "id" | "createdAt">) => Promise<void>;
+  deleteAbdomenMeasurement: (id: string) => Promise<void>;
+  addExerciseSession: (entry: Omit<ExerciseSession, "id" | "createdAt">) => Promise<void>;
+  deleteExerciseSession: (id: string) => Promise<void>;
+  addJournalNote: (note: Omit<JournalNote, "id" | "user_id" | "created_at" | "updated_at">) => Promise<void>;
+  updateJournalNoteEntry: (id: string, updates: Partial<Pick<JournalNote, "title" | "body" | "mood_emoji">>) => Promise<void>;
+  deleteJournalNoteEntry: (id: string) => Promise<void>;
+  refreshBumpPhotos: () => Promise<void>;
+  addBreathingSession: (session: Omit<BreathingSession, "id" | "createdAt">) => Promise<void>;
   refreshData: () => Promise<void>;
 }
 
@@ -147,6 +186,14 @@ const initialState: StoreState = {
   emergencyContacts: [],
   birthPlan: null,
   nutritionChecks: {},
+  sleepEntries: [],
+  moodEntries: [],
+  bloodPressureEntries: [],
+  abdomenMeasurements: [],
+  exerciseSessions: [],
+  journalNotes: [],
+  bumpPhotos: [],
+  breathingSessions: [],
   loading: true,
   synced: false,
 };
@@ -270,6 +317,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         emergencyContacts,
         birthPlan,
         todayNutrition,
+        sleepEntries,
+        moodEntries,
+        bloodPressureEntries,
+        abdomenMeasurements,
+        exerciseSessions,
+        journalNotes,
+        bumpPhotos,
+        breathingSessions,
       ] = await Promise.all([
         api.getBabyNameFavorites(user.id).catch(() => [] as string[]),
         api.getShoppingItems(user.id).catch(() => [] as api.ShoppingItem[]),
@@ -279,6 +334,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         api.getEmergencyContacts(user.id).catch(() => [] as api.EmergencyContact[]),
         api.getBirthPlan<BirthPlanData>(user.id).catch(() => null),
         api.getNutritionChecks(user.id, todayDate).catch(() => ({} as Record<string, boolean>)),
+        api.getSleepEntries(user.id).catch(() => [] as SleepEntry[]),
+        api.getMoodEntries(user.id).catch(() => [] as MoodEntry[]),
+        api.getBloodPressureEntries(user.id).catch(() => [] as BloodPressureEntry[]),
+        api.getAbdomenMeasurements(user.id).catch(() => [] as AbdomenMeasurement[]),
+        api.getExerciseSessions(user.id).catch(() => [] as ExerciseSession[]),
+        api.getJournalNotes(user.id).catch(() => [] as JournalNote[]),
+        api.getBumpPhotos(user.id).catch(() => [] as BumpPhoto[]),
+        api.getBreathingSessions(user.id).catch(() => [] as BreathingSession[]),
       ]);
 
       // Merge remote + any local items that never reached Supabase.
@@ -308,6 +371,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           Object.keys(todayNutrition).length ? { [todayDate]: todayNutrition } : {},
           local.nutritionChecks,
         ),
+        sleepEntries: mergeById(sleepEntries, local.sleepEntries),
+        moodEntries: mergeById(moodEntries, local.moodEntries),
+        bloodPressureEntries: mergeById(bloodPressureEntries, local.bloodPressureEntries),
+        abdomenMeasurements: mergeById(abdomenMeasurements, local.abdomenMeasurements),
+        exerciseSessions: mergeById(exerciseSessions, local.exerciseSessions),
+        journalNotes: mergeById(journalNotes, local.journalNotes),
+        bumpPhotos: mergeById(bumpPhotos, local.bumpPhotos),
+        breathingSessions: mergeById(breathingSessions, local.breathingSessions),
       };
 
       setState({
@@ -942,6 +1013,297 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
+  // ============== SLEEP ==============
+
+  const addSleepEntry = useCallback(async (entry: Omit<SleepEntry, "id" | "createdAt">) => {
+    const tempId = generateId();
+    const optimistic: SleepEntry = { ...entry, id: tempId };
+    setState(s => {
+      const next = [optimistic, ...s.sleepEntries];
+      saveToStorage({ sleepEntries: next });
+      return { ...s, sleepEntries: next };
+    });
+    if (user) {
+      try {
+        const result = await api.addSleepEntry(user.id, entry);
+        if (result) {
+          setState(s => {
+            const next = s.sleepEntries.map(e => (e.id === tempId ? result : e));
+            saveToStorage({ sleepEntries: next });
+            return { ...s, sleepEntries: next };
+          });
+        }
+      } catch (error) {
+        captureError(error, { context: "addSleepEntry" });
+      }
+    }
+  }, [user]);
+
+  const deleteSleepEntry = useCallback(async (id: string) => {
+    setState(s => {
+      const next = s.sleepEntries.filter(e => e.id !== id);
+      saveToStorage({ sleepEntries: next });
+      return { ...s, sleepEntries: next };
+    });
+    if (user) {
+      try {
+        await api.deleteSleepEntry(id);
+      } catch (error) {
+        captureError(error, { context: "deleteSleepEntry" });
+      }
+    }
+  }, [user]);
+
+  // ============== MOOD ==============
+
+  const addMoodEntry = useCallback(async (entry: Omit<MoodEntry, "id" | "createdAt">) => {
+    const tempId = generateId();
+    const optimistic: MoodEntry = { ...entry, id: tempId };
+    setState(s => {
+      const filtered = s.moodEntries.filter(e => e.date !== entry.date);
+      const next = [optimistic, ...filtered];
+      saveToStorage({ moodEntries: next });
+      return { ...s, moodEntries: next };
+    });
+    if (user) {
+      try {
+        const result = await api.addMoodEntry(user.id, entry);
+        if (result) {
+          setState(s => {
+            const next = s.moodEntries.map(e => (e.id === tempId ? result : e));
+            saveToStorage({ moodEntries: next });
+            return { ...s, moodEntries: next };
+          });
+        }
+      } catch (error) {
+        captureError(error, { context: "addMoodEntry" });
+      }
+    }
+  }, [user]);
+
+  const deleteMoodEntry = useCallback(async (id: string) => {
+    setState(s => {
+      const next = s.moodEntries.filter(e => e.id !== id);
+      saveToStorage({ moodEntries: next });
+      return { ...s, moodEntries: next };
+    });
+    if (user) {
+      try {
+        await api.deleteMoodEntry(id);
+      } catch (error) {
+        captureError(error, { context: "deleteMoodEntry" });
+      }
+    }
+  }, [user]);
+
+  // ============== BLOOD PRESSURE ==============
+
+  const addBloodPressureEntry = useCallback(async (entry: Omit<BloodPressureEntry, "id" | "createdAt">) => {
+    const tempId = generateId();
+    const optimistic: BloodPressureEntry = { ...entry, id: tempId };
+    setState(s => {
+      const next = [optimistic, ...s.bloodPressureEntries];
+      saveToStorage({ bloodPressureEntries: next });
+      return { ...s, bloodPressureEntries: next };
+    });
+    if (user) {
+      try {
+        const result = await api.addBloodPressureEntry(user.id, entry);
+        if (result) {
+          setState(s => {
+            const next = s.bloodPressureEntries.map(e => (e.id === tempId ? result : e));
+            saveToStorage({ bloodPressureEntries: next });
+            return { ...s, bloodPressureEntries: next };
+          });
+        }
+      } catch (error) {
+        captureError(error, { context: "addBloodPressureEntry" });
+      }
+    }
+  }, [user]);
+
+  const deleteBloodPressureEntry = useCallback(async (id: string) => {
+    setState(s => {
+      const next = s.bloodPressureEntries.filter(e => e.id !== id);
+      saveToStorage({ bloodPressureEntries: next });
+      return { ...s, bloodPressureEntries: next };
+    });
+    if (user) {
+      try {
+        await api.deleteBloodPressureEntry(id);
+      } catch (error) {
+        captureError(error, { context: "deleteBloodPressureEntry" });
+      }
+    }
+  }, [user]);
+
+  // ============== ABDOMEN ==============
+
+  const addAbdomenMeasurement = useCallback(async (entry: Omit<AbdomenMeasurement, "id" | "createdAt">) => {
+    const tempId = generateId();
+    const optimistic: AbdomenMeasurement = { ...entry, id: tempId };
+    setState(s => {
+      const next = [optimistic, ...s.abdomenMeasurements];
+      saveToStorage({ abdomenMeasurements: next });
+      return { ...s, abdomenMeasurements: next };
+    });
+    if (user) {
+      try {
+        const result = await api.addAbdomenMeasurement(user.id, entry);
+        if (result) {
+          setState(s => {
+            const next = s.abdomenMeasurements.map(e => (e.id === tempId ? result : e));
+            saveToStorage({ abdomenMeasurements: next });
+            return { ...s, abdomenMeasurements: next };
+          });
+        }
+      } catch (error) {
+        captureError(error, { context: "addAbdomenMeasurement" });
+      }
+    }
+  }, [user]);
+
+  const deleteAbdomenMeasurement = useCallback(async (id: string) => {
+    setState(s => {
+      const next = s.abdomenMeasurements.filter(e => e.id !== id);
+      saveToStorage({ abdomenMeasurements: next });
+      return { ...s, abdomenMeasurements: next };
+    });
+    if (user) {
+      try {
+        await api.deleteAbdomenMeasurement(id);
+      } catch (error) {
+        captureError(error, { context: "deleteAbdomenMeasurement" });
+      }
+    }
+  }, [user]);
+
+  // ============== EXERCISE ==============
+
+  const addExerciseSession = useCallback(async (entry: Omit<ExerciseSession, "id" | "createdAt">) => {
+    const tempId = generateId();
+    const optimistic: ExerciseSession = { ...entry, id: tempId };
+    setState(s => {
+      const next = [optimistic, ...s.exerciseSessions];
+      saveToStorage({ exerciseSessions: next });
+      return { ...s, exerciseSessions: next };
+    });
+    if (user) {
+      try {
+        const result = await api.addExerciseSession(user.id, entry);
+        if (result) {
+          setState(s => {
+            const next = s.exerciseSessions.map(e => (e.id === tempId ? result : e));
+            saveToStorage({ exerciseSessions: next });
+            return { ...s, exerciseSessions: next };
+          });
+        }
+      } catch (error) {
+        captureError(error, { context: "addExerciseSession" });
+      }
+    }
+  }, [user]);
+
+  const deleteExerciseSession = useCallback(async (id: string) => {
+    setState(s => {
+      const next = s.exerciseSessions.filter(e => e.id !== id);
+      saveToStorage({ exerciseSessions: next });
+      return { ...s, exerciseSessions: next };
+    });
+    if (user) {
+      try {
+        await api.deleteExerciseSession(id);
+      } catch (error) {
+        captureError(error, { context: "deleteExerciseSession" });
+      }
+    }
+  }, [user]);
+
+  // ============== JOURNAL NOTES ==============
+
+  const addJournalNote = useCallback(async (note: Omit<JournalNote, "id" | "user_id" | "created_at" | "updated_at">) => {
+    if (!user) return;
+    try {
+      const result = await api.createJournalNote(user.id, note);
+      if (result) {
+        setState(s => {
+          const next = [result, ...s.journalNotes];
+          saveToStorage({ journalNotes: next });
+          return { ...s, journalNotes: next };
+        });
+      }
+    } catch (error) {
+      captureError(error, { context: "addJournalNote" });
+    }
+  }, [user]);
+
+  const updateJournalNoteEntry = useCallback(async (id: string, updates: Partial<Pick<JournalNote, "title" | "body" | "mood_emoji">>) => {
+    if (!user) return;
+    setState(s => {
+      const next = s.journalNotes.map(n => (n.id === id ? { ...n, ...updates } : n));
+      saveToStorage({ journalNotes: next });
+      return { ...s, journalNotes: next };
+    });
+    try {
+      await api.updateJournalNote(id, user.id, updates);
+    } catch (error) {
+      captureError(error, { context: "updateJournalNote" });
+    }
+  }, [user]);
+
+  const deleteJournalNoteEntry = useCallback(async (id: string) => {
+    if (!user) return;
+    setState(s => {
+      const next = s.journalNotes.filter(n => n.id !== id);
+      saveToStorage({ journalNotes: next });
+      return { ...s, journalNotes: next };
+    });
+    try {
+      await api.deleteJournalNote(id, user.id);
+    } catch (error) {
+      captureError(error, { context: "deleteJournalNote" });
+    }
+  }, [user]);
+
+  // ============== BUMP PHOTOS ==============
+
+  const refreshBumpPhotos = useCallback(async () => {
+    if (!user) return;
+    try {
+      const photos = await api.getBumpPhotos(user.id);
+      setState(s => ({ ...s, bumpPhotos: photos }));
+      saveToStorage({ bumpPhotos: photos });
+    } catch (error) {
+      captureError(error, { context: "refreshBumpPhotos" });
+    }
+  }, [user]);
+
+  // ============== BREATHING SESSIONS ==============
+
+  const addBreathingSession = useCallback(async (session: Omit<BreathingSession, "id" | "createdAt">) => {
+    const tempId = generateId();
+    const optimistic: BreathingSession = { ...session, id: tempId };
+    setState(s => {
+      const next = [optimistic, ...s.breathingSessions];
+      saveToStorage({ breathingSessions: next });
+      return { ...s, breathingSessions: next };
+    });
+    if (user) {
+      try {
+        const result = await api.addBreathingSession(user.id, session);
+        if (result) {
+          setState(s => {
+            const next = s.breathingSessions.map(b => (b.id === tempId ? result : b));
+            saveToStorage({ breathingSessions: next });
+            return { ...s, breathingSessions: next };
+          });
+        }
+      } catch (error) {
+        captureError(error, { context: "addBreathingSession" });
+      }
+    }
+  }, [user]);
+
   const refreshData = useCallback(async () => {
     await loadData();
   }, [loadData]);
@@ -980,6 +1342,21 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     removeEmergencyContactEntry,
     saveBirthPlanData,
     setNutritionChecksForDate,
+    addSleepEntry,
+    deleteSleepEntry,
+    addMoodEntry,
+    deleteMoodEntry,
+    addBloodPressureEntry,
+    deleteBloodPressureEntry,
+    addAbdomenMeasurement,
+    deleteAbdomenMeasurement,
+    addExerciseSession,
+    deleteExerciseSession,
+    addJournalNote,
+    updateJournalNoteEntry,
+    deleteJournalNoteEntry,
+    refreshBumpPhotos,
+    addBreathingSession,
     refreshData,
   };
 

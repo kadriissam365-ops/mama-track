@@ -9,7 +9,6 @@ import { useAuth } from "@/lib/auth";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek } from "@/lib/pregnancy-data";
 import {
-  getBumpPhotos,
   getBumpPhotoSignedUrl,
   upsertBumpPhoto,
   deleteBumpPhoto,
@@ -44,7 +43,8 @@ export default function PhotosContent() {
   const loadPhotos = useCallback(async () => {
     if (!user) return;
     setLoading(true);
-    const photos = await getBumpPhotos(user.id);
+    await store.refreshBumpPhotos();
+    const photos = store.bumpPhotos;
 
     const photoMap = new Map(photos.map((p) => [p.week, p]));
     const newSlots: WeekSlot[] = [];
@@ -60,6 +60,7 @@ export default function PhotosContent() {
 
     setSlots(newSlots.reverse());
     setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, currentWeek]);
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { createClient } from "@/lib/supabase";
 import { getCurrentWeek, getDaysRemaining, getWeekData, getProgressPercent } from "@/lib/pregnancy-data";
-import { getJournalNotes, type JournalNote } from "@/lib/supabase-api";
+import { getJournalNotes, getPartnerMoodEntries, type JournalNote, type MoodEntry } from "@/lib/supabase-api";
 import { motion } from "framer-motion";
 import {
   Heart,
@@ -60,15 +60,7 @@ function getTipCategory(week: number): string {
   return "final";
 }
 
-// ---------- mood entries (loaded from supabase directly) ----------
-
-interface MoodEntry {
-  id: string;
-  mood_emoji: string;
-  mood_label: string;
-  note?: string;
-  date: string;
-}
+// ---------- mood entries (loaded via central API) ----------
 
 const ENCOURAGEMENT_MESSAGES = [
   { emoji: "❤️", text: "Je pense à toi" },
@@ -90,6 +82,7 @@ export default function PartnerViewPage() {
   const [journalNotes, setJournalNotes] = useState<JournalNote[]>([]);
   const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
+  const [dataError, setDataError] = useState<string | null>(null);
   const [showAllChecklist, setShowAllChecklist] = useState(false);
 
   // Pregnancy data derived from store
@@ -151,33 +144,25 @@ export default function PartnerViewPage() {
     })
     .sort((a, b) => b.date.localeCompare(a.date));
 
-  // Load journal notes + mood entries from Supabase
+  // Load journal notes + mood entries via the central API
   useEffect(() => {
     async function loadPartnerData() {
       setDataLoading(true);
+      setDataError(null);
+      if (!user) {
+        setDataLoading(false);
+        return;
+      }
       try {
-        // Load journal notes (we pass user id -- works when partner has shared access)
-        if (user) {
-          const notes = await getJournalNotes(user.id);
-          setJournalNotes(notes.slice(-10).reverse()); // last 10, newest first
-
-          // Load mood entries
-          try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const supabase = createClient() as any;
-            const { data } = await supabase
-              .from("mood_entries")
-              .select("*")
-              .eq("user_id", user.id)
-              .order("date", { ascending: false })
-              .limit(14);
-            if (data) setMoodEntries(data);
-          } catch {
-            // mood table may not exist yet
-          }
-        }
-      } catch {
-        // fallback: no extra data
+        const [notes, moods] = await Promise.all([
+          getJournalNotes(user.id),
+          getPartnerMoodEntries(user.id),
+        ]);
+        setJournalNotes(notes.slice(-10).reverse());
+        setMoodEntries(moods.slice(0, 14));
+      } catch (err) {
+        console.error("Partner data load error:", err);
+        setDataError("Impossible de charger les données partagées.");
       } finally {
         setDataLoading(false);
       }
@@ -423,6 +408,13 @@ export default function PartnerViewPage() {
         </motion.div>
       )}
 
+      {/* Data error banner */}
+      {dataError && (
+        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-2xl px-4 py-3 text-sm text-red-600 dark:text-red-300">
+          {dataError}
+        </div>
+      )}
+
       {/* Mood / Symptom Summary */}
       <motion.div {...anim} transition={{ delay: 0.35 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-violet-100 dark:border-violet-900/30">
         <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
@@ -439,8 +431,8 @@ export default function PartnerViewPage() {
                   key={m.id}
                   className="flex items-center gap-1.5 bg-violet-50 dark:bg-violet-950/30 rounded-full px-3 py-1.5"
                 >
-                  <span className="text-base">{m.mood_emoji}</span>
-                  <span className="text-xs text-violet-600 dark:text-violet-400">{m.mood_label}</span>
+                  <span className="text-base">{m.moodEmoji}</span>
+                  <span className="text-xs text-violet-600 dark:text-violet-400">{m.moodLabel}</span>
                   <span className="text-[10px] text-gray-400 dark:text-gray-500">
                     {new Date(m.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                   </span>

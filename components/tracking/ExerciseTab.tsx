@@ -1,22 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { createClient } from "@/lib/supabase";
-import { useAuth } from "@/lib/auth";
+import { useStore } from "@/lib/store";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Trash2 } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
-
-interface ExerciseEntry {
-  id: string;
-  date: string;
-  activity: string;
-  duration_minutes: number;
-  intensity: string;
-  note?: string;
-}
 
 const ACTIVITIES = [
   { emoji: "🚶‍♀️", label: "Marche", id: "marche" },
@@ -40,9 +30,10 @@ const INTENSITIES = [
 ];
 
 export default function ExerciseTab() {
-  const { user } = useAuth();
-  const [entries, setEntries] = useState<ExerciseEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const store = useStore();
+  const entries = store.exerciseSessions;
+  const loading = store.loading;
+
   const [selectedActivity, setSelectedActivity] = useState<string | null>(null);
   const [duration, setDuration] = useState("30");
   const [intensity, setIntensity] = useState("modere");
@@ -51,67 +42,37 @@ export default function ExerciseTab() {
   const [success, setSuccess] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = createClient() as any;
-
-  useEffect(() => {
-    if (user) loadEntries();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
-  async function loadEntries() {
-    if (!user) return;
-    setLoading(true);
-    const { data } = await supabase
-      .from("exercise_entries")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("date", { ascending: false })
-      .limit(30);
-    setEntries(data ?? []);
-    setLoading(false);
-  }
-
   async function handleSave() {
-    if (!user || !selectedActivity) return;
+    if (!selectedActivity) return;
     setSaving(true);
     const today = format(new Date(), "yyyy-MM-dd");
     const dur = parseInt(duration);
     const safeDur = isNaN(dur) || dur < 1 ? 30 : Math.min(dur, 600);
     const trimmedNote = note.trim();
 
-    const { data, error } = await supabase
-      .from("exercise_entries")
-      .insert({
-        user_id: user.id,
-        date: today,
-        activity: selectedActivity,
-        duration_minutes: safeDur,
-        intensity,
-        note: trimmedNote || null,
-      })
-      .select()
-      .single();
+    await store.addExerciseSession({
+      date: today,
+      activity: selectedActivity,
+      durationMin: safeDur,
+      intensity,
+      note: trimmedNote || undefined,
+    });
 
     setSaving(false);
-    if (!error && data) {
-      setEntries((prev) => [data, ...prev]);
-      setSelectedActivity(null);
-      setNote("");
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 2000);
-    }
+    setSelectedActivity(null);
+    setNote("");
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 2000);
   }
 
   async function handleDelete(id: string) {
-    await supabase.from("exercise_entries").delete().eq("id", id);
-    setEntries((prev) => prev.filter((e) => e.id !== id));
+    await store.deleteExerciseSession(id);
     setConfirmDelete(null);
   }
 
   const today = format(new Date(), "yyyy-MM-dd");
   const todayEntries = entries.filter((e) => e.date === today);
-  const todayMinutes = todayEntries.reduce((sum, e) => sum + e.duration_minutes, 0);
+  const todayMinutes = todayEntries.reduce((sum, e) => sum + e.durationMin, 0);
 
   const weekEntries = entries.filter((e) => {
     const d = new Date(e.date);
@@ -119,7 +80,7 @@ export default function ExerciseTab() {
     const diff = (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24);
     return diff < 7;
   });
-  const weekMinutes = weekEntries.reduce((sum, e) => sum + e.duration_minutes, 0);
+  const weekMinutes = weekEntries.reduce((sum, e) => sum + e.durationMin, 0);
   const weekGoal = 150;
   const weekPct = Math.min(100, (weekMinutes / weekGoal) * 100);
 
@@ -132,7 +93,6 @@ export default function ExerciseTab() {
       exit={{ opacity: 0 }}
       className="space-y-4"
     >
-      {/* Weekly goal */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-emerald-100">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Objectif semaine</h3>
@@ -161,7 +121,6 @@ export default function ExerciseTab() {
         )}
       </div>
 
-      {/* Activity selector */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-emerald-100">
         <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Ajouter une activité</h3>
 
@@ -182,7 +141,6 @@ export default function ExerciseTab() {
           ))}
         </div>
 
-        {/* Duration + Intensity */}
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
             <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Durée (min)</label>
@@ -217,7 +175,6 @@ export default function ExerciseTab() {
           </div>
         </div>
 
-        {/* Note */}
         <textarea
           placeholder="Notes (optionnel)"
           value={note}
@@ -235,7 +192,6 @@ export default function ExerciseTab() {
         </button>
       </div>
 
-      {/* Weekly chart */}
       {weekEntries.length > 0 && (
         <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-emerald-100">
           <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Cette semaine</h3>
@@ -245,7 +201,7 @@ export default function ExerciseTab() {
               d.setDate(d.getDate() - (6 - i));
               const dateStr = format(d, "yyyy-MM-dd");
               const dayEntries = entries.filter((e) => e.date === dateStr);
-              const dayMins = dayEntries.reduce((sum, e) => sum + e.duration_minutes, 0);
+              const dayMins = dayEntries.reduce((sum, e) => sum + e.durationMin, 0);
               const barH = Math.max(4, (dayMins / 60) * 80);
               return (
                 <div key={i} className="flex flex-col items-center flex-1">
@@ -266,7 +222,6 @@ export default function ExerciseTab() {
         </div>
       )}
 
-      {/* Empty state */}
       {!loading && entries.length === 0 && (
         <div className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-6 text-center border border-emerald-100">
           <p className="text-2xl mb-1">🚶‍♀️</p>
@@ -276,7 +231,6 @@ export default function ExerciseTab() {
         </div>
       )}
 
-      {/* Recent entries */}
       {!loading && entries.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 px-1">Dernières activités</h3>
@@ -292,7 +246,7 @@ export default function ExerciseTab() {
                   <span className="text-2xl">{act?.emoji ?? "✨"}</span>
                   <div>
                     <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">
-                      {act?.label ?? entry.activity} · {entry.duration_minutes} min {int?.emoji}
+                      {act?.label ?? entry.activity} · {entry.durationMin} min {int?.emoji}
                     </p>
                     <p className="text-xs text-gray-400 dark:text-gray-500">
                       {format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}

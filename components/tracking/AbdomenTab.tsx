@@ -1,24 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { createClient } from "@/lib/supabase";
-import { useAuth } from "@/lib/auth";
+import { useStore } from "@/lib/store";
+import type { AbdomenMeasurement } from "@/lib/supabase-api";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Plus, Trash2 } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useTheme } from "next-themes";
 
-interface AbdomenEntry {
-  id: string;
-  circumference: number;
-  measured_at: string;
-  notes?: string;
-}
-
-// Simple SVG chart for abdomen evolution
-function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
+function AbdomenChart({ entries }: { entries: AbdomenMeasurement[] }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   if (entries.length < 2) return null;
@@ -29,7 +21,7 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
   const padX = 35;
   const padY = 15;
 
-  const values = data.map((e) => e.circumference);
+  const values = data.map((e) => e.circumferenceCm);
   const minVal = Math.min(...values) - 5;
   const maxVal = Math.max(...values) + 5;
 
@@ -37,9 +29,7 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
   const toX = (i: number) => padX + i * xStep;
   const toY = (v: number) => padY + ((maxVal - v) / (maxVal - minVal)) * (height - padY * 2);
 
-  const path = data
-    .map((e, i) => `${i === 0 ? "M" : "L"} ${toX(i)} ${toY(e.circumference)}`)
-    .join(" ");
+  const path = data.map((e, i) => `${i === 0 ? "M" : "L"} ${toX(i)} ${toY(e.circumferenceCm)}`).join(" ");
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30">
@@ -47,7 +37,6 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
         📏 Évolution ({data.length} mesures)
       </h3>
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
-        {/* Grid lines */}
         {[0, 1, 2, 3].map((i) => {
           const y = padY + (i / 3) * (height - padY * 2);
           const val = Math.round(maxVal - (i / 3) * (maxVal - minVal));
@@ -60,7 +49,6 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
             </g>
           );
         })}
-        {/* Date labels */}
         {data.map((e, i) => (
           <text
             key={i}
@@ -70,12 +58,10 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
             fontSize="7"
             fill={isDark ? "#9ca3af" : "#9b7b8a"}
           >
-            {format(new Date(e.measured_at), "dd/MM")}
+            {format(new Date(e.date), "dd/MM")}
           </text>
         ))}
-        {/* Line */}
-        <path d={path} fill="none" stroke={isDark ? "#c084fc" : "#C084FC"} strokeWidth="2.5" strokeLinejoin="round" />
-        {/* Area under curve */}
+        <path d={path} fill="none" stroke="#C084FC" strokeWidth="2.5" strokeLinejoin="round" />
         <path
           d={`${path} L ${toX(data.length - 1)} ${height - padY} L ${toX(0)} ${height - padY} Z`}
           fill="url(#abdomenGrad)"
@@ -87,60 +73,28 @@ function AbdomenChart({ entries }: { entries: AbdomenEntry[] }) {
             <stop offset="100%" stopColor="#C084FC" stopOpacity="0" />
           </linearGradient>
         </defs>
-        {/* Dots */}
         {data.map((e, i) => (
-          <circle key={i} cx={toX(i)} cy={toY(e.circumference)} r="3.5" fill={isDark ? "#c084fc" : "#C084FC"} />
+          <circle key={i} cx={toX(i)} cy={toY(e.circumferenceCm)} r="3.5" fill="#C084FC" />
         ))}
       </svg>
     </div>
   );
 }
 
-// SQL to run in Supabase dashboard:
-/*
-CREATE TABLE IF NOT EXISTS abdomen_entries (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  circumference numeric(5,1) NOT NULL,
-  measured_at timestamptz DEFAULT now(),
-  notes text
-);
-ALTER TABLE abdomen_entries ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users manage own abdomen" ON abdomen_entries FOR ALL USING (auth.uid() = user_id);
-*/
-
 export default function AbdomenTab() {
-  const { user } = useAuth();
-  const [entries, setEntries] = useState<AbdomenEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const store = useStore();
+  const entries = store.abdomenMeasurements;
+  const loading = store.loading;
+
   const [circumference, setCircumference] = useState("");
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = createClient() as any;
-
-  useEffect(() => {
-    if (user) loadEntries();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
-  async function loadEntries() {
-    if (!user) return;
-    setLoading(true);
-    const { data } = await supabase
-      .from("abdomen_entries")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("measured_at", { ascending: true });
-    setEntries(data ?? []);
-    setLoading(false);
-  }
+  const chronological = [...entries].sort((a, b) => a.date.localeCompare(b.date));
 
   async function handleAdd() {
-    if (!user) return;
     const val = parseFloat(circumference);
     if (isNaN(val) || val < 50 || val > 200) {
       setError("Périmètre doit être entre 50 et 200 cm");
@@ -150,35 +104,28 @@ export default function AbdomenTab() {
     setSaving(true);
 
     const trimmedNotes = notes.trim();
-    const { data, error: insertError } = await supabase
-      .from("abdomen_entries")
-      .insert({
-        user_id: user.id,
-        circumference: val,
-        measured_at: new Date().toISOString(),
-        notes: trimmedNotes || null,
-      })
-      .select()
-      .single();
-
-    setSaving(false);
-    if (!insertError && data) {
-      setEntries((prev) => [...prev, data]);
+    try {
+      await store.addAbdomenMeasurement({
+        date: format(new Date(), "yyyy-MM-dd"),
+        circumferenceCm: val,
+        note: trimmedNotes || undefined,
+      });
       setCircumference(""); setNotes("");
-    } else {
+    } catch {
       setError("Erreur lors de l'enregistrement. Veuillez réessayer.");
+    } finally {
+      setSaving(false);
     }
   }
 
   async function handleDelete(id: string) {
-    await supabase.from("abdomen_entries").delete().eq("id", id);
-    setEntries((prev) => prev.filter((e) => e.id !== id));
+    await store.deleteAbdomenMeasurement(id);
   }
 
-  const lastEntry = entries[entries.length - 1];
-  const prevEntry = entries[entries.length - 2];
+  const lastEntry = chronological[chronological.length - 1];
+  const prevEntry = chronological[chronological.length - 2];
   const diff = lastEntry && prevEntry
-    ? (lastEntry.circumference - prevEntry.circumference).toFixed(1)
+    ? (lastEntry.circumferenceCm - prevEntry.circumferenceCm).toFixed(1)
     : null;
 
   return (
@@ -188,14 +135,13 @@ export default function AbdomenTab() {
       exit={{ opacity: 0 }}
       className="space-y-4"
     >
-      {/* Last reading */}
       {lastEntry && (
         <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/30 rounded-2xl px-4 py-3 flex items-center gap-3">
           <span className="text-2xl">📏</span>
           <div>
             <p className="text-xs text-gray-500 dark:text-gray-400">Dernière mesure</p>
             <p className="text-lg font-bold text-purple-700 dark:text-purple-300">
-              {lastEntry.circumference} cm
+              {lastEntry.circumferenceCm} cm
               {diff !== null && (
                 <span className={`text-sm font-normal ml-2 ${parseFloat(diff) >= 0 ? "text-orange-500 dark:text-orange-400" : "text-green-500 dark:text-green-400"}`}>
                   ({parseFloat(diff) >= 0 ? "+" : ""}{diff} cm)
@@ -206,7 +152,6 @@ export default function AbdomenTab() {
         </div>
       )}
 
-      {/* Form */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-purple-100 dark:border-purple-900/30">
         <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Ajouter une mesure</h3>
         {error && (
@@ -242,10 +187,8 @@ export default function AbdomenTab() {
         />
       </div>
 
-      {/* Chart */}
-      {entries.length >= 2 && <AbdomenChart entries={entries} />}
+      {chronological.length >= 2 && <AbdomenChart entries={chronological} />}
 
-      {/* History */}
       {loading ? (
         <div className="text-center text-sm text-gray-400 dark:text-gray-500 py-4">Chargement…</div>
       ) : entries.length === 0 ? (
@@ -255,18 +198,18 @@ export default function AbdomenTab() {
         </div>
       ) : (
         <div className="space-y-2">
-          {[...entries].reverse().map((entry) => (
+          {entries.map((entry) => (
             <div
               key={entry.id}
               className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-3 shadow-sm border border-purple-100 dark:border-purple-900/30 flex items-center justify-between"
             >
               <div>
                 <span className="text-lg font-bold text-[#3d2b2b] dark:text-gray-100">
-                  {entry.circumference} cm
+                  {entry.circumferenceCm} cm
                 </span>
                 <p className="text-xs text-gray-400 dark:text-gray-500">
-                  {format(new Date(entry.measured_at), "d MMMM yyyy à HH:mm", { locale: fr })}
-                  {entry.notes && ` — ${entry.notes}`}
+                  {format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}
+                  {entry.note && ` — ${entry.note}`}
                 </p>
               </div>
               <button

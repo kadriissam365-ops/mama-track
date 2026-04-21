@@ -1,20 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { createClient } from "@/lib/supabase";
-import { useAuth } from "@/lib/auth";
+import { useStore } from "@/lib/store";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay } from "date-fns";
 import { fr } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-interface MoodEntry {
-  id: string;
-  mood_emoji: string;
-  mood_label: string;
-  note?: string;
-  date: string;
-}
 
 const MOODS = [
   { emoji: "😊", label: "Bien", color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300" },
@@ -36,88 +27,39 @@ const MOOD_DAY_COLORS: Record<string, string> = {
   "🥰": "bg-purple-200",
 };
 
-// SQL to run in Supabase dashboard:
-/*
-CREATE TABLE IF NOT EXISTS mood_entries (
-  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  mood_emoji text NOT NULL,
-  mood_label text NOT NULL,
-  note text,
-  date date NOT NULL DEFAULT CURRENT_DATE,
-  created_at timestamptz DEFAULT now(),
-  UNIQUE(user_id, date)
-);
-ALTER TABLE mood_entries ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users manage own mood" ON mood_entries FOR ALL USING (auth.uid() = user_id);
-*/
-
 export default function MoodTab() {
-  const { user } = useAuth();
-  const [entries, setEntries] = useState<MoodEntry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const store = useStore();
+  const entries = store.moodEntries;
+  const loading = store.loading;
+
   const [selectedMood, setSelectedMood] = useState<typeof MOODS[0] | null>(null);
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [success, setSuccess] = useState(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = createClient() as any;
-
   const today = format(new Date(), "yyyy-MM-dd");
   const todayEntry = entries.find((e) => e.date === today);
 
-  useEffect(() => {
-    if (user) loadEntries();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
-  async function loadEntries() {
-    if (!user) return;
-    setLoading(true);
-    const { data } = await supabase
-      .from("mood_entries")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("date", { ascending: true });
-    setEntries(data ?? []);
-    setLoading(false);
-  }
-
   async function handleSave() {
-    if (!user || !selectedMood) return;
+    if (!selectedMood) return;
     setSaving(true);
-
     const trimmedNote = note.trim();
-    const { data, error } = await supabase
-      .from("mood_entries")
-      .upsert({
-        user_id: user.id,
-        mood_emoji: selectedMood.emoji,
-        mood_label: selectedMood.label,
-        note: trimmedNote || null,
-        date: today,
-      }, { onConflict: "user_id,date" })
-      .select()
-      .single();
-
+    await store.addMoodEntry({
+      date: today,
+      moodEmoji: selectedMood.emoji,
+      moodLabel: selectedMood.label,
+      note: trimmedNote || undefined,
+    });
     setSaving(false);
-    if (!error && data) {
-      setEntries((prev) => {
-        const filtered = prev.filter((e) => e.date !== today);
-        return [...filtered, data].sort((a, b) => a.date.localeCompare(b.date));
-      });
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 2000);
-    }
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 2000);
   }
 
-  // Calendar grid
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
-  const firstDayOfWeek = (monthStart.getDay() + 6) % 7; // Monday first
+  const firstDayOfWeek = (monthStart.getDay() + 6) % 7;
 
   const entryMap = new Map(entries.map((e) => [e.date, e]));
 
@@ -128,16 +70,14 @@ export default function MoodTab() {
       exit={{ opacity: 0 }}
       className="space-y-4"
     >
-      {/* Today's mood form */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30">
         <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-1">Comment tu te sens aujourd'hui ?</h3>
         {todayEntry && (
           <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">
-            Aujourd'hui : {todayEntry.mood_emoji} {todayEntry.mood_label}
+            Aujourd'hui : {todayEntry.moodEmoji} {todayEntry.moodLabel}
           </p>
         )}
 
-        {/* Mood selector */}
         <div className="grid grid-cols-4 gap-2 mb-3">
           {MOODS.map((mood) => (
             <button
@@ -155,7 +95,6 @@ export default function MoodTab() {
           ))}
         </div>
 
-        {/* Note */}
         <textarea
           placeholder="Une note ? (max 200 caractères)"
           value={note}
@@ -175,9 +114,7 @@ export default function MoodTab() {
         </div>
       </div>
 
-      {/* Calendar */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-purple-100 dark:border-purple-900/30">
-        {/* Month navigation */}
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
@@ -196,16 +133,13 @@ export default function MoodTab() {
           </button>
         </div>
 
-        {/* Day headers */}
         <div className="grid grid-cols-7 gap-1 mb-1">
           {["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"].map((d) => (
             <div key={d} className="text-center text-xs font-medium text-gray-400 dark:text-gray-500">{d}</div>
           ))}
         </div>
 
-        {/* Day cells */}
         <div className="grid grid-cols-7 gap-1">
-          {/* Empty slots for first week */}
           {Array.from({ length: firstDayOfWeek }).map((_, i) => (
             <div key={`empty-${i}`} />
           ))}
@@ -219,16 +153,16 @@ export default function MoodTab() {
                 key={dateStr}
                 className={`aspect-square flex flex-col items-center justify-center rounded-xl text-xs transition-all ${
                   entry
-                    ? `${MOOD_DAY_COLORS[entry.mood_emoji] || "bg-pink-100 dark:bg-pink-900/30"}`
+                    ? `${MOOD_DAY_COLORS[entry.moodEmoji] || "bg-pink-100 dark:bg-pink-900/30"}`
                     : isToday
                     ? "bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800/30"
                     : "bg-gray-50 dark:bg-gray-800"
                 }`}
-                title={entry ? `${entry.mood_emoji} ${entry.mood_label}${entry.note ? ` — ${entry.note}` : ""}` : undefined}
+                title={entry ? `${entry.moodEmoji} ${entry.moodLabel}${entry.note ? ` — ${entry.note}` : ""}` : undefined}
               >
                 {entry ? (
                   <>
-                    <span className="text-base leading-none">{entry.mood_emoji}</span>
+                    <span className="text-base leading-none">{entry.moodEmoji}</span>
                     <span className="text-[8px] text-gray-500 dark:text-gray-400 leading-tight">{day.getDate()}</span>
                   </>
                 ) : (
@@ -241,7 +175,6 @@ export default function MoodTab() {
           })}
         </div>
 
-        {/* Legend */}
         <div className="mt-3 flex flex-wrap gap-1.5">
           {MOODS.map((mood) => (
             <div key={mood.emoji} className="flex items-center gap-1 text-[10px] text-gray-500 dark:text-gray-400">
@@ -252,7 +185,6 @@ export default function MoodTab() {
         </div>
       </div>
 
-      {/* Empty state */}
       {!loading && entries.length === 0 && (
         <div className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-6 text-center border border-pink-100 dark:border-pink-900/30">
           <p className="text-2xl mb-1">💗</p>
@@ -262,22 +194,21 @@ export default function MoodTab() {
         </div>
       )}
 
-      {/* Recent entries list */}
       {!loading && entries.length > 0 && (
         <div className="space-y-2">
           <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 px-1">Dernières entrées</h3>
-          {[...entries].reverse().slice(0, 7).map((entry) => (
+          {entries.slice(0, 7).map((entry) => (
             <div
               key={entry.id}
               className={`rounded-2xl px-4 py-3 border flex items-center gap-3 ${
-                MOOD_DAY_COLORS[entry.mood_emoji]
-                  ? MOOD_DAY_COLORS[entry.mood_emoji].replace("bg-", "bg-").replace("-200", "-50") + " border-" + MOOD_DAY_COLORS[entry.mood_emoji].split("-")[1] + "-200"
+                MOOD_DAY_COLORS[entry.moodEmoji]
+                  ? MOOD_DAY_COLORS[entry.moodEmoji].replace("bg-", "bg-").replace("-200", "-50") + " border-" + MOOD_DAY_COLORS[entry.moodEmoji].split("-")[1] + "-200"
                   : "bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800"
               }`}
             >
-              <span className="text-2xl">{entry.mood_emoji}</span>
+              <span className="text-2xl">{entry.moodEmoji}</span>
               <div>
-                <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">{entry.mood_label}</p>
+                <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">{entry.moodLabel}</p>
                 <p className="text-xs text-gray-400 dark:text-gray-500">
                   {format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}
                   {entry.note && ` — ${entry.note}`}

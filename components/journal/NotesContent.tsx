@@ -1,19 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Plus, Search, X, Trash2, Edit3, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek } from "@/lib/pregnancy-data";
-import {
-  getJournalNotes,
-  createJournalNote,
-  updateJournalNote,
-  deleteJournalNote,
-  type JournalNote,
-} from "@/lib/supabase-api";
+import { type JournalNote } from "@/lib/supabase-api";
 
 const MOODS = ["😊", "😍", "😴", "🤢", "😰"];
 
@@ -96,10 +89,9 @@ function NoteForm({
 
 export default function NotesContent() {
   const router = useRouter();
-  const { user } = useAuth();
   const store = useStore();
-  const [notes, setNotes] = useState<JournalNote[]>([]);
-  const [loading, setLoading] = useState(true);
+  const notes = store.journalNotes;
+  const loading = store.loading;
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editNote, setEditNote] = useState<JournalNote | null>(null);
@@ -107,18 +99,6 @@ export default function NotesContent() {
 
   const dueDate = store.dueDate ? new Date(store.dueDate) : null;
   const currentWeek = dueDate ? getCurrentWeek(dueDate) : 20;
-
-  const loadNotes = async () => {
-    if (!user) return;
-    const data = await getJournalNotes(user.id);
-    setNotes(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    loadNotes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
 
   const filteredNotes = notes.filter((n) => {
     const q = search.toLowerCase();
@@ -134,10 +114,8 @@ export default function NotesContent() {
     mood_emoji?: string;
     week: number;
   }) => {
-    if (!user) return;
-    await createJournalNote(user.id, data);
+    await store.addJournalNote(data);
     setShowForm(false);
-    await loadNotes();
   };
 
   const handleUpdate = async (data: {
@@ -146,21 +124,18 @@ export default function NotesContent() {
     mood_emoji?: string;
     week: number;
   }) => {
-    if (!user || !editNote) return;
-    await updateJournalNote(editNote.id, user.id, {
+    if (!editNote) return;
+    await store.updateJournalNoteEntry(editNote.id, {
       title: data.title,
       body: data.body,
       mood_emoji: data.mood_emoji,
     });
     setEditNote(null);
-    await loadNotes();
   };
 
   const handleDelete = async (id: string) => {
-    if (!user) return;
-    await deleteJournalNote(id, user.id);
+    await store.deleteJournalNoteEntry(id);
     setDeleteId(null);
-    await loadNotes();
   };
 
   return (
