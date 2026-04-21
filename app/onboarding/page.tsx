@@ -11,12 +11,14 @@ import {
   calculateDueDateFromConception,
   calculateDueDateFIV,
   calculateDueDateFromPonction,
+  calculateDueDateFromCurrentWeek,
 } from "@/lib/pregnancy-data";
 
 type Step = 1 | 2 | 3 | 4 | 5;
 type ConceptionMode = "naturelle" | "fiv_frais" | "fiv_tec";
-type DpaMethod = "direct" | "ddr" | "conception" | "fiv";
+type DpaMethod = "direct" | "ddr" | "conception" | "fiv" | "current_week";
 type FivStade = "J3" | "J5";
+type WeekMode = "SA" | "GA";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -39,6 +41,9 @@ export default function OnboardingPage() {
   const [ponctionDate, setPonctionDate] = useState("");
   const [transfertDate, setTransfertDate] = useState("");
   const [fivStade, setFivStade] = useState<FivStade>("J5");
+  const [currentWeeks, setCurrentWeeks] = useState("");
+  const [currentDays, setCurrentDays] = useState("0");
+  const [weekMode, setWeekMode] = useState<WeekMode>("SA");
 
   const [notifRdv, setNotifRdv] = useState(true);
   const [notifDaily, setNotifDaily] = useState(true);
@@ -63,6 +68,13 @@ export default function OnboardingPage() {
         }
         if (conceptionMode === "fiv_tec" && transfertDate) {
           return calculateDueDateFIV(new Date(transfertDate), fivStade).toISOString().split("T")[0];
+        }
+      }
+      if (dpaMethod === "current_week" && currentWeeks) {
+        const w = parseInt(currentWeeks, 10);
+        const d = parseInt(currentDays || "0", 10);
+        if (!isNaN(w) && w >= 0 && w <= 42 && !isNaN(d) && d >= 0 && d <= 6) {
+          return calculateDueDateFromCurrentWeek(w, d, weekMode).toISOString().split("T")[0];
         }
       }
     } catch {
@@ -150,21 +162,29 @@ export default function OnboardingPage() {
   };
 
   // Determine DPA method options
+  const currentWeekOption = {
+    value: "current_week" as DpaMethod,
+    label: "🤰 Depuis ma semaine de grossesse actuelle",
+    desc: "Vous savez à quelle semaine vous êtes (SA ou GA)",
+  };
   const dpaOptions: Array<{ value: DpaMethod; label: string; desc: string }> =
     conceptionMode === "naturelle"
       ? [
           { value: "direct", label: "📅 Saisir ma DPA directement", desc: "Vous connaissez déjà votre date prévue" },
           { value: "ddr", label: "🗓️ Depuis ma DDR", desc: "Date de début de vos dernières règles + 280 jours" },
           { value: "conception", label: "💕 Depuis la date de conception", desc: "Date de conception + 266 jours" },
+          currentWeekOption,
         ]
       : conceptionMode === "fiv_frais"
       ? [
           { value: "direct", label: "📅 Saisir ma DPA directement", desc: "Vous connaissez déjà votre date prévue" },
           { value: "fiv", label: "🔬 Depuis la date de ponction", desc: "Date ponction + 266 jours" },
+          currentWeekOption,
         ]
       : [
           { value: "direct", label: "📅 Saisir ma DPA directement", desc: "Vous connaissez déjà votre date prévue" },
           { value: "fiv", label: "🧊 Depuis la date de transfert", desc: "Selon le stade de l'embryon (J3 ou J5)" },
+          currentWeekOption,
         ];
 
   const finalDueDate = computedDueDate();
@@ -440,6 +460,76 @@ export default function OnboardingPage() {
                           </button>
                         ))}
                       </div>
+                    </div>
+                  </div>
+                )}
+
+                {dpaMethod === "current_week" && (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+                        Votre semaine actuelle
+                      </label>
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            min="0"
+                            max="42"
+                            value={currentWeeks}
+                            onChange={(e) => setCurrentWeeks(e.target.value)}
+                            placeholder="ex: 20"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0f0f1a] border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-300 text-center text-gray-800 dark:text-gray-100"
+                          />
+                          <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 text-center">Semaines</p>
+                        </div>
+                        <div className="flex-1">
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            min="0"
+                            max="6"
+                            value={currentDays}
+                            onChange={(e) => setCurrentDays(e.target.value)}
+                            placeholder="0"
+                            className="w-full px-4 py-3 bg-gray-50 dark:bg-[#0f0f1a] border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-300 text-center text-gray-800 dark:text-gray-100"
+                          />
+                          <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 text-center">Jours (0–6)</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+                        Unité de mesure
+                      </label>
+                      <div className="flex gap-3">
+                        {(["SA", "GA"] as WeekMode[]).map((m) => (
+                          <button
+                            key={m}
+                            onClick={() => setWeekMode(m)}
+                            className={`flex-1 py-2.5 rounded-xl border-2 font-semibold text-sm transition-all ${
+                              weekMode === m
+                                ? "border-purple-400 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-300"
+                                : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400"
+                            }`}
+                          >
+                            {m === "SA" ? "SA (aménorrhée)" : "GA (grossesse)"}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="bg-pink-50 dark:bg-pink-950/20 rounded-xl p-3 text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                      <p className="font-semibold text-pink-600 dark:text-pink-400 mb-1">💡 SA vs GA</p>
+                      <p>
+                        <strong>SA</strong> = semaines d&apos;aménorrhée, comptées depuis le 1<sup>er</sup> jour des dernières règles (utilisées en France, grossesse = 40 SA).
+                      </p>
+                      <p className="mt-1">
+                        <strong>GA</strong> = semaines de grossesse, comptées depuis la conception (grossesse = 38 GA).
+                      </p>
+                      <p className="mt-1 italic">
+                        Relation : <strong>SA = GA + 2</strong>. Ex : 20 GA = 22 SA.
+                      </p>
                     </div>
                   </div>
                 )}

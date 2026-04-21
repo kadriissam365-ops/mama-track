@@ -776,3 +776,31 @@ export function calculateDueDateFromPonction(ponctionDate: Date): Date {
   result.setDate(result.getDate() + 266);
   return result;
 }
+
+/** Calculate due date from current gestational age.
+ *
+ *  SA (semaines d'aménorrhée) : comptées depuis le premier jour des dernières règles (DDR).
+ *  GA (semaines de grossesse) : comptées depuis la conception (~2 semaines après la DDR).
+ *  Relation : SA = GA + 2.
+ *
+ *  Une grossesse dure 40 SA (280 j depuis la DDR) = 38 GA (266 j depuis la conception).
+ *
+ *  @param weeks Nombre de semaines complètes déjà écoulées
+ *  @param days  Nombre de jours supplémentaires (0–6)
+ *  @param mode  "SA" (aménorrhée) ou "GA" (grossesse)
+ *  @param today Date de référence (aujourd'hui)
+ */
+export function calculateDueDateFromCurrentWeek(
+  weeks: number,
+  days: number,
+  mode: "SA" | "GA",
+  today: Date = new Date(),
+): Date {
+  const saWeeks = mode === "GA" ? weeks + 2 : weeks;
+  const daysElapsedSinceDDR = saWeeks * 7 + days;
+  const daysRemaining = 280 - daysElapsedSinceDDR;
+  const result = new Date(today);
+  result.setHours(0, 0, 0, 0);
+  result.setDate(result.getDate() + daysRemaining);
+  return result;
+}
