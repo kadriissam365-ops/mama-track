@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useStore } from "@/lib/store";
+import { useToast } from "@/lib/toast";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Plus, Trash2 } from "lucide-react";
@@ -20,23 +21,37 @@ const ResponsiveContainer = dynamic(() => import("recharts").then((m) => ({ defa
 
 export default function WeightTab() {
   const store = useStore();
+  const toast = useToast();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const [weight, setWeight] = useState("");
   const [note, setNote] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     const w = parseFloat(weight);
-    if (isNaN(w) || w < 20 || w > 300) return;
+    if (isNaN(w) || w < 20 || w > 300) {
+      toast.error("Poids invalide (20 à 300 kg)");
+      return;
+    }
     const trimmedNote = note.trim();
-    store.addWeightEntry({
-      date: format(new Date(), "yyyy-MM-dd"),
-      weight: w,
-      note: trimmedNote || undefined,
-    });
-    setWeight("");
-    setNote("");
+    setSaving(true);
+    try {
+      await store.addWeightEntry({
+        date: format(new Date(), "yyyy-MM-dd"),
+        weight: w,
+        note: trimmedNote || undefined,
+      });
+      setWeight("");
+      setNote("");
+      toast.success("Poids enregistré");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Enregistrement impossible";
+      toast.error(message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const chartData = store.weightEntries.slice(-20).map((e) => ({
@@ -67,7 +82,7 @@ export default function WeightTab() {
           />
           <button
             onClick={handleAdd}
-            disabled={!weight}
+            disabled={!weight || saving}
             className="bg-purple-400 text-white px-4 py-2 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-purple-500 dark:hover:bg-purple-600 dark:bg-purple-500 transition-colors"
             aria-label="Ajouter le poids"
           >

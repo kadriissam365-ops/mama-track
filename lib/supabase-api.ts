@@ -114,8 +114,12 @@ export async function addWeightEntry(userId: string, entry: Omit<WeightEntry, 'i
     })
     .select()
     .single();
-  
-  if (error || !data) return null;
+
+  if (error) {
+    console.error('[addWeightEntry] Supabase error:', error.message, error.details, error.hint);
+    throw new Error(error.message || 'Échec de l\'enregistrement du poids');
+  }
+  if (!data) return null;
   
   return {
     id: data.id,

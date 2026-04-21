@@ -13,11 +13,11 @@ export function validateWeight(weight: number): ValidationResult {
   if (typeof weight !== 'number' || isNaN(weight)) {
     return { valid: false, error: 'Le poids doit être un nombre valide' };
   }
-  if (weight < 30) {
-    return { valid: false, error: 'Le poids doit être supérieur à 30 kg' };
+  if (weight < 20) {
+    return { valid: false, error: 'Le poids doit être supérieur à 20 kg' };
   }
-  if (weight > 200) {
-    return { valid: false, error: 'Le poids doit être inférieur à 200 kg' };
+  if (weight > 300) {
+    return { valid: false, error: 'Le poids doit être inférieur à 300 kg' };
   }
   return { valid: true };
 }

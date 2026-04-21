@@ -473,22 +473,33 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const addWeightEntry = useCallback(async (entry: Omit<WeightEntry, "id">) => {
     const tempId = generateId();
     const newEntry = { ...entry, id: tempId };
-    
+
     setState(s => ({
       ...s,
       weightEntries: [...s.weightEntries, newEntry],
     }));
-    
+
     if (user) {
-      const result = await api.addWeightEntry(user.id, entry);
-      if (result) {
+      try {
+        const result = await api.addWeightEntry(user.id, entry);
+        if (result) {
+          setState(s => ({
+            ...s,
+            weightEntries: s.weightEntries.map(e => e.id === tempId ? result : e),
+          }));
+        } else {
+          throw new Error("Enregistrement impossible (réponse vide)");
+        }
+      } catch (err) {
         setState(s => ({
           ...s,
-          weightEntries: s.weightEntries.map(e => e.id === tempId ? result : e),
+          weightEntries: s.weightEntries.filter(e => e.id !== tempId),
         }));
+        captureError(err, { context: "addWeightEntry", entry });
+        throw err;
       }
     }
-    
+
     setState(s => {
       saveToStorage({ weightEntries: s.weightEntries });
       return s;
