@@ -57,55 +57,56 @@ const SUPPORT_MESSAGES = [
   { emoji: "🌸", text: "Je t'aime" },
 ];
 
+// Helper inline pour éviter tout conflit avec lib/supabase-api.ts (Sprint 3).
+// Récupère les messages duo depuis Supabase (source de vérité unique).
+async function fetchDuoMessages(userId: string): Promise<DuoMessage[]> {
+  try {
+    const supabase = createClient();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase.from as any)("duo_messages")
+      .select("id, sender_id, content, created_at")
+      .order("created_at", { ascending: true })
+      .limit(200);
+    if (error || !data || !Array.isArray(data)) return [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return data.map((r: any) => ({
+      id: r.id,
+      senderId: r.sender_id,
+      content: r.content,
+      createdAt: r.created_at,
+      isOwn: r.sender_id === userId,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 function ChatSection({ userId, partnerName }: { userId: string; partnerName: string | null }) {
   const [messages, setMessages] = useState<DuoMessage[]>([]);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const storageKey = `duo-messages-${userId}`;
 
   useEffect(() => {
-    // Load from localStorage
-    try {
-      const stored = localStorage.getItem(storageKey);
-      if (stored) {
-        setMessages(JSON.parse(stored));
-      }
-    } catch {
-      // ignore
-    }
+    let cancelled = false;
 
-    // Try Supabase Realtime + initial fetch
+    // Source de vérité unique : Supabase. Plus de persistance localStorage
+    // pour éviter les doublons entre reload local + replay Realtime.
+    fetchDuoMessages(userId).then((remote) => {
+      if (cancelled) return;
+      setMessages((prev) => {
+        const ids = new Set(prev.map((m) => m.id));
+        const merged = [...prev, ...remote.filter((m) => !ids.has(m.id))];
+        merged.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+        return merged;
+      });
+    });
+
+    // Realtime : ajoute les nouveaux messages au state (ceinture + bretelles
+    // avec la dedup par id, car Realtime peut echo nos propres inserts).
+    let channel: ReturnType<ReturnType<typeof createClient>["channel"]> | null = null;
     try {
       const supabase = createClient();
-
-      // Initial fetch: pick up messages posted from another device/browser
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (supabase.from as any)("duo_messages")
-        .select("id, sender_id, content, created_at")
-        .order("created_at", { ascending: true })
-        .limit(100)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then(({ data }: { data: any }) => {
-          if (!data || !Array.isArray(data)) return;
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const remote: DuoMessage[] = data.map((r: any) => ({
-            id: r.id,
-            senderId: r.sender_id,
-            content: r.content,
-            createdAt: r.created_at,
-            isOwn: r.sender_id === userId,
-          }));
-          setMessages((prev) => {
-            const ids = new Set(prev.map((m) => m.id));
-            const merged = [...prev, ...remote.filter((m) => !ids.has(m.id))];
-            merged.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
-            try { localStorage.setItem(storageKey, JSON.stringify(merged)); } catch { /* ignore */ }
-            return merged;
-          });
-        })
-        .catch(() => { /* ignore */ });
-
-      const channel = supabase
+      channel = supabase
         .channel("duo-chat")
         .on(
           "postgres_changes",
@@ -120,36 +121,41 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
               isOwn: row.sender_id === userId,
             };
             setMessages((prev) => {
-              // Dedup: realtime may echo back messages we already inserted locally
               if (prev.some((m) => m.id === msg.id)) return prev;
-              const updated = [...prev, msg];
-              try { localStorage.setItem(storageKey, JSON.stringify(updated)); } catch { /* ignore */ }
-              return updated;
+              return [...prev, msg];
             });
           }
         )
         .subscribe();
-
-      return () => {
-        supabase.removeChannel(channel);
-      };
     } catch {
-      // fallback localStorage only
+      // ignore, fallback sans Realtime
     }
-  }, [userId, storageKey]);
+
+    return () => {
+      cancelled = true;
+      if (channel) {
+        try {
+          const supabase = createClient();
+          supabase.removeChannel(channel);
+        } catch {
+          // ignore
+        }
+      }
+    };
+  }, [userId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const saveMessage = (msg: DuoMessage) => {
+    // Optimistic update local, dedup par id côté Realtime echo.
     setMessages((prev) => {
-      const updated = [...prev, msg];
-      try { localStorage.setItem(storageKey, JSON.stringify(updated)); } catch { /* ignore */ }
-      return updated;
+      if (prev.some((m) => m.id === msg.id)) return prev;
+      return [...prev, msg];
     });
 
-    // Try to save to Supabase
+    // Persistance Supabase (source de vérité)
     try {
       const supabase = createClient();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

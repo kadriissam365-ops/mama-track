@@ -3,11 +3,42 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
-import { format, isPast, isToday, isFuture } from "date-fns";
+import { useToast } from "@/lib/toast";
+import { format, isPast, isToday, isFuture, addWeeks, subWeeks } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Plus, Calendar, Check, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { notifyPartner } from "@/lib/partner-notify-client";
+
+// Extrait la semaine SA cible depuis un libellé type "11-13 SA", "36 SA",
+// "24-28 SA" ou "Avant 10 SA". Renvoie la médiane arrondie pour les plages,
+// ou null si la chaîne ne contient pas d'information SA exploitable.
+function parseTargetWeek(weekLabel: string | undefined): number | null {
+  if (!weekLabel) return null;
+  // Ignore les libellés non temporels type "Chaque trimestre"
+  if (!/\d/.test(weekLabel)) return null;
+
+  // Plage "11-13 SA" ou "24-28 SA"
+  const range = weekLabel.match(/(\d+)\s*-\s*(\d+)/);
+  if (range) {
+    const a = parseInt(range[1], 10);
+    const b = parseInt(range[2], 10);
+    return Math.round((a + b) / 2);
+  }
+  // "Avant 10 SA" → prendre la semaine mentionnée (au plus tard)
+  // "36 SA", "38 SA", etc.
+  const single = weekLabel.match(/(\d+)/);
+  if (single) return parseInt(single[1], 10);
+  return null;
+}
+
+// Calcule la date estimée d'un examen à partir de la DPA et de la semaine SA.
+// DPA = semaine 40 ; donc date examen = DPA - (40 - targetWeek) semaines.
+function estimateExamDate(dueDate: string, targetWeek: number): Date {
+  const dpa = new Date(dueDate + "T00:00:00");
+  const diff = 40 - targetWeek;
+  return diff >= 0 ? subWeeks(dpa, diff) : addWeeks(dpa, -diff);
+}
 
 interface ChecklistExam {
   trimester: 1 | 2 | 3;
@@ -39,6 +70,7 @@ const EXAM_CHECKLIST: ChecklistExam[] = [
 
 export default function AgendaPage() {
   const store = useStore();
+  const toast = useToast();
   const [showForm, setShowForm] = useState(false);
   const [expandedExam, setExpandedExam] = useState<1 | 2 | 3 | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -284,15 +316,33 @@ export default function AgendaPage() {
                               const exists = store.appointments.some(
                                 (a) => a.title === title
                               );
-                              if (!exists) {
-                                store.addAppointment({
-                                  title,
-                                  date: format(new Date(), "yyyy-MM-dd"),
-                                  time: "09:00",
-                                  done: false,
-                                });
-                                notifyPartner("appointment", { appointmentTitle: title });
+                              if (exists) return;
+
+                              // Calcule la date estimée à partir de la DPA et
+                              // de la semaine SA cible de l'examen.
+                              const targetWeek = parseTargetWeek(exam.week);
+                              let examDate: string;
+                              if (store.dueDate && targetWeek !== null) {
+                                examDate = format(
+                                  estimateExamDate(store.dueDate, targetWeek),
+                                  "yyyy-MM-dd"
+                                );
+                              } else {
+                                examDate = format(new Date(), "yyyy-MM-dd");
+                                if (!store.dueDate) {
+                                  toast.warning(
+                                    "DPA manquante : date à ajuster manuellement."
+                                  );
+                                }
                               }
+
+                              store.addAppointment({
+                                title,
+                                date: examDate,
+                                time: "09:00",
+                                done: false,
+                              });
+                              notifyPartner("appointment", { appointmentTitle: title });
                             }}
                             className="text-xs bg-pink-100 dark:bg-pink-900/30 text-pink-600 px-2 py-1 rounded-lg hover:bg-pink-200 transition-colors"
                           >

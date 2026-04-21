@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth";
+import { useToast } from "@/lib/toast";
 import { Heart, Baby, Calendar, Sparkles, ArrowRight, ArrowLeft, Loader2, FlaskConical, Bell } from "lucide-react";
 import {
   calculateDueDateFromDDR,
@@ -20,6 +21,7 @@ type FivStade = "J3" | "J5";
 export default function OnboardingPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const toast = useToast();
   const [step, setStep] = useState<Step>(1);
 
   // Step 1: Names
@@ -103,14 +105,24 @@ export default function OnboardingPage() {
       } = await supabase.auth.getUser();
 
       if (currentUser) {
+        // Écriture Supabase bloquante : si elle échoue, on n'écrit PAS localStorage
+        // et on ne navigue PAS pour éviter toute divergence entre cloud et local.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (supabase.from("profiles") as any).upsert({
+        const { error: upsertError } = await (supabase.from("profiles") as any).upsert({
           id: currentUser.id,
           due_date: finalDueDate || null,
           baby_name: babyName.trim() || null,
           mama_name: mamaName.trim(),
           conception_mode: conceptionMode,
         });
+
+        if (upsertError) {
+          console.error("Onboarding Supabase error:", upsertError);
+          toast.error("Impossible d'enregistrer votre profil. Veuillez réessayer.");
+          setError("Impossible d'enregistrer votre profil. Veuillez réessayer.");
+          setLoading(false);
+          return;
+        }
       }
 
       const existingData = localStorage.getItem("pregnancy-tracker");
@@ -125,15 +137,9 @@ export default function OnboardingPage() {
       router.push("/");
     } catch (err) {
       console.error("Onboarding error:", err);
-      const existingData = localStorage.getItem("pregnancy-tracker");
-      const data = existingData ? JSON.parse(existingData) : {};
-      data.dueDate = finalDueDate;
-      data.mamaName = mamaName.trim();
-      data.babyName = babyName.trim() || null;
-      data.conceptionMode = conceptionMode;
-      data.notifications = { rdv: notifRdv, daily: notifDaily, meds: notifMeds };
-      localStorage.setItem("pregnancy-tracker", JSON.stringify(data));
-      router.push("/");
+      toast.error("Impossible d'enregistrer votre profil. Veuillez réessayer.");
+      setError("Impossible d'enregistrer votre profil. Veuillez réessayer.");
+      setLoading(false);
     }
   };
 
