@@ -61,6 +61,12 @@ export default function AchatsPage() {
   });
   const seededRef = useRef(false);
   const budgetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingBudgetRef = useRef<number | null>(null);
+  const setShoppingBudgetRef = useRef(setShoppingBudgetValue);
+
+  useEffect(() => {
+    setShoppingBudgetRef.current = setShoppingBudgetValue;
+  }, [setShoppingBudgetValue]);
 
   // First mount: open all categories.
   useEffect(() => {
@@ -105,12 +111,24 @@ export default function AchatsPage() {
     setBudgetUser(value);
     const n = parseFloat(value);
     if (!isNaN(n)) {
+      pendingBudgetRef.current = n;
       if (budgetTimer.current) clearTimeout(budgetTimer.current);
       budgetTimer.current = setTimeout(() => {
-        void setShoppingBudgetValue(n);
+        void setShoppingBudgetRef.current(n);
+        pendingBudgetRef.current = null;
       }, 500);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (budgetTimer.current) clearTimeout(budgetTimer.current);
+      if (pendingBudgetRef.current != null) {
+        void setShoppingBudgetRef.current(pendingBudgetRef.current);
+        pendingBudgetRef.current = null;
+      }
+    };
+  }, []);
 
   const addCustomItem = () => {
     if (!newItem.nom.trim()) return;

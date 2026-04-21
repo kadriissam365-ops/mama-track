@@ -120,6 +120,12 @@ export default function NaissancePage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingRef = useRef<ProjetNaissance | null>(null);
+  const saveBirthPlanRef = useRef(saveBirthPlanData);
+
+  useEffect(() => {
+    saveBirthPlanRef.current = saveBirthPlanData;
+  }, [saveBirthPlanData]);
 
   // Hydrate from store: remote (authoritative) merged with local fallback.
   useEffect(() => {
@@ -131,13 +137,25 @@ export default function NaissancePage() {
     setProjet(prev => {
       const next = { ...prev, [key]: value };
       // Debounced persist (store handles local + remote).
+      pendingRef.current = next;
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(() => {
-        void saveBirthPlanData(next as unknown as Record<string, unknown>);
+        void saveBirthPlanRef.current(next as unknown as Record<string, unknown>);
+        pendingRef.current = null;
       }, 600);
       return next;
     });
   };
+
+  useEffect(() => {
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      if (pendingRef.current) {
+        void saveBirthPlanRef.current(pendingRef.current as unknown as Record<string, unknown>);
+        pendingRef.current = null;
+      }
+    };
+  }, []);
 
   const toggleSection = (id: number) => {
     setExpandedSections(prev => {

@@ -84,16 +84,25 @@ export default function DashboardPage() {
   const waterToday = store.waterIntake[today] ?? 0;
   const waterGoal = WATER_GOAL_ML;
 
+  const parseLocalDate = (s: string) => {
+    const [y, m, d] = s.split("-").map(Number);
+    return new Date(y, (m ?? 1) - 1, d ?? 1);
+  };
+
   const lastWeight =
     store.weightEntries.length > 0
-      ? store.weightEntries[store.weightEntries.length - 1]
+      ? [...store.weightEntries].sort((a, b) => a.date.localeCompare(b.date)).at(-1) ?? null
       : null;
 
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
   const upcomingAppts = store.appointments
-    .filter((a) => !a.done && new Date(a.date) >= new Date())
+    .filter((a) => !a.done && parseLocalDate(a.date) >= todayStart)
     .slice(0, 2);
 
-  const recentSymptoms = store.symptomEntries.slice(-3);
+  const recentSymptoms = [...store.symptomEntries]
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(-3);
 
   const handleSaveDueDate = () => {
     if (dateInput) {
@@ -276,7 +285,7 @@ export default function DashboardPage() {
                 {lastWeight.weight} <span className="text-sm font-normal text-gray-400 dark:text-gray-500">kg</span>
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                {format(new Date(lastWeight.date), "d MMM", { locale: fr })}
+                {format(parseLocalDate(lastWeight.date), "d MMM", { locale: fr })}
               </p>
             </>
           ) : (
@@ -360,7 +369,7 @@ export default function DashboardPage() {
                 {upcomingAppts[0].title}
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                {format(new Date(upcomingAppts[0].date), "d MMM", { locale: fr })} à {upcomingAppts[0].time}
+                {format(parseLocalDate(upcomingAppts[0].date), "d MMM", { locale: fr })} à {upcomingAppts[0].time}
               </p>
             </div>
           ) : (
