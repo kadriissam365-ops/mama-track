@@ -12,7 +12,8 @@ import {
 } from "@/lib/pregnancy-data";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Scale, Activity, Calendar, Droplets, Settings, Loader2, Timer, Share2, BarChart3 } from "lucide-react";
+import { Scale, Activity, Calendar, Droplets, Settings, Loader2, Timer, Share2, BarChart3, Calculator } from "lucide-react";
+import DpaCalculator from "@/components/DpaCalculator";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { DashboardSkeleton } from "@/components/Skeleton";
@@ -50,10 +51,15 @@ export default function DashboardPage() {
   }
   const router = useRouter();
   const [showSetup, setShowSetup] = useState(false);
+  const [showDpaCalc, setShowDpaCalc] = useState(false);
   const [dateInput, setDateInput] = useState(store.dueDate ?? "");
   const [prenomFavorisCount, setPrenomFavorisCount] = useState(0);
   const [showShare, setShowShare] = useState(false);
   const [showReport, setShowReport] = useState(false);
+
+  useEffect(() => {
+    setDateInput(store.dueDate ?? "");
+  }, [store.dueDate]);
 
   useEffect(() => {
     const stored = localStorage.getItem('prenom-favoris');
@@ -145,6 +151,17 @@ export default function DashboardPage() {
         </motion.div>
       )}
 
+      {/* DPA calculator panel */}
+      {showDpaCalc && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-purple-100 dark:border-purple-900/30"
+        >
+          <DpaCalculator defaultOpen onSaved={() => setShowDpaCalc(false)} />
+        </motion.div>
+      )}
+
       {/* Hero Card — Semaine + Fruit */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -225,22 +242,28 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {!store.dueDate && (
+        <div className="absolute top-3 right-3 flex items-center gap-2">
           <button
-            onClick={() => setShowSetup(true)}
-            className="absolute top-3 right-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-300"
+            onClick={() => setShowDpaCalc((v) => !v)}
+            aria-label="Calculer ma DPA autrement"
+            title="Calculer ma DPA autrement"
+            className={`transition-colors ${showDpaCalc ? "text-purple-500" : "text-gray-300 hover:text-purple-400 dark:text-gray-400"}`}
+          >
+            <Calculator className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setShowSetup((v) => !v)}
+            aria-label="Modifier la DPA"
+            title="Modifier la DPA"
+            className={`transition-colors ${
+              !store.dueDate
+                ? "text-gray-400 dark:text-gray-500 hover:text-gray-600"
+                : "text-gray-300 hover:text-gray-500 dark:text-gray-400"
+            }`}
           >
             <Settings className="w-4 h-4" />
           </button>
-        )}
-        {store.dueDate && (
-          <button
-            onClick={() => setShowSetup(true)}
-            className="absolute top-3 right-3 text-gray-300 hover:text-gray-500 dark:text-gray-400"
-          >
-            <Settings className="w-4 h-4" />
-          </button>
-        )}
+        </div>
       </motion.div>
 
       {/* Smart Reminders */}
