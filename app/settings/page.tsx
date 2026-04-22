@@ -190,6 +190,37 @@ export default function SettingsPage() {
               />
             </div>
 
+            {/* Affichage : SA ou GA */}
+            <div>
+              <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">
+                Affichage de la semaine sur l&apos;accueil
+              </label>
+              <div className="flex gap-2">
+                {(["SA", "GA"] as const).map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await store.setProfile({ weekMode: m });
+                        toast.success(`Affichage en ${m} ✓`);
+                      } catch (err) {
+                        toast.error(err instanceof Error ? err.message : "Erreur");
+                      }
+                    }}
+                    className={`flex-1 py-2 rounded-xl border-2 text-xs font-semibold transition-all ${
+                      store.weekMode === m
+                        ? "border-pink-400 bg-pink-50 dark:bg-pink-950/30 text-pink-700 dark:text-pink-300"
+                        : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800"
+                    }`}
+                  >
+                    {m === "SA" ? "SA (aménorrhée)" : "GA (grossesse)"}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-gray-400 mt-1">SA = depuis la DDR · GA = depuis la conception (SA = GA + 2)</p>
+            </div>
+
             {/* DPA calculator */}
             <DpaCalculator onSaved={(d) => setDueDate(d)} />
 

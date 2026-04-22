@@ -54,10 +54,13 @@ import type {
 export type BirthPlanData = Record<string, unknown>;
 export type NutritionChecks = Record<string, Record<string, boolean>>;
 
+export type WeekMode = "SA" | "GA";
+
 export interface StoreState {
   dueDate: string | null;
   mamaName: string | null;
   babyName: string | null;
+  weekMode: WeekMode;
   weightEntries: WeightEntry[];
   symptomEntries: SymptomEntry[];
   kickSessions: KickSession[];
@@ -87,7 +90,7 @@ export interface StoreState {
 
 export interface StoreActions {
   setDueDate: (date: string) => Promise<void>;
-  setProfile: (profile: { dueDate?: string; mamaName?: string; babyName?: string }) => Promise<void>;
+  setProfile: (profile: { dueDate?: string; mamaName?: string; babyName?: string; weekMode?: WeekMode }) => Promise<void>;
   addWeightEntry: (entry: Omit<WeightEntry, "id">) => Promise<void>;
   removeWeightEntry: (id: string) => Promise<void>;
   addSymptomEntry: (entry: Omit<SymptomEntry, "id">) => Promise<void>;
@@ -171,6 +174,7 @@ const initialState: StoreState = {
   dueDate: null,
   mamaName: null,
   babyName: null,
+  weekMode: "SA",
   weightEntries: [],
   symptomEntries: [],
   kickSessions: [],
@@ -353,6 +357,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         dueDate: data.profile?.dueDate ?? local.dueDate ?? null,
         mamaName: data.profile?.mamaName ?? local.mamaName ?? null,
         babyName: data.profile?.babyName ?? local.babyName ?? null,
+        weekMode: (data.profile?.weekMode ?? local.weekMode ?? "SA") as WeekMode,
         weightEntries: mergeById(data.weightEntries, local.weightEntries),
         symptomEntries: mergeById(data.symptomEntries, local.symptomEntries),
         kickSessions: mergeById(data.kickSessions, local.kickSessions),
@@ -466,16 +471,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  const setProfile = useCallback(async (profile: { dueDate?: string; mamaName?: string; babyName?: string }) => {
-    type ProfileSnapshot = { dueDate: string | null; mamaName: string | null; babyName: string | null };
+  const setProfile = useCallback(async (profile: { dueDate?: string; mamaName?: string; babyName?: string; weekMode?: WeekMode }) => {
+    type ProfileSnapshot = { dueDate: string | null; mamaName: string | null; babyName: string | null; weekMode: WeekMode };
     let previous: ProfileSnapshot | null = null;
     setState(s => {
-      previous = { dueDate: s.dueDate, mamaName: s.mamaName, babyName: s.babyName } as ProfileSnapshot;
+      previous = { dueDate: s.dueDate, mamaName: s.mamaName, babyName: s.babyName, weekMode: s.weekMode } as ProfileSnapshot;
       return {
         ...s,
         dueDate: profile.dueDate ?? s.dueDate,
         mamaName: profile.mamaName ?? s.mamaName,
         babyName: profile.babyName ?? s.babyName,
+        weekMode: profile.weekMode ?? s.weekMode,
       };
     });
     saveToStorage(profile);
@@ -486,11 +492,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       } catch (err) {
         const prev = previous as ProfileSnapshot | null;
         if (prev) {
-          setState(s => ({ ...s, dueDate: prev.dueDate, mamaName: prev.mamaName, babyName: prev.babyName }));
+          setState(s => ({ ...s, dueDate: prev.dueDate, mamaName: prev.mamaName, babyName: prev.babyName, weekMode: prev.weekMode }));
           saveToStorage({
             dueDate: prev.dueDate ?? undefined,
             mamaName: prev.mamaName ?? undefined,
             babyName: prev.babyName ?? undefined,
+            weekMode: prev.weekMode,
           });
         }
         throw err;

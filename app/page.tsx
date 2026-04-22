@@ -81,10 +81,11 @@ export default function DashboardPage() {
   }
 
   const dueDate = store.dueDate ? new Date(store.dueDate) : null;
-  const week = dueDate ? getCurrentWeek(dueDate) : 20;
+  const weekSA = dueDate ? getCurrentWeek(dueDate) : 20;
+  const week = store.weekMode === "GA" ? Math.max(1, weekSA - 2) : weekSA;
   const days = dueDate ? getDaysRemaining(dueDate) : null;
   const progress = dueDate ? getProgressPercent(dueDate) : 50;
-  const weekData = getWeekData(week);
+  const weekData = getWeekData(weekSA);
 
   const today = format(new Date(), "yyyy-MM-dd");
   const waterToday = store.waterIntake[today] ?? 0;
@@ -176,7 +177,7 @@ export default function DashboardPage() {
             </p>
             <h1 className="text-6xl font-bold text-[#3d2b2b] dark:text-gray-100">
               {week}
-              <span className="text-2xl text-pink-400 ml-1">SA</span>
+              <span className="text-2xl text-pink-400 ml-1">{store.weekMode}</span>
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               {weekData.fruit}

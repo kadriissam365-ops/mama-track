@@ -71,7 +71,7 @@ export default function DpaCalculator({ defaultOpen = false, onSaved }: Props) {
     if (!previewDpa) return;
     setApplying(true);
     try {
-      await store.setProfile({ dueDate: previewDpa });
+      await store.setProfile({ dueDate: previewDpa, weekMode: method === "current_week" ? weekMode : "SA" });
       setOpen(false);
       toast.success("DPA enregistrée ✓");
       onSaved?.(previewDpa);

@@ -63,11 +63,14 @@ export interface ChecklistItem {
   custom: boolean;
 }
 
+export type WeekMode = "SA" | "GA";
+
 export interface Profile {
   id: string;
   dueDate: string | null;
   babyName: string | null;
   mamaName: string | null;
+  weekMode: WeekMode;
 }
 
 export interface NotificationSettingsData {

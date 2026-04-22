@@ -48,14 +48,16 @@ export async function getProfile(userId: string): Promise<Profile | null> {
     .select('*')
     .eq('id', userId)
     .single();
-  
+
   if (error || !data) return null;
-  
+
+  const wm = (data as { week_mode?: string }).week_mode;
   return {
     id: data.id,
     dueDate: data.due_date,
     babyName: data.baby_name,
     mamaName: data.mama_name,
+    weekMode: wm === "GA" ? "GA" : "SA",
   };
 }
 
@@ -69,6 +71,7 @@ export async function upsertProfile(userId: string, profile: Partial<Omit<Profil
   if (profile.dueDate !== undefined) payload.due_date = profile.dueDate;
   if (profile.babyName !== undefined) payload.baby_name = profile.babyName;
   if (profile.mamaName !== undefined) payload.mama_name = profile.mamaName;
+  if (profile.weekMode !== undefined) payload.week_mode = profile.weekMode;
 
   const { error } = await supabase.from('profiles').upsert(payload);
 
