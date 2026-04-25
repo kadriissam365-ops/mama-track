@@ -45,7 +45,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('profiles')
-    .select('*')
+    .select('id, due_date, baby_name, mama_name, week_mode')
     .eq('id', userId)
     .single();
 
@@ -88,7 +88,7 @@ export async function getWeightEntries(userId: string): Promise<WeightEntry[]> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('weight_entries')
-    .select('*')
+    .select('id, date, weight, note')
     .eq('user_id', userId)
     .order('date', { ascending: true });
   
@@ -150,7 +150,7 @@ export async function getSymptomEntries(userId: string): Promise<SymptomEntry[]>
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('symptom_entries')
-    .select('*')
+    .select('id, date, symptoms, severity, note')
     .eq('user_id', userId)
     .order('date', { ascending: true });
   
@@ -210,7 +210,7 @@ export async function getKickSessions(userId: string): Promise<KickSession[]> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('kick_sessions')
-    .select('*')
+    .select('id, date, start_time, count, duration')
     .eq('user_id', userId)
     .order('date', { ascending: true });
   
@@ -267,7 +267,7 @@ export async function getContractionSessions(userId: string): Promise<Contractio
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('contraction_sessions')
-    .select('*')
+    .select('id, date, contractions')
     .eq('user_id', userId)
     .order('date', { ascending: true });
   
@@ -330,7 +330,7 @@ export async function getAppointments(userId: string): Promise<Appointment[]> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('appointments')
-    .select('*')
+    .select('id, date, time, title, doctor, location, notes, done')
     .eq('user_id', userId)
     .order('date', { ascending: true });
   
@@ -416,7 +416,7 @@ export async function getWaterIntake(userId: string): Promise<WaterIntakeDay> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('water_intake')
-    .select('*')
+    .select('date, ml')
     .eq('user_id', userId);
   
   if (error || !data) return {};
@@ -448,7 +448,7 @@ export async function getChecklistItems(userId: string): Promise<ChecklistItem[]
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('checklist_items')
-    .select('*')
+    .select('id, category, label, done, custom')
     .eq('user_id', userId)
     .order('created_at', { ascending: true });
   
@@ -560,7 +560,7 @@ export async function getNotificationSettings(userId: string): Promise<Notificat
   try {
     const { data, error } = await supabase
       .from('notification_settings')
-      .select('*')
+      .select('water_reminders, medication_morning, medication_evening, appointment_reminders, reminder_interval_hours')
       .eq('user_id', userId)
       .single();
     
@@ -701,7 +701,7 @@ export async function getBumpPhotos(userId: string): Promise<BumpPhoto[]> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('bump_photos')
-    .select('*')
+    .select('id, user_id, week, storage_path, note, captured_at, created_at')
     .eq('user_id', userId)
     .order('week', { ascending: true });
 
@@ -793,7 +793,7 @@ export async function getJournalNotes(userId: string): Promise<JournalNote[]> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('journal_notes')
-    .select('*')
+    .select('id, user_id, week, title, body, mood_emoji, created_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
 
@@ -896,7 +896,7 @@ export async function getShoppingItems(userId: string): Promise<ShoppingItem[]> 
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('shopping_items')
-    .select('*')
+    .select('id, categorie, nom, quantite, priorite, budget_estime, coche, custom')
     .eq('user_id', userId)
     .order('created_at', { ascending: true });
 
@@ -1004,7 +1004,7 @@ export async function getMedications(userId: string): Promise<Medication[]> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('medications')
-    .select('*')
+    .select('id, name, dosage, frequency, time, notes, color, active')
     .eq('user_id', userId)
     .order('created_at', { ascending: true });
 
@@ -1110,7 +1110,7 @@ export async function getEmergencyContacts(userId: string): Promise<EmergencyCon
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('emergency_contacts')
-    .select('*')
+    .select('id, name, phone, role, emoji')
     .eq('user_id', userId)
     .order('created_at', { ascending: true });
   if (error || !data) return [];
@@ -1247,7 +1247,7 @@ export async function getSleepEntries(userId: string): Promise<SleepEntry[]> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('sleep_entries')
-    .select('*')
+    .select('id, date, hours, quality, note, created_at')
     .eq('user_id', userId)
     .order('date', { ascending: false });
   if (error || !data) return [];
@@ -1311,7 +1311,7 @@ export async function getMoodEntries(userId: string): Promise<MoodEntry[]> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('mood_entries')
-    .select('*')
+    .select('id, date, mood_emoji, mood_label, note, created_at')
     .eq('user_id', userId)
     .order('date', { ascending: false });
   if (error || !data) return [];
@@ -1383,7 +1383,7 @@ export async function getBloodPressureEntries(userId: string): Promise<BloodPres
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('blood_pressure_entries')
-    .select('*')
+    .select('id, date, systolic, diastolic, pulse, note, created_at')
     .eq('user_id', userId)
     .order('date', { ascending: false });
   if (error || !data) return [];
@@ -1449,7 +1449,7 @@ export async function getAbdomenMeasurements(userId: string): Promise<AbdomenMea
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('abdomen_measurements')
-    .select('*')
+    .select('id, date, circumference_cm, note, created_at')
     .eq('user_id', userId)
     .order('date', { ascending: false });
   if (error || !data) return [];
@@ -1511,7 +1511,7 @@ export async function getExerciseSessions(userId: string): Promise<ExerciseSessi
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('exercise_sessions')
-    .select('*')
+    .select('id, date, activity, duration_min, intensity, note, created_at')
     .eq('user_id', userId)
     .order('date', { ascending: false });
   if (error || !data) return [];
@@ -1579,7 +1579,7 @@ export async function getBreathingSessions(userId: string): Promise<BreathingSes
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('breathing_sessions')
-    .select('*')
+    .select('id, started_at, duration_sec, pattern, rounds, completed, created_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
   if (error || !data) return [];
