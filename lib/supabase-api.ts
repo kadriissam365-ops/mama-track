@@ -645,16 +645,19 @@ export interface AllUserData {
 }
 
 export async function loadAllUserData(userId: string): Promise<AllUserData> {
-  // Phase 1 : données critiques
-  const [profile, weightEntries, appointments] = await Promise.all([
+  const [
+    profile,
+    weightEntries,
+    appointments,
+    symptomEntries,
+    kickSessions,
+    contractionSessions,
+    waterIntake,
+    checklistItems,
+  ] = await Promise.all([
     getProfile(userId),
     getWeightEntries(userId),
     getAppointments(userId),
-  ]);
-
-  // Phase 2 : données secondaires (légèrement différées)
-  await new Promise(r => setTimeout(r, 100));
-  const [symptomEntries, kickSessions, contractionSessions, waterIntake, checklistItems] = await Promise.all([
     getSymptomEntries(userId),
     getKickSessions(userId),
     getContractionSessions(userId),
