@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";

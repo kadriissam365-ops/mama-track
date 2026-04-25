@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/lib/toast";
 import { getInvitationByToken, acceptInvitation, type DuoInvitation } from "@/lib/duo-api";

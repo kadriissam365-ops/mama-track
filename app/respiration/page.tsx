@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Play, Pause, RotateCcw, Wind, Timer, Heart, ChevronRight } from "lucide-react";
 import { useStore } from "@/lib/store";
 

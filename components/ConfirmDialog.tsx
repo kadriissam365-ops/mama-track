@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 
 interface ConfirmDialogProps {
   isOpen: boolean;

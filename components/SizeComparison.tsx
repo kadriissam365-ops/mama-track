@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { pregnancyData, type WeekData } from "@/lib/pregnancy-data";
 import { Ruler, ChevronRight, RotateCw, ChevronDown } from "lucide-react";
 

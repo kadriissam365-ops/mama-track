@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { format, isPast, isToday, isFuture, addWeeks, subWeeks } from "date-fns";

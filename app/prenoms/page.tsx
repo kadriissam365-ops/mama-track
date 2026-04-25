@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Search, Heart, Shuffle, X } from "lucide-react";
 import { prenoms, type Prenom } from "@/lib/prenoms-data";
 import { useStore } from "@/lib/store";

@@ -1,5 +1,5 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { X, TrendingUp, TrendingDown, Minus, Mail, ExternalLink, Loader2 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";

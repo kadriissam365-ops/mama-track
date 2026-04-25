@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Plus, ChevronDown, ChevronUp, Trash2, ShoppingCart, DollarSign, CheckCircle2 } from "lucide-react";
 import { useStore, type ShoppingItem } from "@/lib/store";
 

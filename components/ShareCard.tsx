@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useCallback, useState } from "react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek, getDaysRemaining, getWeekData } from "@/lib/pregnancy-data";

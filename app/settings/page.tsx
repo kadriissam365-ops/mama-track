@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";

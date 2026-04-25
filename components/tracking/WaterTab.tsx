@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";

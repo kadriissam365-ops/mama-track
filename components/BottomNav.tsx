@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Activity, Baby, Calendar, MoreHorizontal } from "lucide-react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 
 const navItems = [

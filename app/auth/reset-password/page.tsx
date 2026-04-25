@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { createClient } from "@/lib/supabase";
 import { Lock, Eye, EyeOff, Heart, Loader2, CheckCircle } from "lucide-react";
 

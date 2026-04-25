@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { Download, Copy, Check, MessageCircle, Share2 } from "lucide-react";
 
 export interface ShareContent {

@@ -9,6 +9,7 @@ import InstallBanner from "@/components/InstallBanner";
 import OfflineBanner from "@/components/OfflineBanner";
 import { ThemeProvider } from "next-themes";
 import { I18nProvider } from "@/lib/i18n";
+import MotionProvider from "@/components/MotionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -153,12 +154,14 @@ export default function RootLayout({
         <AuthProvider>
           <ToastProvider>
             <StoreProvider>
-              <OfflineBanner />
-              <ConditionalNav />
-              <InstallBanner />
-              <main className="flex-1 pb-24 overflow-y-auto">
-                {children}
-              </main>
+              <MotionProvider>
+                <OfflineBanner />
+                <ConditionalNav />
+                <InstallBanner />
+                <main className="flex-1 pb-24 overflow-y-auto">
+                  {children}
+                </main>
+              </MotionProvider>
             </StoreProvider>
           </ToastProvider>
         </AuthProvider>

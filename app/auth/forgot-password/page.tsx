@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { createClient } from "@/lib/supabase";
 import { Mail, Heart, Loader2, ArrowLeft, CheckCircle } from "lucide-react";
 

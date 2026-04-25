@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Phone, Plus, Trash2, AlertTriangle, Hospital, Heart, Siren, Edit3, Save, X } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useStore, type EmergencyContact } from "@/lib/store";

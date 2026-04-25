@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import {

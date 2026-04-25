@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Plus, Search, X, Trash2, Edit3, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";

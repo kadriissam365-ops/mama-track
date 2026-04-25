@@ -6,7 +6,7 @@ import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { getCurrentWeek, getDaysRemaining } from "@/lib/pregnancy-data";
 import { Heart, LogOut, Settings } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 
 const ExportPDF = dynamic(() => import("./ExportPDF"), { ssr: false });

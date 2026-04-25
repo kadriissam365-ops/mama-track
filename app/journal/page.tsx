@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { Camera, BookOpen, Images, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";

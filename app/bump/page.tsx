@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Camera, Trash2, ChevronLeft, ChevronRight, Image, Calendar, ArrowLeftRight } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";

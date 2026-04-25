@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import { getCurrentWeek, getWeekData } from "@/lib/pregnancy-data";

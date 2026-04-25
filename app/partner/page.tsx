@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth";
 import { createClient } from "@/lib/supabase";
 import { getCurrentWeek, getDaysRemaining, getWeekData, getProgressPercent } from "@/lib/pregnancy-data";
 import { getJournalNotes, getPartnerMoodEntries, type JournalNote, type MoodEntry } from "@/lib/supabase-api";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import {
   Heart,
   Calendar,

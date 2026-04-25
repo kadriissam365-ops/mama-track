@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Search, ShieldCheck, ShieldAlert, ShieldX, Info } from "lucide-react";
 
 type Safety = "ok" | "caution" | "avoid";

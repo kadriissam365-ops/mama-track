@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/lib/toast";
 import { Heart, Baby, Calendar, Sparkles, ArrowRight, ArrowLeft, Loader2, FlaskConical, Bell } from "lucide-react";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m as motion, AnimatePresence } from "framer-motion";
 import { Camera, X, Trash2, ChevronLeft, Edit3, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
