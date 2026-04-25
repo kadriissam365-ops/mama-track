@@ -280,8 +280,30 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setState(s => ({ ...s, loading: true }));
 
     try {
+      // Fire Phase 1+2 (loadAllUserData) and Phase 3 (extra tables) in parallel.
+      // No data dependency between them: ~24 queries fly together instead of 8 then 16.
+      const todayDate = new Date().toISOString().slice(0, 10);
+      const phase3Promise = Promise.all([
+        api.getBabyNameFavorites(user.id).catch(() => [] as string[]),
+        api.getShoppingItems(user.id).catch(() => [] as api.ShoppingItem[]),
+        api.getShoppingBudget(user.id).catch(() => null),
+        api.getMedications(user.id).catch(() => [] as api.Medication[]),
+        api.getMedicationLogs(user.id).catch(() => [] as api.MedicationLog[]),
+        api.getEmergencyContacts(user.id).catch(() => [] as api.EmergencyContact[]),
+        api.getBirthPlan<BirthPlanData>(user.id).catch(() => null),
+        api.getNutritionChecks(user.id, todayDate).catch(() => ({} as Record<string, boolean>)),
+        api.getSleepEntries(user.id).catch(() => [] as SleepEntry[]),
+        api.getMoodEntries(user.id).catch(() => [] as MoodEntry[]),
+        api.getBloodPressureEntries(user.id).catch(() => [] as BloodPressureEntry[]),
+        api.getAbdomenMeasurements(user.id).catch(() => [] as AbdomenMeasurement[]),
+        api.getExerciseSessions(user.id).catch(() => [] as ExerciseSession[]),
+        api.getJournalNotes(user.id).catch(() => [] as JournalNote[]),
+        api.getBumpPhotos(user.id).catch(() => [] as BumpPhoto[]),
+        api.getBreathingSessions(user.id).catch(() => [] as BreathingSession[]),
+      ]);
+
       const data = await api.loadAllUserData(user.id);
-      
+
       // Initialize checklist if empty
       if (data.checklistItems.length === 0) {
         // Check if we have local state to preserve (e.g. checked items)
@@ -309,9 +331,6 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         });
       }
 
-      // Phase 3: extra tables (persistence migration 20260419).
-      // Fetched separately to keep loadAllUserData untouched and fail-soft.
-      const todayDate = new Date().toISOString().slice(0, 10);
       const [
         babyNameFavorites,
         shoppingItems,
@@ -329,24 +348,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         journalNotes,
         bumpPhotos,
         breathingSessions,
-      ] = await Promise.all([
-        api.getBabyNameFavorites(user.id).catch(() => [] as string[]),
-        api.getShoppingItems(user.id).catch(() => [] as api.ShoppingItem[]),
-        api.getShoppingBudget(user.id).catch(() => null),
-        api.getMedications(user.id).catch(() => [] as api.Medication[]),
-        api.getMedicationLogs(user.id).catch(() => [] as api.MedicationLog[]),
-        api.getEmergencyContacts(user.id).catch(() => [] as api.EmergencyContact[]),
-        api.getBirthPlan<BirthPlanData>(user.id).catch(() => null),
-        api.getNutritionChecks(user.id, todayDate).catch(() => ({} as Record<string, boolean>)),
-        api.getSleepEntries(user.id).catch(() => [] as SleepEntry[]),
-        api.getMoodEntries(user.id).catch(() => [] as MoodEntry[]),
-        api.getBloodPressureEntries(user.id).catch(() => [] as BloodPressureEntry[]),
-        api.getAbdomenMeasurements(user.id).catch(() => [] as AbdomenMeasurement[]),
-        api.getExerciseSessions(user.id).catch(() => [] as ExerciseSession[]),
-        api.getJournalNotes(user.id).catch(() => [] as JournalNote[]),
-        api.getBumpPhotos(user.id).catch(() => [] as BumpPhoto[]),
-        api.getBreathingSessions(user.id).catch(() => [] as BreathingSession[]),
-      ]);
+      ] = await phase3Promise;
 
       // Merge remote + any local items that never reached Supabase.
       // Source of truth = remote, but we do not discard unsynced local items.
