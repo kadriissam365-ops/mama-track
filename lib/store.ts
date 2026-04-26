@@ -544,19 +544,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const removeWeightEntry = useCallback(async (id: string) => {
-    setState(s => ({
-      ...s,
-      weightEntries: s.weightEntries.filter(e => e.id !== id),
-    }));
-    
-    if (user) {
-      await api.deleteWeightEntry(id);
-    }
-    
+    let removed: WeightEntry | undefined;
     setState(s => {
-      saveToStorage({ weightEntries: s.weightEntries });
-      return s;
+      removed = s.weightEntries.find(e => e.id === id);
+      const next = s.weightEntries.filter(e => e.id !== id);
+      saveToStorage({ weightEntries: next });
+      return { ...s, weightEntries: next };
     });
+    if (user) {
+      try {
+        await api.deleteWeightEntry(id);
+      } catch (err) {
+        captureError(err, { context: "removeWeightEntry" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [...s.weightEntries, item];
+            saveToStorage({ weightEntries: restored });
+            return { ...s, weightEntries: restored };
+          });
+        }
+        throw err;
+      }
+    }
   }, [user]);
 
   const addSymptomEntry = useCallback(async (entry: Omit<SymptomEntry, "id">) => {
@@ -585,19 +595,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const removeSymptomEntry = useCallback(async (id: string) => {
-    setState(s => ({
-      ...s,
-      symptomEntries: s.symptomEntries.filter(e => e.id !== id),
-    }));
-    
-    if (user) {
-      await api.deleteSymptomEntry(id);
-    }
-    
+    let removed: SymptomEntry | undefined;
     setState(s => {
-      saveToStorage({ symptomEntries: s.symptomEntries });
-      return s;
+      removed = s.symptomEntries.find(e => e.id === id);
+      const next = s.symptomEntries.filter(e => e.id !== id);
+      saveToStorage({ symptomEntries: next });
+      return { ...s, symptomEntries: next };
     });
+    if (user) {
+      try {
+        await api.deleteSymptomEntry(id);
+      } catch (err) {
+        captureError(err, { context: "removeSymptomEntry" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [...s.symptomEntries, item];
+            saveToStorage({ symptomEntries: restored });
+            return { ...s, symptomEntries: restored };
+          });
+        }
+        throw err;
+      }
+    }
   }, [user]);
 
   const addKickSession = useCallback(async (session: Omit<KickSession, "id">) => {
@@ -626,19 +646,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const removeKickSession = useCallback(async (id: string) => {
-    setState(s => ({
-      ...s,
-      kickSessions: s.kickSessions.filter(k => k.id !== id),
-    }));
-    
-    if (user) {
-      await api.deleteKickSession(id);
-    }
-    
+    let removed: KickSession | undefined;
     setState(s => {
-      saveToStorage({ kickSessions: s.kickSessions });
-      return s;
+      removed = s.kickSessions.find(k => k.id === id);
+      const next = s.kickSessions.filter(k => k.id !== id);
+      saveToStorage({ kickSessions: next });
+      return { ...s, kickSessions: next };
     });
+    if (user) {
+      try {
+        await api.deleteKickSession(id);
+      } catch (err) {
+        captureError(err, { context: "removeKickSession" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [...s.kickSessions, item];
+            saveToStorage({ kickSessions: restored });
+            return { ...s, kickSessions: restored };
+          });
+        }
+        throw err;
+      }
+    }
   }, [user]);
 
   const addContractionSession = useCallback(async (session: Omit<ContractionSession, "id">) => {
@@ -685,19 +715,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const removeContractionSession = useCallback(async (id: string) => {
-    setState(s => ({
-      ...s,
-      contractionSessions: s.contractionSessions.filter(c => c.id !== id),
-    }));
-    
-    if (user) {
-      await api.deleteContractionSession(id);
-    }
-    
+    let removed: ContractionSession | undefined;
     setState(s => {
-      saveToStorage({ contractionSessions: s.contractionSessions });
-      return s;
+      removed = s.contractionSessions.find(c => c.id === id);
+      const next = s.contractionSessions.filter(c => c.id !== id);
+      saveToStorage({ contractionSessions: next });
+      return { ...s, contractionSessions: next };
     });
+    if (user) {
+      try {
+        await api.deleteContractionSession(id);
+      } catch (err) {
+        captureError(err, { context: "removeContractionSession" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [...s.contractionSessions, item];
+            saveToStorage({ contractionSessions: restored });
+            return { ...s, contractionSessions: restored };
+          });
+        }
+        throw err;
+      }
+    }
   }, [user]);
 
   const addAppointment = useCallback(async (appt: Omit<Appointment, "id">) => {
@@ -753,19 +793,31 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const removeAppointment = useCallback(async (id: string) => {
-    setState(s => ({
-      ...s,
-      appointments: s.appointments.filter(a => a.id !== id),
-    }));
-    
-    if (user) {
-      await api.deleteAppointment(id);
-    }
-    
+    let removed: Appointment | undefined;
     setState(s => {
-      saveToStorage({ appointments: s.appointments });
-      return s;
+      removed = s.appointments.find(a => a.id === id);
+      const next = s.appointments.filter(a => a.id !== id);
+      saveToStorage({ appointments: next });
+      return { ...s, appointments: next };
     });
+    if (user) {
+      try {
+        await api.deleteAppointment(id);
+      } catch (err) {
+        captureError(err, { context: "removeAppointment" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [...s.appointments, item].sort(
+              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+            );
+            saveToStorage({ appointments: restored });
+            return { ...s, appointments: restored };
+          });
+        }
+        throw err;
+      }
+    }
   }, [user]);
 
   const addWater = useCallback(async (date: string, ml: number) => {
@@ -862,19 +914,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const removeChecklistItem = useCallback(async (id: string) => {
-    setState(s => ({
-      ...s,
-      checklistItems: s.checklistItems.filter(c => c.id !== id),
-    }));
-    
-    if (user) {
-      await api.deleteChecklistItem(id);
-    }
-    
+    let removed: ChecklistItem | undefined;
     setState(s => {
-      saveToStorage({ checklistItems: s.checklistItems });
-      return s;
+      removed = s.checklistItems.find(c => c.id === id);
+      const next = s.checklistItems.filter(c => c.id !== id);
+      saveToStorage({ checklistItems: next });
+      return { ...s, checklistItems: next };
     });
+    if (user) {
+      try {
+        await api.deleteChecklistItem(id);
+      } catch (err) {
+        captureError(err, { context: "removeChecklistItem" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [...s.checklistItems, item];
+            saveToStorage({ checklistItems: restored });
+            return { ...s, checklistItems: restored };
+          });
+        }
+        throw err;
+      }
+    }
   }, [user]);
 
   // ============== BABY NAME FAVORITES ==============
@@ -964,14 +1026,33 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const removeMedicationEntry = useCallback(async (id: string) => {
+    let removedMed: Medication | undefined;
+    let removedLogs: MedicationLog[] = [];
     setState(s => {
+      removedMed = s.medications.find(m => m.id === id);
+      removedLogs = s.medicationLogs.filter(l => l.medId === id);
       const next = s.medications.filter(m => m.id !== id);
       const nextLogs = s.medicationLogs.filter(l => l.medId !== id);
       saveToStorage({ medications: next, medicationLogs: nextLogs });
       return { ...s, medications: next, medicationLogs: nextLogs };
     });
     if (user) {
-      await api.deleteMedication(id);
+      try {
+        await api.deleteMedication(id);
+      } catch (err) {
+        captureError(err, { context: "removeMedicationEntry" });
+        const med = removedMed;
+        const logs = removedLogs;
+        if (med) {
+          setState(s => {
+            const restoredMeds = [...s.medications, med];
+            const restoredLogs = [...s.medicationLogs, ...logs];
+            saveToStorage({ medications: restoredMeds, medicationLogs: restoredLogs });
+            return { ...s, medications: restoredMeds, medicationLogs: restoredLogs };
+          });
+        }
+        throw err;
+      }
     }
   }, [user]);
 
@@ -1028,13 +1109,28 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const removeEmergencyContactEntry = useCallback(async (id: string) => {
+    let removed: EmergencyContact | undefined;
     setState(s => {
+      removed = s.emergencyContacts.find(c => c.id === id);
       const next = s.emergencyContacts.filter(c => c.id !== id);
       saveToStorage({ emergencyContacts: next });
       return { ...s, emergencyContacts: next };
     });
     if (user) {
-      await api.deleteEmergencyContact(id);
+      try {
+        await api.deleteEmergencyContact(id);
+      } catch (err) {
+        captureError(err, { context: "removeEmergencyContactEntry" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [...s.emergencyContacts, item];
+            saveToStorage({ emergencyContacts: restored });
+            return { ...s, emergencyContacts: restored };
+          });
+        }
+        throw err;
+      }
     }
   }, [user]);
 
@@ -1088,7 +1184,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const deleteSleepEntry = useCallback(async (id: string) => {
+    let removed: SleepEntry | undefined;
     setState(s => {
+      removed = s.sleepEntries.find(e => e.id === id);
       const next = s.sleepEntries.filter(e => e.id !== id);
       saveToStorage({ sleepEntries: next });
       return { ...s, sleepEntries: next };
@@ -1098,6 +1196,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         await api.deleteSleepEntry(id);
       } catch (error) {
         captureError(error, { context: "deleteSleepEntry" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [item, ...s.sleepEntries];
+            saveToStorage({ sleepEntries: restored });
+            return { ...s, sleepEntries: restored };
+          });
+        }
+        throw error;
       }
     }
   }, [user]);
@@ -1130,7 +1237,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const deleteMoodEntry = useCallback(async (id: string) => {
+    let removed: MoodEntry | undefined;
     setState(s => {
+      removed = s.moodEntries.find(e => e.id === id);
       const next = s.moodEntries.filter(e => e.id !== id);
       saveToStorage({ moodEntries: next });
       return { ...s, moodEntries: next };
@@ -1140,6 +1249,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         await api.deleteMoodEntry(id);
       } catch (error) {
         captureError(error, { context: "deleteMoodEntry" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [item, ...s.moodEntries];
+            saveToStorage({ moodEntries: restored });
+            return { ...s, moodEntries: restored };
+          });
+        }
+        throw error;
       }
     }
   }, [user]);
@@ -1171,7 +1289,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const deleteBloodPressureEntry = useCallback(async (id: string) => {
+    let removed: BloodPressureEntry | undefined;
     setState(s => {
+      removed = s.bloodPressureEntries.find(e => e.id === id);
       const next = s.bloodPressureEntries.filter(e => e.id !== id);
       saveToStorage({ bloodPressureEntries: next });
       return { ...s, bloodPressureEntries: next };
@@ -1181,6 +1301,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         await api.deleteBloodPressureEntry(id);
       } catch (error) {
         captureError(error, { context: "deleteBloodPressureEntry" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [item, ...s.bloodPressureEntries];
+            saveToStorage({ bloodPressureEntries: restored });
+            return { ...s, bloodPressureEntries: restored };
+          });
+        }
+        throw error;
       }
     }
   }, [user]);
@@ -1212,7 +1341,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const deleteAbdomenMeasurement = useCallback(async (id: string) => {
+    let removed: AbdomenMeasurement | undefined;
     setState(s => {
+      removed = s.abdomenMeasurements.find(e => e.id === id);
       const next = s.abdomenMeasurements.filter(e => e.id !== id);
       saveToStorage({ abdomenMeasurements: next });
       return { ...s, abdomenMeasurements: next };
@@ -1222,6 +1353,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         await api.deleteAbdomenMeasurement(id);
       } catch (error) {
         captureError(error, { context: "deleteAbdomenMeasurement" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [item, ...s.abdomenMeasurements];
+            saveToStorage({ abdomenMeasurements: restored });
+            return { ...s, abdomenMeasurements: restored };
+          });
+        }
+        throw error;
       }
     }
   }, [user]);
@@ -1253,7 +1393,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const deleteExerciseSession = useCallback(async (id: string) => {
+    let removed: ExerciseSession | undefined;
     setState(s => {
+      removed = s.exerciseSessions.find(e => e.id === id);
       const next = s.exerciseSessions.filter(e => e.id !== id);
       saveToStorage({ exerciseSessions: next });
       return { ...s, exerciseSessions: next };
@@ -1263,6 +1405,15 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         await api.deleteExerciseSession(id);
       } catch (error) {
         captureError(error, { context: "deleteExerciseSession" });
+        const item = removed;
+        if (item) {
+          setState(s => {
+            const restored = [item, ...s.exerciseSessions];
+            saveToStorage({ exerciseSessions: restored });
+            return { ...s, exerciseSessions: restored };
+          });
+        }
+        throw error;
       }
     }
   }, [user]);
