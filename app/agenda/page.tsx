@@ -311,12 +311,15 @@ export default function AgendaPage() {
                             )}
                           </div>
                           <button
-                            onClick={() => {
+                            onClick={async () => {
                               const title = exam.label;
                               const exists = store.appointments.some(
                                 (a) => a.title === title
                               );
-                              if (exists) return;
+                              if (exists) {
+                                toast.info("Ce RDV est déjà dans votre agenda");
+                                return;
+                              }
 
                               // Calcule la date estimée à partir de la DPA et
                               // de la semaine SA cible de l'examen.
@@ -336,13 +339,19 @@ export default function AgendaPage() {
                                 }
                               }
 
-                              store.addAppointment({
-                                title,
-                                date: examDate,
-                                time: "09:00",
-                                done: false,
-                              });
-                              notifyPartner("appointment", { appointmentTitle: title });
+                              try {
+                                await store.addAppointment({
+                                  title,
+                                  date: examDate,
+                                  time: "09:00",
+                                  done: false,
+                                });
+                                toast.success(`RDV ajouté : ${title}`);
+                                notifyPartner("appointment", { appointmentTitle: title });
+                              } catch (err) {
+                                const msg = err instanceof Error ? err.message : "Ajout impossible";
+                                toast.error(msg);
+                              }
                             }}
                             className="text-xs bg-pink-100 dark:bg-pink-900/30 text-pink-600 px-2 py-1 rounded-lg hover:bg-pink-200 transition-colors"
                           >
