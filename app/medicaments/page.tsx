@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
-import { Pill, Plus, Check, Trash2, Clock, Bell } from "lucide-react";
+import { Pill, Plus, Check, Trash2, Clock, Bell, X } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import ConfirmDialog from "@/components/ConfirmDialog";
@@ -50,6 +50,7 @@ export default function MedicamentsPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [showPresets, setShowPresets] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [retroDate, setRetroDate] = useState<string | null>(null);
 
   const [newName, setNewName] = useState("");
   const [newDosage, setNewDosage] = useState("");
@@ -86,6 +87,10 @@ export default function MedicamentsPage() {
 
   function isTakenToday(medId: string): boolean {
     return logs.some((l) => l.medId === medId && l.date === today && l.taken);
+  }
+
+  function isTakenOn(medId: string, date: string): boolean {
+    return logs.some((l) => l.medId === medId && l.date === date && l.taken);
   }
 
   const activeMeds = medications.filter((m) => m.active);
@@ -198,19 +203,28 @@ export default function MedicamentsPage() {
       {/* Weekly adherence chart */}
       {totalCount > 0 && (
         <div className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30">
-          <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">Adhérence (7 jours)</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">Adhérence (7 jours)</h3>
+            <span className="text-[10px] text-gray-400 dark:text-gray-500">Touchez un jour pour rattraper</span>
+          </div>
           <div className="flex gap-1.5 items-end justify-around">
             {last7.map((d) => {
               const barPct = d.total > 0 ? (d.taken / d.total) * 100 : 0;
               const barH = Math.max(8, (barPct / 100) * 80);
               const isToday = d.date === today;
               return (
-                <div key={d.date} className="flex flex-col items-center flex-1">
+                <button
+                  key={d.date}
+                  type="button"
+                  onClick={() => setRetroDate(d.date)}
+                  className="flex flex-col items-center flex-1 group focus:outline-none"
+                  aria-label={`Modifier les prises du ${d.day}`}
+                >
                   {d.taken > 0 && (
                     <span className="text-[9px] text-gray-500 dark:text-gray-400 mb-0.5">{d.taken}/{d.total}</span>
                   )}
                   <div
-                    className={`w-full rounded-t-lg ${
+                    className={`w-full rounded-t-lg transition-all group-hover:opacity-80 group-active:scale-95 ${
                       barPct === 100 ? "bg-green-300" : barPct > 0 ? "bg-purple-200" : "bg-gray-100 dark:bg-gray-800"
                     }`}
                     style={{ height: `${barH}px` }}
@@ -218,12 +232,95 @@ export default function MedicamentsPage() {
                   <span className={`text-[9px] mt-0.5 ${isToday ? "text-purple-500 dark:text-purple-400 font-bold" : "text-gray-400 dark:text-gray-500"}`}>
                     {d.day}
                   </span>
-                </div>
+                </button>
               );
             })}
           </div>
         </div>
       )}
+
+      {/* Retro modal: mark / unmark meds for a past day */}
+      <AnimatePresence>
+        {retroDate && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-4"
+            onClick={(e) => { if (e.target === e.currentTarget) setRetroDate(null); }}
+          >
+            <motion.div
+              initial={{ y: 100 }}
+              animate={{ y: 0 }}
+              exit={{ y: 100 }}
+              className="bg-white dark:bg-gray-900 rounded-3xl p-5 w-full max-w-md max-h-[80vh] overflow-y-auto"
+            >
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">
+                    Prises du {format(new Date(retroDate), "EEEE d MMMM", { locale: fr })}
+                  </h3>
+                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                    Cochez les médicaments réellement pris ce jour-là.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setRetroDate(null)}
+                  aria-label="Fermer"
+                  className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {activeMeds.length === 0 && (
+                  <p className="text-sm text-gray-400 dark:text-gray-500 py-4 text-center">
+                    Aucun médicament actif.
+                  </p>
+                )}
+                {activeMeds.map((med) => {
+                  const taken = isTakenOn(med.id, retroDate);
+                  return (
+                    <button
+                      key={med.id}
+                      onClick={() => toggleMedicationTaken(med.id, retroDate)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl border-2 text-left transition-all ${
+                        taken
+                          ? "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800/30"
+                          : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                      }`}
+                    >
+                      <div
+                        className={`w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                          taken ? "bg-green-400" : "border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900"
+                        }`}
+                      >
+                        {taken && <Check className="w-4 h-4 text-white" />}
+                      </div>
+                      <div className="flex-1">
+                        <p className={`text-sm font-semibold ${taken ? "text-green-700 dark:text-green-300" : "text-[#3d2b2b] dark:text-gray-100"}`}>
+                          {med.name}
+                        </p>
+                        <p className="text-[11px] text-gray-400 dark:text-gray-500">
+                          {med.dosage} · {FREQUENCIES.find((f) => f.id === med.frequency)?.label} · {med.time}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => setRetroDate(null)}
+                className="w-full text-gray-400 dark:text-gray-500 text-sm mt-4 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                Fermer
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Empty state */}
       {activeMeds.length === 0 && !showAdd && (

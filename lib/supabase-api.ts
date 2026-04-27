@@ -526,7 +526,23 @@ export async function toggleChecklistItem(id: string, done: boolean): Promise<bo
     .from('checklist_items')
     .update({ done })
     .eq('id', id);
-  
+
+  return !error;
+}
+
+export async function updateChecklistItem(
+  id: string,
+  updates: Partial<Pick<ChecklistItem, 'label' | 'category'>>
+): Promise<boolean> {
+  const supabase = getSupabase();
+  const payload: Record<string, string> = {};
+  if (typeof updates.label === 'string') payload.label = updates.label;
+  if (typeof updates.category === 'string') payload.category = updates.category;
+  if (Object.keys(payload).length === 0) return true;
+  const { error } = await supabase
+    .from('checklist_items')
+    .update(payload)
+    .eq('id', id);
   return !error;
 }
 

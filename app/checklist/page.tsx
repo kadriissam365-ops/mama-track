@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
-import { CheckSquare, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { useToast } from "@/lib/toast";
+import { CheckSquare, Plus, Trash2, ChevronDown, ChevronUp, Pencil } from "lucide-react";
 
 const CATEGORY_COLORS: Record<string, { bg: string; border: string; text: string; check: string }> = {
   Administratif: { bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-200 dark:border-blue-800/30", text: "text-blue-600 dark:text-blue-400", check: "bg-blue-400" },
@@ -16,12 +17,49 @@ const DEFAULT_COLORS = { bg: "bg-orange-50 dark:bg-orange-950/30", border: "bord
 
 export default function ChecklistPage() {
   const store = useStore();
+  const toast = useToast();
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
     new Set(["Administratif", "Médical", "Chambre bébé", "Valise maternité"])
   );
   const [showAddForm, setShowAddForm] = useState(false);
   const [newLabel, setNewLabel] = useState("");
   const [newCategory, setNewCategory] = useState("Divers");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingLabel, setEditingLabel] = useState("");
+  const editInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (editingId && editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [editingId]);
+
+  const startEdit = (id: string, currentLabel: string) => {
+    setEditingId(id);
+    setEditingLabel(currentLabel);
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingLabel("");
+  };
+
+  const commitEdit = async (id: string, originalLabel: string) => {
+    const trimmed = editingLabel.trim();
+    if (!trimmed || trimmed === originalLabel) {
+      cancelEdit();
+      return;
+    }
+    try {
+      await store.updateChecklistItem(id, { label: trimmed });
+      toast.success("Élément modifié ✓");
+    } catch {
+      toast.error("Modification impossible");
+    } finally {
+      cancelEdit();
+    }
+  };
 
   const toggleCategory = (cat: string) => {
     setExpandedCategories((prev) => {
@@ -213,14 +251,41 @@ export default function ChecklistPage() {
                             </motion.svg>
                           )}
                         </button>
-                        <span
-                          className={`flex-1 text-sm transition-all ${
-                            item.done ? "line-through text-gray-400 dark:text-gray-500" : "text-[#3d2b2b] dark:text-gray-100"
-                          }`}
-                        >
-                          {item.label}
-                        </span>
-                        {item.custom && (
+                        {editingId === item.id ? (
+                          <input
+                            ref={editInputRef}
+                            type="text"
+                            value={editingLabel}
+                            onChange={(e) => setEditingLabel(e.target.value)}
+                            onBlur={() => commitEdit(item.id, item.label)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") commitEdit(item.id, item.label);
+                              if (e.key === "Escape") cancelEdit();
+                            }}
+                            className="flex-1 text-sm bg-white dark:bg-gray-900 border border-pink-300 dark:border-pink-700 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-pink-300 text-[#3d2b2b] dark:text-gray-100"
+                          />
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => startEdit(item.id, item.label)}
+                            className={`flex-1 text-left text-sm transition-all ${
+                              item.done ? "line-through text-gray-400 dark:text-gray-500" : "text-[#3d2b2b] dark:text-gray-100"
+                            }`}
+                            aria-label="Modifier l'élément"
+                          >
+                            {item.label}
+                          </button>
+                        )}
+                        {editingId !== item.id && (
+                          <button
+                            onClick={() => startEdit(item.id, item.label)}
+                            className="text-gray-300 dark:text-gray-500 hover:text-pink-400 transition-colors"
+                            aria-label="Modifier l'élément"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                        {item.custom && editingId !== item.id && (
                           <button
                             onClick={() => store.removeChecklistItem(item.id)}
                             className="text-gray-300 dark:text-gray-500 hover:text-red-400 transition-colors"

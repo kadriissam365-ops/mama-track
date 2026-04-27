@@ -107,6 +107,7 @@ export interface StoreActions {
   removeWater: (date: string, ml: number) => Promise<void>;
   toggleChecklistItem: (id: string) => Promise<void>;
   addChecklistItem: (item: Omit<ChecklistItem, "id">) => Promise<void>;
+  updateChecklistItem: (id: string, updates: Partial<Pick<ChecklistItem, "label" | "category">>) => Promise<void>;
   removeChecklistItem: (id: string) => Promise<void>;
   toggleBabyNameFavorite: (nom: string) => Promise<void>;
   setShoppingItems: (items: ShoppingItem[]) => Promise<void>;
@@ -913,6 +914,36 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     });
   }, [user]);
 
+  const updateChecklistItem = useCallback(
+    async (id: string, updates: Partial<Pick<ChecklistItem, "label" | "category">>) => {
+      let previous: ChecklistItem | undefined;
+      setState(s => {
+        previous = s.checklistItems.find(c => c.id === id);
+        if (!previous) return s;
+        const next = s.checklistItems.map(c => (c.id === id ? { ...c, ...updates } : c));
+        saveToStorage({ checklistItems: next });
+        return { ...s, checklistItems: next };
+      });
+      if (user) {
+        try {
+          await api.updateChecklistItem(id, updates);
+        } catch (err) {
+          captureError(err, { context: "updateChecklistItem" });
+          const prev = previous;
+          if (prev) {
+            setState(s => {
+              const restored = s.checklistItems.map(c => (c.id === id ? prev : c));
+              saveToStorage({ checklistItems: restored });
+              return { ...s, checklistItems: restored };
+            });
+          }
+          throw err;
+        }
+      }
+    },
+    [user]
+  );
+
   const removeChecklistItem = useCallback(async (id: string) => {
     let removed: ChecklistItem | undefined;
     setState(s => {
@@ -1527,6 +1558,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     removeWater,
     toggleChecklistItem,
     addChecklistItem,
+    updateChecklistItem,
     removeChecklistItem,
     toggleBabyNameFavorite,
     setShoppingItems,
