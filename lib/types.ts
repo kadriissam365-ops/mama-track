@@ -71,6 +71,10 @@ export interface Profile {
   babyName: string | null;
   mamaName: string | null;
   weekMode: WeekMode;
+  isPremium: boolean;
+  premiumUntil: string | null;
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
 }
 
 export interface NotificationSettingsData {

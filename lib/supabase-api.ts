@@ -45,7 +45,7 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, due_date, baby_name, mama_name, week_mode')
+    .select('id, due_date, baby_name, mama_name, week_mode, is_premium, premium_until, stripe_customer_id, stripe_subscription_id')
     .eq('id', userId)
     .single();
 
@@ -58,6 +58,10 @@ export async function getProfile(userId: string): Promise<Profile | null> {
     babyName: data.baby_name,
     mamaName: data.mama_name,
     weekMode: wm === "GA" ? "GA" : "SA",
+    isPremium: data.is_premium === true,
+    premiumUntil: data.premium_until ?? null,
+    stripeCustomerId: data.stripe_customer_id ?? null,
+    stripeSubscriptionId: data.stripe_subscription_id ?? null,
   };
 }
 

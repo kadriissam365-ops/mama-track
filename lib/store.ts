@@ -61,6 +61,8 @@ export interface StoreState {
   mamaName: string | null;
   babyName: string | null;
   weekMode: WeekMode;
+  isPremium: boolean;
+  premiumUntil: string | null;
   weightEntries: WeightEntry[];
   symptomEntries: SymptomEntry[];
   kickSessions: KickSession[];
@@ -176,6 +178,8 @@ const initialState: StoreState = {
   mamaName: null,
   babyName: null,
   weekMode: "SA",
+  isPremium: false,
+  premiumUntil: null,
   weightEntries: [],
   symptomEntries: [],
   kickSessions: [],
@@ -361,6 +365,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         mamaName: data.profile?.mamaName ?? local.mamaName ?? null,
         babyName: data.profile?.babyName ?? local.babyName ?? null,
         weekMode: (data.profile?.weekMode ?? local.weekMode ?? "SA") as WeekMode,
+        isPremium: data.profile?.isPremium ?? false,
+        premiumUntil: data.profile?.premiumUntil ?? null,
         weightEntries: mergeById(data.weightEntries, local.weightEntries),
         symptomEntries: mergeById(data.symptomEntries, local.symptomEntries),
         kickSessions: mergeById(data.kickSessions, local.kickSessions),
