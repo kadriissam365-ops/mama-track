@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Activity, Baby, Calendar, MoreHorizontal } from "lucide-react";
+import { Home, Activity, Baby, Calendar, MoreHorizontal, Sparkles } from "lucide-react";
 import { m as motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 
 const navItems = [
   { href: "/", labelKey: "nav.home", icon: Home },
   { href: "/tracking", labelKey: "nav.tracking", icon: Activity },
+  { href: "/coach", labelKey: "nav.coach", icon: Sparkles },
   { href: "/baby", labelKey: "nav.baby", icon: Baby },
   { href: "/agenda", labelKey: "nav.agenda", icon: Calendar },
   { href: "/plus", labelKey: "nav.more", icon: MoreHorizontal },
@@ -41,7 +42,7 @@ export default function BottomNav() {
             <Link
               key={href}
               href={href}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-2xl transition-all duration-200 min-w-[60px] ${
+              className={`relative flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-2xl transition-all duration-200 min-w-[48px] ${
                 active
                   ? "text-pink-600 dark:text-pink-400"
                   : "text-gray-400 dark:text-gray-500 hover:text-pink-400 dark:hover:text-pink-400"

@@ -20,6 +20,7 @@ import { DashboardSkeleton } from "@/components/Skeleton";
 import { initializeNotifications } from "@/lib/notifications";
 import { WATER_GOAL_ML } from "@/lib/constants";
 import ReminderBanner from "@/components/ReminderBanner";
+import MamaCoachAlerts from "@/components/MamaCoachAlerts";
 import { useTheme } from "next-themes";
 
 const LandingPage = dynamic(() => import("@/components/LandingPage"), {
@@ -266,6 +267,9 @@ export default function DashboardPage() {
           </button>
         </div>
       </motion.div>
+
+      {/* MamaCoach signaux faibles */}
+      <MamaCoachAlerts />
 
       {/* Smart Reminders */}
       <ReminderBanner />
