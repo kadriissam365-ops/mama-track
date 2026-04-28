@@ -21,6 +21,10 @@ const DataExport = dynamic(() => import("@/components/DataExport"), {
   ssr: false,
   loading: () => <div className="space-y-3"><Skeleton className="h-48 w-full rounded-3xl" /><Skeleton className="h-32 w-full rounded-3xl" /></div>,
 });
+const CarnetMaternite = dynamic(() => import("@/components/CarnetMaternite"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-12 w-full rounded-xl" />,
+});
 import { Settings, User, Bell, LogOut, Calendar, Baby, Loader2, Lock, Eye, EyeOff, Sun, Moon, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
@@ -348,6 +352,21 @@ export default function SettingsPage() {
 
           {/* Apple Health Sync */}
           <AppleHealthSync />
+
+          {/* Carnet de maternité — French printable booklet for sage-femme/OB-GYN */}
+          <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-3xl p-5 shadow-sm border border-purple-200 dark:border-purple-800/40 space-y-3">
+            <div>
+              <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
+                <span aria-hidden>📋</span>
+                Carnet de maternité
+              </h3>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                Document PDF imprimable au format français : suivi mensuel, examens, sérologies, courbes, plan de naissance et coordonnées.
+                À présenter à votre sage-femme ou gynécologue pour signature.
+              </p>
+            </div>
+            <CarnetMaternite />
+          </div>
 
           {/* GDPR Data Export & Account Deletion */}
           <DataExport />
