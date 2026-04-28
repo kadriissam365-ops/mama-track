@@ -9,6 +9,8 @@ import { fr } from "date-fns/locale";
 import { Plus, Calendar, Check, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { notifyPartner } from "@/lib/partner-notify-client";
+import Paywall from "@/components/Paywall";
+import ScanEchographie from "@/components/ScanEchographie";
 
 // Extrait la semaine SA cible depuis un libellé type "11-13 SA", "36 SA",
 // "24-28 SA" ou "Avant 10 SA". Renvoie la médiane arrondie pour les plages,
@@ -135,6 +137,11 @@ export default function AgendaPage() {
           Ajouter
         </button>
       </div>
+
+      {/* Scan échographie — Premium */}
+      <Paywall feature="Analyse d'échographie">
+        <ScanEchographie />
+      </Paywall>
 
       {/* Formulaire */}
       <AnimatePresence>

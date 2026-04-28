@@ -7,6 +7,8 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useStore, type Medication } from "@/lib/store";
+import Paywall from "@/components/Paywall";
+import ScanOrdonnance from "@/components/ScanOrdonnance";
 
 const PRESET_MEDS = [
   { name: "Acide folique", dosage: "400 µg", emoji: "💊", desc: "Prévention anomalies du tube neural" },
@@ -123,6 +125,11 @@ export default function MedicamentsPage() {
           <Plus className="w-5 h-5" />
         </button>
       </div>
+
+      {/* Scan ordonnance — Premium */}
+      <Paywall feature="Scan d'ordonnance">
+        <ScanOrdonnance />
+      </Paywall>
 
       {/* Today's progress */}
       {totalCount > 0 && (

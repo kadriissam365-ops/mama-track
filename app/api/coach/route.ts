@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import Anthropic from "@anthropic-ai/sdk";
 import { createServerClientFromCookies } from "@/lib/supabase";
 import { getCurrentWeek, getWeekData } from "@/lib/pregnancy-data";
+import { streamChat, isAiConfigured, type ChatMessage } from "@/lib/ai-providers";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MODEL = "claude-haiku-4-5-20251001";
 const MAX_HISTORY = 14;
 
 type ChatRole = "user" | "assistant";
@@ -268,47 +267,8 @@ function computeAlerts(ctx: ContextData): AlertItem[] {
   return alerts;
 }
 
-function streamFromAnthropic(client: Anthropic, system: { type: "text"; text: string; cache_control?: { type: "ephemeral" } }[], userPayload: string, history: IncomingMessage[]): ReadableStream<Uint8Array> {
-  const encoder = new TextEncoder();
-  const messages: { role: "user" | "assistant"; content: string }[] = [];
-  for (const m of history) {
-    if (m.role === "user" || m.role === "assistant") {
-      const text = (m.content ?? "").toString().slice(0, 4000);
-      if (text.trim()) messages.push({ role: m.role, content: text });
-    }
-  }
-  if (userPayload) messages.push({ role: "user", content: userPayload });
-  if (messages.length === 0 || messages[messages.length - 1].role !== "user") {
-    messages.push({ role: "user", content: "Bonjour" });
-  }
-
-  return new ReadableStream<Uint8Array>({
-    async start(controller) {
-      try {
-        const stream = client.messages.stream({
-          model: MODEL,
-          max_tokens: 800,
-          system,
-          messages,
-        });
-        for await (const event of stream) {
-          if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-            controller.enqueue(encoder.encode(event.delta.text));
-          }
-        }
-        await stream.finalMessage();
-        controller.close();
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "erreur inconnue";
-        controller.enqueue(encoder.encode(`\n\n[Désolée, je ne peux pas répondre maintenant — ${message}]`));
-        controller.close();
-      }
-    },
-  });
-}
-
 export async function POST(req: Request) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!isAiConfigured()) {
     return NextResponse.json({ error: "Service IA non configuré" }, { status: 503 });
   }
 
@@ -333,34 +293,27 @@ export async function POST(req: Request) {
     return NextResponse.json({ alerts });
   }
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const contextText = buildContextBlock(ctx);
-
-  const system = [
-    { type: "text" as const, text: SYSTEM_PERSONA, cache_control: { type: "ephemeral" as const } },
-    { type: "text" as const, text: `Contexte personnel actuel :\n\n${contextText}` },
+  const systemBlocks = [
+    { text: SYSTEM_PERSONA, cache: true },
+    { text: `Contexte personnel actuel :\n\n${contextText}` },
   ];
+
+  const headers = {
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store, no-transform",
+    "X-Accel-Buffering": "no",
+  };
 
   if (body.action === "weekly_tip") {
     const weekLabel = ctx.weekSA !== null ? `${ctx.weekSA} SA` : "ce stade de grossesse";
     const userPayload = `Donne-moi le tip de la semaine pour ${weekLabel}, en exploitant si possible mes derniers relevés ci-dessus. Format : 1 phrase d'accroche chaleureuse, puis 2 ou 3 conseils concrets pour cette semaine. Garde un ton sage-femme.`;
-    const stream = streamFromAnthropic(client, system, userPayload, []);
-    return new Response(stream, {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-        "Cache-Control": "no-store, no-transform",
-        "X-Accel-Buffering": "no",
-      },
-    });
+    return new Response(streamChat({ systemBlocks, history: [], userMessage: userPayload }), { headers });
   }
 
-  const messages = Array.isArray(body.messages) ? body.messages : [];
-  const stream = streamFromAnthropic(client, system, "", messages);
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "no-store, no-transform",
-      "X-Accel-Buffering": "no",
-    },
-  });
+  const history: ChatMessage[] = (Array.isArray(body.messages) ? body.messages : []).map((m) => ({
+    role: m.role,
+    content: m.content,
+  }));
+  return new Response(streamChat({ systemBlocks, history }), { headers });
 }
