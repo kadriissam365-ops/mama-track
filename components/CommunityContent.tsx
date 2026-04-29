@@ -4,15 +4,25 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
-import { getCurrentWeek, getWeekData } from "@/lib/pregnancy-data";
+import {
+  getCurrentWeek,
+  getWeekData,
+  trimesterFromWeek,
+} from "@/lib/pregnancy-data";
 import {
   fetchPosts,
   createPost,
   toggleReaction,
   getUserReactions,
   reportPost,
+  cohortFromDueDate,
+  cohortLabel,
+  cohortShortLabel,
+  countCohortMembers,
   type CommunityPost,
+  type Trimester,
 } from "@/lib/community-api";
+import { createClient } from "@/lib/supabase";
 import {
   MessageCircle,
   Plus,
@@ -24,6 +34,7 @@ import {
   RefreshCw,
   AlertCircle,
 } from "lucide-react";
+import CommunityReportModal from "./CommunityReportModal";
 
 const ADJECTIFS = [
   "Rayonnante",
@@ -86,6 +97,13 @@ export default function CommunityContent() {
   const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [tab, setTab] = useState<"week" | "all">("all");
   const [filterType, setFilterType] = useState<PostType | null>(null);
+  const [myCohort, setMyCohort] = useState<string | null>(null);
+  const [cohortScope, setCohortScope] = useState<"mine" | "all">("all");
+  const [trimesterFilter, setTrimesterFilter] = useState<Trimester | null>(null);
+  const [cohortStat, setCohortStat] = useState<{
+    kind: "members" | "posts";
+    count: number;
+  } | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState<string | null>(null);
   const [reportReason, setReportReason] = useState("");
@@ -106,6 +124,58 @@ export default function CommunityContent() {
   // Track reported post IDs in this session to give user feedback
   const reportedPostIds = useRef<Set<string>>(new Set());
 
+  // Load DPA from the user's profile to derive their cohort.
+  useEffect(() => {
+    let cancelled = false;
+    async function loadCohort() {
+      // Prefer the store value if available (already kept in sync from Supabase).
+      let dpa: string | null = dueDate ?? null;
+      if (!dpa && user) {
+        try {
+          const supabase = createClient();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const { data } = await (supabase as any)
+            .from("profiles")
+            .select("due_date")
+            .eq("id", user.id)
+            .maybeSingle();
+          dpa = (data?.due_date as string | null | undefined) ?? null;
+        } catch {
+          dpa = null;
+        }
+      }
+      if (cancelled) return;
+      const cohort = cohortFromDueDate(dpa);
+      setMyCohort(cohort);
+      // Default to "Ma cohorte" view when the user has a cohort.
+      if (cohort) setCohortScope("mine");
+    }
+    loadCohort();
+    return () => {
+      cancelled = true;
+    };
+  }, [user, dueDate]);
+
+  // Refresh cohort stats whenever the active cohort changes.
+  useEffect(() => {
+    let cancelled = false;
+    const target = cohortScope === "mine" ? myCohort : null;
+    if (!target) {
+      setCohortStat(null);
+      return;
+    }
+    countCohortMembers(target)
+      .then((stat) => {
+        if (!cancelled) setCohortStat(stat);
+      })
+      .catch(() => {
+        if (!cancelled) setCohortStat(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [cohortScope, myCohort, posts.length]);
+
   const loadPosts = useCallback(
     async (pageNum: number, append = false) => {
       if (append) {
@@ -116,10 +186,14 @@ export default function CommunityContent() {
       setError(null);
 
       try {
+        const cohortFilter =
+          cohortScope === "mine" && myCohort ? myCohort : null;
         const result = await fetchPosts({
           week: tab === "week" ? currentWeek : undefined,
           type: filterType,
           page: pageNum,
+          cohort: cohortFilter,
+          trimester: trimesterFilter,
         });
 
         const dbPosts = result.posts;
@@ -151,7 +225,7 @@ export default function CommunityContent() {
         setRefreshing(false);
       }
     },
-    [tab, filterType, currentWeek, user]
+    [tab, filterType, currentWeek, user, cohortScope, myCohort, trimesterFilter]
   );
 
   useEffect(() => {
@@ -176,6 +250,7 @@ export default function CommunityContent() {
         type: newType,
         content: newContent.trim(),
         week: currentWeek,
+        cohort: myCohort,
       });
       setPosts((prev) => [post, ...prev]);
       setNewContent("");
@@ -190,6 +265,7 @@ export default function CommunityContent() {
         type: newType,
         content: newContent.trim(),
         week: currentWeek,
+        cohort: myCohort,
         created_at: new Date().toISOString(),
         reactions: { "❤️": 0, "🤗": 0, "💪": 0, "😂": 0 },
       };
@@ -284,8 +360,24 @@ export default function CommunityContent() {
   const filteredPosts = posts.filter((p) => {
     if (tab === "week" && p.week !== currentWeek) return false;
     if (filterType && p.type !== filterType) return false;
+    if (cohortScope === "mine" && myCohort && p.cohort !== myCohort) return false;
+    if (trimesterFilter && trimesterFromWeek(p.week) !== trimesterFilter)
+      return false;
     return true;
   });
+
+  const cohortHeaderTitle = myCohort ? cohortLabel(myCohort) : "Cohorte non définie";
+  const cohortHeaderSubtitle = !myCohort
+    ? "Renseigne ta DPA dans tes réglages pour rejoindre une cohorte"
+    : cohortStat
+    ? `${cohortStat.count} ${cohortStat.kind === "members" ? "maman" : "publication"}${cohortStat.count > 1 ? "s" : ""} dans ta cohorte`
+    : "Mamans qui accouchent le même mois que toi";
+
+  const TRIMESTERS: { value: Trimester; label: string }[] = [
+    { value: 1, label: "T1 (1-13 SA)" },
+    { value: 2, label: "T2 (14-27 SA)" },
+    { value: 3, label: "T3 (28+ SA)" },
+  ];
 
   const myPseudo = user
     ? getAnonymousName(user.id, currentWeek)
@@ -348,6 +440,62 @@ export default function CommunityContent() {
           </span>
         </div>
       )}
+
+      {/* Cohort header */}
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-2xl p-4 border border-purple-100 dark:border-purple-900/30 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-2xl bg-white/70 dark:bg-gray-900/40 flex items-center justify-center text-xl">
+          🍼
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 truncate">
+            {cohortHeaderTitle}
+          </p>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+            {cohortHeaderSubtitle}
+          </p>
+        </div>
+      </div>
+
+      {/* Cohort scope toggle */}
+      <div className="flex gap-2">
+        {(["mine", "all"] as const).map((scope) => {
+          const active = cohortScope === scope;
+          const disabled = scope === "mine" && !myCohort;
+          return (
+            <button
+              key={scope}
+              onClick={() => setCohortScope(scope)}
+              disabled={disabled}
+              className={`flex-1 px-3 py-2 rounded-xl text-xs font-semibold transition-colors border ${active ? "bg-purple-400 text-white border-purple-400" : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700"} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+              title={disabled ? "Renseigne ta DPA pour rejoindre une cohorte" : undefined}
+            >
+              {scope === "mine" ? "Ma cohorte" : "Toutes"}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Trimester chips */}
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        {TRIMESTERS.map((t) => {
+          const active = trimesterFilter === t.value;
+          return (
+            <button
+              key={t.value}
+              onClick={() => setTrimesterFilter(active ? null : t.value)}
+              className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${active ? "bg-purple-400 text-white border-purple-400" : "bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700"}`}
+            >
+              {t.label}
+            </button>
+          );
+        })}
+        <button
+          onClick={() => setTrimesterFilter(null)}
+          className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${trimesterFilter === null ? "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700" : "bg-white dark:bg-gray-900 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-gray-700"}`}
+        >
+          Tous
+        </button>
+      </div>
 
       {/* Stats banner */}
       <div className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30 rounded-2xl p-4 flex items-center justify-around border border-pink-100 dark:border-pink-900/30">
@@ -475,6 +623,14 @@ export default function CommunityContent() {
                   <span className="text-[10px] text-gray-400 dark:text-gray-500">
                     S{post.week}
                   </span>
+                  {post.cohort && (
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-300 border border-purple-100 dark:border-purple-900/30"
+                      title={cohortLabel(post.cohort)}
+                    >
+                      🍼 {cohortShortLabel(post.cohort)}
+                    </span>
+                  )}
                   <span className="text-[10px] text-gray-400 dark:text-gray-500">
                     {timeAgo(post.created_at)}
                   </span>
@@ -622,93 +778,14 @@ export default function CommunityContent() {
       </AnimatePresence>
 
       {/* Report modal */}
-      <AnimatePresence>
-        {showReportModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) closeReportModal();
-            }}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-sm bg-white dark:bg-[#1a1a2e] rounded-3xl p-6 space-y-4"
-            >
-              {reportSubmitted ? (
-                <>
-                  <div className="text-center space-y-3 py-4">
-                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto">
-                      <Flag className="w-5 h-5 text-green-600" />
-                    </div>
-                    <h3 className="font-bold text-[#3d2b2b] dark:text-gray-100">
-                      Merci pour votre signalement
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Notre equipe examinera ce post dans les plus brefs delais.
-                    </p>
-                  </div>
-                  <button
-                    onClick={closeReportModal}
-                    className="w-full py-2.5 rounded-xl text-sm font-medium bg-pink-400 text-white"
-                  >
-                    Fermer
-                  </button>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center gap-2">
-                    <Flag className="w-5 h-5 text-red-400" />
-                    <h3 className="font-bold text-[#3d2b2b] dark:text-gray-100">
-                      Signaler ce post
-                    </h3>
-                  </div>
-                  <div className="space-y-2">
-                    {[
-                      "Contenu inapproprie",
-                      "Spam",
-                      "Information medicale dangereuse",
-                      "Harcelement",
-                      "Autre",
-                    ].map((reason) => (
-                      <button
-                        key={reason}
-                        onClick={() => setReportReason(reason)}
-                        className={`w-full text-left px-4 py-2.5 rounded-xl text-sm border transition-colors ${
-                          reportReason === reason
-                            ? "border-red-400 bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300"
-                            : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800"
-                        }`}
-                      >
-                        {reason}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={closeReportModal}
-                      className="flex-1 py-2.5 rounded-xl text-sm font-medium text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
-                    >
-                      Annuler
-                    </button>
-                    <button
-                      onClick={handleReport}
-                      disabled={!reportReason}
-                      className="flex-1 py-2.5 rounded-xl text-sm font-medium bg-red-400 text-white disabled:opacity-50"
-                    >
-                      Signaler
-                    </button>
-                  </div>
-                </>
-              )}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <CommunityReportModal
+        open={!!showReportModal}
+        reportReason={reportReason}
+        reportSubmitted={reportSubmitted}
+        setReportReason={setReportReason}
+        onClose={closeReportModal}
+        onSubmit={handleReport}
+      />
     </div>
   );
 }
