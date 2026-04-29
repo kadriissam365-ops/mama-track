@@ -24,7 +24,9 @@ export interface ContextData {
   meds: { name: string; dosage: string; frequency: string; active: boolean }[];
 }
 
-function formatDate(d: string | undefined | null): string {
+export const MAX_HISTORY_PUBLIC = 14;
+
+export function formatDate(d: string | undefined | null): string {
   if (!d) return "?";
   return d.length >= 10 ? d.slice(0, 10) : d;
 }
