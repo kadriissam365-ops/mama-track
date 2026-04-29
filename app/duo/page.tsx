@@ -5,15 +5,17 @@ import { m as motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/lib/toast";
 import {
-  createInvitation,
   getPendingInvitations,
   getActivePartners,
+  getPartnerAccess,
   cancelInvitation,
   revokeAccess,
   type DuoInvitation,
   type DuoAccess,
 } from "@/lib/duo-api";
 import { createClient } from "@/lib/supabase";
+import Paywall from "@/components/Paywall";
+import Link from "next/link";
 import {
   Users,
   Mail,
@@ -282,6 +284,7 @@ export default function DuoPage() {
   const [loading, setLoading] = useState(true);
   const [invitations, setInvitations] = useState<DuoInvitation[]>([]);
   const [partners, setPartners] = useState<DuoAccess[]>([]);
+  const [linkedMamas, setLinkedMamas] = useState<DuoAccess[]>([]);
   
   const [supportMessages, setSupportMessages] = useState<DuoMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -327,12 +330,14 @@ export default function DuoPage() {
     setLoading(true);
     
     try {
-      const [invs, parts] = await Promise.all([
+      const [invs, parts, linked] = await Promise.all([
         getPendingInvitations(user.id),
         getActivePartners(user.id),
+        getPartnerAccess(user.id),
       ]);
       setInvitations(invs);
       setPartners(parts);
+      setLinkedMamas(linked);
     } catch (error) {
       console.error("Error loading duo data:", error);
       toast.error("Erreur de chargement");
@@ -343,26 +348,49 @@ export default function DuoPage() {
 
   const handleSendInvitation = async () => {
     if (!user || !email.trim()) return;
-    
+
     setSending(true);
     try {
-      const result = await createInvitation(user.id, email.trim(), role);
-      
-      if (result.error) {
-        toast.error(result.error);
+      const res = await fetch("/api/duo/invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), role }),
+      });
+
+      if (res.status === 402) {
+        toast.error("Le Mode Duo est réservé aux membres Premium.");
+        router.push("/plus");
+        return;
+      }
+
+      const data = await res.json().catch(() => ({} as { error?: string }));
+      if (!res.ok) {
+        toast.error(data?.error || "Erreur lors de l'envoi");
+        return;
+      }
+
+      const emailSent = Boolean(data?.emailSent);
+      const shareUrl: string | undefined = data?.shareUrl;
+
+      setEmail("");
+      setShowForm(false);
+
+      if (emailSent) {
+        toast.success(`Invitation envoyée à ${email.trim()} 📧`);
       } else {
         toast.success("Invitation créée !");
-        setEmail("");
-        setShowForm(false);
-        
-        if (result.shareUrl) {
-          setCopiedUrl(result.shareUrl);
-          await navigator.clipboard.writeText(result.shareUrl);
-          toast.info("Lien copié dans le presse-papier !");
+        if (shareUrl) {
+          setCopiedUrl(shareUrl);
+          try {
+            await navigator.clipboard.writeText(shareUrl);
+            toast.info("Lien copié dans le presse-papier !");
+          } catch {
+            toast.info("Lien d'invitation prêt à être partagé.");
+          }
         }
-        
-        await loadData();
       }
+
+      await loadData();
     } catch {
       toast.error("Erreur lors de l'envoi");
     } finally {
@@ -446,7 +474,8 @@ export default function DuoPage() {
         </p>
       </div>
 
-      {/* Invitation Form */}
+      {/* Invitation Form (Premium) */}
+      <Paywall feature="Inviter un proche au Mode Duo" compact>
       <AnimatePresence>
         {showForm && (
           <motion.div
@@ -515,6 +544,44 @@ export default function DuoPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      </Paywall>
+
+      {/* Linked mamas (when current user is a partner of someone else) */}
+      {linkedMamas.length > 0 && (
+        <div>
+          <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+            Grossesses suivies ({linkedMamas.length})
+          </h2>
+          <div className="space-y-2">
+            {linkedMamas.map((m) => {
+              const { label, icon: Icon, color } = ROLE_LABELS[m.role as Role] || ROLE_LABELS.famille;
+              const name = m.mamaProfile?.mamaName || m.mamaProfile?.babyName || "Grossesse partagée";
+              return (
+                <div
+                  key={m.id}
+                  className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className={`w-8 h-8 bg-${color}-100 rounded-full flex items-center justify-center`}>
+                      <Icon className={`w-4 h-4 text-${color}-500`} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{name}</p>
+                      <p className="text-xs text-purple-500 dark:text-purple-400">Rôle : {label}</p>
+                    </div>
+                  </div>
+                  <Link
+                    href={`/partner/${m.mamaId}`}
+                    className="text-xs px-3 py-1.5 rounded-full bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-300 transition-colors"
+                  >
+                    Voir le dashboard
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Pending Invitations */}
       {invitations.length > 0 && (
