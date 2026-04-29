@@ -127,7 +127,7 @@ export default function MedicamentsPage() {
       </div>
 
       {/* Scan ordonnance — Premium */}
-      <Paywall feature="Scan d'ordonnance">
+      <Paywall feature="Scanner une ordonnance" compact>
         <ScanOrdonnance />
       </Paywall>
 

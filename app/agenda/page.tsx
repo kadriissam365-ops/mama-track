@@ -139,7 +139,7 @@ export default function AgendaPage() {
       </div>
 
       {/* Scan échographie — Premium */}
-      <Paywall feature="Analyse d'échographie">
+      <Paywall feature="Analyser une échographie" compact>
         <ScanEchographie />
       </Paywall>
 

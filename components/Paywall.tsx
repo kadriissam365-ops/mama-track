@@ -7,12 +7,29 @@ import { useIsPremium } from "@/lib/use-premium";
 interface PaywallProps {
   feature: string;
   children: React.ReactNode;
+  compact?: boolean;
 }
 
-export default function Paywall({ feature, children }: PaywallProps) {
+export default function Paywall({ feature, children, compact = false }: PaywallProps) {
   const { isPremium, loading } = useIsPremium();
 
   if (loading || isPremium) return <>{children}</>;
+
+  if (compact) {
+    return (
+      <Link
+        href="/plus"
+        className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-dashed border-purple-300 dark:border-purple-700/50 bg-gradient-to-r from-amber-50 via-pink-50 to-purple-50 dark:from-amber-950/20 dark:via-pink-950/20 dark:to-purple-950/20 text-purple-700 dark:text-purple-300 text-sm font-semibold hover:opacity-90 transition-opacity"
+      >
+        <Lock className="w-4 h-4" />
+        <span>{feature}</span>
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r from-amber-200 via-pink-200 to-purple-200 text-[#3d2b2b]">
+          <Sparkles className="w-3 h-3" />
+          Premium
+        </span>
+      </Link>
+    );
+  }
 
   return (
     <div className="relative">
