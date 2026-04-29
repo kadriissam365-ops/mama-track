@@ -9,6 +9,7 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import { useStore, type Medication } from "@/lib/store";
 import Paywall from "@/components/Paywall";
 import ScanOrdonnance from "@/components/ScanOrdonnance";
+import ScanAnalysesSang from "@/components/ScanAnalysesSang";
 
 const PRESET_MEDS = [
   { name: "Acide folique", dosage: "400 µg", emoji: "💊", desc: "Prévention anomalies du tube neural" },
@@ -129,6 +130,11 @@ export default function MedicamentsPage() {
       {/* Scan ordonnance — Premium */}
       <Paywall feature="Scanner une ordonnance" compact>
         <ScanOrdonnance />
+      </Paywall>
+
+      {/* Scan analyses sanguines — Premium */}
+      <Paywall feature="Scanner mes analyses sanguines" compact>
+        <ScanAnalysesSang />
       </Paywall>
 
       {/* Today's progress */}
