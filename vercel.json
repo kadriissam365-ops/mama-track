@@ -8,6 +8,14 @@
     {
       "path": "/api/partner-notify/weekly-cron",
       "schedule": "0 9 * * 1"
+    },
+    {
+      "path": "/api/cron/daily-signal-check",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/hourly-med-reminders",
+      "schedule": "*/30 * * * *"
     }
   ]
 }
