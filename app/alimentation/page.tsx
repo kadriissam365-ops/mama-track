@@ -2,9 +2,25 @@
 
 import { useState, useMemo } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
-import { Search, ShieldCheck, ShieldAlert, ShieldX, Info } from "lucide-react";
+import { Search, ShieldCheck, ShieldAlert, ShieldX, Info, BookOpen, ChefHat } from "lucide-react";
+import dynamic from "next/dynamic";
+import Paywall from "@/components/Paywall";
+import { Skeleton } from "@/components/Skeleton";
+
+const MealPlanWeek = dynamic(() => import("@/components/MealPlanWeek"), {
+  ssr: false,
+  loading: () => (
+    <div className="space-y-3">
+      <Skeleton className="h-20 w-full rounded-3xl" />
+      <Skeleton className="h-12 w-full rounded-2xl" />
+      <Skeleton className="h-48 w-full rounded-3xl" />
+    </div>
+  ),
+});
 
 type Safety = "ok" | "caution" | "avoid";
+
+type MainTab = "database" | "plan";
 
 interface FoodItem {
   name: string;
@@ -104,6 +120,7 @@ const SAFETY_CONFIG: Record<Safety, { icon: typeof ShieldCheck; label: string; b
 };
 
 export default function AlimentationPage() {
+  const [mainTab, setMainTab] = useState<MainTab>("database");
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<Safety | "all">("all");
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
@@ -140,9 +157,45 @@ export default function AlimentationPage() {
         <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
           🥗 Guide alimentaire
         </h1>
-        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">Puis-je manger... ? Recherchez un aliment</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+          {mainTab === "database" ? "Puis-je manger... ? Recherchez un aliment" : "Plan repas hebdomadaire personnalisé selon ton trimestre"}
+        </p>
       </div>
 
+      {/* Main tabs : Aliments autorisés vs Plan repas Premium */}
+      <div className="flex gap-1 bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-1">
+        <button
+          onClick={() => setMainTab("database")}
+          className={`flex-1 py-2.5 text-sm font-medium rounded-xl transition-all flex items-center justify-center gap-2 ${
+            mainTab === "database"
+              ? "bg-white dark:bg-gray-900 text-pink-600 shadow-sm"
+              : "text-gray-500 dark:text-gray-400 hover:text-pink-400"
+          }`}
+        >
+          <BookOpen className="w-4 h-4" />
+          Aliments autorisés
+        </button>
+        <button
+          onClick={() => setMainTab("plan")}
+          className={`flex-1 py-2.5 text-sm font-medium rounded-xl transition-all flex items-center justify-center gap-2 ${
+            mainTab === "plan"
+              ? "bg-white dark:bg-gray-900 text-pink-600 shadow-sm"
+              : "text-gray-500 dark:text-gray-400 hover:text-pink-400"
+          }`}
+        >
+          <ChefHat className="w-4 h-4" />
+          Plan repas Premium
+        </button>
+      </div>
+
+      {mainTab === "plan" && (
+        <Paywall feature="Plan repas personnalisé" compact>
+          <MealPlanWeek />
+        </Paywall>
+      )}
+
+      {mainTab === "database" && (
+      <>
       {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
@@ -277,6 +330,8 @@ export default function AlimentationPage() {
           </div>
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 }
