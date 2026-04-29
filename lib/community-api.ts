@@ -7,6 +7,7 @@ export interface CommunityPost {
   type: "question" | "vecu" | "conseil" | "soutien";
   content: string;
   week: number;
+  cohort?: string | null;
   created_at: string;
   reactions: Record<string, number>;
   reported?: boolean;
@@ -18,14 +19,76 @@ export interface PostReaction {
   emoji: string;
 }
 
+export type Trimester = 1 | 2 | 3;
+
+const MOIS_FR = [
+  "janvier",
+  "février",
+  "mars",
+  "avril",
+  "mai",
+  "juin",
+  "juillet",
+  "août",
+  "septembre",
+  "octobre",
+  "novembre",
+  "décembre",
+];
+
+/**
+ * Derive a cohort key (YYYY-MM) from a DPA (due date) string.
+ * Returns null if the date is missing or invalid.
+ */
+export function cohortFromDueDate(dueDate: string | null | undefined): string | null {
+  if (!dueDate) return null;
+  const d = new Date(dueDate);
+  if (Number.isNaN(d.getTime())) return null;
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+  return `${year}-${month}`;
+}
+
+/**
+ * Convert a cohort key (YYYY-MM) to a French human label, e.g. "Bébés août 2026".
+ */
+export function cohortLabel(cohort: string): string {
+  const match = /^(\d{4})-(\d{2})$/.exec(cohort);
+  if (!match) return `Bébés ${cohort}`;
+  const year = Number(match[1]);
+  const monthIdx = Number(match[2]) - 1;
+  const monthName = MOIS_FR[monthIdx] ?? cohort;
+  return `Bébés ${monthName} ${year}`;
+}
+
+/**
+ * Short cohort chip label, e.g. "août 2026" — used for per-post badges.
+ */
+export function cohortShortLabel(cohort: string): string {
+  const match = /^(\d{4})-(\d{2})$/.exec(cohort);
+  if (!match) return cohort;
+  const year = Number(match[1]);
+  const monthIdx = Number(match[2]) - 1;
+  const monthName = MOIS_FR[monthIdx] ?? cohort;
+  return `${monthName} ${year}`;
+}
+
+function trimesterRange(trimester: Trimester): [number, number] {
+  if (trimester === 1) return [1, 13];
+  if (trimester === 2) return [14, 27];
+  return [28, 42];
+}
+
 export async function fetchPosts(options: {
   week?: number;
   type?: string | null;
   page?: number;
   limit?: number;
+  cohort?: string | null;
+  trimester?: Trimester | null;
 }): Promise<{ posts: CommunityPost[]; hasMore: boolean }> {
   const supabase = createClient();
-  const { week, type, page = 0, limit = 20 } = options;
+  const { week, type, page = 0, limit = 20, cohort, trimester } = options;
   const from = page * limit;
   const to = from + limit;
 
@@ -39,6 +102,11 @@ export async function fetchPosts(options: {
 
   if (week) query = query.eq("week", week);
   if (type) query = query.eq("type", type);
+  if (cohort) query = query.eq("cohort", cohort);
+  if (trimester) {
+    const [min, max] = trimesterRange(trimester);
+    query = query.gte("week", min).lte("week", max);
+  }
 
   const { data, error } = await query;
   if (error) throw error;
@@ -55,6 +123,7 @@ export async function createPost(post: {
   type: string;
   content: string;
   week: number;
+  cohort: string | null;
 }): Promise<CommunityPost> {
   const supabase = createClient();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -168,4 +237,33 @@ export async function reportPost(
     user_id: userId,
     reason,
   });
+}
+
+/**
+ * Count distinct authors in a cohort (best effort — falls back to post count if RLS prevents distinct query).
+ */
+export async function countCohortMembers(
+  cohort: string
+): Promise<{ kind: "members" | "posts"; count: number }> {
+  const supabase = createClient();
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any)
+      .from("community_posts")
+      .select("author_id")
+      .eq("cohort", cohort)
+      .eq("hidden", false);
+    if (error) throw error;
+    const rows = (data ?? []) as { author_id: string }[];
+    const unique = new Set(rows.map((r) => r.author_id));
+    return { kind: "members", count: unique.size };
+  } catch {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { count } = await (supabase as any)
+      .from("community_posts")
+      .select("id", { count: "exact", head: true })
+      .eq("cohort", cohort)
+      .eq("hidden", false);
+    return { kind: "posts", count: count ?? 0 };
+  }
 }

@@ -733,6 +733,16 @@ export function getCurrentWeek(dueDate: Date): number {
   return Math.max(1, Math.min(42, currentWeek));
 }
 
+/**
+ * Map a pregnancy week (SA) to a trimester.
+ * T1: 1-13 SA · T2: 14-27 SA · T3: 28+ SA.
+ */
+export function trimesterFromWeek(week: number): 1 | 2 | 3 {
+  if (week <= 13) return 1;
+  if (week <= 27) return 2;
+  return 3;
+}
+
 export function getDaysRemaining(dueDate: Date): number {
   const now = new Date();
   const diffMs = dueDate.getTime() - now.getTime();
