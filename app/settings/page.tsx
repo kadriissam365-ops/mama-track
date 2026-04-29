@@ -25,6 +25,10 @@ const CarnetMaternite = dynamic(() => import("@/components/CarnetMaternite"), {
   ssr: false,
   loading: () => <Skeleton className="h-12 w-full rounded-xl" />,
 });
+const MealPreferences = dynamic(() => import("@/components/MealPreferences"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-48 w-full rounded-3xl" />,
+});
 import { Settings, User, Bell, LogOut, Calendar, Baby, Loader2, Lock, Eye, EyeOff, Sun, Moon, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
@@ -349,6 +353,9 @@ export default function SettingsPage() {
               </button>
             </div>
           )}
+
+          {/* Préférences alimentaires (utilisées par le plan repas IA) */}
+          <MealPreferences />
 
           {/* Apple Health Sync */}
           <AppleHealthSync />
