@@ -21,6 +21,9 @@ import { initializeNotifications } from "@/lib/notifications";
 import { WATER_GOAL_ML } from "@/lib/constants";
 import ReminderBanner from "@/components/ReminderBanner";
 import MamaCoachAlerts from "@/components/MamaCoachAlerts";
+import Paywall from "@/components/Paywall";
+import { Skeleton } from "@/components/Skeleton";
+import { useIsPremium } from "@/lib/use-premium";
 import { useTheme } from "next-themes";
 
 const LandingPage = dynamic(() => import("@/components/LandingPage"), {
@@ -40,10 +43,15 @@ const BabyIllustration = dynamic(() => import("@/components/BabyIllustration"), 
   ssr: false,
   loading: () => <div className="flex items-center justify-center py-2"><div className="w-32 h-32 rounded-full bg-pink-50 dark:bg-pink-950/30 animate-pulse" /></div>,
 });
+const DailyStory = dynamic(() => import("@/components/DailyStory"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-32 w-full rounded-3xl" />,
+});
 
 export default function DashboardPage() {
   const store = useStore();
   const { user, isAuthenticated } = useAuth();
+  const { isPremium, loading: premiumLoading } = useIsPremium();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
 
@@ -270,6 +278,17 @@ export default function DashboardPage() {
 
       {/* MamaCoach signaux faibles */}
       <MamaCoachAlerts />
+
+      {/* Story du jour MamaCoach */}
+      {!premiumLoading && (
+        isPremium ? (
+          <DailyStory />
+        ) : (
+          <Paywall feature="Story du jour MamaCoach" compact>
+            <DailyStory />
+          </Paywall>
+        )
+      )}
 
       {/* Smart Reminders */}
       <ReminderBanner />
