@@ -6,6 +6,7 @@ import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
 import {
   getCurrentWeek,
+  getCurrentWeekAndDays,
   getDaysRemaining,
   getProgressPercent,
   getWeekData,
@@ -92,6 +93,8 @@ export default function DashboardPage() {
   const dueDate = store.dueDate ? new Date(store.dueDate) : null;
   const weekSA = dueDate ? getCurrentWeek(dueDate) : 20;
   const week = store.weekMode === "GA" ? Math.max(1, weekSA - 2) : weekSA;
+  const weekDetail = dueDate ? getCurrentWeekAndDays(dueDate) : { weeks: week, days: 0 };
+  const displayDays = weekDetail.days;
   const days = dueDate ? getDaysRemaining(dueDate) : null;
   const progress = dueDate ? getProgressPercent(dueDate) : 50;
   const weekData = getWeekData(weekSA);
@@ -188,6 +191,11 @@ export default function DashboardPage() {
               {week}
               <span className="text-2xl text-pink-400 ml-1">{store.weekMode}</span>
             </h1>
+            {dueDate && (
+              <p className="text-sm font-semibold text-pink-500 dark:text-pink-400 mt-0.5">
+                + {displayDays} jour{displayDays > 1 ? "s" : ""}
+              </p>
+            )}
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               {weekData.fruit}
             </p>

@@ -195,23 +195,37 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
     []
   );
 
-  // Send a test notification
+  // Send a test notification — try push first, fall back to local
   const handleTestNotification = async () => {
     setTestSending(true);
+    let pushOk = false;
     try {
-      await sendPushNotification({
+      pushOk = await sendPushNotification({
         title: "Test MamaTrack",
         body: "Les notifications push fonctionnent correctement !",
         tag: "test",
         url: "/",
       });
     } catch {
-      // Try local fallback
-      if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("Test MamaTrack", {
-          body: "Les notifications fonctionnent correctement !",
-          icon: "/icons/icon-192x192.png",
-        });
+      pushOk = false;
+    }
+    if (!pushOk && "Notification" in window && Notification.permission === "granted") {
+      try {
+        const reg = "serviceWorker" in navigator ? await navigator.serviceWorker.ready : null;
+        if (reg) {
+          await reg.showNotification("Test MamaTrack (local)", {
+            body: "Notification locale OK. Push serveur indisponible — vérifie la connexion ou les crons.",
+            icon: "/icons/icon-192x192.png",
+            tag: "test-local",
+          });
+        } else {
+          new Notification("Test MamaTrack (local)", {
+            body: "Notification locale OK. Push serveur indisponible.",
+            icon: "/icons/icon-192x192.png",
+          });
+        }
+      } catch (err) {
+        console.error("Local notification fallback failed", err);
       }
     }
     setTestSending(false);

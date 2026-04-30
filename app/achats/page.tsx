@@ -183,15 +183,15 @@ export default function AchatsPage() {
         <div className="grid grid-cols-3 gap-3 mb-3">
           <div className="text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">Budget estimé</p>
-            <p className="text-lg font-bold text-gray-700 dark:text-gray-300">{totalEstime}€</p>
+            <p className="text-lg font-bold text-gray-700 dark:text-gray-300">{Math.round(totalEstime)}€</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">Déjà coché</p>
-            <p className="text-lg font-bold text-pink-500 dark:text-pink-400">{totalCoche}€</p>
+            <p className="text-lg font-bold text-pink-500 dark:text-pink-400">{Math.round(totalCoche)}€</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">Restant</p>
-            <p className="text-lg font-bold text-purple-500 dark:text-purple-400">{totalEstime - totalCoche}€</p>
+            <p className="text-lg font-bold text-purple-500 dark:text-purple-400">{Math.round(totalEstime - totalCoche)}€</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -283,7 +283,8 @@ export default function AchatsPage() {
               <div className="flex gap-2">
                 <button
                   onClick={addCustomItem}
-                  className="flex-1 bg-pink-50 dark:bg-pink-500 text-white py-2 rounded-xl text-sm font-medium hover:bg-pink-600 transition-colors"
+                  disabled={!newItem.nom || !newItem.budgetEstime}
+                  className="flex-1 bg-pink-500 dark:bg-pink-500 text-white py-2 rounded-xl text-sm font-medium hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Ajouter
                 </button>

@@ -6,7 +6,7 @@ import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { format, isPast, isToday, isFuture, addWeeks, subWeeks } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Plus, Calendar, Check, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, Calendar, Check, Trash2, ChevronDown, ChevronUp, Pencil } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { notifyPartner } from "@/lib/partner-notify-client";
 import Paywall from "@/components/Paywall";
@@ -74,6 +74,7 @@ export default function AgendaPage() {
   const store = useStore();
   const toast = useToast();
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedExam, setExpandedExam] = useState<1 | 2 | 3 | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -85,15 +86,38 @@ export default function AgendaPage() {
     notes: "",
   });
 
+  const resetForm = () => {
+    setForm({ title: "", date: "", time: "09:00", doctor: "", location: "", notes: "" });
+    setEditingId(null);
+    setShowForm(false);
+  };
+
+  const startEdit = (appt: typeof store.appointments[number]) => {
+    setForm({
+      title: appt.title,
+      date: appt.date,
+      time: appt.time,
+      doctor: appt.doctor ?? "",
+      location: appt.location ?? "",
+      notes: appt.notes ?? "",
+    });
+    setEditingId(appt.id);
+    setShowForm(true);
+  };
+
   const handleSubmit = () => {
     if (!form.title || !form.date) return;
-    store.addAppointment({
-      ...form,
-      done: false,
-    });
-    notifyPartner("appointment", { appointmentTitle: form.title });
-    setForm({ title: "", date: "", time: "09:00", doctor: "", location: "", notes: "" });
-    setShowForm(false);
+    if (editingId) {
+      store.updateAppointment(editingId, { ...form });
+      toast.success("Rendez-vous modifié");
+    } else {
+      store.addAppointment({
+        ...form,
+        done: false,
+      });
+      notifyPartner("appointment", { appointmentTitle: form.title });
+    }
+    resetForm();
   };
 
   // Parse dates as local midnight to avoid UTC off-by-one in non-UTC timezones
@@ -130,7 +154,10 @@ export default function AgendaPage() {
           Agenda
         </h1>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {
+            if (showForm) resetForm();
+            else setShowForm(true);
+          }}
           className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
         >
           <Plus className="w-4 h-4" />
@@ -152,7 +179,7 @@ export default function AgendaPage() {
             exit={{ opacity: 0, height: 0 }}
             className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 overflow-hidden"
           >
-            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-4">Nouveau rendez-vous</h3>
+            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-4">{editingId ? "Modifier le rendez-vous" : "Nouveau rendez-vous"}</h3>
             <div className="space-y-3">
               <input
                 type="text"
@@ -196,13 +223,23 @@ export default function AgendaPage() {
                 rows={2}
                 className="w-full border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 resize-none dark:bg-gray-800 dark:text-white dark:border-gray-600"
               />
-              <button
-                onClick={handleSubmit}
-                disabled={!form.title || !form.date}
-                className="w-full py-3 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
-              >
-                Enregistrer
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSubmit}
+                  disabled={!form.title || !form.date}
+                  className="flex-1 py-3 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+                >
+                  {editingId ? "Mettre à jour" : "Enregistrer"}
+                </button>
+                {editingId && (
+                  <button
+                    onClick={resetForm}
+                    className="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    Annuler
+                  </button>
+                )}
+              </div>
             </div>
           </motion.div>
         )}
@@ -257,6 +294,13 @@ export default function AgendaPage() {
                       aria-label="Marquer comme fait"
                     >
                       <Check className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => startEdit(appt)}
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-500 dark:text-pink-400 hover:bg-pink-200 transition-colors"
+                      aria-label="Modifier le rendez-vous"
+                    >
+                      <Pencil className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setConfirmDelete(appt.id)}
