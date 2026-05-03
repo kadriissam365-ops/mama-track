@@ -35,10 +35,56 @@ import { useRouter } from "next/navigation";
 
 type Role = "papa" | "sagefemme" | "famille";
 
-const ROLE_LABELS: Record<Role, { label: string; icon: React.ElementType; color: string }> = {
-  papa: { label: "Papa", icon: Heart, color: "pink" },
-  sagefemme: { label: "Sage-femme", icon: Stethoscope, color: "purple" },
-  famille: { label: "Famille", icon: Users, color: "green" },
+interface RoleStyle {
+  label: string;
+  icon: React.ElementType;
+  color: string;
+  selectedBorder: string;
+  selectedBg: string;
+  selectedIcon: string;
+  selectedText: string;
+  bubbleBg: string;
+  bubbleIcon: string;
+  bubbleText: string;
+}
+
+const ROLE_LABELS: Record<Role, RoleStyle> = {
+  papa: {
+    label: "Papa",
+    icon: Heart,
+    color: "pink",
+    selectedBorder: "border-pink-400",
+    selectedBg: "bg-pink-50",
+    selectedIcon: "text-pink-500",
+    selectedText: "text-pink-600",
+    bubbleBg: "bg-pink-100",
+    bubbleIcon: "text-pink-500",
+    bubbleText: "text-pink-600",
+  },
+  sagefemme: {
+    label: "Sage-femme",
+    icon: Stethoscope,
+    color: "purple",
+    selectedBorder: "border-purple-400",
+    selectedBg: "bg-purple-50",
+    selectedIcon: "text-purple-500",
+    selectedText: "text-purple-600",
+    bubbleBg: "bg-purple-100",
+    bubbleIcon: "text-purple-500",
+    bubbleText: "text-purple-600",
+  },
+  famille: {
+    label: "Famille",
+    icon: Users,
+    color: "green",
+    selectedBorder: "border-green-400",
+    selectedBg: "bg-green-50",
+    selectedIcon: "text-green-500",
+    selectedText: "text-green-600",
+    bubbleBg: "bg-green-100",
+    bubbleIcon: "text-green-500",
+    bubbleText: "text-green-600",
+  },
 };
 
 interface DuoMessage {
@@ -492,7 +538,7 @@ export default function DuoPage() {
             <label className="text-xs text-gray-500 dark:text-gray-400 block mb-2">Type de partage</label>
             <div className="grid grid-cols-3 gap-2 mb-4">
               {(Object.keys(ROLE_LABELS) as Role[]).map((r) => {
-                const { label, icon: Icon, color } = ROLE_LABELS[r];
+                const { label, icon: Icon, selectedBorder, selectedBg, selectedIcon, selectedText } = ROLE_LABELS[r];
                 const selected = role === r;
                 return (
                   <button
@@ -500,13 +546,12 @@ export default function DuoPage() {
                     onClick={() => setRole(r)}
                     className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all ${
                       selected
-                        ? `border-${color}-400 bg-${color}-50`
+                        ? `${selectedBorder} ${selectedBg}`
                         : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:border-gray-600"
                     }`}
-                    style={selected ? { borderColor: `var(--color-${color}-400)` } : undefined}
                   >
-                    <Icon className={`w-5 h-5 ${selected ? `text-${color}-500` : "text-gray-400 dark:text-gray-500"}`} />
-                    <span className={`text-xs font-medium ${selected ? `text-${color}-600` : "text-gray-500 dark:text-gray-400"}`}>
+                    <Icon className={`w-5 h-5 ${selected ? selectedIcon : "text-gray-400 dark:text-gray-500"}`} />
+                    <span className={`text-xs font-medium ${selected ? selectedText : "text-gray-500 dark:text-gray-400"}`}>
                       {label}
                     </span>
                   </button>
@@ -556,7 +601,7 @@ export default function DuoPage() {
           </h2>
           <div className="space-y-2">
             {linkedMamas.map((m) => {
-              const { label, icon: Icon, color } = ROLE_LABELS[m.role as Role] || ROLE_LABELS.famille;
+              const { label, icon: Icon, bubbleBg, bubbleIcon } = ROLE_LABELS[m.role as Role] || ROLE_LABELS.famille;
               const name = m.mamaProfile?.mamaName || m.mamaProfile?.babyName || "Grossesse partagée";
               return (
                 <div
@@ -564,8 +609,8 @@ export default function DuoPage() {
                   className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30 flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2">
-                    <div className={`w-8 h-8 bg-${color}-100 rounded-full flex items-center justify-center`}>
-                      <Icon className={`w-4 h-4 text-${color}-500`} />
+                    <div className={`w-8 h-8 ${bubbleBg} rounded-full flex items-center justify-center`}>
+                      <Icon className={`w-4 h-4 ${bubbleIcon}`} />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{name}</p>
@@ -593,10 +638,10 @@ export default function DuoPage() {
           </h2>
           <div className="space-y-2">
             {invitations.map((inv) => {
-              const { label, icon: Icon, color } = ROLE_LABELS[inv.role as Role] || ROLE_LABELS.famille;
+              const { label, icon: Icon, bubbleBg, bubbleIcon } = ROLE_LABELS[inv.role as Role] || ROLE_LABELS.famille;
               const inviteUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/invite?token=${inv.token}`;
               const isCopied = copiedUrl === inviteUrl;
-              
+
               return (
                 <motion.div
                   key={inv.id}
@@ -606,8 +651,8 @@ export default function DuoPage() {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <div className={`w-8 h-8 bg-${color}-100 rounded-full flex items-center justify-center`}>
-                        <Icon className={`w-4 h-4 text-${color}-500`} />
+                      <div className={`w-8 h-8 ${bubbleBg} rounded-full flex items-center justify-center`}>
+                        <Icon className={`w-4 h-4 ${bubbleIcon}`} />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{inv.email}</p>
@@ -646,8 +691,8 @@ export default function DuoPage() {
           </h2>
           <div className="space-y-2">
             {partners.map((partner) => {
-              const { label, icon: Icon, color } = ROLE_LABELS[partner.role as Role] || ROLE_LABELS.famille;
-              
+              const { label, icon: Icon, bubbleBg, bubbleIcon } = ROLE_LABELS[partner.role as Role] || ROLE_LABELS.famille;
+
               return (
                 <motion.div
                   key={partner.id}
@@ -657,8 +702,8 @@ export default function DuoPage() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className={`w-8 h-8 bg-${color}-100 rounded-full flex items-center justify-center`}>
-                        <Icon className={`w-4 h-4 text-${color}-500`} />
+                      <div className={`w-8 h-8 ${bubbleBg} rounded-full flex items-center justify-center`}>
+                        <Icon className={`w-4 h-4 ${bubbleIcon}`} />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{label}</p>
