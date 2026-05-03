@@ -1,561 +1,84 @@
-"use client";
-import { useStore } from "@/lib/store";
-import { useAuth } from "@/lib/auth";
-import { createClient } from "@/lib/supabase";
-import { getCurrentWeek, getDaysRemaining, getWeekData, getProgressPercent } from "@/lib/pregnancy-data";
-import { getJournalNotes, getPartnerMoodEntries, type JournalNote, type MoodEntry } from "@/lib/supabase-api";
-import { m as motion } from "framer-motion";
-import {
-  Heart,
-  Calendar,
-  Baby,
-  Smile,
-  Send,
-  CheckCircle2,
-  Activity,
-  BookOpen,
-  ListChecks,
-  Droplets,
-  Loader2,
-  ArrowLeft,
-} from "lucide-react";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { WATER_GOAL_ML } from "@/lib/constants";
-import { useTranslation } from "@/lib/i18n";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { createServerClientFromCookies } from "@/lib/supabase";
 
-// ---------- partner tips (unchanged) ----------
+export const dynamic = "force-dynamic";
 
-const partnerTips: Record<string, string[]> = {
-  early: [
-    "Les nausées sont normales. Proposez-lui des crackers le matin avant qu'elle se lève.",
-    "L'annonce peut attendre — suivez son rythme, pas la pression sociale.",
-    "La fatigue du 1er trimestre est intense. Prenez le relais sur les tâches ménagères.",
-    "Accompagnez-la à la première échographie. C'est un moment magique.",
-  ],
-  mid: [
-    "C'est le bon moment pour préparer la chambre ensemble.",
-    "Les envies alimentaires sont réelles. Ne jugez pas, proposez !",
-    "Posez votre main sur son ventre quand bébé bouge — partagez ce moment.",
-    "Commencez à réfléchir aux prénoms ensemble, c'est un moment fun.",
-  ],
-  late: [
-    "Préparez le sac de maternité ensemble et sachez où est la maternité.",
-    "Restez joignable. Le travail peut commencer à tout moment.",
-    "Massez-lui le dos et les pieds — elle en a besoin.",
-    "Photographiez ces derniers moments à deux, ils sont précieux.",
-  ],
-  final: [
-    "Gardez votre téléphone chargé et votre voiture prête.",
-    "Respirez. Vous êtes un(e) super partenaire. Tout va bien se passer.",
-    "Le jour J : soyez présent(e), tenez-lui la main, encouragez-la.",
-    "Après la naissance : le peau-à-peau est aussi pour vous !",
-  ],
+type Role = "papa" | "sagefemme" | "famille";
+
+const ROLE_LABEL: Record<Role, string> = {
+  papa: "Papa",
+  sagefemme: "Sage-femme",
+  famille: "Famille",
 };
 
-function getTipCategory(week: number): string {
-  if (week < 14) return "early";
-  if (week < 28) return "mid";
-  if (week < 36) return "late";
-  return "final";
-}
+export default async function PartnerIndexPage() {
+  const cookieStore = await cookies();
+  const supabase = createServerClientFromCookies(cookieStore);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/auth/login?next=/partner");
+  }
 
-// ---------- mood entries (loaded via central API) ----------
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rows } = await (supabase.from as any)("duo_access")
+    .select("mama_id, role, profiles!duo_access_mama_id_fkey(mama_name, baby_name, due_date)")
+    .eq("partner_id", user.id);
 
-const ENCOURAGEMENT_MESSAGES = [
-  { emoji: "❤️", text: "Je pense à toi" },
-  { emoji: "💪", text: "Tu gères !" },
-  { emoji: "🤗", text: "Câlin virtuel" },
-  { emoji: "🌟", text: "Tu es incroyable" },
-  { emoji: "☕", text: "Besoin de quelque chose ?" },
-];
+  const linked = (rows ?? []) as Array<{
+    mama_id: string;
+    role: Role;
+    profiles?: { mama_name?: string | null; baby_name?: string | null; due_date?: string | null } | null;
+  }>;
 
-// ---------- main component ----------
+  if (linked.length === 0) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-12 text-center">
+        <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-2">Aucune grossesse suivie</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          Vous n&apos;avez pas encore accepté d&apos;invitation au Mode Duo.
+        </p>
+        <Link href="/" className="text-pink-500 underline text-sm">
+          Retour à l&apos;accueil
+        </Link>
+      </div>
+    );
+  }
 
-export default function PartnerViewPage() {
-  const store = useStore();
-  const { user } = useAuth();
-  const router = useRouter();
-
-  const { t } = useTranslation();
-  const [supportSent, setSupportSent] = useState<string | null>(null);
-  const [journalNotes, setJournalNotes] = useState<JournalNote[]>([]);
-  const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([]);
-  const [dataLoading, setDataLoading] = useState(true);
-  const [dataError, setDataError] = useState<string | null>(null);
-  const [showAllChecklist, setShowAllChecklist] = useState(false);
-
-  // Pregnancy data derived from store
-  const dueDate = store.dueDate ? new Date(store.dueDate) : null;
-  const week = dueDate ? getCurrentWeek(dueDate) : 20;
-  const days = dueDate ? getDaysRemaining(dueDate) : null;
-  const weekData = getWeekData(week);
-  const progress = dueDate ? getProgressPercent(dueDate) : 50;
-
-  const category = getTipCategory(week);
-  const tipKeys: Record<string, string[]> = {
-    early: ["partner.earlyTip1", "partner.earlyTip2", "partner.earlyTip3", "partner.earlyTip4"],
-    mid: ["partner.midTip1", "partner.midTip2", "partner.midTip3", "partner.midTip4"],
-    late: ["partner.lateTip1", "partner.lateTip2", "partner.lateTip3", "partner.lateTip4"],
-    final: ["partner.finalTip1", "partner.finalTip2", "partner.finalTip3", "partner.finalTip4"],
-  };
-  const keys = tipKeys[category];
-  const tipOfDay = t(keys[new Date().getDate() % keys.length]);
-
-  // Today helpers
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const todayWater = store.waterIntake?.[todayStr] ?? 0;
-  const waterPercent = Math.min(100, Math.round((todayWater / WATER_GOAL_ML) * 100));
-
-  const todaySymptoms = store.symptomEntries.filter(
-    (e) => new Date(e.date).toDateString() === new Date().toDateString()
-  );
-
-  const lastKick =
-    store.kickSessions.length > 0
-      ? store.kickSessions[store.kickSessions.length - 1]
-      : null;
-
-  // Appointments: next 3 upcoming
-  const upcomingAppointments = store.appointments
-    .filter((a) => !a.done && new Date(a.date) >= new Date())
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .slice(0, 3);
-
-  // Checklist stats
-  const pendingChecklist = store.checklistItems.filter((c) => !c.done).length;
-  const totalChecklist = store.checklistItems.length;
-  const doneChecklist = totalChecklist - pendingChecklist;
-  const checklistPercent = totalChecklist > 0 ? Math.round((doneChecklist / totalChecklist) * 100) : 0;
-
-  // Checklist by category (for detailed view)
-  const checklistByCategory = store.checklistItems.reduce<Record<string, typeof store.checklistItems>>((acc, item) => {
-    const cat = item.category ?? "Autre";
-    if (!acc[cat]) acc[cat] = [];
-    acc[cat].push(item);
-    return acc;
-  }, {});
-
-  // Recent mood entries (last 7 days)
-  const recentMoods = moodEntries
-    .filter((m) => {
-      const diff = (Date.now() - new Date(m.date).getTime()) / 86400000;
-      return diff <= 7;
-    })
-    .sort((a, b) => b.date.localeCompare(a.date));
-
-  // Load journal notes + mood entries via the central API
-  useEffect(() => {
-    async function loadPartnerData() {
-      setDataLoading(true);
-      setDataError(null);
-      if (!user) {
-        setDataLoading(false);
-        return;
-      }
-      try {
-        const [notes, moods] = await Promise.all([
-          getJournalNotes(user.id),
-          getPartnerMoodEntries(user.id),
-        ]);
-        setJournalNotes(notes.slice(-10).reverse());
-        setMoodEntries(moods.slice(0, 14));
-      } catch (err) {
-        console.error("Partner data load error:", err);
-        setDataError("Impossible de charger les données partagées.");
-      } finally {
-        setDataLoading(false);
-      }
-    }
-    loadPartnerData();
-  }, [user]);
-
-  const handleSendEncouragement = (text: string) => {
-    setSupportSent(text);
-    const msgId = crypto.randomUUID();
-    const createdAt = new Date().toISOString();
-    const senderId = user?.id ?? "partner";
-    // Store the message in localStorage for the duo chat
-    try {
-      const storageKey = user ? `duo-messages-${user.id}` : "duo-messages-local";
-      const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
-      existing.push({
-        id: msgId,
-        senderId,
-        content: text,
-        createdAt,
-        isOwn: true,
-      });
-      localStorage.setItem(storageKey, JSON.stringify(existing));
-    } catch {
-      // ignore
-    }
-    // Persist to Supabase so the duo chat sees it via Realtime
-    if (user) {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const supabase = createClient() as any;
-        supabase
-          .from("duo_messages")
-          .insert({ id: msgId, sender_id: senderId, content: text, created_at: createdAt })
-          .then(() => {})
-          .catch(() => {});
-      } catch {
-        // ignore
-      }
-    }
-    setTimeout(() => setSupportSent(null), 2500);
-  };
-
-  const anim = { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } };
+  if (linked.length === 1) {
+    redirect(`/partner/${linked[0].mama_id}`);
+  }
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-8 space-y-5">
-      {/* Back button */}
-      <button
-        onClick={() => router.back()}
-        className="flex items-center gap-1.5 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" /> {t("common.back")}
-      </button>
-
-      {/* Header */}
-      <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-          <Heart className="w-8 h-8 text-white fill-white" />
-        </div>
-        <h1 className="text-2xl font-bold text-[#2b3d3d] dark:text-gray-100">{t("partner.title")}</h1>
-        {store.mamaName && (
-          <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {t("partner.pregnancyOf")} <span className="font-semibold text-teal-600 dark:text-teal-400">{store.mamaName}</span>
-          </p>
-        )}
-      </div>
-
-      {/* Week + Size + Progress Hero */}
-      <motion.div
-        {...anim}
-        className="bg-gradient-to-br from-teal-50 via-cyan-50 to-blue-50 dark:from-teal-950/30 dark:via-cyan-950/30 dark:to-blue-950/30 rounded-3xl p-6 text-center border border-teal-100 dark:border-teal-900/30 shadow-sm"
-      >
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
-          transition={{ repeat: Infinity, duration: 4 }}
-          className="text-7xl mb-3"
-        >
-          {weekData.fruitEmoji}
-        </motion.div>
-        <h2 className="text-5xl font-bold text-[#2b3d3d] dark:text-gray-100">
-          {week} <span className="text-2xl text-teal-500 dark:text-teal-400">{t("partner.week")}</span>
-        </h2>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">
-          {store.babyName || "Baby"} : {t("partner.likeFruit")} {weekData.fruit}
-        </p>
-        <div className="flex justify-center gap-4 mt-2 text-xs text-gray-400 dark:text-gray-500">
-          <span>📏 {weekData.sizeMm} mm</span>
-          <span>⚖️ {weekData.weightG} g</span>
-        </div>
-        {days !== null && (
-          <div className="mt-3 bg-white dark:bg-gray-900 rounded-2xl px-4 py-2 inline-block shadow-sm">
-            <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">{days}</span>
-            <span className="text-sm text-gray-400 dark:text-gray-500 ml-1">
-              {t("partner.daysBefore")}{store.babyName ? ` ${store.babyName}` : ""}
-            </span>
-          </div>
-        )}
-        {/* Progress bar */}
-        <div className="mt-4 mx-auto max-w-xs">
-          <div className="flex justify-between text-xs text-gray-400 dark:text-gray-500 mb-1">
-            <span>{t("partner.start")}</span>
-            <span>{Math.round(progress)}%</span>
-            <span>{t("partner.birth")}</span>
-          </div>
-          <div className="h-2.5 bg-white dark:bg-gray-900 rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="h-full bg-gradient-to-r from-teal-400 to-blue-400 rounded-full"
-            />
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Baby development */}
-      <motion.div
-        {...anim}
-        transition={{ delay: 0.1 }}
-        className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-teal-100 dark:border-teal-900/30"
-      >
-        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-2 flex items-center gap-2">
-          <Baby className="w-5 h-5 text-teal-500 dark:text-teal-400" /> {t("partner.babyDev")}
-        </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.babyDevelopment}</p>
-      </motion.div>
-
-      {/* Upcoming Appointments */}
-      <motion.div {...anim} transition={{ delay: 0.15 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-blue-100 dark:border-blue-900/30">
-        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-blue-500 dark:text-blue-400" /> {t("partner.nextAppt")}
-        </h3>
-        {upcomingAppointments.length > 0 ? (
-          <div className="space-y-2">
-            {upcomingAppointments.map((appt) => (
-              <div key={appt.id} className="flex items-center gap-3 bg-blue-50 dark:bg-blue-950/30 rounded-2xl px-4 py-3">
-                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shrink-0">
-                  <Calendar className="w-5 h-5 text-blue-500 dark:text-blue-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-[#2b3d3d] dark:text-gray-100 text-sm truncate">{appt.title}</p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500">
-                    {appt.date} {appt.time ? `à ${appt.time}` : ""}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-3">{t("dashboard.noAppt")}</p>
-        )}
-      </motion.div>
-
-      {/* Quick Stats Grid */}
-      <div className="grid grid-cols-3 gap-3">
-        {/* Hydration */}
-        <motion.div
-          {...anim}
-          transition={{ delay: 0.2 }}
-          className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-cyan-100 dark:border-cyan-900/30 text-center"
-        >
-          <Droplets className="w-5 h-5 text-cyan-500 dark:text-cyan-400 mx-auto mb-1" />
-          <p className="text-lg font-bold text-[#2b3d3d] dark:text-gray-100">{waterPercent}%</p>
-          <p className="text-[10px] text-gray-400 dark:text-gray-500">{t("partner.hydration")}</p>
-          <div className="h-1 bg-cyan-50 dark:bg-cyan-950/30 rounded-full mt-1.5 overflow-hidden">
-            <div className="h-full bg-cyan-400 rounded-full transition-all" style={{ width: `${waterPercent}%` }} />
-          </div>
-        </motion.div>
-
-        {/* Baby kicks */}
-        <motion.div
-          {...anim}
-          transition={{ delay: 0.25 }}
-          className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-emerald-100 dark:border-emerald-900/30 text-center"
-        >
-          <Activity className="w-5 h-5 text-emerald-500 dark:text-emerald-400 mx-auto mb-1" />
-          <p className="text-lg font-bold text-[#2b3d3d] dark:text-gray-100">
-            {lastKick ? lastKick.count : "—"}
-          </p>
-          <p className="text-[10px] text-gray-400 dark:text-gray-500">{t("partner.movements")}</p>
-        </motion.div>
-
-        {/* Checklist */}
-        <motion.div
-          {...anim}
-          transition={{ delay: 0.3 }}
-          className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-blue-100 dark:border-blue-900/30 text-center cursor-pointer hover:border-blue-300 transition-colors"
-          onClick={() => setShowAllChecklist(!showAllChecklist)}
-        >
-          <CheckCircle2 className="w-5 h-5 text-blue-500 dark:text-blue-400 mx-auto mb-1" />
-          <p className="text-lg font-bold text-[#2b3d3d] dark:text-gray-100">
-            {doneChecklist}
-            <span className="text-xs font-normal text-gray-400 dark:text-gray-500">/{totalChecklist}</span>
-          </p>
-          <p className="text-[10px] text-gray-400 dark:text-gray-500">Checklist</p>
-        </motion.div>
-      </div>
-
-      {/* Checklist Progress Detail (expandable) */}
-      {showAllChecklist && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-blue-100 dark:border-blue-900/30 overflow-hidden"
-        >
-          <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
-            <ListChecks className="w-5 h-5 text-blue-500 dark:text-blue-400" /> Checklist — {checklistPercent}% complété
-          </h3>
-          <div className="h-2 bg-blue-50 dark:bg-blue-950/30 rounded-full overflow-hidden mb-4">
-            <div
-              className="h-full bg-gradient-to-r from-teal-400 to-blue-400 rounded-full transition-all"
-              style={{ width: `${checklistPercent}%` }}
-            />
-          </div>
-          <div className="space-y-3">
-            {Object.entries(checklistByCategory).map(([cat, items]) => {
-              const catDone = items.filter((i) => i.done).length;
-              return (
-                <div key={cat}>
-                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                    {cat} ({catDone}/{items.length})
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {items.map((item) => (
-                      <span
-                        key={item.id}
-                        className={`text-xs px-2.5 py-1 rounded-full ${
-                          item.done
-                            ? "bg-teal-50 dark:bg-teal-950/30 text-teal-600 line-through opacity-70"
-                            : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
-                        }`}
-                      >
-                        {item.done ? "✓ " : ""}{item.label}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
-      )}
-
-      {/* Data error banner */}
-      {dataError && (
-        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-2xl px-4 py-3 text-sm text-red-600 dark:text-red-300">
-          {dataError}
-        </div>
-      )}
-
-      {/* Mood / Symptom Summary */}
-      <motion.div {...anim} transition={{ delay: 0.35 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-violet-100 dark:border-violet-900/30">
-        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
-          <Smile className="w-5 h-5 text-violet-500 dark:text-violet-400" /> Humeur et symptômes
-        </h3>
-
-        {/* Mood summary (last 7 days) */}
-        {recentMoods.length > 0 ? (
-          <div className="mb-3">
-            <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">Humeur des 7 derniers jours</p>
-            <div className="flex gap-2 flex-wrap">
-              {recentMoods.map((m) => (
-                <div
-                  key={m.id}
-                  className="flex items-center gap-1.5 bg-violet-50 dark:bg-violet-950/30 rounded-full px-3 py-1.5"
-                >
-                  <span className="text-base">{m.moodEmoji}</span>
-                  <span className="text-xs text-violet-600 dark:text-violet-400">{m.moodLabel}</span>
-                  <span className="text-[10px] text-gray-400 dark:text-gray-500">
-                    {new Date(m.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          !dataLoading && (
-            <p className="text-sm text-gray-400 dark:text-gray-500 mb-3">Pas de données d&apos;humeur récentes</p>
-          )
-        )}
-
-        {/* Today's symptoms */}
-        {todaySymptoms.length > 0 ? (
-          <div>
-            <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">Symptômes aujourd&apos;hui</p>
-            <div className="flex flex-wrap gap-2">
-              {todaySymptoms.map((s, i) => (
-                <span key={i} className="bg-violet-50 dark:bg-violet-950/30 text-violet-600 text-xs px-3 py-1.5 rounded-full">
-                  {Array.isArray(s.symptoms) ? (s.symptoms as string[]).join(', ') : String(s.symptoms)}
-                </span>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <p className="text-sm text-gray-400 dark:text-gray-500">Aucun symptôme enregistré aujourd&apos;hui</p>
-        )}
-
-        {dataLoading && (
-          <div className="flex justify-center py-2">
-            <Loader2 className="w-5 h-5 text-violet-300 animate-spin" />
-          </div>
-        )}
-      </motion.div>
-
-      {/* Recent Journal Entries (read-only) */}
-      <motion.div {...anim} transition={{ delay: 0.4 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-amber-100 dark:border-amber-900/30">
-        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-amber-500 dark:text-amber-400" /> Journal intime
-        </h3>
-        {dataLoading ? (
-          <div className="flex justify-center py-4">
-            <Loader2 className="w-5 h-5 text-amber-300 animate-spin" />
-          </div>
-        ) : journalNotes.length > 0 ? (
-          <div className="space-y-3 max-h-64 overflow-y-auto">
-            {journalNotes.slice(0, 5).map((note) => (
-              <div key={note.id} className="bg-amber-50 dark:bg-amber-950/30 rounded-2xl px-4 py-3">
-                <div className="flex items-center justify-between mb-1">
-                  <div className="flex items-center gap-2">
-                    {note.mood_emoji && <span className="text-base">{note.mood_emoji}</span>}
-                    {note.title && (
-                      <span className="text-sm font-medium text-[#2b3d3d] dark:text-gray-100">{note.title}</span>
-                    )}
-                  </div>
-                  <span className="text-[10px] text-gray-400 dark:text-gray-500">
-                    {new Date(note.created_at).toLocaleDateString("fr-FR", {
-                      day: "numeric",
-                      month: "short",
-                    })}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">{note.body}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-3">Aucune entrée de journal</p>
-        )}
-      </motion.div>
-
-      {/* Partner Tip of the Day */}
-      <motion.div
-        {...anim}
-        transition={{ delay: 0.45 }}
-        className="bg-gradient-to-r from-teal-50 to-blue-50 dark:from-teal-950/30 dark:to-blue-950/30 rounded-3xl p-5 border border-teal-100 dark:border-teal-900/30"
-      >
-        <p className="text-xs font-semibold text-teal-600 dark:text-teal-400 mb-2 flex items-center gap-1.5">
-          💡 Conseil du jour pour vous
-        </p>
-        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{tipOfDay}</p>
-        {weekData.partnerTip && (
-          <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed mt-2 pt-2 border-t border-teal-100 dark:border-teal-900/30">
-            {weekData.partnerTip}
-          </p>
-        )}
-      </motion.div>
-
-      {/* Quick Actions: Send Encouragement */}
-      <motion.div {...anim} transition={{ delay: 0.5 }} className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-teal-100 dark:border-teal-900/30">
-        <h3 className="font-semibold text-[#2b3d3d] dark:text-gray-100 mb-3 flex items-center gap-2">
-          <Send className="w-5 h-5 text-teal-500 dark:text-teal-400" /> Envoyer un encouragement
-        </h3>
-        <div className="grid grid-cols-2 gap-2">
-          {ENCOURAGEMENT_MESSAGES.map((msg) => (
-            <button
-              key={msg.text}
-              onClick={() => handleSendEncouragement(`${msg.emoji} ${msg.text}`)}
-              disabled={supportSent !== null}
-              className={`text-sm rounded-2xl px-3 py-3 font-medium transition-all ${
-                supportSent === `${msg.emoji} ${msg.text}`
-                  ? "bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 scale-95"
-                  : "bg-teal-50 dark:bg-teal-950/30 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/30 active:scale-95"
-              }`}
+    <div className="max-w-lg mx-auto px-4 py-8">
+      <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-1">Vos grossesses suivies</h1>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+        Sélectionnez une grossesse pour ouvrir le dashboard partenaire.
+      </p>
+      <div className="space-y-3">
+        {linked.map((row) => {
+          const name = row.profiles?.mama_name || row.profiles?.baby_name || "Grossesse partagée";
+          const role = ROLE_LABEL[row.role] ?? "Partenaire";
+          return (
+            <Link
+              key={row.mama_id}
+              href={`/partner/${row.mama_id}`}
+              className="block bg-white dark:bg-gray-900 rounded-2xl p-4 border border-pink-100 dark:border-pink-900/30 hover:border-pink-300 dark:hover:border-pink-700 transition-colors"
             >
-              <span className="text-lg block mb-0.5">{msg.emoji}</span>
-              {msg.text}
-            </button>
-          ))}
-        </div>
-        {supportSent && (
-          <motion.p
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center text-sm text-teal-600 dark:text-teal-400 mt-3 font-medium"
-          >
-            ✓ Message envoyé avec amour
-          </motion.p>
-        )}
-      </motion.div>
-
-      <p className="text-center text-xs text-gray-400 dark:text-gray-500 pb-4">MamaTrack · Vue partenaire</p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">{name}</p>
+                  <p className="text-xs text-purple-500 dark:text-purple-400 mt-0.5">Rôle : {role}</p>
+                </div>
+                <span className="text-pink-400" aria-hidden>›</span>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }

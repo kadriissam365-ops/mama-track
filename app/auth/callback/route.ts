@@ -36,24 +36,27 @@ export async function GET(request: Request) {
         return NextResponse.redirect(`${origin}/auth/reset-password`)
       }
 
+      // Invite flow → skip onboarding, send straight back to /invite to accept
+      if (next.startsWith('/invite')) {
+        return NextResponse.redirect(`${origin}${next}`)
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
-      
+
       if (user) {
-        // Check if user already has a profile (existing user) → go home
-        // New user (no profile) → go to onboarding
         const { data: profile } = await supabase
           .from('profiles')
           .select('id')
           .eq('id', user.id)
           .single()
-        
+
         if (profile) {
           return NextResponse.redirect(`${origin}/`)
         } else {
           return NextResponse.redirect(`${origin}/onboarding`)
         }
       }
-      
+
       return NextResponse.redirect(`${origin}${next}`)
     }
   }

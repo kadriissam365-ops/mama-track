@@ -1,16 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { m as motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
-import { Mail, Lock, Eye, EyeOff, Heart, Loader2, CheckCircle2 } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Heart, Loader2, CheckCircle2, UserPlus } from "lucide-react";
 
-export default function SignupPage() {
+function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const inviteToken = searchParams.get("invite");
+  const invitedEmail = searchParams.get("email");
   const { signUpWithEmail } = useAuth();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(invitedEmail ?? "");
+
+  useEffect(() => {
+    if (inviteToken && typeof window !== "undefined") {
+      sessionStorage.setItem("invite_token", inviteToken);
+    }
+  }, [inviteToken]);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -40,7 +49,8 @@ export default function SignupPage() {
 
     setLoading(true);
 
-    const { error } = await signUpWithEmail(trimmedEmail, password);
+    const nextPath = inviteToken ? `/invite?token=${inviteToken}` : undefined;
+    const { error } = await signUpWithEmail(trimmedEmail, password, nextPath);
     
     if (error) {
       if (error.message.includes("already registered")) {
@@ -50,11 +60,12 @@ export default function SignupPage() {
       }
       setLoading(false);
     } else {
-      // Afficher l'écran de confirmation d'email
       setSuccess(true);
       setLoading(false);
     }
   };
+
+  const isInvitedFlow = Boolean(inviteToken);
 
   if (success) {
     return (
@@ -82,6 +93,11 @@ export default function SignupPage() {
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
             Cliquez sur le lien dans l&apos;email pour activer votre compte et commencer votre suivi de grossesse.
           </p>
+          {isInvitedFlow && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+              Une fois votre email confirmé, vous serez automatiquement redirigé vers l&apos;invitation pour finaliser votre accès partenaire.
+            </p>
+          )}
           <Link
             href="/auth/login"
             className="inline-flex items-center gap-2 text-pink-500 dark:text-pink-400 font-medium hover:text-pink-600 dark:hover:text-pink-300"
@@ -111,8 +127,21 @@ export default function SignupPage() {
             <Heart className="w-10 h-10 text-white fill-white" />
           </motion.div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">MamaTrack</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Créez votre compte</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">{isInvitedFlow ? "Créez votre compte partenaire" : "Créez votre compte"}</p>
         </div>
+
+        {isInvitedFlow && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30 border border-pink-200 dark:border-pink-800/40 rounded-2xl p-3 flex items-center gap-2"
+          >
+            <UserPlus className="w-5 h-5 text-pink-500 flex-shrink-0" />
+            <p className="text-xs text-gray-700 dark:text-gray-300">
+              Vous avez été invité(e) sur MamaTrack. Créez votre compte avec <strong className="text-pink-600 dark:text-pink-300">{invitedEmail}</strong> pour rejoindre le suivi.
+            </p>
+          </motion.div>
+        )}
 
         {/* Form */}
         <motion.div
@@ -148,7 +177,8 @@ export default function SignupPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="votre@email.com"
                   required
-                  className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
+                  readOnly={isInvitedFlow}
+                  className={`w-full pl-11 pr-4 py-3 ${isInvitedFlow ? "bg-pink-50 dark:bg-pink-950/30 cursor-not-allowed" : "bg-gray-50 dark:bg-gray-800"} border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all`}
                 />
               </div>
             </div>
@@ -228,5 +258,19 @@ export default function SignupPage() {
         </p>
       </motion.div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 via-white to-purple-50 dark:from-[#0f0f1a] dark:via-[#0f0f1a] dark:to-[#1a1a2e]">
+          <Loader2 className="w-8 h-8 text-pink-400 animate-spin" />
+        </div>
+      }
+    >
+      <SignupForm />
+    </Suspense>
   );
 }

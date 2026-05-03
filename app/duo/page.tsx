@@ -442,15 +442,17 @@ export default function DuoPage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
-      {/* Partner view button */}
-      <div className="flex justify-end">
-        <button
-          onClick={() => router.push('/partner')}
-          className="flex items-center gap-2 bg-gradient-to-r from-pink-100 to-purple-100 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-xl text-sm font-medium hover:from-pink-200 hover:to-purple-200 transition-colors border border-purple-100 dark:border-purple-900/30"
-        >
-          <Eye className="w-4 h-4" /> Voir la vue partenaire
-        </button>
-      </div>
+      {/* Partner view button — visible uniquement si l'utilisateur a au moins une grossesse à suivre */}
+      {linkedMamas.length > 0 && (
+        <div className="flex justify-end">
+          <button
+            onClick={() => router.push(`/partner/${linkedMamas[0].mamaId}`)}
+            className="flex items-center gap-2 bg-gradient-to-r from-pink-100 to-purple-100 text-purple-700 dark:text-purple-300 px-4 py-2 rounded-xl text-sm font-medium hover:from-pink-200 hover:to-purple-200 transition-colors border border-purple-100 dark:border-purple-900/30"
+          >
+            <Eye className="w-4 h-4" /> Voir la vue partenaire
+          </button>
+        </div>
+      )}
 
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">

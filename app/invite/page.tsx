@@ -83,7 +83,8 @@ function InviteContent() {
       if (success) {
         setAccepted(true);
         toast.success("Invitation acceptée !");
-        setTimeout(() => router.push("/"), 2000);
+        const mamaId = invitation?.mamaId;
+        setTimeout(() => router.push(mamaId ? `/partner/${mamaId}` : "/"), 2000);
       } else {
         toast.error("Erreur lors de l'acceptation");
       }
@@ -95,11 +96,20 @@ function InviteContent() {
   };
 
   const handleLogin = () => {
-    // Store token in sessionStorage to restore after login
     if (typeof window !== 'undefined' && token) {
       sessionStorage.setItem('invite_token', token);
     }
     router.push('/auth/login');
+  };
+
+  const handleSignup = () => {
+    if (typeof window !== 'undefined' && token) {
+      sessionStorage.setItem('invite_token', token);
+    }
+    const params = new URLSearchParams();
+    if (token) params.set('invite', token);
+    if (invitation?.email) params.set('email', invitation.email);
+    router.push(`/auth/signup?${params.toString()}`);
   };
 
   if (loading || authLoading) {
@@ -245,13 +255,20 @@ function InviteContent() {
         ) : (
           <div className="space-y-3">
             <p className="text-sm text-center text-gray-500 dark:text-gray-400">
-              Connectez-vous pour accepter cette invitation
+              Pour accepter cette invitation, créez un compte ou connectez-vous avec <span className="font-semibold text-pink-500 dark:text-pink-400">{invitation.email}</span>
             </p>
             <button
-              onClick={handleLogin}
+              onClick={handleSignup}
               className="w-full py-3.5 bg-gradient-to-r from-pink-400 to-purple-400 text-white font-semibold rounded-xl hover:from-pink-500 hover:to-purple-500 transition-all flex items-center justify-center gap-2"
             >
-              Se connecter
+              <UserPlus className="w-5 h-5" />
+              Créer mon compte
+            </button>
+            <button
+              onClick={handleLogin}
+              className="w-full py-3 bg-white dark:bg-gray-800 border border-pink-200 dark:border-pink-800/40 text-pink-600 dark:text-pink-300 font-semibold rounded-xl hover:bg-pink-50 dark:hover:bg-gray-700 transition-all"
+            >
+              J&apos;ai déjà un compte
             </button>
           </div>
         )}

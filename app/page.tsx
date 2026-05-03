@@ -26,6 +26,7 @@ import Paywall from "@/components/Paywall";
 import { Skeleton } from "@/components/Skeleton";
 import { useIsPremium } from "@/lib/use-premium";
 import { useTheme } from "next-themes";
+import { getPartnerAccess } from "@/lib/duo-api";
 
 const LandingPage = dynamic(() => import("@/components/LandingPage"), {
   ssr: false,
@@ -84,6 +85,24 @@ export default function DashboardPage() {
       initializeNotifications();
     }
   }, []);
+
+  // Partner-only auto-redirect: if user has linked mamas and no own pregnancy,
+  // they are a pure partner — send them to the partner dashboard.
+  useEffect(() => {
+    if (!user || store.loading) return;
+    if (store.dueDate) return;
+    let cancelled = false;
+    getPartnerAccess(user.id).then((linked) => {
+      if (cancelled || linked.length === 0) return;
+      if (typeof window !== 'undefined') {
+        const k = `partner-redirected-${user.id}`;
+        if (sessionStorage.getItem(k)) return;
+        sessionStorage.setItem(k, '1');
+      }
+      router.replace(`/partner/${linked[0].mamaId}`);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [user, store.loading, store.dueDate, router]);
 
   // Show loading skeleton while data is being fetched
   if (store.loading) {
