@@ -47,14 +47,33 @@ function shouldFallback(err: unknown): boolean {
     const s = err.status ?? 0;
     if (s === 429 || s === 529 || s === 503 || s === 500 || s === 502 || s === 504) return true;
     const msg = (err.message ?? "").toLowerCase();
-    if (msg.includes("overloaded") || msg.includes("rate limit") || msg.includes("quota")) return true;
+    if (
+      msg.includes("overloaded") ||
+      msg.includes("rate limit") ||
+      msg.includes("quota") ||
+      msg.includes("credit balance") ||
+      msg.includes("billing")
+    )
+      return true;
   }
   if (err instanceof Error) {
     const msg = err.message.toLowerCase();
-    if (msg.includes("rate limit") || msg.includes("overloaded") || msg.includes("quota") || msg.includes("timeout")) return true;
+    if (
+      msg.includes("rate limit") ||
+      msg.includes("overloaded") ||
+      msg.includes("quota") ||
+      msg.includes("timeout") ||
+      msg.includes("credit balance") ||
+      msg.includes("billing")
+    )
+      return true;
   }
   return false;
 }
+
+// User-facing error message — never leak raw API errors to the UI.
+const FRIENDLY_ERROR =
+  "Désolée, je suis temporairement indisponible. Réessaie dans quelques instants 💕";
 
 function buildAnthropicMessages(history: ChatMessage[], userMessage?: string): { role: "user" | "assistant"; content: string }[] {
   const out: { role: "user" | "assistant"; content: string }[] = [];
@@ -133,12 +152,13 @@ export function streamChat(args: StreamChatArgs): ReadableStream<Uint8Array> {
           return;
         } catch (err) {
           primaryError = err;
-          if (!shouldFallback(err)) {
-            const msg = err instanceof Error ? err.message : "erreur inconnue";
-            controller.enqueue(encoder.encode(`\n\n[Désolée, je ne peux pas répondre maintenant — ${msg}]`));
+          console.error("[ai-providers] Anthropic stream error:", err);
+          if (!shouldFallback(err) && !gemini) {
+            controller.enqueue(encoder.encode(FRIENDLY_ERROR));
             controller.close();
             return;
           }
+          // Otherwise fall through to Gemini.
         }
       }
 
@@ -152,15 +172,15 @@ export function streamChat(args: StreamChatArgs): ReadableStream<Uint8Array> {
           controller.close();
           return;
         } catch (err) {
-          const msg = err instanceof Error ? err.message : "erreur inconnue";
-          controller.enqueue(encoder.encode(`\n\n[Désolée, je ne peux pas répondre maintenant — fallback Gemini KO : ${msg}]`));
+          console.error("[ai-providers] Gemini fallback error:", err);
+          controller.enqueue(encoder.encode(FRIENDLY_ERROR));
           controller.close();
           return;
         }
       }
 
-      const msg = primaryError instanceof Error ? primaryError.message : "aucun fournisseur IA disponible";
-      controller.enqueue(encoder.encode(`\n\n[Service IA indisponible — ${msg}]`));
+      console.error("[ai-providers] No provider available. Last error:", primaryError);
+      controller.enqueue(encoder.encode(FRIENDLY_ERROR));
       controller.close();
     },
   });
