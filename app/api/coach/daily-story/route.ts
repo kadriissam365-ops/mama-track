@@ -54,6 +54,21 @@ async function generateAndCacheStory(args: {
     throw new Error("Story vide générée par l'IA");
   }
 
+  // Defensive: streamChat returns a friendly French fallback when all
+  // providers fail. We must NEVER cache that message (24h TTL would
+  // freeze the error in front of the user). Re-throw so the route
+  // returns a 502 and the client falls back to its own placeholder.
+  const lower = story.toLowerCase();
+  if (
+    lower.includes("temporairement indisponible") ||
+    lower.includes("je ne peux pas répondre") ||
+    lower.includes("service ia indisponible") ||
+    lower.includes("credit balance") ||
+    lower.includes("invalid_request_error")
+  ) {
+    throw new Error("Génération IA en échec — pas de mise en cache");
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sb = supabase as any;
   await sb
