@@ -173,12 +173,52 @@ export interface AnalyzeImageArgs {
   responseSchema?: object;
 }
 
-export async function analyzeImage(args: AnalyzeImageArgs): Promise<string> {
-  const gemini = getGemini();
-  if (!gemini) {
-    throw new Error("GEMINI_API_KEY non configurée — fonctionnalité vision indisponible");
+const CLAUDE_VISION_MIME = /^image\/(jpeg|png|gif|webp)$/;
+
+function extractJson(raw: string): string {
+  // Claude sometimes wraps JSON in ```json fences or adds a leading sentence.
+  const trimmed = raw.trim();
+  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fenced) return fenced[1].trim();
+  const firstBrace = trimmed.indexOf("{");
+  const lastBrace = trimmed.lastIndexOf("}");
+  if (firstBrace >= 0 && lastBrace > firstBrace) {
+    return trimmed.slice(firstBrace, lastBrace + 1);
   }
-  const model = gemini.getGenerativeModel({
+  return trimmed;
+}
+
+async function analyzeImageWithClaude(client: Anthropic, args: AnalyzeImageArgs): Promise<string> {
+  const promptWithSchema = args.responseSchema
+    ? `${args.prompt}\n\nSchéma JSON attendu :\n${JSON.stringify(args.responseSchema)}\n\nRetourne UNIQUEMENT un objet JSON valide qui respecte ce schéma. Aucun texte avant ou après. Pas de balises markdown.`
+    : args.prompt;
+
+  const mediaType = args.mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp";
+  const message = await client.messages.create({
+    model: ANTHROPIC_MODEL,
+    max_tokens: 1500,
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "image",
+            source: { type: "base64", media_type: mediaType, data: args.imageBase64 },
+          },
+          { type: "text", text: promptWithSchema },
+        ],
+      },
+    ],
+  });
+  const textBlock = message.content.find((b) => b.type === "text");
+  if (!textBlock || textBlock.type !== "text") {
+    throw new Error("Réponse Claude vide");
+  }
+  return args.responseSchema ? extractJson(textBlock.text) : textBlock.text;
+}
+
+async function analyzeImageWithGemini(client: GoogleGenerativeAI, args: AnalyzeImageArgs): Promise<string> {
+  const model = client.getGenerativeModel({
     model: GEMINI_VISION_MODEL,
     generationConfig: args.responseSchema
       ? {
@@ -196,10 +236,44 @@ export async function analyzeImage(args: AnalyzeImageArgs): Promise<string> {
   return result.response.text();
 }
 
+export async function analyzeImage(args: AnalyzeImageArgs): Promise<string> {
+  const anthropic = getAnthropic();
+  const gemini = getGemini();
+  const claudeCanHandle = anthropic && CLAUDE_VISION_MIME.test(args.mimeType);
+
+  if (claudeCanHandle && anthropic) {
+    try {
+      return await analyzeImageWithClaude(anthropic, args);
+    } catch (err) {
+      if (!gemini) throw err;
+      if (!shouldFallback(err)) {
+        // Non-retryable error: still try Gemini once as a safety net.
+        try {
+          return await analyzeImageWithGemini(gemini, args);
+        } catch {
+          throw err;
+        }
+      }
+      // Retryable: fall through to Gemini.
+    }
+  }
+
+  if (gemini) {
+    return await analyzeImageWithGemini(gemini, args);
+  }
+
+  if (anthropic && !claudeCanHandle) {
+    throw new Error(
+      `Format d'image non supporté par Claude (${args.mimeType}). Configurez GEMINI_API_KEY pour les formats HEIC/HEIF.`,
+    );
+  }
+  throw new Error("Aucun fournisseur IA vision configuré (ANTHROPIC_API_KEY ou GEMINI_API_KEY)");
+}
+
 export function isAiConfigured(): boolean {
   return Boolean(process.env.ANTHROPIC_API_KEY || process.env.GEMINI_API_KEY);
 }
 
 export function isVisionConfigured(): boolean {
-  return Boolean(process.env.GEMINI_API_KEY);
+  return Boolean(process.env.ANTHROPIC_API_KEY || process.env.GEMINI_API_KEY);
 }

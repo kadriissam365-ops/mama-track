@@ -53,7 +53,7 @@ const SCHEMA = {
 
 export async function POST(req: Request) {
   if (!isVisionConfigured()) {
-    return NextResponse.json({ error: "Service vision non configuré (GEMINI_API_KEY manquante)" }, { status: 503 });
+    return NextResponse.json({ error: "Service vision non configuré" }, { status: 503 });
   }
 
   const cookieStore = await cookies();
