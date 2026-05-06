@@ -80,6 +80,20 @@ export async function POST(request: NextRequest) {
 
         if (!userId || !customerId) break;
 
+        // One-time payment (Pack Grossesse): grant 9 months of premium.
+        if (session.mode === "payment") {
+          const until = new Date();
+          until.setMonth(until.getMonth() + 9);
+          await updateProfileById(userId, {
+            is_premium: true,
+            stripe_customer_id: customerId,
+            stripe_subscription_id: null,
+            premium_until: until.toISOString(),
+          });
+          break;
+        }
+
+        // Subscription mode.
         let until: string | null = null;
         if (subscriptionId) {
           const sub = await stripe.subscriptions.retrieve(subscriptionId);

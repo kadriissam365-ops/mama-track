@@ -5,7 +5,20 @@ import { getAppUrl, getStripe } from "@/lib/stripe-server";
 
 export const runtime = "nodejs";
 
-export async function POST() {
+type Plan = "monthly" | "pack";
+
+function resolvePrice(plan: Plan): { priceId: string | undefined; mode: "subscription" | "payment" } {
+  if (plan === "pack") {
+    return { priceId: process.env.STRIPE_PRICE_PACK_GROSSESSE, mode: "payment" };
+  }
+  // Default monthly. Fall back to legacy STRIPE_PRICE_PREMIUM if STRIPE_PRICE_MONTHLY not set.
+  return {
+    priceId: process.env.STRIPE_PRICE_MONTHLY ?? process.env.STRIPE_PRICE_PREMIUM,
+    mode: "subscription",
+  };
+}
+
+export async function POST(req: Request) {
   try {
     const cookieStore = await cookies();
     const supabase = createServerClientFromCookies(cookieStore);
@@ -18,7 +31,15 @@ export async function POST() {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
-    const priceId = process.env.STRIPE_PRICE_PREMIUM;
+    let plan: Plan = "pack";
+    try {
+      const body = (await req.json().catch(() => ({}))) as { plan?: string };
+      if (body?.plan === "monthly" || body?.plan === "pack") plan = body.plan;
+    } catch {
+      // body optionnel
+    }
+
+    const { priceId, mode } = resolvePrice(plan);
     if (!priceId) {
       return NextResponse.json(
         { error: "Configuration Stripe manquante" },
@@ -29,23 +50,15 @@ export async function POST() {
     const stripe = getStripe();
     const appUrl = getAppUrl();
 
-    const { data: profile } = await (supabase as unknown as {
-      from: (t: string) => {
-        select: (s: string) => {
-          eq: (c: string, v: string) => {
-            single: () => Promise<{
-              data: { stripe_customer_id: string | null } | null;
-            }>;
-          };
-        };
-      };
-    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sb = supabase as any;
+    const { data: profile } = await sb
       .from("profiles")
       .select("stripe_customer_id")
       .eq("id", user.id)
       .single();
 
-    let customerId = profile?.stripe_customer_id ?? null;
+    let customerId = (profile?.stripe_customer_id as string | null) ?? null;
 
     if (!customerId) {
       const customer = await stripe.customers.create({
@@ -54,28 +67,26 @@ export async function POST() {
       });
       customerId = customer.id;
 
-      await (supabase as unknown as {
-        from: (t: string) => {
-          update: (v: Record<string, unknown>) => {
-            eq: (c: string, v: string) => Promise<{ error: unknown }>;
-          };
-        };
-      })
+      await sb
         .from("profiles")
         .update({ stripe_customer_id: customerId })
         .eq("id", user.id);
     }
 
     const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      customer: customerId,
+      mode,
+      customer: customerId!,
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${appUrl}/settings?upgraded=1`,
       cancel_url: `${appUrl}/plus`,
       allow_promotion_codes: true,
       client_reference_id: user.id,
-      metadata: { supabase_user_id: user.id },
-      subscription_data: { metadata: { supabase_user_id: user.id } },
+      metadata: { supabase_user_id: user.id, plan },
+      ...(mode === "subscription"
+        ? { subscription_data: { metadata: { supabase_user_id: user.id } } }
+        : {
+            payment_intent_data: { metadata: { supabase_user_id: user.id, plan: "pack" } },
+          }),
     });
 
     return NextResponse.json({ url: session.url });

@@ -74,33 +74,38 @@ const sections = [
 ];
 
 const PREMIUM_FEATURES = [
+  "MamaCoach IA — assistant sage-femme 24/7",
+  "Analyses IA : échographies, ordonnances, prises de sang",
   "Mode duo illimité (papa + sage-femme + famille)",
   "Exports PDF illimités + Carnet de maternité",
-  "MamaCoach IA — assistant personnalisé",
   "Alertes médicales avancées (préeclampsie, diabète)",
-  "Sans publicités, à vie",
+  "Sans publicités",
 ];
 
 function PremiumCard() {
   const { isPremium, until, loading } = useIsPremium();
   const toast = useToast();
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<"pack" | "monthly" | null>(null);
 
-  const goCheckout = async () => {
-    setBusy(true);
+  const goCheckout = async (plan: "pack" | "monthly") => {
+    setBusy(plan);
     try {
-      const res = await fetch("/api/stripe/checkout", { method: "POST" });
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
+      });
       const json = await res.json();
       if (!res.ok || !json.url) throw new Error(json.error || "Erreur Stripe");
       window.location.href = json.url;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Impossible de démarrer le paiement");
-      setBusy(false);
+      setBusy(null);
     }
   };
 
   const goPortal = async () => {
-    setBusy(true);
+    setBusy("monthly");
     try {
       const res = await fetch("/api/stripe/portal", { method: "POST" });
       const json = await res.json();
@@ -108,7 +113,7 @@ function PremiumCard() {
       window.location.href = json.url;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Impossible d'ouvrir le portail");
-      setBusy(false);
+      setBusy(null);
     }
   };
 
@@ -133,7 +138,7 @@ function PremiumCard() {
         <button
           type="button"
           onClick={goPortal}
-          disabled={busy}
+          disabled={busy !== null}
           className="w-full bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800/40 text-purple-700 dark:text-purple-300 text-sm font-semibold py-2.5 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
         >
           {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
@@ -147,35 +152,64 @@ function PremiumCard() {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-3xl p-5 border border-purple-200 dark:border-purple-800/40 bg-gradient-to-br from-amber-100 via-pink-100 to-purple-100 dark:from-amber-950/30 dark:via-pink-950/30 dark:to-purple-950/30"
+      className="space-y-3"
     >
-      <div className="flex items-center gap-2 mb-1">
-        <Sparkles className="w-5 h-5 text-purple-600" />
-        <h2 className="font-bold text-[#3d2b2b] dark:text-gray-100">MamaTrack Premium</h2>
+      <div className="rounded-3xl p-5 border-2 border-purple-300 dark:border-purple-700/60 bg-gradient-to-br from-amber-100 via-pink-100 to-purple-100 dark:from-amber-950/30 dark:via-pink-950/30 dark:to-purple-950/30 relative">
+        <span className="absolute -top-2.5 right-4 bg-purple-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">
+          Recommandé
+        </span>
+        <div className="flex items-center gap-2 mb-1">
+          <Sparkles className="w-5 h-5 text-purple-600" />
+          <h2 className="font-bold text-[#3d2b2b] dark:text-gray-100">Pack Grossesse</h2>
+        </div>
+        <p className="text-3xl font-bold text-purple-700 dark:text-purple-300">
+          39 €
+        </p>
+        <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+          Paiement unique — 9 mois d&apos;accès Premium
+        </p>
+        <ul className="space-y-1.5 mb-4">
+          {PREMIUM_FEATURES.map((f) => (
+            <li key={f} className="flex items-start gap-2 text-sm text-[#3d2b2b] dark:text-gray-200">
+              <Check className="w-4 h-4 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          onClick={() => goCheckout("pack")}
+          disabled={busy !== null}
+          className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm font-semibold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
+        >
+          {busy === "pack" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+          Choisir le Pack Grossesse
+        </button>
+        <p className="text-[10px] text-gray-500 dark:text-gray-400 text-center mt-2">
+          Sans renouvellement — couvre toute ta grossesse
+        </p>
       </div>
-      <p className="text-2xl font-bold text-purple-700 dark:text-purple-300 mb-3">
-        4,99 € <span className="text-sm font-normal text-gray-500 dark:text-gray-400">/ mois</span>
-      </p>
-      <ul className="space-y-1.5 mb-4">
-        {PREMIUM_FEATURES.map((f) => (
-          <li key={f} className="flex items-start gap-2 text-sm text-[#3d2b2b] dark:text-gray-200">
-            <Check className="w-4 h-4 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
-            <span>{f}</span>
-          </li>
-        ))}
-      </ul>
-      <button
-        type="button"
-        onClick={goCheckout}
-        disabled={busy}
-        className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm font-semibold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2"
-      >
-        {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-        Passer Premium
-      </button>
-      <p className="text-[10px] text-gray-500 dark:text-gray-400 text-center mt-2">
-        Sans engagement — annulable à tout moment
-      </p>
+
+      <div className="rounded-3xl p-5 border border-pink-200 dark:border-pink-900/40 bg-white dark:bg-gray-900">
+        <div className="flex items-baseline justify-between mb-2">
+          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Mensuel</h3>
+          <p className="text-xl font-bold text-purple-700 dark:text-purple-300">
+            7,99 € <span className="text-xs font-normal text-gray-500 dark:text-gray-400">/ mois</span>
+          </p>
+        </div>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+          Sans engagement — annulable à tout moment
+        </p>
+        <button
+          type="button"
+          onClick={() => goCheckout("monthly")}
+          disabled={busy !== null}
+          className="w-full bg-white dark:bg-gray-900 border border-purple-300 dark:border-purple-700/60 text-purple-700 dark:text-purple-300 text-sm font-semibold py-2.5 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+        >
+          {busy === "monthly" ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+          Choisir le mensuel
+        </button>
+      </div>
     </motion.div>
   );
 }
