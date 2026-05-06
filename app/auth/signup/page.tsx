@@ -1,11 +1,61 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { m as motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
-import { Mail, Lock, Eye, EyeOff, Heart, Loader2, CheckCircle2, UserPlus } from "lucide-react";
+import { createClient } from "@/lib/supabase";
+import { Mail, Lock, Eye, EyeOff, Heart, Loader2, CheckCircle2, UserPlus, Check, X } from "lucide-react";
+
+const PASSWORD_MIN_LENGTH = 10;
+
+interface PasswordChecks {
+  length: boolean;
+  lower: boolean;
+  upper: boolean;
+  digit: boolean;
+  special: boolean;
+}
+
+function checkPassword(pwd: string): PasswordChecks {
+  return {
+    length: pwd.length >= PASSWORD_MIN_LENGTH,
+    lower: /[a-z]/.test(pwd),
+    upper: /[A-Z]/.test(pwd),
+    digit: /[0-9]/.test(pwd),
+    special: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]/.test(pwd),
+  };
+}
+
+function firstFailedRule(c: PasswordChecks): string | null {
+  if (!c.length) return `Le mot de passe doit contenir au moins ${PASSWORD_MIN_LENGTH} caractères.`;
+  if (!c.lower) return "Le mot de passe doit contenir au moins une lettre minuscule (a-z).";
+  if (!c.upper) return "Le mot de passe doit contenir au moins une lettre majuscule (A-Z).";
+  if (!c.digit) return "Le mot de passe doit contenir au moins un chiffre (0-9).";
+  if (!c.special) return "Le mot de passe doit contenir au moins un caractère spécial (ex : ! @ # $ % & * ?).";
+  return null;
+}
+
+function mapSupabaseError(message: string): string {
+  const m = message.toLowerCase();
+  if (m.includes("already registered") || m.includes("user already") || m.includes("already exists")) {
+    return "Un compte existe déjà avec cet email. Vérifiez votre boîte mail (un lien de confirmation a peut-être été envoyé) ou connectez-vous.";
+  }
+  if (m.includes("password should contain") || m.includes("password should be") || m.includes("weak password") || m.includes("password")) {
+    return "Mot de passe trop faible. Il doit contenir au moins 10 caractères avec une majuscule, une minuscule, un chiffre et un caractère spécial.";
+  }
+  if (m.includes("invalid email") || m.includes("email address")) {
+    return "Adresse email invalide.";
+  }
+  if (m.includes("rate limit") || m.includes("too many")) {
+    return "Trop de tentatives. Patientez quelques minutes avant de réessayer.";
+  }
+  if (m.includes("network") || m.includes("fetch")) {
+    return "Problème de connexion. Vérifiez votre réseau et réessayez.";
+  }
+  return `Erreur : ${message}`;
+}
 
 function SignupForm() {
   const router = useRouter();
@@ -13,19 +63,37 @@ function SignupForm() {
   const inviteToken = searchParams.get("invite");
   const invitedEmail = searchParams.get("email");
   const { signUpWithEmail } = useAuth();
-  const [email, setEmail] = useState(invitedEmail ?? "");
 
-  useEffect(() => {
-    if (inviteToken && typeof window !== "undefined") {
-      sessionStorage.setItem("invite_token", inviteToken);
-    }
-  }, [inviteToken]);
+  const [email, setEmail] = useState(invitedEmail ?? "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [sessionCleared, setSessionCleared] = useState(false);
+
+  // 1) Sign out any lingering session before showing the signup form
+  //    so we don't pre-fill or submit with another user's identity.
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.signOut().finally(() => setSessionCleared(true));
+  }, []);
+
+  // 2) Reset email field when leaving an invite flow (otherwise the
+  //    invitedEmail param is the source of truth).
+  useEffect(() => {
+    if (invitedEmail) setEmail(invitedEmail);
+  }, [invitedEmail]);
+
+  useEffect(() => {
+    if (inviteToken && typeof window !== "undefined") {
+      sessionStorage.setItem("invite_token", inviteToken);
+    }
+  }, [inviteToken]);
+
+  const checks = useMemo(() => checkPassword(password), [password]);
+  const allValid = checks.length && checks.lower && checks.upper && checks.digit && checks.special;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,31 +101,28 @@ function SignupForm() {
 
     const trimmedEmail = email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setError("Adresse email invalide");
+      setError("Adresse email invalide.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Les mots de passe ne correspondent pas");
+      setError("Les mots de passe ne correspondent pas.");
       return;
     }
 
-    if (password.length < 6) {
-      setError("Le mot de passe doit contenir au moins 6 caractères");
+    const ruleError = firstFailedRule(checks);
+    if (ruleError) {
+      setError(ruleError);
       return;
     }
 
     setLoading(true);
 
     const nextPath = inviteToken ? `/invite?token=${inviteToken}` : undefined;
-    const { error } = await signUpWithEmail(trimmedEmail, password, nextPath);
-    
-    if (error) {
-      if (error.message.includes("already registered")) {
-        setError("Cet email est déjà utilisé. Connecte-toi plutôt.");
-      } else {
-        setError("Une erreur est survenue. Réessayez.");
-      }
+    const { error: signUpErr } = await signUpWithEmail(trimmedEmail, password, nextPath);
+
+    if (signUpErr) {
+      setError(mapSupabaseError(signUpErr.message));
       setLoading(false);
     } else {
       setSuccess(true);
@@ -66,6 +131,14 @@ function SignupForm() {
   };
 
   const isInvitedFlow = Boolean(inviteToken);
+
+  if (!sessionCleared) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 via-white to-purple-50 dark:from-[#0f0f1a] dark:via-[#0f0f1a] dark:to-[#1a1a2e]">
+        <Loader2 className="w-8 h-8 text-pink-400 animate-spin" />
+      </div>
+    );
+  }
 
   if (success) {
     return (
@@ -108,6 +181,13 @@ function SignupForm() {
       </div>
     );
   }
+
+  const ChecklistItem = ({ ok, label }: { ok: boolean; label: string }) => (
+    <li className={`flex items-center gap-2 text-xs ${ok ? "text-green-600 dark:text-green-400" : "text-gray-400 dark:text-gray-500"}`}>
+      {ok ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
+      <span>{label}</span>
+    </li>
+  );
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-b from-pink-50 via-white to-purple-50 dark:from-[#0f0f1a] dark:via-[#0f0f1a] dark:to-[#1a1a2e]">
@@ -158,13 +238,13 @@ function SignupForm() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-sm p-3 rounded-xl mb-4 text-center"
+              className="bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-sm p-3 rounded-xl mb-4"
             >
               {error}
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
             <div>
               <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
                 Email
@@ -173,6 +253,8 @@ function SignupForm() {
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type="email"
+                  name="signup-email"
+                  autoComplete="off"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="votre@email.com"
@@ -191,9 +273,11 @@ function SignupForm() {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type={showPassword ? "text" : "password"}
+                  name="new-password"
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Minimum 6 caractères"
+                  placeholder={`Minimum ${PASSWORD_MIN_LENGTH} caractères`}
                   required
                   className="w-full pl-11 pr-11 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
                 />
@@ -205,6 +289,15 @@ function SignupForm() {
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
+
+              {/* Password requirements checklist */}
+              <ul className="mt-2 space-y-1 px-1">
+                <ChecklistItem ok={checks.length} label={`Au moins ${PASSWORD_MIN_LENGTH} caractères`} />
+                <ChecklistItem ok={checks.lower} label="Une lettre minuscule (a-z)" />
+                <ChecklistItem ok={checks.upper} label="Une lettre majuscule (A-Z)" />
+                <ChecklistItem ok={checks.digit} label="Un chiffre (0-9)" />
+                <ChecklistItem ok={checks.special} label="Un caractère spécial (! @ # $ % & * ?)" />
+              </ul>
             </div>
 
             <div>
@@ -215,6 +308,8 @@ function SignupForm() {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type={showPassword ? "text" : "password"}
+                  name="confirm-password"
+                  autoComplete="new-password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Retapez votre mot de passe"
@@ -222,11 +317,14 @@ function SignupForm() {
                   className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all"
                 />
               </div>
+              {confirmPassword.length > 0 && confirmPassword !== password && (
+                <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">Les mots de passe ne correspondent pas.</p>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !allValid || password !== confirmPassword}
               className="w-full bg-gradient-to-r from-pink-400 to-pink-500 text-white font-semibold py-3 rounded-xl hover:from-pink-500 hover:to-pink-600 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
