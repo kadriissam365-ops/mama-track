@@ -7,8 +7,8 @@ import {
 } from "@google/generative-ai";
 
 const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001";
-const GEMINI_TEXT_MODEL = "gemini-2.0-flash";
-const GEMINI_VISION_MODEL = "gemini-2.0-flash";
+const GEMINI_TEXT_MODEL = "gemini-2.5-flash";
+const GEMINI_VISION_MODEL = "gemini-2.5-flash";
 
 let anthropicClient: Anthropic | null = null;
 let geminiClient: GoogleGenerativeAI | null = null;
