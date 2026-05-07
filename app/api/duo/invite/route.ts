@@ -47,6 +47,7 @@ function buildInviteEmail(opts: {
   mamaName: string | null;
   babyName: string | null;
   dueDateLabel: string | null;
+  hasAccount: boolean;
 }): { subject: string; html: string; text: string } {
   const roleLabel = ROLE_LABELS[opts.role];
   const greeter = opts.mamaName ? escapeHtml(opts.mamaName) : "une future maman";
@@ -54,6 +55,14 @@ function buildInviteEmail(opts: {
   const dueLine = opts.dueDateLabel
     ? `<p style="font-size:14px;color:#6b7280;margin:8px 0 0 0;">Date prévue d'accouchement : <strong style="color:#3d2b2b;">${escapeHtml(opts.dueDateLabel)}</strong></p>`
     : "";
+
+  const ctaLabel = opts.hasAccount ? "Se connecter et accepter" : "Créer mon compte et accepter";
+  const stepsHtml = opts.hasAccount
+    ? `<p style="font-size:14px;color:#6b7280;line-height:1.6;margin:12px 0 0 0;">Vous avez déjà un compte MamaTrack avec cette adresse. Connectez-vous pour accepter l'invitation.</p>`
+    : `<p style="font-size:14px;color:#6b7280;line-height:1.6;margin:12px 0 0 0;">C'est votre première invitation : créez un compte gratuit avec cette adresse pour accepter.</p>`;
+  const stepsText = opts.hasAccount
+    ? "Vous avez déjà un compte MamaTrack avec cette adresse. Connectez-vous pour accepter l'invitation."
+    : "C'est votre première invitation : créez un compte gratuit avec cette adresse pour accepter.";
 
   const subject = `${greeter} vous invite à suivre sa grossesse sur MamaTrack`;
 
@@ -77,10 +86,11 @@ function buildInviteEmail(opts: {
           <p style="font-size:15px;color:#374151;line-height:1.6;margin:16px 0 0 0;">
             En acceptant, vous pourrez voir l'évolution de bébé semaine après semaine, recevoir les mises à jour importantes et envoyer des messages de soutien.
           </p>
+          ${stepsHtml}
         </td></tr>
         <tr><td align="center" style="padding:24px 28px 8px 28px;">
           <a href="${opts.inviteUrl}" style="display:inline-block;background:linear-gradient(90deg,#f472b6,#a855f7);color:#ffffff;text-decoration:none;font-weight:700;font-size:16px;padding:14px 36px;border-radius:14px;box-shadow:0 4px 12px rgba(168,85,247,0.25);">
-            Accepter l'invitation
+            ${escapeHtml(ctaLabel)}
           </a>
         </td></tr>
         <tr><td style="padding:8px 28px 24px 28px;text-align:center;">
@@ -98,7 +108,9 @@ function buildInviteEmail(opts: {
 
   const text = `${greeter} vous invite à suivre sa grossesse sur MamaTrack en tant que ${roleLabel}.
 
-Acceptez l'invitation : ${opts.inviteUrl}
+${stepsText}
+
+${ctaLabel} : ${opts.inviteUrl}
 
 MamaTrack — Le suivi de grossesse bienveillant`;
 
@@ -151,7 +163,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
 
-  // Premium gate (mirrors app/api/vision/ordonnance/route.ts pattern).
   const { data: profileRaw } = await supabase
     .from("profiles")
     .select("is_premium, premium_until, mama_name, baby_name, due_date")
@@ -192,7 +203,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Rôle invalide" }, { status: 400 });
   }
 
-  // Reject duplicate pending invitations for the same (mama, email).
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: existing } = await (supabase.from as any)("duo_invitations")
     .select("id")
@@ -205,6 +215,19 @@ export async function POST(req: Request) {
       { error: "Une invitation est déjà en attente pour cet email." },
       { status: 409 },
     );
+  }
+
+  // Detect whether this email already has a MamaTrack account so the email CTA
+  // points to the right action (login vs signup).
+  let hasAccount = false;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existsRaw } = await (supabase as any).rpc("email_has_account", {
+      p_email: email,
+    });
+    hasAccount = Boolean(existsRaw);
+  } catch (err) {
+    console.warn("[duo/invite] email_has_account rpc failed:", err);
   }
 
   const token = randomBytes(32).toString("hex");
@@ -240,6 +263,7 @@ export async function POST(req: Request) {
       mamaName: profile?.mama_name ?? null,
       babyName: profile?.baby_name ?? null,
       dueDateLabel: formatDueDate(profile?.due_date ?? null),
+      hasAccount,
     });
     const sendRes = await sendInviteEmail({
       to: email,
@@ -266,6 +290,7 @@ export async function POST(req: Request) {
     },
     shareUrl,
     emailSent,
+    hasAccount,
     error: emailError,
   });
 }

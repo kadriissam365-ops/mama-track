@@ -5,7 +5,22 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { m as motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
+import { createClient } from "@/lib/supabase";
 import { Mail, Lock, Eye, EyeOff, Heart, Loader2 } from "lucide-react";
+
+function mapResendError(message: string): string {
+  const m = message.toLowerCase();
+  if (m.includes("user not found") || m.includes("not found")) {
+    return "Aucun compte trouvé avec cet email. Vérifiez l'adresse ou créez un compte.";
+  }
+  if (m.includes("already confirmed") || m.includes("email_change")) {
+    return "Ce compte est déjà confirmé. Vous pouvez vous connecter.";
+  }
+  if (m.includes("rate limit") || m.includes("too many")) {
+    return "Trop de tentatives. Patientez quelques minutes avant de réessayer.";
+  }
+  return `Impossible d'envoyer le mail : ${message}`;
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,10 +30,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
+  const [resendInfo, setResendInfo] = useState<string | null>(null);
+  const [showResend, setShowResend] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setResendInfo(null);
 
     const trimmedEmail = email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
@@ -33,23 +52,65 @@ export default function LoginPage() {
     setLoading(true);
 
     const { error } = await signInWithEmail(trimmedEmail, password);
-    
+
     if (error) {
-      setError(
-        error.message === "Invalid login credentials"
-          ? "Email ou mot de passe incorrect"
-          : "Une erreur est survenue. Réessayez."
-      );
+      const msg = error.message.toLowerCase();
+      if (msg.includes("email not confirmed") || msg.includes("not confirmed")) {
+        setError("Votre email n'est pas encore confirmé. Cliquez sur le lien envoyé par mail ou renvoyez-en un.");
+        setShowResend(true);
+      } else if (error.message === "Invalid login credentials") {
+        setError("Email ou mot de passe incorrect.");
+        setShowResend(true);
+      } else {
+        setError("Une erreur est survenue. Réessayez.");
+      }
       setLoading(false);
     } else {
-      // Check if there's a pending invitation token
-      const inviteToken = sessionStorage.getItem('invite_token');
+      const inviteToken = sessionStorage.getItem("invite_token");
       if (inviteToken) {
-        sessionStorage.removeItem('invite_token');
+        sessionStorage.removeItem("invite_token");
         router.push(`/invite?token=${inviteToken}`);
       } else {
         router.push("/");
       }
+    }
+  };
+
+  const handleResend = async () => {
+    setError(null);
+    setResendInfo(null);
+
+    const trimmedEmail = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError("Saisissez d'abord votre email avant de renvoyer la confirmation.");
+      return;
+    }
+
+    setResending(true);
+
+    try {
+      const supabase = createClient();
+      const inviteToken = typeof window !== "undefined" ? sessionStorage.getItem("invite_token") : null;
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+      const redirectTo = inviteToken
+        ? `${appUrl}/auth/callback?next=${encodeURIComponent(`/invite?token=${inviteToken}`)}`
+        : `${appUrl}/auth/callback`;
+
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email: trimmedEmail,
+        options: { emailRedirectTo: redirectTo },
+      });
+
+      if (error) {
+        setError(mapResendError(error.message));
+      } else {
+        setResendInfo(`Un nouveau lien de confirmation a été envoyé à ${trimmedEmail}. Vérifiez votre boîte mail (et vos spams).`);
+      }
+    } catch (err) {
+      setError(mapResendError(err instanceof Error ? err.message : "Erreur inconnue"));
+    } finally {
+      setResending(false);
     }
   };
 
@@ -89,6 +150,12 @@ export default function LoginPage() {
           {error && (
             <div className="bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-sm p-3 rounded-xl mb-4 text-center">
               {error}
+            </div>
+          )}
+
+          {resendInfo && (
+            <div className="bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400 text-sm p-3 rounded-xl mb-4 text-center">
+              {resendInfo}
             </div>
           )}
 
@@ -159,7 +226,17 @@ export default function LoginPage() {
             </button>
           </form>
 
-
+          {showResend && (
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending}
+              className="w-full mt-3 text-sm text-purple-600 dark:text-purple-400 font-medium py-2 hover:text-purple-700 dark:hover:text-purple-300 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            >
+              {resending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+              Renvoyer le mail de confirmation
+            </button>
+          )}
 
           <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
             Pas encore de compte ?{" "}
