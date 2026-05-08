@@ -26,6 +26,7 @@ import {
   Check,
 } from "lucide-react";
 import { useIsPremium } from "@/lib/use-premium";
+import { useIsIOSNative } from "@/lib/use-platform";
 import { useToast } from "@/lib/toast";
 
 const sections = [
@@ -84,6 +85,7 @@ const PREMIUM_FEATURES = [
 
 function PremiumCard() {
   const { isPremium, until, loading } = useIsPremium();
+  const isIOSNative = useIsIOSNative();
   const toast = useToast();
   const [busy, setBusy] = useState<"pack" | "monthly" | null>(null);
 
@@ -118,6 +120,7 @@ function PremiumCard() {
   };
 
   if (loading) return null;
+  if (isIOSNative) return null;
 
   if (isPremium) {
     return (
