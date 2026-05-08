@@ -42,24 +42,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async headers() {
+  async rewrites() {
     return [
       {
-        // Apple App Site Association — must be served as application/json with no redirects.
         source: "/.well-known/apple-app-site-association",
-        headers: [
-          { key: "Content-Type", value: "application/json" },
-          { key: "Cache-Control", value: "public, max-age=3600" },
-        ],
+        destination: "/api/aasa",
       },
       {
-        // Android Digital Asset Links (for App Links + Smart Lock auto-fill).
-        source: "/.well-known/assetlinks.json",
-        headers: [
-          { key: "Content-Type", value: "application/json" },
-          { key: "Cache-Control", value: "public, max-age=3600" },
-        ],
+        source: "/apple-app-site-association",
+        destination: "/api/aasa",
       },
+    ];
+  },
+  async headers() {
+    return [
       {
         source: "/service-worker.js",
         headers: [
