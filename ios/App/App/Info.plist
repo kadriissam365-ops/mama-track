@@ -5,9 +5,24 @@
     <key>CAPACITOR_DEBUG</key>
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>fr</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>fr</string>
+		<string>en</string>
+	</array>
 	<key>CFBundleDisplayName</key>
         <string>MamaTrack</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>MamaTrack n'utilise pas vos données à des fins publicitaires.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Permet d'ajouter des photos de votre grossesse et des échographies.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Permet d'ajouter des photos depuis votre galerie.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Permet d'enregistrer des photos dans votre galerie.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

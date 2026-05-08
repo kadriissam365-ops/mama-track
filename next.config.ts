@@ -45,6 +45,22 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // Apple App Site Association — must be served as application/json with no redirects.
+        source: "/.well-known/apple-app-site-association",
+        headers: [
+          { key: "Content-Type", value: "application/json" },
+          { key: "Cache-Control", value: "public, max-age=3600" },
+        ],
+      },
+      {
+        // Android Digital Asset Links (for App Links + Smart Lock auto-fill).
+        source: "/.well-known/assetlinks.json",
+        headers: [
+          { key: "Content-Type", value: "application/json" },
+          { key: "Cache-Control", value: "public, max-age=3600" },
+        ],
+      },
+      {
         source: "/service-worker.js",
         headers: [
           {
