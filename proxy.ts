@@ -56,7 +56,7 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const publicPaths = ['/auth/login', '/auth/signup', '/auth/callback', '/auth/forgot-password', '/auth/reset-password', '/onboarding', '/invite', '/mentions-legales', '/confidentialite', '/cgu']
+  const publicPaths = ['/auth/login', '/auth/signup', '/auth/callback', '/auth/forgot-password', '/auth/reset-password', '/onboarding', '/invite', '/mentions-legales', '/confidentialite', '/cgu', '/api/aasa', '/.well-known', '/apple-app-site-association', '/api/stripe/webhook', '/api/cron']
   const isPublicPath = publicPaths.some(path => request.nextUrl.pathname.startsWith(path))
   const isHomePage = request.nextUrl.pathname === '/'
 
