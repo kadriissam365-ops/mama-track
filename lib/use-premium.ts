@@ -1,7 +1,6 @@
 "use client";
 
 import { useStore } from "./store";
-import { useIsIOSNative } from "./use-platform";
 
 export interface PremiumStatus {
   isPremium: boolean;
@@ -11,9 +10,8 @@ export interface PremiumStatus {
 
 export function useIsPremium(): PremiumStatus {
   const { isPremium, premiumUntil, loading } = useStore();
-  const isIOSNative = useIsIOSNative();
   return {
-    isPremium: isIOSNative || isPremium,
+    isPremium,
     loading,
     until: premiumUntil ? new Date(premiumUntil) : null,
   };

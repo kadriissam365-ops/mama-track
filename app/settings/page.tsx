@@ -36,7 +36,6 @@ import { createClient } from "@/lib/supabase";
 import { useTranslation, LanguageSwitcher } from "@/lib/i18n";
 import DpaCalculator from "@/components/DpaCalculator";
 import { useIsPremium } from "@/lib/use-premium";
-import { useIsIOSNative } from "@/lib/use-platform";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -48,7 +47,6 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const { t } = useTranslation();
   const { isPremium, until } = useIsPremium();
-  const isIOSNative = useIsIOSNative();
 
   const [mamaName, setMamaName] = useState(store.mamaName ?? "");
   const [babyName, setBabyName] = useState(store.babyName ?? "");
@@ -288,35 +286,33 @@ export default function SettingsPage() {
           </div>
 
           {/* Abonnement Premium */}
-          {!isIOSNative && (
-            <div className={`rounded-3xl p-5 border ${isPremium ? "border-purple-200 dark:border-purple-800/40 bg-gradient-to-br from-amber-50 via-pink-50 to-purple-50 dark:from-amber-950/20 dark:via-pink-950/20 dark:to-purple-950/20" : "border-pink-100 dark:border-pink-900/30 bg-white dark:bg-gray-900"}`}>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-500" />
-                  Abonnement
-                </h3>
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isPremium ? "bg-gradient-to-r from-amber-200 via-pink-200 to-purple-200 text-[#3d2b2b]" : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"}`}>
-                  {isPremium ? "Premium ✨" : "Gratuit"}
-                </span>
-              </div>
-              {isPremium && until && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                  Renouvellement le {until.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
-                </p>
-              )}
-              {!isPremium && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-                  Débloquez MamaCoach IA, le Carnet de maternité PDF et le mode duo illimité.
-                </p>
-              )}
-              <Link
-                href="/plus"
-                className={`block text-center text-sm font-semibold py-2.5 rounded-xl transition-all ${isPremium ? "bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800/40 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30" : "bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"}`}
-              >
-                {isPremium ? "Gérer mon abonnement" : "Passer Premium · 4,99 €/mois"}
-              </Link>
+          <div className={`rounded-3xl p-5 border ${isPremium ? "border-purple-200 dark:border-purple-800/40 bg-gradient-to-br from-amber-50 via-pink-50 to-purple-50 dark:from-amber-950/20 dark:via-pink-950/20 dark:to-purple-950/20" : "border-pink-100 dark:border-pink-900/30 bg-white dark:bg-gray-900"}`}>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-purple-500" />
+                Abonnement
+              </h3>
+              <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${isPremium ? "bg-gradient-to-r from-amber-200 via-pink-200 to-purple-200 text-[#3d2b2b]" : "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400"}`}>
+                {isPremium ? "Premium ✨" : "Gratuit"}
+              </span>
             </div>
-          )}
+            {isPremium && until && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                Renouvellement le {until.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+              </p>
+            )}
+            {!isPremium && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                Débloquez MamaCoach IA, le Carnet de maternité PDF et le mode duo illimité.
+              </p>
+            )}
+            <Link
+              href="/plus"
+              className={`block text-center text-sm font-semibold py-2.5 rounded-xl transition-all ${isPremium ? "bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800/40 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30" : "bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"}`}
+            >
+              {isPremium ? "Gérer mon abonnement" : "Passer Premium · 4,99 €/mois"}
+            </Link>
+          </div>
 
           {/* Change password — available for email-based accounts (no Google SSO) */}
           {user && user.app_metadata?.provider !== "google" && (

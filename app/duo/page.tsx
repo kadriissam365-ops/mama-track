@@ -15,7 +15,6 @@ import {
 } from "@/lib/duo-api";
 import { createClient } from "@/lib/supabase";
 import Paywall from "@/components/Paywall";
-import { useIsIOSNative } from "@/lib/use-platform";
 import Link from "next/link";
 import {
   Users,
@@ -327,7 +326,6 @@ export default function DuoPage() {
   const { user } = useAuth();
   const router = useRouter();
   const toast = useToast();
-  const isIOSNative = useIsIOSNative();
   
   const [loading, setLoading] = useState(true);
   const [invitations, setInvitations] = useState<DuoInvitation[]>([]);
@@ -406,12 +404,8 @@ export default function DuoPage() {
       });
 
       if (res.status === 402) {
-        if (isIOSNative) {
-          toast.error("Cette fonctionnalité sera bientôt disponible.");
-        } else {
-          toast.error("Le Mode Duo est réservé aux membres Premium.");
-          router.push("/plus");
-        }
+        toast.error("Le Mode Duo est réservé aux membres Premium.");
+        router.push("/plus");
         return;
       }
 
