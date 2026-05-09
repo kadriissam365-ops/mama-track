@@ -214,13 +214,47 @@ function generateId(): string {
   return crypto.randomUUID();
 }
 
-// localStorage helpers for offline support
+// localStorage helpers for offline support.
+// The cache is tagged with the owning user.id so we never serve one user's
+// data to another after a logout/login cycle.
+let currentStorageUserId: string | null = null;
+const STORAGE_KEY = "pregnancy-tracker";
+
+export function setStorageUser(userId: string | null) {
+  currentStorageUserId = userId;
+  if (typeof window === "undefined") return;
+  if (userId === null) return; // signed out: keep cache only if same user comes back
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed._userId && parsed._userId !== userId) {
+      // Cache belonged to a different user — wipe it to prevent leakage.
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch {
+    // ignore
+  }
+}
+
 function loadFromStorage(): Partial<StoreState> {
   if (typeof window === "undefined") return {};
   try {
-    const stored = localStorage.getItem("pregnancy-tracker");
+    const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return {};
-    return JSON.parse(stored);
+    const parsed = JSON.parse(stored);
+    // Reject cache that belongs to a different user.
+    if (parsed && parsed._userId && currentStorageUserId && parsed._userId !== currentStorageUserId) {
+      localStorage.removeItem(STORAGE_KEY);
+      return {};
+    }
+    // Strip metadata before returning to caller.
+    if (parsed && "_userId" in parsed) {
+      const { _userId: _drop, ...rest } = parsed;
+      void _drop;
+      return rest;
+    }
+    return parsed;
   } catch {
     return {};
   }
@@ -263,9 +297,14 @@ function mergeNutrition(remote: NutritionChecks, local: NutritionChecks | undefi
 
 function saveToStorage(state: Partial<StoreState>) {
   if (typeof window === "undefined") return;
+  // Never write to disk before we know which user owns the cache.
+  if (!currentStorageUserId) return;
   try {
     const current = loadFromStorage();
-    localStorage.setItem("pregnancy-tracker", JSON.stringify({ ...current, ...state }));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...current, ...state, _userId: currentStorageUserId })
+    );
   } catch {
     // Ignore storage errors
   }
@@ -423,38 +462,54 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-
-    // Load from localStorage first for immediate display
-    const localData = loadFromStorage();
-    if (Object.keys(localData).length > 0) {
-      setState(s => ({
-        ...s,
-        ...localData,
-        checklistItems: localData.checklistItems?.length
-          ? localData.checklistItems
-          : DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` })),
-      }));
-    } else {
-      // Set default checklist
-      setState(s => ({
-        ...s,
-        checklistItems: DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` })),
-      }));
-    }
+    // Defer the localStorage hydration until we know the current user.id —
+    // otherwise we briefly expose the previous user's cached data on the
+    // dashboard before the auth effect has a chance to gate on identity.
+    setState(s => ({
+      ...s,
+      checklistItems: DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` })),
+    }));
   }, []);
 
-  // Load remote data ONLY when auth has resolved and a real user is present.
-  // Critically, when auth is still resolving or user is absent, we DO NOT
-  // touch state (leaves localStorage cache intact). This prevents the race
-  // "auth flickers → load runs with user=null → remote fetches fail silently
-  // → empty state overwrites localStorage".
+  // Reset cached state whenever the active user.id changes (login, logout,
+  // or account switch). This prevents one user's data from leaking into
+  // another's session via the in-memory store or stale localStorage.
+  const lastUserIdRef = useRef<string | null>(null);
   useEffect(() => {
     if (!mounted) return;
     if (authLoading) return;
+    const currentUserId = user?.id ?? null;
+    const previousUserId = lastUserIdRef.current;
+    const userChanged = previousUserId !== currentUserId;
+    lastUserIdRef.current = currentUserId;
+
+    setStorageUser(currentUserId);
+
+    if (userChanged) {
+      // Wipe in-memory state on every transition, including signOut. The
+      // localStorage tag (set via setStorageUser) ensures we never replay
+      // someone else's offline cache after this point.
+      setState({
+        ...initialState,
+        checklistItems: DEFAULT_CHECKLIST.map((item, i) => ({ ...item, id: `default-${i}` })),
+        loading: !!user,
+      });
+    }
+
     if (user) {
+      // Hydrate this user's offline cache (if any), then refetch from Supabase.
+      const localData = loadFromStorage();
+      if (Object.keys(localData).length > 0) {
+        setState(s => ({
+          ...s,
+          ...localData,
+          checklistItems: localData.checklistItems?.length
+            ? localData.checklistItems
+            : s.checklistItems,
+        }));
+      }
       loadData();
     } else {
-      // Signed-out: stop the loading spinner but do NOT wipe local state.
       setState(s => ({ ...s, loading: false }));
     }
   }, [mounted, authLoading, user, loadData]);
