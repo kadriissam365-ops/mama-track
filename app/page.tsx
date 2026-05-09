@@ -56,10 +56,6 @@ export default function DashboardPage() {
   const { isPremium, loading: premiumLoading } = useIsPremium();
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-
-  if (!isAuthenticated) {
-    return <LandingPage />;
-  }
   const router = useRouter();
   const [showSetup, setShowSetup] = useState(false);
   const [showDpaCalc, setShowDpaCalc] = useState(false);
@@ -103,6 +99,11 @@ export default function DashboardPage() {
     }).catch(() => {});
     return () => { cancelled = true; };
   }, [user, store.loading, store.dueDate, router]);
+
+  // Early returns must come AFTER all hooks (Rules of Hooks).
+  if (!isAuthenticated) {
+    return <LandingPage />;
+  }
 
   // Show loading skeleton while data is being fetched
   if (store.loading) {
