@@ -26,12 +26,15 @@ import {
   Settings,
   TrendingUp,
   Mail,
+  Bot,
+  LogIn,
 } from "lucide-react";
 
 const features = [
   { icon: Baby, title: "Suivi semaine par semaine", desc: "Taille, poids, fruit de comparaison et conseils personnalisés chaque semaine", color: "bg-pink-100 dark:bg-pink-900/30 text-pink-500" },
   { icon: Activity, title: "10+ trackers santé", desc: "Poids, eau, symptômes, humeur, tension, sommeil, contractions et plus", color: "bg-purple-100 dark:bg-purple-900/30 text-purple-500" },
   { icon: Timer, title: "Chrono contractions", desc: "Minuteur précis avec historique, durée et fréquence en temps réel", color: "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-500" },
+  { icon: Bot, title: "MamaCoach IA", desc: "Assistant sage-femme IA 24/7 + analyses d'échographies, ordonnances et prises de sang (Premium)", color: "bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-500" },
   { icon: Users, title: "Mode duo", desc: "Partagez l'aventure avec votre partenaire qui suit tout en temps réel", color: "bg-emerald-100 text-emerald-500" },
   { icon: Camera, title: "Journal photo bump", desc: "Capturez chaque moment et comparez l'évolution de votre ventre", color: "bg-rose-100 dark:bg-rose-900/30 text-rose-500" },
   { icon: Calendar, title: "Agenda médical", desc: "Tous vos rendez-vous organisés au même endroit avec rappels", color: "bg-orange-100 dark:bg-orange-900/30 text-orange-500" },
@@ -42,7 +45,7 @@ const features = [
 ];
 
 const differentiators = [
-  { icon: Shield, title: "100% gratuit, pour de vrai", desc: "Pas de version premium cachée, pas d'abonnement, pas de pub. Tout est accessible dès l'inscription." },
+  { icon: Shield, title: "Sans pub, jamais", desc: "L'essentiel du suivi de grossesse est gratuit dès l'inscription. MamaCoach IA et analyses d'images en Premium pour couvrir les coûts d'API. Zéro publicité, zéro revente de données." },
   { icon: Smartphone, title: "Aucun téléchargement requis", desc: "MamaTrack est une PWA : ouvrez-la dans votre navigateur et ajoutez-la à votre écran d'accueil. C'est tout !" },
   { icon: Star, title: "Mode FIV / PMA intégré", desc: "La seule app qui prend en compte les parcours de procréation médicalement assistée." },
   { icon: Droplets, title: "Fonctionne hors connexion", desc: "Vos données se synchronisent automatiquement dès que vous retrouvez internet." },
@@ -58,7 +61,7 @@ const testimonials = [
 ];
 
 const faqItems = [
-  { q: "MamaTrack est-il vraiment gratuit ?", a: "Oui, 100% gratuit sans pub ni abonnement cache. Toutes les fonctionnalites sont accessibles des la creation de votre compte." },
+  { q: "MamaTrack est-il gratuit ?", a: "Toutes les fonctionnalites essentielles sont gratuites des la creation de votre compte : suivi semaine par semaine, 10+ trackers, chrono contractions, agenda medical, journal photo, projet naissance, 250+ prenoms, mode duo. MamaCoach IA et les analyses d'images (echographies, ordonnances, prises de sang) sont reserves au Premium pour couvrir les couts d'API IA. Aucune publicite, jamais." },
   { q: "Dois-je telecharger l'app sur l'App Store ?", a: "Non ! MamaTrack est une PWA (Progressive Web App). Ouvrez mamatrack.fr dans votre navigateur et ajoutez-le a votre ecran d'accueil pour une experience native." },
   { q: "Mes donnees sont-elles securisees ?", a: "Vos donnees sont chiffrees et stockees de facon securisee sur des serveurs europeens. Nous ne vendons et ne partageons aucune donnee personnelle." },
   { q: "Le mode duo, c'est quoi exactement ?", a: "Invitez votre partenaire a suivre votre grossesse en temps reel : evolution bebe, symptomes, rendez-vous, humeur. Il/elle recoit les mises a jour instantanement." },
@@ -177,7 +180,7 @@ export default function LandingPage() {
             name: "MamaTrack",
             url: "https://mamatrack.fr",
             description:
-              "Application gratuite de suivi de grossesse semaine par semaine. Poids, symptomes, contractions, mode duo, prenoms, projet naissance et plus.",
+              "Application de suivi de grossesse semaine par semaine. Suivi bebe, 10+ trackers, contractions, agenda, journal photo, mode duo, prenoms, projet naissance et assistant MamaCoach IA.",
             applicationCategory: "HealthApplication",
             operatingSystem: "Web",
             offers: {
@@ -208,13 +211,15 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/auth/login"
-              className="text-sm text-gray-600 dark:text-gray-300 hover:text-pink-500 transition-colors font-medium hidden sm:inline-block"
+              className="text-sm text-gray-600 dark:text-gray-300 hover:text-pink-500 transition-colors font-medium inline-flex items-center gap-1.5 border border-pink-200 dark:border-pink-900/40 px-3 sm:px-4 py-2 rounded-xl hover:border-pink-400"
+              aria-label="Se connecter"
             >
-              Connexion
+              <LogIn className="w-4 h-4" />
+              <span className="hidden sm:inline">Se connecter</span>
             </Link>
             <Link
               href="/auth/signup"
-              className="text-sm bg-gradient-to-r from-pink-400 to-purple-500 text-white font-semibold py-2.5 px-5 rounded-xl hover:from-pink-500 hover:to-purple-600 transition-all shadow-sm shadow-pink-200/30"
+              className="text-sm bg-gradient-to-r from-pink-400 to-purple-500 text-white font-semibold py-2 px-4 sm:px-5 rounded-xl hover:from-pink-500 hover:to-purple-600 transition-all shadow-sm shadow-pink-200/30"
             >
               Commencer
             </Link>
@@ -262,7 +267,7 @@ export default function LandingPage() {
         >
           <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/40 dark:to-purple-900/40 text-pink-600 dark:text-pink-400 text-xs font-semibold px-4 py-2 rounded-full shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            100% gratuit &middot; Sans pub &middot; Sans abonnement
+            L&apos;essentiel gratuit &middot; Sans pub &middot; MamaCoach IA en option
           </span>
         </motion.div>
 
@@ -301,7 +306,7 @@ export default function LandingPage() {
           transition={{ delay: 0.3 }}
           className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-3 max-w-lg mx-auto leading-relaxed"
         >
-          Votre compagnon de grossesse complet, gratuit et sans pub.
+          Votre compagnon de grossesse complet, sans pub.
         </motion.p>
 
         <motion.p
@@ -359,7 +364,7 @@ export default function LandingPage() {
               { value: "10+", label: "Trackers sante", icon: "📊" },
               { value: "250+", label: "Prenoms a explorer", icon: "💛" },
               { value: "40", label: "Semaines couvertes", icon: "📅" },
-              { value: "0\u00a0\u20ac", label: "Pour toujours", icon: "🎉" },
+              { value: "24/7", label: "MamaCoach IA", icon: "🤖" },
             ].map((stat) => (
               <AnimatedStat key={stat.label} value={stat.value} label={stat.label} icon={stat.icon} />
             ))}
@@ -897,7 +902,7 @@ export default function LandingPage() {
               <span className="font-bold text-[#3d2b2b] dark:text-gray-100 text-lg">MamaTrack</span>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
-              Votre compagnon de grossesse gratuit, complet et sans pub. Fait avec amour en France.
+              Votre compagnon de grossesse complet, sans pub. Fait avec amour en France.
             </p>
           </div>
 
@@ -930,7 +935,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
             <span>Fait avec amour en France</span>
             <span className="text-pink-200">&middot;</span>
-            <span>100% gratuit</span>
+            <span>Sans pub</span>
             <span className="text-pink-200">&middot;</span>
             <span>Donnees securisees</span>
           </div>
