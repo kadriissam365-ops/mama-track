@@ -13,8 +13,6 @@
 	</array>
 	<key>CFBundleDisplayName</key>
         <string>MamaTrack</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>MamaTrack n'utilise pas vos données à des fins publicitaires.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Permet d'ajouter des photos de votre grossesse et des échographies.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
