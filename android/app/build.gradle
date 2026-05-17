@@ -16,8 +16,20 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            def keystorePath = rootProject.file('../.secrets/mamatrack-upload.keystore')
+            if (keystorePath.exists()) {
+                storeFile keystorePath
+                storePassword (System.getenv('MAMATRACK_KEYSTORE_PASS') ?: 'MamaTrackKey2026!')
+                keyAlias (System.getenv('MAMATRACK_KEY_ALIAS') ?: 'upload')
+                keyPassword (System.getenv('MAMATRACK_KEY_PASS') ?: 'MamaTrackKey2026!')
+            }
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
