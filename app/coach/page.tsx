@@ -5,6 +5,8 @@ import { m as motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Send, AlertCircle, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/lib/toast";
+import { AiConsentGate } from "@/components/AiConsentGate";
+import { useAiConsent } from "@/lib/use-ai-consent";
 
 interface ChatMessage {
   id: string;
@@ -25,6 +27,7 @@ function newId() {
 export default function CoachPage() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const toast = useToast();
+  const { accepted: aiConsentAccepted } = useAiConsent();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -39,6 +42,7 @@ export default function CoachPage() {
 
   useEffect(() => {
     if (!isAuthenticated) return;
+    if (!aiConsentAccepted) return;
     if (fetchedTipRef.current) return;
     fetchedTipRef.current = true;
 
@@ -69,7 +73,7 @@ export default function CoachPage() {
         setTipLoading(false);
       }
     })();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, aiConsentAccepted]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -155,6 +159,67 @@ export default function CoachPage() {
     );
   }
 
+  return (
+    <AiConsentGate
+      feature="MamaCoach IA"
+      description="MamaCoach est un assistant texte propulsé par une intelligence artificielle externe. Pour te répondre, l'app envoie tes messages ainsi qu'un résumé de ton contexte de grossesse (semaine, derniers relevés non nominatifs) à un fournisseur d'IA."
+      dataSent={[
+        "Tes messages écrits dans le chat",
+        "Ta semaine de grossesse (SA ou GA)",
+        "Tes derniers relevés agrégés (poids, humeur, symptômes, contractions, hydratation) — sans nom ni email",
+        "Aucune photo, aucun e-mail, aucun identifiant médical n'est transmis",
+      ]}
+    >
+      <CoachChat
+        messages={messages}
+        setMessages={setMessages}
+        input={input}
+        setInput={setInput}
+        isStreaming={isStreaming}
+        setIsStreaming={setIsStreaming}
+        weeklyTip={weeklyTip}
+        tipLoading={tipLoading}
+        tipError={tipError}
+        scrollRef={scrollRef}
+        inputRef={inputRef}
+        sendMessage={sendMessage}
+        handleSubmit={handleSubmit}
+        handleQuickAction={handleQuickAction}
+      />
+    </AiConsentGate>
+  );
+}
+
+interface ChatProps {
+  messages: ChatMessage[];
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  input: string;
+  setInput: (s: string) => void;
+  isStreaming: boolean;
+  setIsStreaming: (b: boolean) => void;
+  weeklyTip: string;
+  tipLoading: boolean;
+  tipError: boolean;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
+  sendMessage: (text: string) => Promise<void>;
+  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  handleQuickAction: (text: string) => void;
+}
+
+function CoachChat({
+  messages,
+  input,
+  setInput,
+  isStreaming,
+  weeklyTip,
+  tipLoading,
+  tipError,
+  scrollRef,
+  inputRef,
+  handleSubmit,
+  handleQuickAction,
+}: ChatProps) {
   return (
     <div className="max-w-lg mx-auto px-4 pt-6 pb-40 space-y-4">
       <motion.div

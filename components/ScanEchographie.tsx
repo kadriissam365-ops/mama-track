@@ -5,6 +5,8 @@ import { m as motion, AnimatePresence } from "framer-motion";
 import { Camera, Loader2, X, Check, Sparkles, Baby } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";
+import { useAiConsent } from "@/lib/use-ai-consent";
+import Link from "next/link";
 
 interface UltrasoundResult {
   examDate?: string | null;
@@ -39,11 +41,15 @@ export default function ScanEchographie() {
   const fileRef = useRef<HTMLInputElement>(null);
   const { addAppointment } = useStore();
   const toast = useToast();
+  const { accepted: aiConsentAccepted } = useAiConsent();
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<UltrasoundResult | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const onPick = () => fileRef.current?.click();
+  const onPick = () => {
+    if (!aiConsentAccepted) return;
+    fileRef.current?.click();
+  };
 
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -128,25 +134,35 @@ export default function ScanEchographie() {
         onChange={onFile}
         className="hidden"
       />
-      <button
-        type="button"
-        onClick={onPick}
-        disabled={busy}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-60"
-      >
-        {busy ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Analyse en cours…
-          </>
-        ) : (
-          <>
-            <Baby className="w-4 h-4" />
-            <Sparkles className="w-3.5 h-3.5" />
-            Analyser une échographie
-          </>
-        )}
-      </button>
+      {aiConsentAccepted ? (
+        <button
+          type="button"
+          onClick={onPick}
+          disabled={busy}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-60"
+        >
+          {busy ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Analyse en cours…
+            </>
+          ) : (
+            <>
+              <Baby className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5" />
+              Analyser une échographie
+            </>
+          )}
+        </button>
+      ) : (
+        <Link
+          href="/coach"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-indigo-200 dark:border-indigo-900/40 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-200 text-sm font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-950/50 transition-colors"
+        >
+          <Sparkles className="w-4 h-4" />
+          Activer l&apos;IA pour analyser
+        </Link>
+      )}
 
       <AnimatePresence>
         {result && (

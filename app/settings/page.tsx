@@ -37,6 +37,7 @@ import { useTranslation, LanguageSwitcher } from "@/lib/i18n";
 import DpaCalculator from "@/components/DpaCalculator";
 import { useIsPremium } from "@/lib/use-premium";
 import { useIsIOSNative } from "@/lib/use-platform";
+import { useAiConsent } from "@/lib/use-ai-consent";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -379,6 +380,9 @@ export default function SettingsPage() {
             <CarnetMaternite />
           </div>
 
+          {/* AI consent toggle */}
+          <AiConsentSettings />
+
           {/* GDPR Data Export & Account Deletion */}
           <DataExport />
 
@@ -403,6 +407,61 @@ export default function SettingsPage() {
         >
           <NotificationSettings userId={user?.id} />
         </motion.div>
+      )}
+    </div>
+  );
+}
+
+function AiConsentSettings() {
+  const { hydrated, accepted, acceptedAt, accept, revoke } = useAiConsent();
+  if (!hydrated) return null;
+  return (
+    <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-pink-100 dark:border-pink-900/30 space-y-3">
+      <div className="flex items-start gap-3">
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center shrink-0">
+          <Sparkles className="w-4 h-4 text-white" />
+        </div>
+        <div className="flex-1">
+          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm">
+            Intelligence artificielle
+          </h3>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
+            Contr&ocirc;le l&apos;envoi de tes donn&eacute;es &agrave; nos prestataires d&apos;IA (Anthropic / Google) pour
+            MamaCoach et les scans d&apos;images.{" "}
+            <Link href="/confidentialite#ia-tiers" className="underline text-pink-500 dark:text-pink-300">
+              D&eacute;tails dans la politique
+            </Link>
+            .
+          </p>
+        </div>
+      </div>
+
+      {accepted ? (
+        <div className="space-y-2">
+          <div className="text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40 rounded-lg px-3 py-2">
+            ✓ Activ&eacute;{acceptedAt ? ` le ${new Date(acceptedAt).toLocaleDateString("fr-FR")}` : ""}
+          </div>
+          <button
+            type="button"
+            onClick={revoke}
+            className="w-full py-2.5 rounded-xl border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-300 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+          >
+            Couper l&apos;IA &amp; r&eacute;voquer le consentement
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <div className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-950/30 border border-gray-100 dark:border-gray-900/40 rounded-lg px-3 py-2">
+            Aucune donn&eacute;e n&apos;est envoy&eacute;e tant que tu n&apos;as pas activ&eacute; l&apos;IA.
+          </div>
+          <button
+            type="button"
+            onClick={accept}
+            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-pink-400 to-purple-500 text-white text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            Activer l&apos;IA
+          </button>
+        </div>
       )}
     </div>
   );

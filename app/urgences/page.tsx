@@ -5,6 +5,7 @@ import { m as motion, AnimatePresence } from "framer-motion";
 import { Phone, Plus, Trash2, AlertTriangle, Hospital, Heart, Siren, Edit3, Save, X } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useStore, type EmergencyContact } from "@/lib/store";
+import { MedicalSources } from "@/components/MedicalSources";
 
 const PRESET_ROLES = [
   { role: "Maternité", emoji: "🏥" },
@@ -330,6 +331,17 @@ export default function UrgencesPage() {
           </div>
         </div>
       </div>
+
+      <MedicalSources
+        intro="Les signaux d&apos;alerte list&eacute;s ci-dessus sont issus des recommandations officielles fran&ccedil;aises. En cas de doute, contactez le 15, votre maternit&eacute; de garde ou le service d&apos;urgences gyn&eacute;cologiques de votre h&ocirc;pital."
+        sources={[
+          { label: "Ameli — Les urgences pendant la grossesse", url: "https://www.ameli.fr/assure/sante/themes/grossesse/urgences-pendant-grossesse" },
+          { label: "HAS — Recommandation femmes enceintes &agrave; risque", url: "https://www.has-sante.fr/jcms/c_2747402/fr/preeclampsie-place-des-marqueurs-pl-gf-et-spl-gf-dans-le-suivi-des-femmes-enceintes" },
+          { label: "Coll&egrave;ge National des Gyn&eacute;cologues et Obst&eacute;triciens Fran&ccedil;ais (CNGOF)", url: "https://www.cngof.fr/" },
+          { label: "Sant&eacute; Publique France — Les num&eacute;ros d&apos;urgence", url: "https://www.service-public.fr/particuliers/vosdroits/F1085" },
+          { label: "SAMU — 15 (urgences m&eacute;dicales), 18 (Pompiers), 112 (urgences UE), 114 (SMS sourds/malentendants)", url: "https://www.gouvernement.fr/risques/connaitre-les-numeros-d-urgence" },
+        ]}
+      />
 
       <ConfirmDialog
         isOpen={confirmDelete !== null}

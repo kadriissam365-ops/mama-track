@@ -5,6 +5,8 @@ import { m as motion, AnimatePresence } from "framer-motion";
 import { Camera, Loader2, X, Check, AlertTriangle, Sparkles } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";
+import { useAiConsent } from "@/lib/use-ai-consent";
+import Link from "next/link";
 
 interface ParsedMedication {
   name: string;
@@ -46,11 +48,15 @@ export default function ScanOrdonnance() {
   const fileRef = useRef<HTMLInputElement>(null);
   const { addMedicationEntry } = useStore();
   const toast = useToast();
+  const { accepted: aiConsentAccepted } = useAiConsent();
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<ParseResult | null>(null);
   const [added, setAdded] = useState<Set<number>>(new Set());
 
-  const onPick = () => fileRef.current?.click();
+  const onPick = () => {
+    if (!aiConsentAccepted) return;
+    fileRef.current?.click();
+  };
 
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -126,25 +132,35 @@ export default function ScanOrdonnance() {
         onChange={onFile}
         className="hidden"
       />
-      <button
-        type="button"
-        onClick={onPick}
-        disabled={busy}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-60"
-      >
-        {busy ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Analyse en cours…
-          </>
-        ) : (
-          <>
-            <Camera className="w-4 h-4" />
-            <Sparkles className="w-3.5 h-3.5" />
-            Scanner une ordonnance
-          </>
-        )}
-      </button>
+      {aiConsentAccepted ? (
+        <button
+          type="button"
+          onClick={onPick}
+          disabled={busy}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-60"
+        >
+          {busy ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Analyse en cours…
+            </>
+          ) : (
+            <>
+              <Camera className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5" />
+              Scanner une ordonnance
+            </>
+          )}
+        </button>
+      ) : (
+        <Link
+          href="/coach"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-purple-200 dark:border-purple-900/40 bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-200 text-sm font-semibold hover:bg-purple-100 dark:hover:bg-purple-950/50 transition-colors"
+        >
+          <Sparkles className="w-4 h-4" />
+          Activer l&apos;IA pour scanner
+        </Link>
+      )}
 
       <AnimatePresence>
         {result && (

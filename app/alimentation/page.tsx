@@ -6,6 +6,7 @@ import { Search, ShieldCheck, ShieldAlert, ShieldX, Info, BookOpen, ChefHat } fr
 import dynamic from "next/dynamic";
 import Paywall from "@/components/Paywall";
 import { Skeleton } from "@/components/Skeleton";
+import { MedicalSources } from "@/components/MedicalSources";
 
 const MealPlanWeek = dynamic(() => import("@/components/MealPlanWeek"), {
   ssr: false,
@@ -330,6 +331,17 @@ export default function AlimentationPage() {
           </div>
         </div>
       </div>
+
+      <MedicalSources
+        intro="La classification des aliments (autoris&eacute;s / d&eacute;conseill&eacute;s / interdits) suit les recommandations officielles fran&ccedil;aises et europ&eacute;ennes sur la pr&eacute;vention de la list&eacute;riose, de la toxoplasmose et des polluants chimiques pendant la grossesse."
+        sources={[
+          { label: "Ameli — Alimentation pendant la grossesse", url: "https://www.ameli.fr/assure/sante/themes/grossesse/alimentation-femme-enceinte" },
+          { label: "ANSES — Recommandations alimentaires (femmes enceintes)", url: "https://www.anses.fr/fr/content/femme-enceinte-ou-allaitante-soyez-vigilante" },
+          { label: "Sant&eacute; Publique France — Mangerbouger.fr (rep&egrave;res alimentaires grossesse)", url: "https://www.mangerbouger.fr/manger-mieux/bien-manger-tout-au-long-de-sa-vie/grossesse-et-allaitement" },
+          { label: "Sant&eacute; Publique France — Pr&eacute;vention de la toxoplasmose", url: "https://www.santepubliquefrance.fr/maladies-et-traumatismes/maladies-et-infections-respiratoires/toxoplasmose" },
+          { label: "DGCCRF — Pr&eacute;vention de la list&eacute;riose", url: "https://www.economie.gouv.fr/dgccrf/Publications/Vie-pratique/Fiches-pratiques/listeriose" },
+        ]}
+      />
       </>
       )}
     </div>

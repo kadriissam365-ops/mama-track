@@ -19,7 +19,7 @@ export default function ConfidentialitePage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent">
             Politique de Confidentialit&eacute;
           </h1>
-          <p className="text-sm text-gray-400 dark:text-gray-500">Derni&egrave;re mise &agrave; jour : 15 avril 2026</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500">Derni&egrave;re mise &agrave; jour : 19 mai 2026</p>
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Introduction</h2>
@@ -118,10 +118,70 @@ export default function ConfidentialitePage() {
               Vos donn&eacute;es peuvent &ecirc;tre acc&eacute;d&eacute;es uniquement par :
             </p>
             <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 text-sm space-y-1 pl-2">
-              <li><strong>Supabase</strong> : h&eacute;bergeur de la base de donn&eacute;es (sous-traitant, serveurs UE)</li>
-              <li><strong>Vercel</strong> : h&eacute;bergeur de l&apos;application web</li>
-              <li><strong>Votre partenaire</strong> : uniquement si vous activez le mode duo et partagez votre code d&apos;invitation</li>
+              <li><strong>Supabase Inc.</strong> (Etats-Unis, serveurs UE Francfort) : h&eacute;bergeur de la base de donn&eacute;es. Sous-traitant RGPD.</li>
+              <li><strong>Vercel Inc.</strong> (Etats-Unis) : h&eacute;bergeur de l&apos;application web.</li>
+              <li><strong>Resend</strong> (Etats-Unis) : envoi des emails transactionnels (magic link, rappels). Donn&eacute;es transmises : email uniquement.</li>
+              <li><strong>Stripe Payments Europe Ltd.</strong> (Irlande) : traitement des paiements Premium (uniquement si vous souscrivez). Donn&eacute;es transmises : email + ID de session.</li>
+              <li><strong>Votre partenaire</strong> : uniquement si vous activez le mode duo et partagez votre code d&apos;invitation.</li>
             </ul>
+          </section>
+
+          <section className="space-y-3" id="ia-tiers">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+              Partage avec des services d&apos;intelligence artificielle
+            </h2>
+            <div className="bg-purple-50 dark:bg-purple-950/30 rounded-xl p-4 border border-purple-100 dark:border-purple-900 space-y-3">
+              <p className="text-gray-700 dark:text-gray-200 text-sm leading-relaxed">
+                Certaines fonctionnalit&eacute;s optionnelles (MamaCoach IA, analyse d&apos;&eacute;chographie,
+                d&apos;ordonnance, d&apos;analyses sanguines) reposent sur des mod&egrave;les d&apos;intelligence
+                artificielle h&eacute;berg&eacute;s par des prestataires tiers. Ces fonctionnalit&eacute;s ne
+                sont activ&eacute;es <strong>qu&apos;apr&egrave;s votre consentement explicite</strong> (case
+                &agrave; cocher d&eacute;di&eacute;e &laquo;&nbsp;Activer MamaCoach IA&nbsp;&raquo;).
+              </p>
+
+              <div className="space-y-2">
+                <p className="font-medium text-purple-700 dark:text-purple-200 text-sm">
+                  Prestataire principal : Anthropic, PBC
+                </p>
+                <ul className="text-xs text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside leading-relaxed">
+                  <li>Mod&egrave;le utilis&eacute; : Claude (claude-haiku-4-5)</li>
+                  <li>Si&egrave;ge : San Francisco, USA</li>
+                  <li>Donn&eacute;es transmises : votre message dans le chat + r&eacute;sum&eacute; non nominatif de votre contexte de grossesse (semaine, derniers relev&eacute;s agr&eacute;g&eacute;s)</li>
+                  <li>Finalit&eacute; : g&eacute;n&eacute;rer une r&eacute;ponse personnalis&eacute;e</li>
+                  <li>Conservation : aucune (API &laquo;&nbsp;zero data retention&nbsp;&raquo;, les donn&eacute;es ne sont pas utilis&eacute;es pour l&apos;entra&icirc;nement)</li>
+                  <li>Politique de confidentialit&eacute; : <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-pink-500 dark:text-pink-300 underline">anthropic.com/legal/privacy</a></li>
+                </ul>
+              </div>
+
+              <div className="space-y-2">
+                <p className="font-medium text-purple-700 dark:text-purple-200 text-sm">
+                  Prestataire de secours : Google LLC
+                </p>
+                <ul className="text-xs text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside leading-relaxed">
+                  <li>Mod&egrave;le utilis&eacute; : Gemini (gemini-2.5-flash), uniquement en <em>fallback</em> texte si Claude est indisponible et pour les fonctionnalit&eacute;s vision (analyse d&apos;image)</li>
+                  <li>Si&egrave;ge : Mountain View, USA</li>
+                  <li>Donn&eacute;es transmises : votre message + contexte (texte) <em>ou</em> votre image (&eacute;chographie / ordonnance / analyses), sans email ni identifiant utilisateur</li>
+                  <li>Finalit&eacute; : g&eacute;n&eacute;rer la r&eacute;ponse texte ou extraire les informations de l&apos;image</li>
+                  <li>Conservation : les donn&eacute;es envoy&eacute;es via l&apos;API Gemini ne sont <strong>pas utilis&eacute;es pour entra&icirc;ner</strong> les mod&egrave;les Google (API payante, voir conditions Gemini API)</li>
+                  <li>Politique de confidentialit&eacute; : <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-pink-500 dark:text-pink-300 underline">policies.google.com/privacy</a></li>
+                </ul>
+              </div>
+
+              <div className="bg-amber-50 dark:bg-amber-950/30 rounded-xl p-3 border border-amber-100 dark:border-amber-900/40">
+                <p className="text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
+                  <strong>Transferts hors UE</strong> : les transferts vers les Etats-Unis sont
+                  encadr&eacute;s par les <strong>Clauses Contractuelles Types</strong> (CCT) adopt&eacute;es par
+                  la Commission europ&eacute;enne (d&eacute;cision 2021/914) et, selon le prestataire, par le
+                  cadre Data Privacy Framework (DPF) UE-USA.
+                </p>
+              </div>
+
+              <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                Vous pouvez <strong>r&eacute;voquer votre consentement &agrave; tout moment</strong> dans
+                Param&egrave;tres &rarr; Confidentialit&eacute; &rarr; Couper l&apos;IA. Aucune fonctionnalit&eacute; IA
+                n&apos;envoie de donn&eacute;es tant que le consentement n&apos;a pas &eacute;t&eacute; donn&eacute;.
+              </p>
+            </div>
           </section>
 
           <section className="space-y-2">

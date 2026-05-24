@@ -6,6 +6,8 @@ import { Loader2, X, Check, AlertTriangle, Sparkles, Droplet } from "lucide-reac
 import { createClient } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/lib/toast";
+import { useAiConsent } from "@/lib/use-ai-consent";
+import Link from "next/link";
 
 type ResultStatus = "low" | "normal" | "high" | "unknown";
 
@@ -50,12 +52,16 @@ export default function ScanAnalysesSang() {
   const fileRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
   const toast = useToast();
+  const { accepted: aiConsentAccepted } = useAiConsent();
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
   const [result, setResult] = useState<ParseResult | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const onPick = () => fileRef.current?.click();
+  const onPick = () => {
+    if (!aiConsentAccepted) return;
+    fileRef.current?.click();
+  };
 
   const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -145,25 +151,35 @@ export default function ScanAnalysesSang() {
         onChange={onFile}
         className="hidden"
       />
-      <button
-        type="button"
-        onClick={onPick}
-        disabled={busy}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-60"
-      >
-        {busy ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Analyse en cours…
-          </>
-        ) : (
-          <>
-            <Droplet className="w-4 h-4" />
-            <Sparkles className="w-3.5 h-3.5" />
-            Scanner mes analyses sanguines
-          </>
-        )}
-      </button>
+      {aiConsentAccepted ? (
+        <button
+          type="button"
+          onClick={onPick}
+          disabled={busy}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-60"
+        >
+          {busy ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Analyse en cours…
+            </>
+          ) : (
+            <>
+              <Droplet className="w-4 h-4" />
+              <Sparkles className="w-3.5 h-3.5" />
+              Scanner mes analyses sanguines
+            </>
+          )}
+        </button>
+      ) : (
+        <Link
+          href="/coach"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-200 text-sm font-semibold hover:bg-rose-100 dark:hover:bg-rose-950/50 transition-colors"
+        >
+          <Sparkles className="w-4 h-4" />
+          Activer l&apos;IA pour scanner
+        </Link>
+      )}
 
       <AnimatePresence>
         {result && (
