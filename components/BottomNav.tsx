@@ -34,36 +34,44 @@ export default function BottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-t border-pink-100 dark:border-pink-900/80 bottom-nav-safe dark:bg-gray-900/95 dark:border-gray-800">
-      <div className="max-w-lg mx-auto flex items-center justify-around px-1 py-1.5">
-        {navItems.map(({ href, labelKey, icon: Icon }) => {
-          const active = isActive(href);
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`relative flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-2xl transition-all duration-200 min-w-[48px] ${
-                active
-                  ? "text-pink-600 dark:text-pink-400"
-                  : "text-gray-400 dark:text-gray-500 hover:text-pink-400 dark:hover:text-pink-400"
-              }`}
-            >
-              {active && (
-                <motion.span
-                  layoutId="bottomNavIndicator"
-                  className="absolute inset-0 bg-gradient-to-b from-pink-100 to-purple-50 dark:from-pink-900/30 dark:to-purple-900/20 rounded-2xl"
-                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                />
-              )}
-              <Icon
-                className={`relative w-5 h-5 ${active ? "fill-pink-200 dark:fill-pink-800" : ""}`}
-              />
-              <span className={`relative text-[10px] ${active ? "font-semibold" : "font-medium"}`}>
-                {t(labelKey)}
-              </span>
-            </Link>
-          );
-        })}
+    <nav
+      className="fixed inset-x-0 bottom-0 z-50 bottom-nav-safe"
+      aria-label="Navigation principale"
+    >
+      <div className="max-w-lg mx-auto px-3 pb-2 pt-1.5">
+        <div className="relative rounded-full border border-pink-100/80 dark:border-gray-700/70 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-lg shadow-pink-300/25 dark:shadow-black/40">
+          <ul className="relative flex items-stretch justify-between px-1.5 py-1.5">
+            {navItems.map(({ href, labelKey, icon: Icon }) => {
+              const active = isActive(href);
+              return (
+                <li key={href} className="relative flex-1">
+                  <Link
+                    href={href}
+                    aria-current={active ? "page" : undefined}
+                    className={`group relative z-10 flex min-h-[52px] flex-col items-center justify-center gap-0.5 rounded-full px-1 py-1.5 text-[10px] transition-colors ${
+                      active
+                        ? "text-pink-600 dark:text-pink-400 font-semibold"
+                        : "text-gray-400 dark:text-gray-500 hover:text-pink-400 dark:hover:text-pink-400 font-medium"
+                    }`}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="bottomNavIndicator"
+                        className="absolute inset-0 -z-10 rounded-full bg-gradient-to-b from-pink-100 to-purple-50 dark:from-pink-900/40 dark:to-purple-900/30"
+                        transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                      />
+                    )}
+                    <Icon
+                      className={`w-[19px] h-[19px] ${active ? "fill-pink-200 dark:fill-pink-800" : ""}`}
+                      strokeWidth={active ? 2.3 : 1.9}
+                    />
+                    <span className="leading-none tracking-tight">{t(labelKey)}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </nav>
   );
