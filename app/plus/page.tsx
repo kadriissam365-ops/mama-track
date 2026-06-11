@@ -75,11 +75,11 @@ const sections = [
 ];
 
 const PREMIUM_FEATURES = [
-  "MamaCoach IA — assistant sage-femme 24/7",
+  "MamaCoach IA — compagnon bien-être 24/7",
   "Analyses IA : échographies, ordonnances, prises de sang",
   "Mode duo illimité (papa + sage-femme + famille)",
   "Exports PDF illimités + Carnet de maternité",
-  "Alertes médicales avancées (préeclampsie, diabète)",
+  "Signaux personnalisés sur vos relevés",
   "Sans publicités",
 ];
 

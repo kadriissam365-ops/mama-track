@@ -10,6 +10,7 @@ import { useStore, type Medication } from "@/lib/store";
 import Paywall from "@/components/Paywall";
 import ScanOrdonnance from "@/components/ScanOrdonnance";
 import ScanAnalysesSang from "@/components/ScanAnalysesSang";
+import { useIsIOSNative } from "@/lib/use-platform";
 
 const PRESET_MEDS = [
   { name: "Acide folique", dosage: "400 µg", emoji: "💊", desc: "Prévention anomalies du tube neural" },
@@ -50,6 +51,7 @@ export default function MedicamentsPage() {
     removeMedicationEntry,
     toggleMedicationTaken,
   } = useStore();
+  const isIOSNative = useIsIOSNative();
   const [showAdd, setShowAdd] = useState(false);
   const [showPresets, setShowPresets] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -127,15 +129,18 @@ export default function MedicamentsPage() {
         </button>
       </div>
 
-      {/* Scan ordonnance — Premium */}
-      <Paywall feature="Scanner une ordonnance" compact>
-        <ScanOrdonnance />
-      </Paywall>
+      {/* Scans IA — Premium (web uniquement, masqués sur iOS pour conformité 5.1.1(ix)) */}
+      {!isIOSNative && (
+        <>
+          <Paywall feature="Scanner une ordonnance" compact>
+            <ScanOrdonnance />
+          </Paywall>
 
-      {/* Scan analyses sanguines — Premium */}
-      <Paywall feature="Scanner mes analyses sanguines" compact>
-        <ScanAnalysesSang />
-      </Paywall>
+          <Paywall feature="Scanner mes analyses sanguines" compact>
+            <ScanAnalysesSang />
+          </Paywall>
+        </>
+      )}
 
       {/* Today's progress */}
       {totalCount > 0 && (

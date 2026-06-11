@@ -14,7 +14,7 @@
 	<key>CFBundleDisplayName</key>
         <string>MamaTrack</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Permet d'ajouter des photos de votre grossesse et des échographies.</string>
+	<string>Permet d'ajouter des photos de votre grossesse (journal photo bump).</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Permet d'ajouter des photos depuis votre galerie.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

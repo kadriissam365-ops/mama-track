@@ -15,9 +15,9 @@ interface ChatMessage {
 }
 
 const QUICK_ACTIONS = [
-  "Mes kicks sont normaux ?",
   "Que manger cette semaine ?",
-  "J'ai mal au dos, que faire ?",
+  "Des idées pour mieux dormir ?",
+  "Comment préparer ma valise maternité ?",
 ];
 
 function newId() {
@@ -232,7 +232,7 @@ function CoachChat({
         </div>
         <div>
           <h1 className="text-lg font-semibold text-[#3d2b2b] dark:text-gray-100">MamaCoach</h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400">Sage-femme virtuelle, à ton écoute</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">Ton compagnon bien-être, à ton écoute</p>
         </div>
       </motion.div>
 
@@ -335,7 +335,8 @@ function CoachChat({
           <div className="flex items-start gap-2 text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
             <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
             <p>
-              MamaCoach est un assistant. En cas d&apos;urgence, contacte ton médecin, ta sage-femme ou le 15.
+              MamaCoach est un compagnon bien-être, pas un professionnel de santé. Pour toute
+              question médicale, consulte ta sage-femme ou ton médecin — et le 15 en urgence.
             </p>
           </div>
         </div>

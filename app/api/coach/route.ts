@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
   if (body.action === "weekly_tip") {
     const weekLabel = ctx.weekSA !== null ? `${ctx.weekSA} SA` : "ce stade de grossesse";
-    const userPayload = `Donne-moi le tip de la semaine pour ${weekLabel}, en exploitant si possible mes derniers relevés ci-dessus. Format : 1 phrase d'accroche chaleureuse, puis 2 ou 3 conseils concrets pour cette semaine. Garde un ton sage-femme.`;
+    const userPayload = `Donne-moi le tip de la semaine pour ${weekLabel}, en exploitant si possible mes derniers relevés ci-dessus. Format : 1 phrase d'accroche chaleureuse, puis 2 ou 3 conseils concrets pour cette semaine. Reste sur le registre bien-être, confort et organisation — aucun conseil médical.`;
     return new Response(streamChat({ systemBlocks, history: [], userMessage: userPayload }), { headers });
   }
 

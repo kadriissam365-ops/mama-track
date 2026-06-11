@@ -11,6 +11,7 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import { notifyPartner } from "@/lib/partner-notify-client";
 import Paywall from "@/components/Paywall";
 import ScanEchographie from "@/components/ScanEchographie";
+import { useIsIOSNative } from "@/lib/use-platform";
 
 // Extrait la semaine SA cible depuis un libellé type "11-13 SA", "36 SA",
 // "24-28 SA" ou "Avant 10 SA". Renvoie la médiane arrondie pour les plages,
@@ -73,6 +74,7 @@ const EXAM_CHECKLIST: ChecklistExam[] = [
 export default function AgendaPage() {
   const store = useStore();
   const toast = useToast();
+  const isIOSNative = useIsIOSNative();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [expandedExam, setExpandedExam] = useState<1 | 2 | 3 | null>(null);
@@ -165,10 +167,12 @@ export default function AgendaPage() {
         </button>
       </div>
 
-      {/* Scan échographie — Premium */}
-      <Paywall feature="Analyser une échographie" compact>
-        <ScanEchographie />
-      </Paywall>
+      {/* Scan échographie — Premium (web uniquement, masqué sur iOS pour conformité 5.1.1(ix)) */}
+      {!isIOSNative && (
+        <Paywall feature="Analyser une échographie" compact>
+          <ScanEchographie />
+        </Paywall>
+      )}
 
       {/* Formulaire */}
       <AnimatePresence>

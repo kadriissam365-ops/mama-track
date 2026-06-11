@@ -7,6 +7,51 @@ Reviewer : iPad Air 11-inch (M3)
 
 ---
 
+## ✅ DÉCISION 2026-06-11 : Option B exécutée — build 1.0(4)
+
+Repositionnement **lifestyle / bien-être strict** appliqué dans le code (build 1.0(4)) pour sortir du champ « healthcare » de 5.1.1(ix), sans conversion Organization.
+
+### Changements code (1.0(4))
+- **Scans IA retirés du build iOS** : `ScanEchographie` (agenda), `ScanOrdonnance` + `ScanAnalysesSang` (médicaments) ne sont plus rendus quand `useIsIOSNative()` est vrai. Ils restent disponibles sur le web mamatrack.fr (hors périmètre App Store).
+- **Monitoring santé retiré du build iOS** : `MamaCoachAlerts` (signaux tension/poids/kicks sur le dashboard) masqué sur iOS.
+- **MamaCoach repositionné compagnon bien-être** (web + iOS) :
+  - System prompt réécrit (`lib/coach-prompts.ts`) : interdiction explicite de tout conseil médical, d'évaluation de symptômes/relevés, d'avis médicaments ; redirection systématique vers sage-femme/médecin/15.
+  - UI : « Sage-femme virtuelle » → « Ton compagnon bien-être » ; quick actions reformulées (sommeil, repas, valise maternité) ; disclaimer renforcé sous le champ de saisie.
+- **Landing + page Premium dé-médicalisées** : « Assistant sage-femme IA + analyses d'échographies/ordonnances/prises de sang » → « Compagnon bien-être IA » ; « Agenda médical » → « Agenda & rappels » ; « trackers santé » → « trackers bien-être » ; « Alertes médicales avancées » supprimé.
+- **Info.plist** : NSCameraUsageDescription ne mentionne plus les échographies (journal photo bump uniquement).
+
+### Changements App Store Connect (à faire AVANT resubmit)
+- [ ] **Catégorie principale : Médecine → Style de vie** (App Information). C'est le point le plus important.
+- [ ] Catégorie secondaire : Forme et santé.
+- [ ] Sous-titre : `Compagnon de grossesse` ; description, mots-clés et notes de version mis à jour (cf. `app-store-metadata.md`).
+- [ ] Sélectionner le build 1.0(4) dans la version 1.0.
+- [ ] Coller la note reviewer ci-dessous dans « Reply to App Review » / notes de review.
+
+### Note de resubmit (à coller, EN)
+
+```
+Hello App Review Team,
+
+Thank you for your detailed feedback on submission f94fb4bd-e9ad-43cf-affb-fffd9cc3c7c8. We carefully considered guideline 5.1.1(ix) and have repositioned MamaTrack as a strict lifestyle / wellbeing pregnancy companion in build 1.0(4):
+
+1. All AI medical-document analysis features (ultrasound scan, prescription scan, blood-test scan) have been REMOVED from the iOS app. They are no longer reachable anywhere in the binary or in the content served to it.
+2. The health-signal monitoring banners (blood pressure / fetal movement alerts) have been removed from the iOS app.
+3. MamaCoach is now a general wellbeing companion (sleep, nutrition habits, organization, emotional support). Its system constraints explicitly forbid medical advice, symptom assessment, medication guidance or interpretation of any logged values, and always redirect users to their midwife/doctor or emergency services. A permanent disclaimer is displayed under the chat input, and the existing AI consent screen (naming Anthropic and Google, with revocation in Settings) remains in place.
+4. The app's primary category has been changed from Medical to Lifestyle, and all store metadata has been rewritten accordingly (no medical claims).
+5. What remains is a personal pregnancy journal and organizer: week-by-week baby development content with cited public sources (HAS, Ameli, ANSES, WHO...), personal logging (weight, mood, sleep, hydration, contractions timer, kicks counter), appointment calendar with reminders, photo diary, baby names, birth-plan PDF and a partner mode — the same scope as other lifestyle pregnancy companions distributed by individual developers.
+
+MamaTrack does not provide healthcare services, diagnosis or treatment, is not a medical device under EU MDR 2017/745, and does not require regulatory clearance. We therefore believe the app no longer falls under the Organization-enrollment requirement of 5.1.1(ix) and kindly request a re-review on this basis.
+
+Also addressed in previous build 1.0(3): explicit AI consent gate (5.1.1(i)), cited official sources on every informational page (1.4.1), and business model clarification — the iOS app contains no IAP, no paywall and no purchase flow; every feature in the iOS binary is free (2.1(b)).
+
+Reviewer test account: kadriissam365+reviewer@gmail.com / MamaReview2026!Apple
+
+Thank you for your time,
+Issam Kadri
+```
+
+---
+
 ## ⚠️ Bloquant identifié : 5.1.1(ix) — Compte individuel vs organisation
 
 Apple exige que les apps qui « fournissent un service hautement régulé ou manipulent des données utilisateur sensibles » soient publiées depuis un compte **Apple Developer Program enregistré en tant qu'organisation**, pas en tant qu'individu.

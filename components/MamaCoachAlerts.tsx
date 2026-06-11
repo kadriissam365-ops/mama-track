@@ -5,6 +5,7 @@ import Link from "next/link";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, Info, X, Sparkles } from "lucide-react";
 import { useAuth } from "@/lib/auth";
+import { useIsIOSNative } from "@/lib/use-platform";
 
 interface CoachAlert {
   level: "info" | "warn" | "red";
@@ -41,6 +42,7 @@ function alertKey(a: CoachAlert): string {
 
 export default function MamaCoachAlerts() {
   const { isAuthenticated, loading: authLoading } = useAuth();
+  const isIOSNative = useIsIOSNative();
   const [alerts, setAlerts] = useState<CoachAlert[]>([]);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
 
@@ -81,7 +83,8 @@ export default function MamaCoachAlerts() {
   }
 
   const visible = alerts.filter((a) => !dismissed.has(alertKey(a)));
-  if (visible.length === 0) return null;
+  // Monitoring de signaux santé masqué sur iOS (positionnement bien-être, 5.1.1(ix))
+  if (isIOSNative || visible.length === 0) return null;
 
   return (
     <div className="space-y-2">

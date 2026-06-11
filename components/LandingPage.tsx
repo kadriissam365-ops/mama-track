@@ -32,22 +32,22 @@ import {
 
 const features = [
   { icon: Baby, title: "Suivi semaine par semaine", desc: "Taille, poids, fruit de comparaison et conseils personnalisés chaque semaine", color: "bg-pink-100 dark:bg-pink-900/30 text-pink-500" },
-  { icon: Activity, title: "10+ trackers santé", desc: "Poids, eau, symptômes, humeur, tension, sommeil, contractions et plus", color: "bg-purple-100 dark:bg-purple-900/30 text-purple-500" },
+  { icon: Activity, title: "10+ trackers bien-être", desc: "Poids, eau, symptômes, humeur, tension, sommeil, contractions et plus", color: "bg-purple-100 dark:bg-purple-900/30 text-purple-500" },
   { icon: Timer, title: "Chrono contractions", desc: "Minuteur précis avec historique, durée et fréquence en temps réel", color: "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-500" },
-  { icon: Bot, title: "MamaCoach IA", desc: "Assistant sage-femme IA 24/7 + analyses d'échographies, ordonnances et prises de sang (Premium)", color: "bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-500" },
+  { icon: Bot, title: "MamaCoach IA", desc: "Compagnon bien-être IA 24/7 : sommeil, alimentation, organisation, émotions (Premium)", color: "bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-500" },
   { icon: Users, title: "Mode duo", desc: "Partagez l'aventure avec votre partenaire qui suit tout en temps réel", color: "bg-emerald-100 text-emerald-500" },
   { icon: Camera, title: "Journal photo bump", desc: "Capturez chaque moment et comparez l'évolution de votre ventre", color: "bg-rose-100 dark:bg-rose-900/30 text-rose-500" },
-  { icon: Calendar, title: "Agenda médical", desc: "Tous vos rendez-vous organisés au même endroit avec rappels", color: "bg-orange-100 dark:bg-orange-900/30 text-orange-500" },
+  { icon: Calendar, title: "Agenda & rappels", desc: "Tous vos rendez-vous organisés au même endroit avec rappels", color: "bg-orange-100 dark:bg-orange-900/30 text-orange-500" },
   { icon: Heart, title: "250+ prénoms", desc: "Explorez, filtrez par origine et sauvegardez vos prénoms favoris", color: "bg-red-100 dark:bg-red-900/30 text-red-500" },
-  { icon: BookOpen, title: "Guides complets", desc: "Alimentation, sport, FAQ et conseils validés par des professionnels", color: "bg-teal-100 dark:bg-teal-900/30 text-teal-500" },
+  { icon: BookOpen, title: "Guides complets", desc: "Alimentation, sport, FAQ — des contenus qui s'appuient sur les recommandations officielles, sources citées", color: "bg-teal-100 dark:bg-teal-900/30 text-teal-500" },
   { icon: FileText, title: "Projet naissance PDF", desc: "Créez et exportez votre projet de naissance personnalisé en PDF", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-500" },
   { icon: Moon, title: "Suivi sommeil & humeur", desc: "Notez votre qualité de sommeil et votre humeur jour après jour", color: "bg-violet-100 text-violet-500" },
 ];
 
 const differentiators = [
-  { icon: Shield, title: "Sans pub, jamais", desc: "L'essentiel du suivi de grossesse est gratuit dès l'inscription. MamaCoach IA et analyses d'images en Premium pour couvrir les coûts d'API. Zéro publicité, zéro revente de données." },
+  { icon: Shield, title: "Sans pub, jamais", desc: "L'essentiel du suivi de grossesse est gratuit dès l'inscription. MamaCoach IA en Premium pour couvrir les coûts d'API. Zéro publicité, zéro revente de données." },
   { icon: Smartphone, title: "Aucun téléchargement requis", desc: "MamaTrack est une PWA : ouvrez-la dans votre navigateur et ajoutez-la à votre écran d'accueil. C'est tout !" },
-  { icon: Star, title: "Mode FIV / PMA intégré", desc: "La seule app qui prend en compte les parcours de procréation médicalement assistée." },
+  { icon: Star, title: "Mode FIV / PMA intégré", desc: "La seule app qui prend en compte les parcours FIV / PMA dans le calcul des dates et le suivi." },
   { icon: Droplets, title: "Fonctionne hors connexion", desc: "Vos données se synchronisent automatiquement dès que vous retrouvez internet." },
 ];
 
@@ -61,12 +61,12 @@ const testimonials = [
 ];
 
 const faqItems = [
-  { q: "MamaTrack est-il gratuit ?", a: "Toutes les fonctionnalites essentielles sont gratuites des la creation de votre compte : suivi semaine par semaine, 10+ trackers, chrono contractions, agenda medical, journal photo, projet naissance, 250+ prenoms, mode duo. MamaCoach IA et les analyses d'images (echographies, ordonnances, prises de sang) sont reserves au Premium pour couvrir les couts d'API IA. Aucune publicite, jamais." },
+  { q: "MamaTrack est-il gratuit ?", a: "Toutes les fonctionnalites essentielles sont gratuites des la creation de votre compte : suivi semaine par semaine, 10+ trackers, chrono contractions, agenda et rappels, journal photo, projet naissance, 250+ prenoms, mode duo. MamaCoach IA est reserve au Premium pour couvrir les couts d'API IA. Aucune publicite, jamais." },
   { q: "Dois-je telecharger l'app sur l'App Store ?", a: "Non ! MamaTrack est une PWA (Progressive Web App). Ouvrez mamatrack.fr dans votre navigateur et ajoutez-le a votre ecran d'accueil pour une experience native." },
   { q: "Mes donnees sont-elles securisees ?", a: "Vos donnees sont chiffrees et stockees de facon securisee sur des serveurs europeens. Nous ne vendons et ne partageons aucune donnee personnelle." },
   { q: "Le mode duo, c'est quoi exactement ?", a: "Invitez votre partenaire a suivre votre grossesse en temps reel : evolution bebe, symptomes, rendez-vous, humeur. Il/elle recoit les mises a jour instantanement." },
   { q: "Puis-je utiliser MamaTrack hors connexion ?", a: "Oui ! En tant que PWA, MamaTrack fonctionne meme sans connexion internet. Vos donnees se synchronisent automatiquement des que vous etes reconnectee." },
-  { q: "L'app prend-elle en compte les parcours PMA / FIV ?", a: "Absolument. MamaTrack est l'une des rares applications a integrer les specificites des parcours de procreation medicalement assistee dans le calcul des dates et le suivi." },
+  { q: "L'app prend-elle en compte les parcours PMA / FIV ?", a: "Absolument. MamaTrack est l'une des rares applications a integrer les specificites des parcours FIV / PMA dans le calcul des dates et le suivi." },
 ];
 
 const footerLinks = [

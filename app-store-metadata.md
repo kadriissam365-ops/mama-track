@@ -9,14 +9,14 @@
 (maximum 30 caractères — actuel : 9 ✓)
 
 ## Sous-titre
-`Suivi de grossesse complet`
-(maximum 30 caractères — actuel : 26 ✓)
+`Compagnon de grossesse`
+(maximum 30 caractères — actuel : 22 ✓)
 
 ## Texte promotionnel
 *(170 caractères max — modifiable sans nouvelle review)*
 
 ```
-Votre compagnon de grossesse, semaine après semaine. Suivi bébé, contractions, agenda médical, journal photo, projet naissance — 100 % gratuit, sans pub.
+Votre compagnon de grossesse, semaine après semaine. Suivi bébé, contractions, agenda & rappels, journal photo, projet naissance — sans pub.
 ```
 
 ## Description
@@ -30,14 +30,14 @@ Pensée par et pour les futures mamans, MamaTrack rassemble tout ce dont vous av
 — SUIVI BÉBÉ SEMAINE PAR SEMAINE —
 Découvrez chaque semaine la taille, le poids et l'évolution de votre bébé, accompagnés de conseils personnalisés. Le calcul peut se faire en semaines d'aménorrhée (SA) ou en grossesse (GA), parfait pour les parcours classiques comme pour les FIV/PMA.
 
-— 10+ TRACKERS SANTÉ —
-Poids, hydratation, symptômes, humeur, tension artérielle, sommeil, tour de ventre, exercices… Visualisez votre évolution avec des courbes claires et identifiez les signaux faibles.
+— 10+ TRACKERS BIEN-ÊTRE —
+Poids, hydratation, humeur, sommeil, tour de ventre, activité… Notez votre quotidien dans votre journal personnel et visualisez votre évolution avec des courbes claires.
 
 — CHRONO CONTRACTIONS —
 Minuteur précis avec historique, durée et fréquence en temps réel. Indispensable au moment du travail.
 
-— AGENDA MÉDICAL —
-Tous vos rendez-vous (gynéco, échographies, prises de sang, sage-femme) regroupés et rappelés automatiquement.
+— AGENDA & RAPPELS —
+Tous vos rendez-vous importants regroupés au même endroit et rappelés automatiquement.
 
 — JOURNAL PHOTO BUMP —
 Capturez chaque mois l'évolution de votre ventre, ajoutez des notes et créez la galerie souvenir de votre grossesse.
@@ -49,16 +49,16 @@ Construisez votre projet de naissance en quelques minutes et exportez-le en PDF 
 Explorez et sauvegardez vos prénoms favoris filtrés par origine, genre et popularité.
 
 — MODE DUO —
-Partagez votre suivi avec le futur papa, votre sage-femme ou votre famille — chacun reçoit les mises à jour en temps réel et peut vous envoyer des messages d'encouragement.
+Partagez votre suivi avec le futur papa ou votre famille — chacun reçoit les mises à jour en temps réel et peut vous envoyer des messages d'encouragement.
 
-— GUIDES VALIDÉS —
-Alimentation autorisée/interdite, exercices recommandés, FAQ, signaux d'alerte, urgences : tous les contenus sont validés par des professionnels de santé.
+— GUIDES PRATIQUES —
+Alimentation, activité douce, FAQ, numéros utiles : des contenus informatifs clairs qui s'appuient sur les recommandations publiques officielles, avec sources citées dans l'app. MamaTrack ne fournit pas de conseil médical — pour toute question de santé, rapprochez-vous de votre professionnel de suivi.
 
 — LISTE D'ACHATS BÉBÉ —
 Cochez la valise maternité et préparez l'arrivée de bébé sans rien oublier.
 
 — RAPPELS INTELLIGENTS —
-Hydratation, mouvements bébé, prise de médicaments — recevez des notifications personnalisées que vous pouvez désactiver à tout moment.
+Hydratation, mouvements bébé, vitamines — recevez des notifications personnalisées que vous pouvez désactiver à tout moment.
 
 — PRIVÉ ET SÉCURISÉ —
 Vos données restent à vous : chiffrées, hébergées en Europe, jamais revendues. Conformité RGPD complète.
@@ -75,9 +75,9 @@ Bienvenue dans une grossesse plus sereine, plus organisée, et mieux entourée. 
 *(100 caractères max, séparés par virgules)*
 
 ```
-grossesse,enceinte,bébé,maternité,contractions,échographie,suivi,calendrier,sage-femme,naissance
+grossesse,enceinte,bébé,maternité,contractions,suivi,calendrier,naissance,bien-être,journal
 ```
-*(actuel : 99 caractères ✓)*
+*(actuel : 91 caractères ✓)*
 
 ## URL d'assistance
 ```
@@ -95,8 +95,10 @@ https://mamatrack.fr/confidentialite
 ```
 
 ## Catégorie
-- **Principale** : `Médecine`
-- **Secondaire** : `Santé et forme`
+- **Principale** : `Style de vie` (Lifestyle)
+- **Secondaire** : `Forme et santé` (Health & Fitness)
+
+> ⚠ Changé depuis le rejet 5.1.1(ix) du 2026-05-19 : l'ancienne catégorie principale `Médecine` classait l'app comme service de santé, réservé aux comptes Organization. Le repositionnement bien-être/lifestyle (option B) impose Style de vie en principale.
 
 ## Classification d'âge
 - `4+` (aucun contenu sensible — la nudité médicale d'illustration reste sous le seuil 9+)
@@ -125,14 +127,14 @@ version. La fonctionnalité Premium n'est pas exposée sur la build iOS
 (conformité §3.1.1).
 
 Données collectées : email, profil grossesse (date prévue, prénom mère/bébé),
-trackers santé (poids, symptômes, humeur, eau, sommeil), photos bump,
+journal personnel (poids, humeur, eau, sommeil), photos bump,
 contractions, rendez-vous, prénoms favoris. Aucune publicité, aucun tracker
 tiers. RGPD Europe. Hébergement Supabase Frankfurt + Vercel global edge.
 
 Permissions iOS demandées :
-- Camera (NSCameraUsageDescription) : pour ajouter photos bump et échographies
+- Camera (NSCameraUsageDescription) : pour ajouter photos bump (journal photo)
 - Photo Library (NS{Photo,PhotoAdd}LibraryUsageDescription) : import et export photos
-- Notifications : rappels hydratation, mouvements bébé, médicaments (opt-in)
+- Notifications : rappels hydratation, mouvements bébé, vitamines (opt-in)
 
 Merci pour votre review !
 ```
@@ -145,9 +147,9 @@ Bienvenue dans la première version de MamaTrack ! 💖
 
 Ce que vous trouverez dans cette release :
 - Suivi de grossesse semaine par semaine (SA et GA, FIV/PMA inclus)
-- 10+ trackers santé personnalisés
+- 10+ trackers bien-être personnalisés
 - Chrono contractions précis
-- Agenda médical avec rappels intelligents
+- Agenda & rappels intelligents
 - Journal photo bump
 - Projet de naissance exportable en PDF
 - 250+ prénoms à explorer
