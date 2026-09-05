@@ -23,6 +23,7 @@ import { WATER_GOAL_ML } from "@/lib/constants";
 import ReminderBanner from "@/components/ReminderBanner";
 import MamaCoachAlerts from "@/components/MamaCoachAlerts";
 import Paywall from "@/components/Paywall";
+import { MedicalSources } from "@/components/MedicalSources";
 import { Skeleton } from "@/components/Skeleton";
 import { useIsPremium } from "@/lib/use-premium";
 import { useTheme } from "next-themes";
@@ -579,6 +580,17 @@ export default function DashboardPage() {
           {weekData.babyDevelopment}
         </p>
       </motion.div>
+      {/* Sources officielles des contenus de la semaine (App Review 1.4.1) */}
+      <MedicalSources
+        intro="Les contenus « Conseil de la semaine » et « Bébé cette semaine » sont compilés à partir des recommandations publiques officielles ci-dessous. Ils sont informatifs et ne remplacent pas le suivi de ta sage-femme ou de ton médecin. En cas d'urgence, appelle le 15."
+        sources={[
+          { label: "Haute Autorité de Santé (HAS) — Comment mieux informer les femmes enceintes", url: "https://www.has-sante.fr/jcms/c_605178/fr/comment-mieux-informer-les-femmes-enceintes" },
+          { label: "Ameli (Assurance Maladie) — Votre grossesse mois par mois", url: "https://www.ameli.fr/assure/sante/themes/grossesse" },
+          { label: "Santé publique France — Périnatalité", url: "https://www.santepubliquefrance.fr/determinants-de-sante/perinatalite" },
+          { label: "OMS — Recommandations sur les soins prénatals", url: "https://www.who.int/publications/i/item/9789241549912" },
+          { label: "INSERM — Grossesse et périnatalité", url: "https://www.inserm.fr/dossier/perinatalite/" },
+        ]}
+      />
       {/* Floating share button */}
       <button
         onClick={() => setShowShare(true)}

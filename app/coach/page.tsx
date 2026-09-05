@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { useToast } from "@/lib/toast";
 import { AiConsentGate } from "@/components/AiConsentGate";
 import { useAiConsent } from "@/lib/use-ai-consent";
+import { MedicalSources } from "@/components/MedicalSources";
 
 interface ChatMessage {
   id: string;
@@ -22,6 +23,23 @@ const QUICK_ACTIONS = [
 
 function newId() {
   return Math.random().toString(36).slice(2);
+}
+
+/** Sources officielles affichées sur l'écran Coach (App Review 1.4.1), avant et après consentement. */
+function CoachSources() {
+  return (
+    <MedicalSources
+      intro="MamaCoach est un compagnon bien-être : ses réponses s'appuient sur les recommandations publiques officielles ci-dessous et ne constituent jamais un avis médical. Pour toute question de santé, consulte ta sage-femme ou ton médecin — et le 15 en urgence."
+      sources={[
+        { label: "Haute Autorité de Santé (HAS) — Comment mieux informer les femmes enceintes", url: "https://www.has-sante.fr/jcms/c_605178/fr/comment-mieux-informer-les-femmes-enceintes" },
+        { label: "Ameli (Assurance Maladie) — Votre grossesse mois par mois", url: "https://www.ameli.fr/assure/sante/themes/grossesse" },
+        { label: "Ameli — Alimentation pendant la grossesse", url: "https://www.ameli.fr/assure/sante/themes/grossesse/alimentation-femme-enceinte" },
+        { label: "ANSES — Recommandations alimentaires (femmes enceintes)", url: "https://www.anses.fr/fr/content/femme-enceinte-ou-allaitante-soyez-vigilante" },
+        { label: "Santé publique France — Mangerbouger.fr (grossesse)", url: "https://www.mangerbouger.fr/manger-mieux/bien-manger-tout-au-long-de-sa-vie/grossesse-et-allaitement" },
+        { label: "OMS — Recommandations sur les soins prénatals", url: "https://www.who.int/publications/i/item/9789241549912" },
+      ]}
+    />
+  );
 }
 
 export default function CoachPage() {
@@ -169,6 +187,7 @@ export default function CoachPage() {
         "Tes derniers relevés agrégés (poids, humeur, symptômes, contractions, hydratation) — sans nom ni email",
         "Aucune photo, aucun e-mail, aucun identifiant médical n'est transmis",
       ]}
+      footer={<CoachSources />}
     >
       <CoachChat
         messages={messages}
@@ -295,6 +314,8 @@ function CoachChat({
           ))}
         </AnimatePresence>
       </div>
+
+      <CoachSources />
 
       <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white dark:from-gray-950 dark:via-gray-950 to-transparent pt-4 pb-[max(env(safe-area-inset-bottom),5rem)] px-4">
         <div className="max-w-lg mx-auto space-y-2">

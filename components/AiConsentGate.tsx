@@ -10,9 +10,11 @@ interface AiConsentGateProps {
   description: string;
   dataSent: string[];
   children: React.ReactNode;
+  /** Contenu affiché sous l'écran de consentement (ex. sources officielles), avant acceptation. */
+  footer?: React.ReactNode;
 }
 
-export function AiConsentGate({ feature, description, dataSent, children }: AiConsentGateProps) {
+export function AiConsentGate({ feature, description, dataSent, children, footer }: AiConsentGateProps) {
   const { hydrated, accepted, accept } = useAiConsent();
   const [checked, setChecked] = useState(false);
 
@@ -132,6 +134,8 @@ export function AiConsentGate({ feature, description, dataSent, children }: AiCo
           .
         </p>
       </div>
+
+      {footer}
     </div>
   );
 }

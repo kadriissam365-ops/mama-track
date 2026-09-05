@@ -27,6 +27,9 @@ MamaTrack est l'application française qui vous accompagne du test positif jusqu
 
 Pensée par et pour les futures mamans, MamaTrack rassemble tout ce dont vous avez besoin pendant les 9 mois de grossesse, dans une seule interface douce, claire et sans publicité.
 
+— INFORMATION IMPORTANTE —
+MamaTrack est un compagnon de grossesse et un journal de bien-être. Ce n'est pas un dispositif médical : l'application ne fournit ni diagnostic, ni conseil médical, ni traitement, et ne remplace en aucun cas le suivi de votre médecin, de votre sage-femme ou de votre maternité. Les contenus informatifs s'appuient sur des sources publiques officielles (HAS, Assurance Maladie, ANSES, OMS), citées dans l'app. Pour toute question concernant votre santé ou celle de votre bébé, consultez un professionnel de santé. En cas d'urgence, appelez le 15.
+
 — SUIVI BÉBÉ SEMAINE PAR SEMAINE —
 Découvrez chaque semaine la taille, le poids et l'évolution de votre bébé, accompagnés de conseils personnalisés. Le calcul peut se faire en semaines d'aménorrhée (SA) ou en grossesse (GA), parfait pour les parcours classiques comme pour les FIV/PMA.
 
@@ -54,6 +57,9 @@ Partagez votre suivi avec le futur papa ou votre famille — chacun reçoit les 
 — GUIDES PRATIQUES —
 Alimentation, activité douce, FAQ, numéros utiles : des contenus informatifs clairs qui s'appuient sur les recommandations publiques officielles, avec sources citées dans l'app. MamaTrack ne fournit pas de conseil médical — pour toute question de santé, rapprochez-vous de votre professionnel de suivi.
 
+— MAMACOACH, COMPAGNON BIEN-ÊTRE (OPTIONNEL) —
+Des idées pour mieux dormir, mieux manger ou préparer la valise maternité, rédigées par une intelligence artificielle. MamaCoach ne s'active qu'après votre accord explicite dans l'app, peut être coupé à tout moment depuis les réglages, et ne donne jamais d'avis médical.
+
 — LISTE D'ACHATS BÉBÉ —
 Cochez la valise maternité et préparez l'arrivée de bébé sans rien oublier.
 
@@ -68,8 +74,12 @@ Toutes les fonctionnalités essentielles sont accessibles dès l'inscription. Pa
 
 MamaTrack a été conçu en France, par une équipe à l'écoute des futures mamans. Nous écoutons chaque retour pour améliorer l'app à chaque grossesse.
 
-Bienvenue dans une grossesse plus sereine, plus organisée, et mieux entourée. ❤️
+Bienvenue dans une grossesse plus sereine, plus organisée, et mieux entourée.
+
+Rappel : MamaTrack ne remplace pas un avis médical. Consultez toujours votre médecin ou votre sage-femme.
 ```
+
+> ℹ️ Pas d'emoji dans la description : App Store Connect refuse le ❤️ (erreur API constatée le 2026-07-19). La section « INFORMATION IMPORTANTE » et le rappel final répondent au motif 1.4.1 du rejet #2 (2026-07-20) : disclaimer médical explicite exigé dans la fiche App Store.
 
 ## Mots-clés
 *(100 caractères max, séparés par virgules)*
@@ -118,8 +128,8 @@ MamaTrack est une PWA Next.js déployée sur https://mamatrack.fr et embarquée
 dans une WebView Capacitor pour iOS.
 
 Comptes de test :
-- Email : reviewer-apple@mamatrack.fr
-- Mot de passe : (à créer dans Supabase et fournir ici)
+- Email : kadriissam365+reviewer@gmail.com
+- Mot de passe : MamaReview2026!Apple
 
 L'application charge le contenu depuis https://mamatrack.fr (production
 Vercel + base Supabase). Pas de fonctionnalité d'achat in-app dans cette

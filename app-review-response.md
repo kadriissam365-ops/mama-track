@@ -7,6 +7,74 @@ Reviewer : iPad Air 11-inch (M3)
 
 ---
 
+## 🔴 REJET #2 — 2026-07-20 (submission 59a63f65-f15f-47ed-8d69-315c2db434c8)
+
+Apple a rejeté la build 1.0(4) avec les **mêmes motifs** qu'en mai (« issues previously identified still need your attention ») : l'option B (repositionnement lifestyle) n'a PAS suffi.
+
+| Motif | Détail Apple | Réponse |
+|---|---|---|
+| **5.1.1(ix)** | Compte Individual → **Organization requis** (répété mot pour mot) | **Conversion via la SARL KADRI** (SIRET 75306139900014, gérante Khadija Kadri). DUNS → Apple Developer Support (2-6 sem). **Ne pas resoumettre avant.** |
+| 1.4.1 | Citations manquantes sur **Accueil** et **Coach** | Build 1.0(5) : `MedicalSources` sur l'Accueil (sous « Bébé cette semaine ») et sur le Coach (sous le chat + sous l'écran de consentement). |
+| 1.4.1 | Regulatory + disclaimer « consultez un médecin » **dans la description App Store** | Section « INFORMATION IMPORTANTE » + rappel final ajoutés à la description (cf. `app-store-metadata.md`, poussée sur ASC via API le 2026-09-05). Pas un dispositif médical (MDR 2017/745) → pas de clearance à fournir, déclaration écrite dans la note. |
+| 5.1.1(i) | Consentement IA jugé insuffisant | Build 1.0(5) : la **story du jour de l'Accueil** n'appelle plus l'IA sans consentement (carte « Activer MamaCoach IA » à la place). Aucun appel IA ne part avant l'écran `AiConsentGate` (Coach, story, scans web). Mention IA + consentement ajoutée dans la description. |
+| 2.1(b) | Questions business model | Réponses ci-dessous (iOS 100 % gratuit, Premium web uniquement). |
+
+### Checklist code → build 1.0(5) (fait le 2026-09-05)
+- [x] `components/DailyStory.tsx` : `useAiConsent()` — pas de fetch `/api/coach/daily-story` tant que `accepted` est faux ; carte d'opt-in vers `/coach` ; mention « générée par une IA, pas un avis médical » sous la story.
+- [x] `app/page.tsx` : `MedicalSources` (HAS, Ameli, SpF, OMS, INSERM) sous « Bébé cette semaine ».
+- [x] `app/coach/page.tsx` : `CoachSources` (HAS, Ameli ×2, ANSES, Mangerbouger, OMS) sous le fil de discussion **et** sous l'écran de consentement (`AiConsentGate` prop `footer`).
+- [x] `components/MamaCoachAlerts.tsx` : plus aucun appel `signal_check` sur iOS (le bandeau était déjà masqué, la requête partait quand même).
+- [x] `app-store-metadata.md` : description avec disclaimer + section MamaCoach optionnel ; poussée sur ASC (localisation fr-FR).
+- [ ] **Bump CFBundleVersion 4 → 5** (`ios/App/App.xcodeproj/project.pbxproj`, CURRENT_PROJECT_VERSION) — à faire au moment de l'archive.
+- [ ] `bun run build && npx cap sync ios` → archive Xcode (profile `db069297-75c8-4080-862b-ef1a7a5b12c4`) → upload TestFlight. Le build 1.0(4) du 2026-06-11 expire côté TestFlight vers le 2026-09-09.
+- [ ] **Après conversion Organization** : annuler la submission 59a63f65 (`canceled:true`), rattacher le build 1.0(5) à la version 1.0, coller la note v3 ci-dessous, créer une nouvelle submission.
+
+### Réponses 2.1(b) — business model (à coller telles quelles, EN)
+
+```
+1. Who are the users that will use the paid content and subscriptions?
+   Expectant mothers (18+) and, through the optional partner mode, their partner. On iOS there is no paid content at all: every feature in the iOS app is free for every user.
+
+2. Where can users purchase the content and subscriptions that can be accessed in the app?
+   Nowhere inside the iOS app. An optional "MamaCoach Premium" tier exists only on the web version (mamatrack.fr, Stripe checkout in a regular browser). The iOS binary shows no price, no purchase link, no upsell and no mention of Premium.
+
+3. What specific types of previously purchased content and subscriptions can a user access in the app?
+   None need to be "accessed": on iOS everything is already unlocked for all users, so a web Premium customer sees exactly the same app as a free user.
+
+4. What paid content, subscriptions, or features are unlocked through your app that are not purchased through in-app purchase?
+   None. No feature is unlocked in the iOS app through any external purchase.
+
+5. Is your app sold to consumers or businesses / families?
+   Individual consumers (B2C). It is not sold to businesses, institutions or families.
+```
+
+### Note de resubmit v3 (à coller après la conversion Organization, EN)
+
+```
+Hello App Review Team,
+
+Thank you for your feedback on submission 59a63f65-f15f-47ed-8d69-315c2db434c8. Every point has been addressed:
+
+5.1.1(ix) — Developer account: our enrollment has been converted from Individual to Organization (KADRI SARL, SIREN 753061399, D-U-N-S [NUMÉRO]). The seller name on the App Store is now the company.
+
+5.1.1(i) — AI consent: no request is ever sent to a third-party AI provider before the user explicitly opts in. Build 1.0(5) extends the existing consent screen to the Home tab: the "daily story" card no longer loads anything until the user has accepted; it shows an opt-in card instead. The consent screen names the providers (Anthropic, Google as fallback), lists the exact data transmitted, the retention period and the transfer safeguards, and consent can be revoked at any time in Settings. The App Store description now also states that MamaCoach is optional and requires explicit consent.
+
+1.4.1 — Citations: official sources (Haute Autorité de Santé, Assurance Maladie/Ameli, Santé publique France, ANSES, WHO, INSERM) are now cited with clickable links on the Home tab (under the weekly content), on the Coach tab (both on the consent screen and under the conversation) and, as before, on Tips, Emergency and Nutrition.
+
+1.4.1 — Regulatory: MamaTrack is a pregnancy companion and wellbeing journal. It provides no diagnosis, treatment or medical advice and is not a medical device under EU Regulation 2017/745 (MDR); no regulatory clearance is therefore required. The App Store description now carries an explicit "Important information" section and a closing reminder telling users to consult their doctor or midwife, and to call emergency services (15) in an emergency.
+
+2.1(b) — Business model: the iOS app contains no in-app purchase, no paywall and no purchase flow; every feature in the iOS binary is free. An optional Premium tier exists only on our website and is never shown or referenced in the iOS app. Detailed answers to the five questions are included below.
+
+[coller ici le bloc 2.1(b) ci-dessus]
+
+Reviewer test account: kadriissam365+reviewer@gmail.com / MamaReview2026!Apple
+
+Thank you for your time,
+Issam Kadri — KADRI SARL
+```
+
+---
+
 ## ✅ DÉCISION 2026-06-11 : Option B exécutée — build 1.0(4)
 
 Repositionnement **lifestyle / bien-être strict** appliqué dans le code (build 1.0(4)) pour sortir du champ « healthcare » de 5.1.1(ix), sans conversion Organization.

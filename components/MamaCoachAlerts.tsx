@@ -52,6 +52,8 @@ export default function MamaCoachAlerts() {
 
   useEffect(() => {
     if (authLoading || !isAuthenticated) return;
+    // Monitoring de signaux santé retiré du build iOS (5.1.1(ix)) : on n'appelle même pas l'API.
+    if (isIOSNative) return;
     let cancelled = false;
     (async () => {
       try {
@@ -72,7 +74,7 @@ export default function MamaCoachAlerts() {
     return () => {
       cancelled = true;
     };
-  }, [authLoading, isAuthenticated]);
+  }, [authLoading, isAuthenticated, isIOSNative]);
 
   function dismiss(a: CoachAlert) {
     const key = alertKey(a);
