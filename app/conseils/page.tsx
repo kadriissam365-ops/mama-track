@@ -621,11 +621,11 @@ export default function ConseilsPage() {
             <MedicalSources
               intro="Les informations &laquo;&nbsp;Cette semaine&nbsp;&raquo; (d&eacute;veloppement b&eacute;b&eacute;, sympt&ocirc;mes, conseils) sont compil&eacute;es &agrave; partir des recommandations officielles fran&ccedil;aises et internationales."
               sources={[
-                { label: "Haute Autorit&eacute; de Sant&eacute; (HAS) — Suivi et orientation des femmes enceintes en fonction des situations &agrave; risque identifi&eacute;es", url: "https://www.has-sante.fr/jcms/c_605178/fr/comment-mieux-informer-les-femmes-enceintes" },
+                { label: "Haute Autorité de Santé (HAS) — Suivi et orientation des femmes enceintes en fonction des situations à risque identifiées", url: "https://www.has-sante.fr/jcms/c_605178/fr/comment-mieux-informer-les-femmes-enceintes" },
                 { label: "Ameli (Assurance Maladie) — Mois par mois de votre grossesse", url: "https://www.ameli.fr/assure/sante/themes/grossesse" },
-                { label: "Sant&eacute; Publique France — Grossesse et accueil de l&apos;enfant", url: "https://www.santepubliquefrance.fr/determinants-de-sante/perinatalite" },
-                { label: "OMS — Recommandations sur les soins pr&eacute;natals", url: "https://www.who.int/publications/i/item/9789241549912" },
-                { label: "INSERM — Grossesse, p&eacute;rinatalit&eacute;", url: "https://www.inserm.fr/dossier/perinatalite/" },
+                { label: "Santé Publique France — Grossesse et accueil de l'enfant", url: "https://www.santepubliquefrance.fr/determinants-de-sante/perinatalite" },
+                { label: "OMS — Recommandations sur les soins prénatals", url: "https://www.who.int/publications/i/item/9789241549912" },
+                { label: "INSERM — Grossesse, périnatalité", url: "https://www.inserm.fr/dossier/perinatalite/" },
               ]}
             />
           </motion.div>
@@ -677,11 +677,11 @@ export default function ConseilsPage() {
             <MedicalSources
               intro="R&eacute;ponses bas&eacute;es sur les recommandations officielles HAS, Ameli, ANSM (m&eacute;dicaments), CRAT (centre de r&eacute;f&eacute;rence sur les agents t&eacute;ratog&egrave;nes) et l&apos;OMS."
               sources={[
-                { label: "Ameli — Grossesse : examens et suivi m&eacute;dical", url: "https://www.ameli.fr/assure/sante/themes/grossesse/examens-medicaux-trois-premiers-mois" },
+                { label: "Ameli — Grossesse : examens et suivi médical", url: "https://www.ameli.fr/assure/sante/themes/grossesse/examens-medicaux-trois-premiers-mois" },
                 { label: "HAS — Suivi des femmes enceintes", url: "https://www.has-sante.fr/jcms/c_605178/fr/comment-mieux-informer-les-femmes-enceintes" },
-                { label: "ANSM — M&eacute;dicaments et grossesse", url: "https://ansm.sante.fr/dossiers-thematiques/medicaments-et-grossesse" },
-                { label: "CRAT (Centre de R&eacute;f&eacute;rence sur les Agents T&eacute;ratog&egrave;nes)", url: "https://www.lecrat.fr/" },
-                { label: "OMS — Soins pr&eacute;natals", url: "https://www.who.int/publications/i/item/9789241549912" },
+                { label: "ANSM — Médicaments et grossesse", url: "https://ansm.sante.fr/dossiers-thematiques/medicaments-et-grossesse" },
+                { label: "CRAT (Centre de Référence sur les Agents Tératogènes)", url: "https://www.lecrat.fr/" },
+                { label: "OMS — Soins prénatals", url: "https://www.who.int/publications/i/item/9789241549912" },
               ]}
             />
             <div className="bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-4 mt-4">

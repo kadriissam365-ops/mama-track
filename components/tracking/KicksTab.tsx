@@ -114,7 +114,7 @@ export default function KicksTab({ today }: KicksTabProps) {
                   localStorage.setItem('duo-messages', JSON.stringify([...saved, msg]));
                   toast.success('Message envoyé à votre partenaire 💬');
                 }}
-                className="w-full flex items-center gap-3 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/30 rounded-2xl px-4 py-3 hover:bg-green-100 dark:hover:bg-green-900/30 dark:bg-green-900/30 transition-colors"
+                className="w-full flex items-center gap-3 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/30 rounded-2xl px-4 py-3 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
               >
                 <MessageCircle className="w-5 h-5 text-green-600" />
                 <div className="text-left">

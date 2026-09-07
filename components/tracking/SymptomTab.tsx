@@ -93,7 +93,7 @@ export default function SymptomTab() {
                   className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
                     selectedSymptoms.includes(s)
                       ? "bg-pink-400 text-white shadow-sm"
-                      : "bg-pink-50 dark:bg-pink-950/30 text-pink-600 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30"
+                      : "bg-pink-50 dark:bg-pink-950/30 text-pink-600 hover:bg-pink-100 dark:hover:bg-pink-900/30"
                   }`}
                 >
                   {s}

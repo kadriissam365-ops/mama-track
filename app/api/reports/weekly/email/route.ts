@@ -5,6 +5,7 @@ import { composeWeeklyReport } from "@/lib/weekly-report-data";
 import { renderWeeklyReportEmail } from "@/lib/email-templates/weekly-report";
 import { sendReportEmail } from "@/lib/email-send";
 import { fetchUserReportInputs } from "@/lib/weekly-report-fetch";
+import { RATE_LIMITS, consumeRateLimit, rateLimitedResponse } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -22,6 +23,9 @@ export async function POST() {
     }
     if (!user.email) {
       return NextResponse.json({ error: "Pas d'email associé au compte" }, { status: 400 });
+    }
+    if (!(await consumeRateLimit(supabase, RATE_LIMITS.weeklyEmail))) {
+      return rateLimitedResponse(RATE_LIMITS.weeklyEmail);
     }
 
     const input = await fetchUserReportInputs(supabase, user.id);

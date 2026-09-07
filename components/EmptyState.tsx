@@ -33,12 +33,12 @@ const variants = {
   green: {
     iconBg: "bg-green-100 dark:bg-green-900/30",
     iconColor: "text-green-400",
-    buttonBg: "bg-green-400 hover:bg-green-50 dark:bg-green-500",
+    buttonBg: "bg-green-500 hover:bg-green-600 dark:bg-green-500 dark:hover:bg-green-600",
   },
   blue: {
     iconBg: "bg-blue-100 dark:bg-blue-900/30",
     iconColor: "text-blue-400",
-    buttonBg: "bg-blue-400 hover:bg-blue-50 dark:bg-blue-500",
+    buttonBg: "bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-600",
   },
 };
 
@@ -79,7 +79,7 @@ export default function EmptyState({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-sm text-gray-500 dark:text-gray-400 mb-4"
+        className="text-sm text-gray-500 dark:text-gray-400 mb-4 leading-relaxed"
       >
         {description}
       </motion.p>
@@ -92,7 +92,7 @@ export default function EmptyState({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={action.onClick}
-          className={`${colors.buttonBg} text-white px-6 py-2.5 rounded-xl font-medium transition-colors`}
+          className={`${colors.buttonBg} min-h-11 px-6 text-white rounded-xl font-medium transition-colors`}
         >
           {action.label}
         </motion.button>

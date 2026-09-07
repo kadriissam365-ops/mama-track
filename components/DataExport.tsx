@@ -439,11 +439,11 @@ export default function DataExport() {
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30 space-y-4">
         <div className="flex items-center gap-2">
           <Shield className="w-5 h-5 text-purple-500 dark:text-purple-400" />
-          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Donnees & Confidentialite</h3>
+          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Données et confidentialité</h3>
         </div>
 
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          Conformement au RGPD, vous pouvez exporter ou supprimer toutes vos donnees personnelles a tout moment.
+          Conformément au RGPD, vous pouvez exporter ou supprimer toutes vos données personnelles a tout moment.
         </p>
 
         {/* Data summary */}
@@ -453,7 +453,7 @@ export default function DataExport() {
             className="w-full flex items-center justify-between"
           >
             <span className="text-sm font-medium text-purple-800 dark:text-purple-300">
-              {totalItems} elements stockes
+              {totalItems} éléments stockés
             </span>
             {showDetails ? (
               <ChevronUp className="w-4 h-4 text-purple-500 dark:text-purple-400" />
@@ -479,13 +479,13 @@ export default function DataExport() {
         {/* Export buttons */}
         <div className="space-y-2">
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-            Exporter mes donnees
+            Exporter mes données
           </p>
           <div className="flex gap-2">
             <button
               onClick={handleExportJSON}
               disabled={loading}
-              className="flex-1 py-3 bg-purple-50 dark:bg-purple-500 text-white rounded-xl font-medium hover:bg-purple-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+              className="flex flex-1 min-h-11 items-center justify-center gap-2 rounded-xl bg-purple-500 text-sm font-medium text-white transition-colors hover:bg-purple-600 disabled:opacity-50 dark:bg-purple-500 dark:hover:bg-purple-600"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -508,7 +508,7 @@ export default function DataExport() {
             </button>
           </div>
           <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center">
-            Le fichier sera telecharge sur votre appareil
+            Le fichier sera téléchargé sur votre appareil
           </p>
         </div>
       </div>
@@ -520,7 +520,7 @@ export default function DataExport() {
           Zone de danger
         </h3>
         <p className="text-xs text-gray-500 dark:text-gray-400">
-          La suppression de votre compte est irreversible. Toutes vos donnees seront definitivement effacees.
+          La suppression de votre compte est irréversible. Toutes vos données seront définitivement effacées.
         </p>
         <button
           onClick={() => setShowDeleteConfirm(true)}

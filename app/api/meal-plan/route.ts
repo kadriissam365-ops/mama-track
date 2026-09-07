@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { createServerClientFromCookies } from "@/lib/supabase";
 import { streamChat, isAiConfigured } from "@/lib/ai-providers";
 import { loadContext } from "@/lib/health-alerts";
+import { RATE_LIMITS, consumeRateLimit, rateLimitedResponse } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -331,6 +332,10 @@ async function handle(req: Request): Promise<Response> {
         trimester: cached.trimester,
       });
     }
+  }
+
+  if (!(await consumeRateLimit(supabase, RATE_LIMITS.mealPlan))) {
+    return rateLimitedResponse(RATE_LIMITS.mealPlan);
   }
 
   const allergies = Array.isArray(profile?.food_allergies) ? profile?.food_allergies ?? [] : [];

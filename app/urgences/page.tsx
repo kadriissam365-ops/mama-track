@@ -124,11 +124,11 @@ export default function UrgencesPage() {
             <Siren className="w-6 h-6 text-red-400" />
             Urgences
           </h1>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Contacts et signaux d&apos;alerte</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Contacts et signaux d&apos;alerte</p>
         </div>
         <a
           href="tel:15"
-          className="flex items-center gap-2 bg-red-50 dark:bg-red-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors shadow-lg shadow-red-200"
+          className="flex min-h-11 items-center gap-2 rounded-xl bg-red-600 px-4 text-sm font-semibold text-white shadow-lg shadow-red-200 transition-colors hover:bg-red-700 dark:bg-red-500 dark:shadow-red-950/40 dark:hover:bg-red-600"
         >
           <Phone className="w-4 h-4" />
           SAMU 15
@@ -137,7 +137,7 @@ export default function UrgencesPage() {
 
       {/* Quick call buttons */}
       <div className="grid grid-cols-3 gap-2">
-        <a href="tel:15" className="flex flex-col items-center gap-1 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-2xl py-3 hover:bg-red-100 dark:bg-red-900/30 transition-colors">
+        <a href="tel:15" className="flex flex-col items-center gap-1 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/30 rounded-2xl py-3 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors">
           <span className="text-xl">🚑</span>
           <span className="text-[10px] font-semibold text-red-600 dark:text-red-400">SAMU 15</span>
         </a>
@@ -145,7 +145,7 @@ export default function UrgencesPage() {
           <span className="text-xl">🚒</span>
           <span className="text-[10px] font-semibold text-orange-600 dark:text-orange-400">Pompiers 18</span>
         </a>
-        <a href="tel:112" className="flex flex-col items-center gap-1 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 rounded-2xl py-3 hover:bg-blue-100 dark:hover:bg-blue-900/30 dark:bg-blue-900/30 transition-colors">
+        <a href="tel:112" className="flex flex-col items-center gap-1 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 rounded-2xl py-3 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
           <span className="text-xl">🆘</span>
           <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400">Urgences 112</span>
         </a>
@@ -186,13 +186,13 @@ export default function UrgencesPage() {
               <div className="flex items-center gap-1 flex-shrink-0">
                 <a
                   href={`tel:${contact.phone}`}
-                  className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center hover:bg-green-50 dark:bg-green-500 transition-colors"
+                  className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center hover:bg-green-50 dark:hover:bg-green-500 transition-colors"
                 >
                   <Phone className="w-3.5 h-3.5 text-white" />
                 </a>
                 <button
                   onClick={() => startEdit(contact)}
-                  className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:bg-gray-700 transition-colors"
+                  className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   <Edit3 className="w-3 h-3 text-gray-500 dark:text-gray-400" />
                 </button>
@@ -336,10 +336,10 @@ export default function UrgencesPage() {
         intro="Les signaux d&apos;alerte list&eacute;s ci-dessus sont issus des recommandations officielles fran&ccedil;aises. En cas de doute, contactez le 15, votre maternit&eacute; de garde ou le service d&apos;urgences gyn&eacute;cologiques de votre h&ocirc;pital."
         sources={[
           { label: "Ameli — Les urgences pendant la grossesse", url: "https://www.ameli.fr/assure/sante/themes/grossesse/urgences-pendant-grossesse" },
-          { label: "HAS — Recommandation femmes enceintes &agrave; risque", url: "https://www.has-sante.fr/jcms/c_2747402/fr/preeclampsie-place-des-marqueurs-pl-gf-et-spl-gf-dans-le-suivi-des-femmes-enceintes" },
-          { label: "Coll&egrave;ge National des Gyn&eacute;cologues et Obst&eacute;triciens Fran&ccedil;ais (CNGOF)", url: "https://www.cngof.fr/" },
-          { label: "Sant&eacute; Publique France — Les num&eacute;ros d&apos;urgence", url: "https://www.service-public.fr/particuliers/vosdroits/F1085" },
-          { label: "SAMU — 15 (urgences m&eacute;dicales), 18 (Pompiers), 112 (urgences UE), 114 (SMS sourds/malentendants)", url: "https://www.gouvernement.fr/risques/connaitre-les-numeros-d-urgence" },
+          { label: "HAS — Recommandation femmes enceintes à risque", url: "https://www.has-sante.fr/jcms/c_2747402/fr/preeclampsie-place-des-marqueurs-pl-gf-et-spl-gf-dans-le-suivi-des-femmes-enceintes" },
+          { label: "Collège National des Gynécologues et Obstétriciens Français (CNGOF)", url: "https://www.cngof.fr/" },
+          { label: "Santé Publique France — Les numéros d'urgence", url: "https://www.service-public.fr/particuliers/vosdroits/F1085" },
+          { label: "SAMU — 15 (urgences médicales), 18 (Pompiers), 112 (urgences UE), 114 (SMS sourds/malentendants)", url: "https://www.gouvernement.fr/risques/connaitre-les-numeros-d-urgence" },
         ]}
       />
 

@@ -177,3 +177,65 @@
 .animate-heartbeat {
   animation: heartbeat 1.5s ease-in-out infinite;
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Accessibilité & confort tactile (audit UX 2026-09)
+   ───────────────────────────────────────────────────────────── */
+
+/* Repère de focus visible au clavier, jamais au clic souris. */
+@layer base {
+  :where(a, button, input, select, textarea, [role="button"], [role="tab"]):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 0.75rem;
+  }
+  /* Cibles tactiles : 44px recommandés par les guides iOS et Android. */
+  :where(button, a[href], [role="tab"]) {
+    touch-action: manipulation;
+  }
+  /* Le zoom automatique d'iOS se déclenche sous 16px sur les champs de saisie. */
+  @media (max-width: 640px) {
+    :where(input, select, textarea) {
+      font-size: max(16px, 1em);
+    }
+  }
+}
+
+/* Respect du réglage système « réduire les animations ». */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Barres d'onglets défilantes : masquer la barre de défilement sans bloquer le scroll. */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Lien d'évitement pour la navigation clavier. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+.skip-link:focus {
+  left: 0.75rem;
+  top: 0.75rem;
+  padding: 0.6rem 1rem;
+  border-radius: 9999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 600;
+  font-size: 0.875rem;
+}

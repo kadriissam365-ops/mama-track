@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClientFromCookies } from "@/lib/supabase";
+import { createAdminClient, isAdminConfigured } from "@/lib/supabase-admin";
 import {
   dispatchPartnerNotification,
   type PartnerNotificationType,
@@ -55,7 +56,10 @@ export async function POST(request: NextRequest) {
         typeof body?.details?.milestone === "string" ? body.details.milestone : undefined,
     };
 
-    const result = await dispatchPartnerNotification(supabase, user.id, type, details);
+    // L'identité de la maman est vérifiée via son JWT ; les lectures des partenaires
+    // (préférences + abonnements push) nécessitent le client admin.
+    const reader = isAdminConfigured() ? createAdminClient() : supabase;
+    const result = await dispatchPartnerNotification(supabase, user.id, type, details, reader);
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
     console.error("POST /api/partner-notify error:", err);

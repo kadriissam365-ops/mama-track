@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClientFromCookies } from "@/lib/supabase";
 import { cookies } from "next/headers";
+import { RATE_LIMITS, consumeRateLimit, rateLimitedResponse } from "@/lib/rate-limit";
 
 export interface PushPayload {
   title: string;
@@ -51,8 +52,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
 
+    if (!(await consumeRateLimit(supabase, RATE_LIMITS.pushSend))) {
+      return rateLimitedResponse(RATE_LIMITS.pushSend);
+    }
+
     const body = await request.json();
-    const targetUserId = body.userId || user.id;
+    // Un utilisateur ne peut déclencher un push que vers ses propres appareils.
+    // Les notifications partenaires passent par /api/partner-notify (vérification duo_access).
+    const targetUserId = user.id;
     const payload: PushPayload = {
       title: body.title || "MamaTrack",
       body: body.body || "",

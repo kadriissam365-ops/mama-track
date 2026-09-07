@@ -317,7 +317,7 @@ export default function NaissancePage() {
         <div key={section.id} className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
           <button
             onClick={() => toggleSection(section.id)}
-            className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800"
+            className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 dark:hover:bg-gray-800"
           >
             <h2 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm">{section.title}</h2>
             {expandedSections.has(section.id) ? (

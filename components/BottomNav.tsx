@@ -50,8 +50,8 @@ export default function BottomNav() {
                     aria-current={active ? "page" : undefined}
                     className={`group relative z-10 flex min-h-[52px] flex-col items-center justify-center gap-0.5 rounded-full px-1 py-1.5 text-[10px] transition-colors ${
                       active
-                        ? "text-pink-600 dark:text-pink-400 font-semibold"
-                        : "text-gray-400 dark:text-gray-500 hover:text-pink-400 dark:hover:text-pink-400 font-medium"
+                        ? "text-pink-600 dark:text-pink-300 font-semibold"
+                        : "text-gray-500 dark:text-gray-400 hover:text-pink-500 dark:hover:text-pink-300 font-medium"
                     }`}
                   >
                     {active && (

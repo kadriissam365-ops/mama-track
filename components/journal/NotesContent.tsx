@@ -66,13 +66,13 @@ function NoteForm({
           ))}
         </div>
         <div className="flex gap-2">
-          <button onClick={onCancel} className="p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800">
+          <button onClick={onCancel} className="p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800">
             <X className="w-4 h-4 text-gray-400 dark:text-gray-500" />
           </button>
           <button
             onClick={handleSubmit}
             disabled={!body.trim() || saving}
-            className="flex items-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-600 text-white text-sm rounded-xl disabled:opacity-50 transition-colors"
+            className="flex items-center gap-1 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 dark:hover:bg-amber-500 dark:bg-amber-600 text-white text-sm rounded-xl disabled:opacity-50 transition-colors"
           >
             {saving ? (
               <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
@@ -152,7 +152,7 @@ export default function NotesContent() {
           </div>
           <button
             onClick={() => { setShowForm(true); setEditNote(null); }}
-            className="p-2 bg-amber-500 hover:bg-amber-600 dark:bg-amber-500 dark:hover:bg-amber-600 rounded-xl text-white transition-colors"
+            className="p-2 bg-amber-500 hover:bg-amber-600 dark:hover:bg-amber-500 dark:bg-amber-600 rounded-xl text-white transition-colors"
           >
             <Plus className="w-5 h-5" />
           </button>
@@ -233,7 +233,7 @@ export default function NotesContent() {
                       <div className="flex gap-1 flex-shrink-0 ml-2">
                         <button
                           onClick={() => { setEditNote(note); setShowForm(false); }}
-                          className="p-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 rounded-lg"
+                          className="p-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg"
                         >
                           <Edit3 className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
                         </button>
@@ -278,7 +278,7 @@ export default function NotesContent() {
               className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 w-full max-w-lg"
             >
               <p className="text-center font-semibold text-gray-800 dark:text-gray-200 mb-2">Supprimer cette note ?</p>
-              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">Cette action est irreversible</p>
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">Cette action est irréversible</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteId(null)}
@@ -288,7 +288,7 @@ export default function NotesContent() {
                 </button>
                 <button
                   onClick={() => handleDelete(deleteId)}
-                  className="flex-1 py-3 rounded-2xl bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 text-white font-medium transition-colors"
+                  className="flex-1 py-3 rounded-2xl bg-red-500 hover:bg-red-600 dark:hover:bg-red-500 dark:bg-red-600 text-white font-medium transition-colors"
                 >
                   Supprimer
                 </button>

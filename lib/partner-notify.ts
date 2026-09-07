@@ -70,6 +70,12 @@ export async function dispatchPartnerNotification(
   mamaId: string,
   type: PartnerNotificationType,
   details: PartnerNotificationDetails,
+  /**
+   * Client utilisé pour lire les préférences et abonnements push des partenaires.
+   * Depuis un route handler utilisateur, passer un client service-role : la maman
+   * n'a pas le droit (RLS) de lire les lignes de ses partenaires. Par défaut : `supabase`.
+   */
+  reader: AnySupabase = supabase,
 ): Promise<DispatchResult> {
   const result: DispatchResult = { partnerCount: 0, sent: 0, failed: 0, skipped: 0 };
 
@@ -96,7 +102,7 @@ export async function dispatchPartnerNotification(
   const payload = JSON.stringify(buildPartnerNotificationPayload(type, details));
 
   for (const partnerId of partnerIds) {
-    const { data: prefRow } = await supabase
+    const { data: prefRow } = await reader
       .from("notification_preferences")
       .select("partner_notifications")
       .eq("user_id", partnerId)
@@ -111,7 +117,7 @@ export async function dispatchPartnerNotification(
       continue;
     }
 
-    const { data: subs } = await supabase
+    const { data: subs } = await reader
       .from("push_subscriptions")
       .select("endpoint, subscription_json")
       .eq("user_id", partnerId);
@@ -131,7 +137,7 @@ export async function dispatchPartnerNotification(
           const e = err as { statusCode?: number };
           // Subscription gone — GC the row so we stop retrying.
           if (e.statusCode === 410 || e.statusCode === 404) {
-            await supabase
+            await reader
               .from("push_subscriptions")
               .delete()
               .eq("endpoint", sub.endpoint);

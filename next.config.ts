@@ -1,11 +1,13 @@
 import type { NextConfig } from "next";
 
 // Content-Security-Policy directives for MamaTrack
+const isDev = process.env.NODE_ENV !== "production";
 const ContentSecurityPolicy = [
   // Default: restrict to self
   "default-src 'self'",
   // Scripts: self only, no eval allowed. unsafe-inline needed for Next.js inline scripts
-  "script-src 'self' 'unsafe-inline'",
+  // 'unsafe-eval' n'est ajouté qu'en dev (React DevTools / Fast Refresh), jamais en production
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
   // Styles: unsafe-inline required for Framer Motion and next-themes
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   // Images: self, data URIs, Supabase storage, blob for PWA icons

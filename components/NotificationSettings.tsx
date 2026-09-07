@@ -336,7 +336,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
         <button
           onClick={handleTestNotification}
           disabled={testSending}
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 transition-colors disabled:opacity-50"
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
         >
           {testSending ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -437,7 +437,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
                     className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${
                       prefs.hydrationIntervalMinutes === minutes
                         ? "bg-blue-400 text-white"
-                        : "bg-blue-50 dark:bg-blue-950/30 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/30 dark:bg-blue-900/30"
+                        : "bg-blue-50 dark:bg-blue-950/30 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/30"
                     }`}
                   >
                     {label}
@@ -564,7 +564,7 @@ export default function NotificationSettings({ userId }: NotificationSettingsPro
                     className={`flex-1 py-2 rounded-xl text-xs font-medium transition-all ${
                       active
                         ? "bg-green-400 text-white"
-                        : "bg-green-50 dark:bg-green-950/30 text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30 dark:bg-green-900/30"
+                        : "bg-green-50 dark:bg-green-950/30 text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30"
                     }`}
                   >
                     {label}

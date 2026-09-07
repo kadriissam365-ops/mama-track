@@ -64,7 +64,7 @@ const POST_TYPES: Record<
     emoji: "❓",
     color: "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800/30",
   },
-  vecu: { label: "Vecu", emoji: "💬", color: "bg-blue-50 dark:bg-blue-950/30 border-blue-200" },
+  vecu: { label: "Vécu", emoji: "💬", color: "bg-blue-50 dark:bg-blue-950/30 border-blue-200" },
   conseil: {
     label: "Conseil",
     emoji: "💡",
@@ -306,7 +306,11 @@ export default function CommunityContent() {
     );
 
     try {
-      await toggleReaction(postId, user.id, emoji);
+      const { reactions } = await toggleReaction(postId, user.id, emoji);
+      // Compteurs recalculés côté serveur : on remplace l'estimation optimiste.
+      if (reactions && Object.keys(reactions).length > 0) {
+        setPosts((prev) => prev.map((p) => (p.id === postId ? { ...p, reactions } : p)));
+      }
     } catch {
       // Revert optimistic update on error
       setUserReactions((prev) => {
@@ -401,7 +405,7 @@ export default function CommunityContent() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 flex items-center gap-2">
           <MessageCircle className="w-6 h-6 text-pink-400" />
-          Communaute
+          Communauté
         </h1>
         <div className="flex items-center gap-2">
           <button
@@ -436,7 +440,7 @@ export default function CommunityContent() {
         <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/30 rounded-2xl p-3 text-xs text-amber-700 dark:text-amber-400 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>
-            Connectez-vous pour publier, reagir et signaler des posts.
+            Connectez-vous pour publier, réagir et signaler des posts.
           </span>
         </div>
       )}
@@ -506,7 +510,7 @@ export default function CommunityContent() {
         <div className="w-px h-8 bg-pink-200" />
         <div className="text-center">
           <p className="text-lg font-bold text-purple-500 dark:text-purple-400">{totalReactions}</p>
-          <p className="text-[10px] text-gray-500 dark:text-gray-400">Reactions</p>
+          <p className="text-[10px] text-gray-500 dark:text-gray-400">Réactions</p>
         </div>
         <div className="w-px h-8 bg-pink-200" />
         <div className="text-center">
@@ -593,7 +597,7 @@ export default function CommunityContent() {
                 onClick={() => setShowModal(true)}
                 className="text-sm text-pink-500 dark:text-pink-400 font-medium hover:underline"
               >
-                Soyez la premiere a partager !
+                Soyez la première à partager !
               </button>
             )}
           </div>
@@ -667,7 +671,7 @@ export default function CommunityContent() {
                         ? "text-gray-300 dark:text-gray-500 cursor-default"
                         : "text-gray-300 dark:text-gray-500 hover:text-red-400"
                     }`}
-                    title={isReported ? "Deja signale" : "Signaler"}
+                    title={isReported ? "Déjà signalé" : "Signaler"}
                   >
                     <Flag className="w-3.5 h-3.5" />
                   </button>

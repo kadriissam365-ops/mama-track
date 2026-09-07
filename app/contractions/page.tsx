@@ -6,7 +6,7 @@ import { m as motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Timer, Trash2, AlertCircle, CheckCircle, MessageCircle, ArrowLeft } from "lucide-react";
+import { Timer, Trash2, AlertCircle, CheckCircle, MessageCircle, ArrowLeft, BookOpen } from "lucide-react";
 import { useToast } from "@/lib/toast";
 import type { ContractionEntry } from "@/lib/store";
 
@@ -205,12 +205,19 @@ export default function ContractionsPage() {
       {/* Contrôle principal */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-pink-100 dark:border-pink-900/30 text-center">
         {!isActive ? (
-          <button
-            onClick={startSession}
-            className="w-full py-4 bg-pink-400 text-white rounded-2xl font-semibold text-lg hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors shadow-sm"
-          >
-            🤱 Démarrer le suivi
-          </button>
+          <div className="space-y-4">
+            <button
+              onClick={startSession}
+              className="w-full py-4 bg-pink-400 text-white rounded-2xl font-semibold text-lg hover:bg-pink-500 dark:bg-pink-500 dark:hover:bg-pink-600 transition-colors shadow-sm"
+            >
+              🤱 Démarrer le suivi
+            </button>
+            <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+              Démarre une session dès que les contractions deviennent régulières, puis
+              appuie sur le cercle au début et à la fin de chaque contraction. MamaTrack
+              calcule la durée et l&apos;intervalle pour toi.
+            </p>
+          </div>
         ) : (
           <div className="space-y-4">
             <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -250,7 +257,7 @@ export default function ContractionsPage() {
 
             <button
               onClick={endSession}
-              className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-medium hover:bg-gray-200 dark:bg-gray-700 transition-colors"
+              className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-2xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
               Terminer la session
             </button>
@@ -271,12 +278,12 @@ export default function ContractionsPage() {
                   localStorage.setItem('duo-messages', JSON.stringify([...saved, msg]));
                   toast.success('Message envoyé à votre partenaire 💬');
                 }}
-                className="w-full flex items-center gap-3 bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800/30 rounded-2xl px-4 py-3 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30 transition-colors"
+                className="w-full flex items-center gap-3 bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800/30 rounded-2xl px-4 py-3 hover:bg-pink-100 dark:hover:bg-pink-900/30 transition-colors"
               >
                 <MessageCircle className="w-5 h-5 text-pink-500 dark:text-pink-400" />
                 <div className="text-left">
                   <p className="text-sm font-semibold text-pink-700 dark:text-pink-300">Prévenir mon partenaire</p>
-                  <p className="text-xs text-pink-400">Envoie un message automatique au Duo</p>
+                  <p className="text-xs text-pink-600 dark:text-pink-300">Envoie un message automatique au Duo</p>
                 </div>
               </motion.button>
             )}
@@ -293,19 +300,19 @@ export default function ContractionsPage() {
         >
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 text-center shadow-sm border border-pink-100 dark:border-pink-900/30">
             <p className="text-2xl font-bold text-pink-500 dark:text-pink-400">{localContractions.length}</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">Contractions</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Contractions</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 text-center shadow-sm border border-purple-100 dark:border-purple-900/30">
             <p className="text-lg font-bold text-purple-500">
               {analysis.avgDuration > 0 ? formatDuration(analysis.avgDuration) : "—"}
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">Durée moy.</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Durée moy.</p>
           </div>
           <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 text-center shadow-sm border border-green-100 dark:border-green-900/30">
             <p className="text-lg font-bold text-green-500">
               {analysis.avgInterval > 0 ? formatInterval(analysis.avgInterval) : "—"}
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">Intervalle</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Intervalle</p>
           </div>
         </motion.div>
       )}
@@ -337,7 +344,7 @@ export default function ContractionsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="text-gray-400 dark:text-gray-500">
+                <tr className="text-gray-500 dark:text-gray-400">
                   <th className="text-left pb-2 pr-3">#</th>
                   <th className="text-left pb-2 pr-3">Heure</th>
                   <th className="text-left pb-2 pr-3">Durée</th>
@@ -364,6 +371,45 @@ export default function ContractionsPage() {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {/* Repère 5-1-1 : la question la plus posée pendant le travail. */}
+      {!isActive && (
+        <div className="rounded-3xl border border-purple-100 dark:border-purple-900/40 bg-purple-50 dark:bg-purple-950/30 p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-purple-600 dark:text-purple-300" />
+            <h2 className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100">
+              Quand partir à la maternité ?
+            </h2>
+          </div>
+          <p className="text-xs text-purple-900/80 dark:text-purple-100/80 leading-relaxed">
+            Le repère souvent cité pour un premier bébé est la règle 5-1-1 : des contractions
+            toutes les <strong>5 minutes</strong>, durant environ <strong>1 minute</strong>,
+            depuis au moins <strong>1 heure</strong>.
+          </p>
+          <ul className="text-xs text-purple-900/80 dark:text-purple-100/80 space-y-1.5 list-disc list-inside leading-relaxed">
+            <li>Appelle ta maternité sans attendre ce repère si tu perds les eaux.</li>
+            <li>De même en cas de saignement, de fièvre ou si bébé bouge moins.</li>
+            <li>Chaque grossesse est différente : suis toujours la consigne de ton équipe.</li>
+          </ul>
+          <p className="text-[11px] text-purple-800/70 dark:text-purple-200/70">
+            Information générale, elle ne remplace pas l&apos;avis de ta sage-femme ou de ton
+            médecin. En urgence, appelle le 15.
+          </p>
+        </div>
+      )}
+
+      {/* Aucun historique : on l'annonce plutôt que de laisser la page vide. */}
+      {!isActive && pastSessions.length === 0 && (
+        <div className="rounded-3xl border border-pink-100 dark:border-pink-900/30 bg-white dark:bg-gray-900 p-6 text-center">
+          <Timer className="mx-auto mb-3 h-8 w-8 text-pink-300 dark:text-pink-700" />
+          <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+            Aucune session enregistrée
+          </p>
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+            Tes sessions apparaîtront ici avec leur durée moyenne et leur intervalle.
+          </p>
         </div>
       )}
 

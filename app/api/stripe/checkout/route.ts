@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClientFromCookies } from "@/lib/supabase";
 import { getAppUrl, getStripe } from "@/lib/stripe-server";
+import { createAdminClient, isAdminConfigured } from "@/lib/supabase-admin";
 
 export const runtime = "nodejs";
 
@@ -67,10 +68,15 @@ export async function POST(req: Request) {
       });
       customerId = customer.id;
 
-      await sb
-        .from("profiles")
-        .update({ stripe_customer_id: customerId })
-        .eq("id", user.id);
+      // Les colonnes Stripe/premium ne sont plus modifiables avec le JWT utilisateur :
+      // on persiste via le client admin (le webhook Stripe la renseigne aussi).
+      if (isAdminConfigured()) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (createAdminClient() as any)
+          .from("profiles")
+          .update({ stripe_customer_id: customerId })
+          .eq("id", user.id);
+      }
     }
 
     const session = await stripe.checkout.sessions.create({

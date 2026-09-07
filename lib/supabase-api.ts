@@ -951,7 +951,7 @@ export async function upsertShoppingItem(userId: string, item: ShoppingItem): Pr
       budget_estime: item.budgetEstime,
       coche: item.coche,
       custom: item.custom,
-    }, { onConflict: 'id' });
+    }, { onConflict: 'user_id,id' });
   return !error;
 }
 
@@ -980,7 +980,7 @@ export async function bulkInsertShoppingItems(userId: string, items: ShoppingIte
       budget_estime: item.budgetEstime,
       coche: item.coche,
       custom: item.custom,
-    })), { onConflict: 'id' });
+    })), { onConflict: 'user_id,id' });
   return !error;
 }
 

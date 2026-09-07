@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { randomBytes } from "node:crypto";
 import { createServerClientFromCookies } from "@/lib/supabase";
+import { createAdminClient, isAdminConfigured } from "@/lib/supabase-admin";
+import { RATE_LIMITS, consumeRateLimit, rateLimitedResponse } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -187,6 +189,10 @@ export async function POST(req: Request) {
     );
   }
 
+  if (!(await consumeRateLimit(supabase, RATE_LIMITS.duoInvite))) {
+    return rateLimitedResponse(RATE_LIMITS.duoInvite);
+  }
+
   let body: RequestBody = {};
   try {
     body = (await req.json()) as RequestBody;
@@ -219,15 +225,19 @@ export async function POST(req: Request) {
 
   // Detect whether this email already has a MamaTrack account so the email CTA
   // points to the right action (login vs signup).
+  // `email_has_account` est réservée au service_role (anti-énumération d'emails) :
+  // on l'appelle uniquement côté serveur avec le client admin.
   let hasAccount = false;
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: existsRaw } = await (supabase as any).rpc("email_has_account", {
-      p_email: email,
-    });
-    hasAccount = Boolean(existsRaw);
-  } catch (err) {
-    console.warn("[duo/invite] email_has_account rpc failed:", err);
+  if (isAdminConfigured()) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: existsRaw } = await (createAdminClient() as any).rpc("email_has_account", {
+        p_email: email,
+      });
+      hasAccount = Boolean(existsRaw);
+    } catch (err) {
+      console.warn("[duo/invite] email_has_account rpc failed:", err);
+    }
   }
 
   const token = randomBytes(32).toString("hex");

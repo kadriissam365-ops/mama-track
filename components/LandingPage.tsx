@@ -333,7 +333,7 @@ export default function LandingPage() {
           </Link>
           <Link
             href="/auth/login"
-            className="text-pink-500 dark:text-pink-400 font-semibold py-4 px-6 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 rounded-2xl transition-all text-center"
+            className="text-pink-500 dark:text-pink-400 font-semibold py-4 px-6 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-950/30 rounded-2xl transition-all text-center"
           >
             J&apos;ai deja un compte
           </Link>
@@ -740,7 +740,7 @@ export default function LandingPage() {
             >
               <button
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="w-full px-6 py-5 text-left text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center justify-between hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors"
+                className="w-full px-6 py-5 text-left text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 flex items-center justify-between hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-colors"
               >
                 {item.q}
                 <motion.span
@@ -937,7 +937,7 @@ export default function LandingPage() {
             <span className="text-pink-200">&middot;</span>
             <span>Sans pub</span>
             <span className="text-pink-200">&middot;</span>
-            <span>Donnees securisees</span>
+            <span>Données sécurisées</span>
           </div>
         </div>
       </footer>

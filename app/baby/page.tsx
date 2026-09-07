@@ -87,7 +87,7 @@ export default function BabyPage() {
           disabled={selectedWeek <= 1}
           aria-label="Semaine précédente"
           title="Semaine précédente"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-900 border border-pink-200 dark:border-pink-800/30 text-pink-400 disabled:opacity-30 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors shadow-sm"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-900 border border-pink-200 dark:border-pink-800/30 text-pink-400 disabled:opacity-30 hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-colors shadow-sm"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -105,7 +105,7 @@ export default function BabyPage() {
           disabled={selectedWeek >= 42}
           aria-label="Semaine suivante"
           title="Semaine suivante"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-900 border border-pink-200 dark:border-pink-800/30 text-pink-400 disabled:opacity-30 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors shadow-sm"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-gray-900 border border-pink-200 dark:border-pink-800/30 text-pink-400 disabled:opacity-30 hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-colors shadow-sm"
         >
           <ChevronRight className="w-5 h-5" />
         </button>

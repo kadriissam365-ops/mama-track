@@ -177,7 +177,7 @@ export async function getPartnerAccess(partnerId: string): Promise<DuoAccess[]> 
     .from('duo_access')
     .select(`
       *,
-      profiles!duo_access_mama_id_fkey(mama_name, baby_name, due_date)
+      profiles!duo_access_mama_profile_fkey(mama_name, baby_name, due_date)
     `)
     .eq('partner_id', partnerId);
   

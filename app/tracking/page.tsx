@@ -6,8 +6,10 @@ import { m as motion } from "framer-motion";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useRouter } from "next/navigation";
-import { Timer, Plus, Minus } from "lucide-react";
+import { Timer, Plus, Minus, Activity } from "lucide-react";
 import { TrackingSkeleton } from "@/components/Skeleton";
+import SegmentedTabs from "@/components/SegmentedTabs";
+import EmptyState from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import { WATER_GOAL_ML } from "@/lib/constants";
 
@@ -80,44 +82,15 @@ export default function TrackingPage() {
   const waterGoal = WATER_GOAL_ML;
   const waterPct = Math.min(100, (waterToday / waterGoal) * 100);
 
-  // Index of active tab for the slider indicator
-  const activeIndex = TABS.findIndex((t) => t.id === activeTab);
-
   return (
     <div className="max-w-lg mx-auto px-4 py-6">
-      {/* Tabs with animated slider indicator */}
-      <div className="relative mb-4 overflow-x-auto scrollbar-hide">
-        <div
-          className="relative flex gap-1 bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-1"
-          style={{ minWidth: "max-content" }}
-        >
-          {/* Sliding indicator: width = 100/TABS.length %, left = activeIndex * that width */}
-          <motion.div
-            aria-hidden
-            className="absolute top-1 bottom-1 bg-white dark:bg-gray-900 rounded-xl shadow-sm"
-            initial={false}
-            animate={{
-              left: `calc(${(activeIndex * 100) / TABS.length}% + 4px)`,
-              width: `calc(${100 / TABS.length}% - 8px)`,
-            }}
-            transition={{ type: "spring", stiffness: 400, damping: 35 }}
-          />
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`relative z-10 flex-shrink-0 flex-1 py-1.5 px-2 text-xs font-medium rounded-xl transition-colors whitespace-nowrap ${
-                activeTab === tab.id
-                  ? "text-pink-600"
-                  : "text-gray-500 dark:text-gray-400 hover:text-pink-400"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <SegmentedTabs
+        items={TABS}
+        value={activeTab}
+        onChange={setActiveTab}
+        ariaLabel="Catégories de suivi"
+        className="mb-4"
+      />
 
       {/* Contractions shortcut */}
       <button
@@ -139,6 +112,9 @@ export default function TrackingPage() {
           if child sub-components fail to animate). */}
       <motion.div
         key={activeTab}
+        role="tabpanel"
+        id={`panel-${activeTab}`}
+        aria-labelledby={`tab-${activeTab}`}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
@@ -148,7 +124,7 @@ export default function TrackingPage() {
             <button
               type="button"
               onClick={() => setShowSymptomForm((v) => !v)}
-              className="w-full py-3 bg-pink-400 text-white rounded-2xl font-medium flex items-center justify-center gap-2 hover:bg-pink-500 dark:bg-pink-500 dark:hover:bg-pink-600 transition-colors shadow-sm"
+              className="w-full py-3 bg-pink-400 text-white rounded-2xl font-medium flex items-center justify-center gap-2 hover:bg-pink-500 dark:hover:bg-pink-500 dark:bg-pink-600 transition-colors shadow-sm"
             >
               <Plus className="w-4 h-4" />
               Ajouter des symptômes
@@ -210,7 +186,7 @@ export default function TrackingPage() {
                   type="button"
                   onClick={handleSymptomSubmit}
                   disabled={selectedSymptoms.length === 0}
-                  className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-500 dark:bg-pink-500 dark:hover:bg-pink-600 transition-colors"
+                  className="w-full py-2.5 bg-pink-400 text-white rounded-xl font-medium disabled:opacity-50 hover:bg-pink-500 dark:hover:bg-pink-500 dark:bg-pink-600 transition-colors"
                 >
                   Enregistrer
                 </button>
@@ -218,6 +194,16 @@ export default function TrackingPage() {
             )}
 
             {/* History of recent symptom entries */}
+            {!showSymptomForm && store.symptomEntries.length === 0 && (
+              <EmptyState
+                icon={Activity}
+                title="Aucun symptôme enregistré"
+                description="Note ce que tu ressens au fil des jours : nausées, fatigue, douleurs. Tu verras l'évolution et pourras en parler à ta sage-femme."
+                action={{ label: "Noter mes symptômes", onClick: () => setShowSymptomForm(true) }}
+                variant="pink"
+              />
+            )}
+
             <div className="space-y-3">
               {store.symptomEntries
                 .slice()
@@ -282,7 +268,7 @@ export default function TrackingPage() {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-3xl font-bold text-blue-500">{waterToday}</span>
-                  <span className="text-xs text-gray-400 dark:text-gray-500">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
                     ml / {waterGoal} ml
                   </span>
                 </div>

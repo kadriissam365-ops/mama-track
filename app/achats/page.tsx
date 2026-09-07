@@ -218,7 +218,7 @@ export default function AchatsPage() {
       <div className="mx-4 mt-3">
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-900 border-2 border-dashed border-pink-300 text-pink-500 font-medium py-3 rounded-2xl hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-900 border-2 border-dashed border-pink-300 text-pink-500 font-medium py-3 rounded-2xl hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-colors"
         >
           <Plus className="w-4 h-4" />
           Ajouter un article personnalisé
@@ -290,7 +290,7 @@ export default function AchatsPage() {
                 </button>
                 <button
                   onClick={() => setShowAddForm(false)}
-                  className="px-4 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-2 rounded-xl text-sm hover:bg-gray-200 dark:bg-gray-700 transition-colors"
+                  className="px-4 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 py-2 rounded-xl text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   Annuler
                 </button>
@@ -314,7 +314,7 @@ export default function AchatsPage() {
               {/* Category header */}
               <button
                 onClick={() => toggleCategorie(cat)}
-                className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 transition-colors"
+                className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-gray-700 dark:text-gray-300">{cat}</span>
@@ -342,7 +342,7 @@ export default function AchatsPage() {
                       {catItems.map(item => (
                         <div
                           key={item.id}
-                          className={`flex items-center gap-3 px-4 py-3 transition-colors ${item.coche ? 'bg-green-50 dark:bg-green-950/30' : 'hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800'}`}
+                          className={`flex items-center gap-3 px-4 py-3 transition-colors ${item.coche ? 'bg-green-50 dark:bg-green-950/30' : 'hover:bg-gray-50 dark:hover:bg-gray-800'}`}
                         >
                           {/* Checkbox */}
                           <button

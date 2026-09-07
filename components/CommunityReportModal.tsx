@@ -82,7 +82,7 @@ export default function CommunityReportModal({
                       className={`w-full text-left px-4 py-2.5 rounded-xl text-sm border transition-colors ${
                         reportReason === reason
                           ? "border-red-400 bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300"
-                          : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800"
+                          : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                       }`}
                     >
                       {reason}

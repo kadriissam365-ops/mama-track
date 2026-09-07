@@ -376,7 +376,7 @@ export default function RespirationPage() {
             <div className="flex gap-3 justify-center">
               <button
                 onClick={reset}
-                className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:bg-gray-700 transition-colors"
+                className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
               >
                 <RotateCcw className="w-5 h-5 text-gray-500 dark:text-gray-400" />
               </button>

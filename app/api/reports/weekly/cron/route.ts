@@ -56,7 +56,8 @@ async function sendPushForUser(
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   const expected = process.env.CRON_SECRET;
-  if (expected && authHeader !== `Bearer ${expected}`) {
+  // Fail-closed : sans CRON_SECRET configuré, la route est inaccessible.
+  if (!expected || authHeader !== `Bearer ${expected}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -4,6 +4,7 @@ import { createServerClientFromCookies } from "@/lib/supabase";
 import { streamChat, isAiConfigured, type ChatMessage } from "@/lib/ai-providers";
 import { computeAlerts, loadContext } from "@/lib/health-alerts";
 import { SYSTEM_PERSONA, buildContextBlock } from "@/lib/coach-prompts";
+import { RATE_LIMITS, consumeRateLimit, rateLimitedResponse } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -43,6 +44,12 @@ export async function POST(req: Request) {
   if (body.action === "signal_check") {
     const alerts = computeAlerts(ctx);
     return NextResponse.json({ alerts });
+  }
+
+  // Limitation de débit : chaque appel ci-dessous déclenche une génération IA payante.
+  const rule = body.action === "weekly_tip" ? RATE_LIMITS.coachTip : RATE_LIMITS.coachChat;
+  if (!(await consumeRateLimit(supabase, rule))) {
+    return rateLimitedResponse(rule);
   }
 
   const contextText = buildContextBlock(ctx);

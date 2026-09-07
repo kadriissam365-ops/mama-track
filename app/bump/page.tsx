@@ -184,7 +184,7 @@ export default function BumpPage() {
           )}
           <button
             onClick={() => setShowCamera(true)}
-            className="w-10 h-10 bg-pink-400 rounded-xl flex items-center justify-center text-white hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors shadow-sm"
+            className="w-10 h-10 bg-pink-400 rounded-xl flex items-center justify-center text-white hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors shadow-sm"
           >
             <Camera className="w-5 h-5" />
           </button>
@@ -326,7 +326,7 @@ export default function BumpPage() {
           </p>
           <button
             onClick={() => setShowCamera(true)}
-            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
           >
             Prendre ma première photo
           </button>
@@ -369,7 +369,7 @@ export default function BumpPage() {
 
               <div
                 onClick={() => fileRef.current?.click()}
-                className="aspect-[3/4] rounded-2xl border-2 border-dashed border-pink-200 dark:border-pink-800/30 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 transition-all mb-4"
+                className="aspect-[3/4] rounded-2xl border-2 border-dashed border-pink-200 dark:border-pink-800/30 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30 transition-all mb-4"
               >
                 <Camera className="w-12 h-12 text-pink-300" />
                 <p className="text-sm text-pink-400 font-medium">Appuyez pour choisir une photo</p>

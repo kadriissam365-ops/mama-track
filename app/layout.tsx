@@ -158,7 +158,10 @@ export default function RootLayout({
                 <OfflineBanner />
                 <ConditionalNav />
                 <InstallBanner />
-                <main className="flex-1 pb-24 overflow-y-auto">
+                <a href="#contenu-principal" className="skip-link">
+                  Aller au contenu principal
+                </a>
+                <main id="contenu-principal" className="flex-1 pb-24 overflow-y-auto">
                   {children}
                 </main>
               </MotionProvider>

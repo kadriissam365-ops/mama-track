@@ -347,7 +347,7 @@ export default function PhotosContent() {
               className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 w-full max-w-lg"
             >
               <p className="text-center font-semibold text-gray-800 dark:text-gray-200 mb-2">Supprimer cette photo ?</p>
-              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">Cette action est irreversible</p>
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">Cette action est irréversible</p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
@@ -360,7 +360,7 @@ export default function PhotosContent() {
                     const slot = slots.find((s) => s.week === deleteConfirm);
                     if (slot) handleDelete(slot);
                   }}
-                  className="flex-1 py-3 rounded-2xl bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 text-white font-medium transition-colors"
+                  className="flex-1 py-3 rounded-2xl bg-red-500 hover:bg-red-600 dark:hover:bg-red-500 dark:bg-red-600 text-white font-medium transition-colors"
                 >
                   Supprimer
                 </button>

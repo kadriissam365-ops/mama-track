@@ -314,7 +314,7 @@ export default function SettingsPage() {
                 href="/plus"
                 className={`block text-center text-sm font-semibold py-2.5 rounded-xl transition-all ${isPremium ? "bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800/40 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/30" : "bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:opacity-90"}`}
               >
-                {isPremium ? "Gérer mon abonnement" : "Passer Premium · 4,99 €/mois"}
+                {isPremium ? "Gérer mon abonnement" : "Passer Premium · 39 € ou 7,99 €/mois"}
               </Link>
             </div>
           )}

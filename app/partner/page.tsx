@@ -25,7 +25,7 @@ export default async function PartnerIndexPage() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: rows } = await (supabase.from as any)("duo_access")
-    .select("mama_id, role, profiles!duo_access_mama_id_fkey(mama_name, baby_name, due_date)")
+    .select("mama_id, role, profiles!duo_access_mama_profile_fkey(mama_name, baby_name, due_date)")
     .eq("partner_id", user.id);
 
   const linked = (rows ?? []) as Array<{

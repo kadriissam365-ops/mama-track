@@ -39,7 +39,7 @@ export default function Header() {
   const userInitial = user?.email?.charAt(0).toUpperCase() || '?';
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-pink-100 dark:border-pink-900/30 px-4 py-3">
+    <header className="sticky top-0 z-50 bg-white/85 dark:bg-gray-900/85 backdrop-blur-md border-b border-pink-100 dark:border-pink-900/30 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
       <div className="max-w-lg mx-auto flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Heart className="w-5 h-5 text-pink-400 fill-pink-300" />
@@ -49,11 +49,15 @@ export default function Header() {
         <div className="flex items-center gap-3">
           {week !== null && days !== null ? (
             <>
-              <span className="bg-pink-100 dark:bg-pink-900/30 text-pink-600 text-xs font-semibold px-3 py-1 rounded-full hidden sm:inline-flex">
-                SA {week}
-              </span>
-              <span className="bg-purple-100 dark:bg-purple-900/30 text-purple-600 text-xs font-semibold px-3 py-1 rounded-full hidden sm:inline-flex">
-                J-{days}
+              {/* Repère semaine + compte à rebours : visible aussi sur mobile,
+                  c'est l'information la plus consultée de l'app. */}
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900/40 dark:to-purple-900/40 px-3 py-1 text-xs font-semibold text-pink-700 dark:text-pink-200"
+                aria-label={`Semaine ${week} d'aménorrhée, ${days} jours restants`}
+              >
+                <span>SA {week}</span>
+                <span aria-hidden className="text-pink-300 dark:text-pink-700">·</span>
+                <span className="text-purple-700 dark:text-purple-200">J-{days}</span>
               </span>
               <div className="hidden sm:block">
                 <ExportPDF />
@@ -66,7 +70,10 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
-                className="flex items-center gap-1.5 bg-gradient-to-br from-pink-400 to-purple-400 text-white w-8 h-8 rounded-full justify-center font-semibold text-sm hover:from-pink-500 hover:to-purple-500 transition-all"
+                aria-label="Menu du compte"
+                aria-expanded={showMenu}
+                aria-haspopup="menu"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-pink-400 to-purple-400 text-sm font-semibold text-white transition-all hover:from-pink-500 hover:to-purple-500"
               >
                 {userInitial}
               </button>
@@ -83,13 +90,14 @@ export default function Header() {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: -10 }}
                       transition={{ duration: 0.15 }}
+                      role="menu"
                       className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-pink-100 dark:border-pink-900/30 z-50 overflow-hidden"
                     >
                       <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                         <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                           {user?.email}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">Connecté(e)</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Connectée</p>
                       </div>
 
                       {/* Mobile-only: Export PDF */}
@@ -99,15 +107,17 @@ export default function Header() {
 
                       <div className="py-1">
                         <button
+                          role="menuitem"
                           onClick={handleSettings}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                         >
                           <Settings className="w-4 h-4" />
                           Paramètres
                         </button>
                         <button
+                          role="menuitem"
                           onClick={handleSignOut}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
                         >
                           <LogOut className="w-4 h-4" />
                           Se déconnecter

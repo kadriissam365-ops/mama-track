@@ -314,7 +314,7 @@ function ChatSection({ userId, partnerName }: { userId: string; partnerName: str
         <button
           onClick={() => sendMessage(input)}
           disabled={!input.trim()}
-          className="bg-pink-400 text-white px-3 py-2 rounded-xl hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-40"
+          className="bg-pink-400 text-white px-3 py-2 rounded-xl hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-40"
         >
           <Send className="w-4 h-4" />
         </button>
@@ -513,7 +513,7 @@ export default function DuoPage() {
         </h1>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+          className="flex items-center gap-1.5 bg-pink-400 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
         >
           <UserPlus className="w-4 h-4" />
           Inviter
@@ -581,7 +581,7 @@ export default function DuoPage() {
               <button
                 onClick={handleSendInvitation}
                 disabled={!email.trim() || sending}
-                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 {sending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -668,7 +668,7 @@ export default function DuoPage() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => copyInviteUrl(inv.token)}
-                        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:bg-gray-700 transition-colors"
+                        className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                         aria-label="Copier le lien d'invitation"
                       >
                         {isCopied ? <Check className="w-4 h-4 text-green-500 dark:text-green-400" /> : <Copy className="w-4 h-4" />}
@@ -741,7 +741,7 @@ export default function DuoPage() {
           </p>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-50 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
+            className="bg-pink-400 text-white px-6 py-2.5 rounded-xl font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
           >
             Créer une invitation
           </button>
@@ -767,7 +767,7 @@ export default function DuoPage() {
         <div className="flex gap-2 flex-wrap mb-3">
           {SUPPORT_MESSAGES.map(msg => (
             <button key={msg.text} onClick={() => sendSupportMessage(msg.text)}
-              className="text-xs bg-pink-50 dark:bg-pink-950/30 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30 text-pink-600 rounded-full px-3 py-1.5 transition-colors">
+              className="text-xs bg-pink-50 dark:bg-pink-950/30 hover:bg-pink-100 dark:hover:bg-pink-900/30 text-pink-600 rounded-full px-3 py-1.5 transition-colors">
               {msg.emoji} {msg.text}
             </button>
           ))}

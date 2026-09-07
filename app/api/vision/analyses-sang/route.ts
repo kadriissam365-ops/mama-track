@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClientFromCookies } from "@/lib/supabase";
 import { analyzeImage, isVisionConfigured } from "@/lib/ai-providers";
+import { RATE_LIMITS, consumeRateLimit, rateLimitedResponse } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -97,6 +98,9 @@ export async function POST(req: Request) {
   const premium = Boolean(profile?.is_premium) && (!profile?.premium_until || new Date(profile.premium_until) > new Date());
   if (!premium) {
     return NextResponse.json({ error: "Fonctionnalité Premium" }, { status: 402 });
+  }
+  if (!(await consumeRateLimit(supabase, RATE_LIMITS.vision))) {
+    return rateLimitedResponse(RATE_LIMITS.vision);
   }
 
   let body: RequestBody = {};

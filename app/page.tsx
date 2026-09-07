@@ -460,7 +460,7 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.38 }}
         onClick={() => router.push("/contractions")}
-        className="w-full flex items-center gap-3 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/30 rounded-3xl px-4 py-3 hover:bg-purple-100 dark:hover:bg-purple-900/30 dark:bg-purple-900/30 transition-colors"
+        className="w-full flex items-center gap-3 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/30 rounded-3xl px-4 py-3 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
       >
         <div className="w-9 h-9 bg-purple-400 rounded-xl flex items-center justify-center flex-shrink-0">
           <Timer className="w-5 h-5 text-white" />
@@ -478,7 +478,7 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.41 }}
         onClick={() => router.push("/prenoms")}
-        className="w-full flex items-center gap-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-100 dark:border-yellow-900/30 rounded-3xl px-4 py-3 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 dark:bg-yellow-900/30 transition-colors"
+        className="w-full flex items-center gap-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-100 dark:border-yellow-900/30 rounded-3xl px-4 py-3 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors"
       >
         <div className="w-9 h-9 bg-yellow-300 rounded-xl flex items-center justify-center flex-shrink-0">
           <span className="text-lg">💛</span>
@@ -491,7 +491,7 @@ export default function DashboardPage() {
       </motion.button>
 
       {/* Bilan semaine */}
-      <button onClick={() => setShowReport(true)} className="w-full flex items-center gap-3 bg-white dark:bg-gray-900 border border-purple-100 dark:border-purple-900/30 rounded-3xl px-4 py-3 hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/30 transition-colors">
+      <button onClick={() => setShowReport(true)} className="w-full flex items-center gap-3 bg-white dark:bg-gray-900 border border-purple-100 dark:border-purple-900/30 rounded-3xl px-4 py-3 hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors">
         <BarChart3 className="w-5 h-5 text-purple-400" />
         <span className="text-sm font-semibold text-purple-700 dark:text-purple-300">Mon bilan de la semaine</span>
         <span className="ml-auto text-purple-300 text-lg">›</span>

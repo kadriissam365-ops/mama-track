@@ -42,7 +42,7 @@ function PrenomsCard({
         <button
           onClick={() => onToggle(prenom.nom)}
           className={`w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center transition-all ${
-            isFavori ? "bg-pink-100 dark:bg-pink-900/30 text-pink-500" : "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:bg-pink-50 dark:hover:bg-pink-950/30 dark:bg-pink-950/30 hover:text-pink-400"
+            isFavori ? "bg-pink-100 dark:bg-pink-900/30 text-pink-500" : "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:bg-pink-50 dark:hover:bg-pink-950/30 hover:text-pink-400"
           }`}
         >
           <Heart className={`w-4 h-4 ${isFavori ? "fill-pink-400" : ""}`} />
@@ -106,7 +106,7 @@ export default function PrenomsPage() {
         </div>
         <button
           onClick={handleSurprise}
-          className="flex items-center gap-2 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800/30 text-yellow-700 dark:text-yellow-300 rounded-2xl px-3 py-2 text-sm font-medium hover:bg-yellow-100 dark:hover:bg-yellow-900/30 dark:bg-yellow-900/30 transition-colors"
+          className="flex items-center gap-2 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800/30 text-yellow-700 dark:text-yellow-300 rounded-2xl px-3 py-2 text-sm font-medium hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors"
         >
           <Shuffle className="w-4 h-4" />
           Surprise
@@ -208,9 +208,9 @@ export default function PrenomsPage() {
           {/* Grid */}
           <div className="grid grid-cols-2 gap-3">
             <AnimatePresence mode="popLayout">
-              {filtered.map((prenom) => (
+              {filtered.map((prenom, i) => (
                 <PrenomsCard
-                  key={prenom.nom}
+                  key={`${prenom.nom}-${prenom.genre}-${i}`}
                   prenom={prenom}
                   isFavori={favoris.includes(prenom.nom)}
                   onToggle={toggleFavori}
@@ -239,9 +239,9 @@ export default function PrenomsPage() {
           ) : (
             <div className="grid grid-cols-2 gap-3">
               <AnimatePresence mode="popLayout">
-                {favorisData.map((prenom) => (
+                {favorisData.map((prenom, i) => (
                   <PrenomsCard
-                    key={prenom.nom}
+                    key={`${prenom.nom}-${prenom.genre}-${i}`}
                     prenom={prenom}
                     isFavori={true}
                     onToggle={toggleFavori}

@@ -118,7 +118,7 @@ export default function MoodTab() {
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-            className="p-1 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/30 transition-colors"
+            className="p-1 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors"
           >
             <ChevronLeft className="w-5 h-5 text-purple-400" />
           </button>
@@ -127,7 +127,7 @@ export default function MoodTab() {
           </h3>
           <button
             onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-            className="p-1 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/30 dark:bg-purple-950/30 transition-colors"
+            className="p-1 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors"
           >
             <ChevronRight className="w-5 h-5 text-purple-400" />
           </button>

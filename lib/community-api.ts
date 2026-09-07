@@ -143,64 +143,22 @@ export async function createPost(post: {
 
 export async function toggleReaction(
   postId: string,
-  userId: string,
+  _userId: string,
   emoji: string
-): Promise<{ added: boolean }> {
+): Promise<{ added: boolean; reactions: Record<string, number> }> {
   const supabase = createClient();
 
+  // Les compteurs sont recalculés côté serveur (fonction SECURITY DEFINER) :
+  // le client n'a plus le droit de modifier community_posts directement.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: existing } = await (supabase as any)
-    .from("community_reactions")
-    .select("id")
-    .eq("post_id", postId)
-    .eq("user_id", userId)
-    .eq("emoji", emoji)
-    .maybeSingle();
+  const { data, error } = await (supabase as any).rpc("toggle_community_reaction", {
+    p_post_id: postId,
+    p_emoji: emoji,
+  });
+  if (error) throw error;
 
-  if (existing) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
-      .from("community_reactions")
-      .delete()
-      .eq("id", existing.id);
-
-    await updateReactionCount(postId, emoji, -1);
-    return { added: false };
-  } else {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any).from("community_reactions").insert({
-      post_id: postId,
-      user_id: userId,
-      emoji,
-    });
-
-    await updateReactionCount(postId, emoji, 1);
-    return { added: true };
-  }
-}
-
-async function updateReactionCount(
-  postId: string,
-  emoji: string,
-  delta: number
-) {
-  const supabase = createClient();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: post } = await (supabase as any)
-    .from("community_posts")
-    .select("reactions")
-    .eq("id", postId)
-    .single();
-
-  if (post) {
-    const reactions = post.reactions ?? {};
-    reactions[emoji] = Math.max(0, (reactions[emoji] ?? 0) + delta);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
-      .from("community_posts")
-      .update({ reactions })
-      .eq("id", postId);
-  }
+  const result = (data ?? {}) as { added?: boolean; reactions?: Record<string, number> };
+  return { added: Boolean(result.added), reactions: result.reactions ?? {} };
 }
 
 export async function getUserReactions(

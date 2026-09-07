@@ -247,7 +247,7 @@ export default function AlimentationPage() {
             className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
               activeCategory === cat
                 ? "bg-pink-400 text-white"
-                : "bg-pink-50 dark:bg-pink-950/30 text-pink-500 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900/30 dark:bg-pink-900/30"
+                : "bg-pink-50 dark:bg-pink-950/30 text-pink-500 dark:text-pink-400 hover:bg-pink-100 dark:hover:bg-pink-900/30"
             }`}
           >
             {cat}
@@ -337,9 +337,9 @@ export default function AlimentationPage() {
         sources={[
           { label: "Ameli — Alimentation pendant la grossesse", url: "https://www.ameli.fr/assure/sante/themes/grossesse/alimentation-femme-enceinte" },
           { label: "ANSES — Recommandations alimentaires (femmes enceintes)", url: "https://www.anses.fr/fr/content/femme-enceinte-ou-allaitante-soyez-vigilante" },
-          { label: "Sant&eacute; Publique France — Mangerbouger.fr (rep&egrave;res alimentaires grossesse)", url: "https://www.mangerbouger.fr/manger-mieux/bien-manger-tout-au-long-de-sa-vie/grossesse-et-allaitement" },
-          { label: "Sant&eacute; Publique France — Pr&eacute;vention de la toxoplasmose", url: "https://www.santepubliquefrance.fr/maladies-et-traumatismes/maladies-et-infections-respiratoires/toxoplasmose" },
-          { label: "DGCCRF — Pr&eacute;vention de la list&eacute;riose", url: "https://www.economie.gouv.fr/dgccrf/Publications/Vie-pratique/Fiches-pratiques/listeriose" },
+          { label: "Santé Publique France — Mangerbouger.fr (repères alimentaires grossesse)", url: "https://www.mangerbouger.fr/manger-mieux/bien-manger-tout-au-long-de-sa-vie/grossesse-et-allaitement" },
+          { label: "Santé Publique France — Prévention de la toxoplasmose", url: "https://www.santepubliquefrance.fr/maladies-et-traumatismes/maladies-et-infections-respiratoires/toxoplasmose" },
+          { label: "DGCCRF — Prévention de la listériose", url: "https://www.economie.gouv.fr/dgccrf/Publications/Vie-pratique/Fiches-pratiques/listeriose" },
         ]}
       />
       </>
