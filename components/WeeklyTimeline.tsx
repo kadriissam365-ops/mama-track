@@ -12,7 +12,7 @@ interface WeeklyTimelineProps {
 /* ------------------------------------------------------------------ */
 /*  Tooltip preview for a single week                                  */
 /* ------------------------------------------------------------------ */
-function WeekTooltip({ weekData, onClose }: { weekData: WeekData; onClose: () => void }) {
+function WeekTooltip({ weekData, onClose: _onClose }: { weekData: WeekData; onClose: () => void }) {
   const sizeCm =
     weekData.sizeMm >= 10
       ? `${(weekData.sizeMm / 10).toFixed(1)} cm`

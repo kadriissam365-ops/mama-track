@@ -61,7 +61,8 @@ export function buildDailyTipPayload(
   const weekData = pregnancyData.find((w) => w.week === currentWeek);
   if (!weekData) return null;
 
-  const tips = weekData.dailyTips;
+  const tips = weekData.dailyTips ?? [];
+  if (tips.length === 0) return null;
   const tipIndex = dayOfWeek % tips.length;
   const tip = tips[tipIndex];
 

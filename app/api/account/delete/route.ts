@@ -1,15 +1,16 @@
+import { diaryStoragePath } from "@/lib/enfant/media";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClientFromCookies } from "@/lib/supabase";
 import { createAdminClient, isAdminConfigured } from "@/lib/supabase-admin";
+import { createClient as createFamilyClient } from "@/lib/enfant/supabase/server";
 
 /**
  * DELETE /api/account/delete
  *
  * Suppression RGPD du compte : fichiers du bucket `bump-photos`, puis
  * suppression de l'utilisateur auth (toutes les tables métier référencent
- * auth.users avec ON DELETE CASCADE). Si le client admin n'est pas configuré,
- * on supprime au mieux les données avec le JWT de l'utilisatrice (RLS).
+ * auth.users avec ON DELETE CASCADE). Sans client admin, aucune purge partielle.
  */
 export async function DELETE() {
   try {
@@ -23,6 +24,8 @@ export async function DELETE() {
     if (!user) {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
+
+    if (!isAdminConfigured()) return NextResponse.json({ error: "La suppression du compte est momentanément indisponible. Contacte le support." }, { status: 503 });
 
     const userId = user.id;
 
@@ -39,9 +42,42 @@ export async function DELETE() {
         .filter((p): p is string => Boolean(p));
       if (paths.length > 0) {
         const { error: storageError } = await supabase.storage.from("bump-photos").remove(paths);
-        if (storageError) console.error("[account/delete] storage cleanup error:", storageError);
+        if (storageError) return NextResponse.json({ error: "Impossible de supprimer les photos. Réessaie dans un instant." }, { status: 503 });
       }
     }
+
+    // Media owned by this user, including photos in a shared child's journal.
+    const admin = createAdminClient();
+    async function removeFolder(prefix: string): Promise<void> {
+      // Restart at zero after deletion so pagination cannot skip objects.
+      for (;;) {
+        const { data, error } = await admin.storage.from("diary-photos").list(prefix, { limit: 100 });
+        if (error) throw error;
+        if (!data?.length) return;
+        const files: string[] = [];
+        for (const item of data) {
+          const path = `${prefix}/${item.name}`;
+          if (!item.id) await removeFolder(path); else files.push(path);
+        }
+        if (files.length) {
+          const { error } = await admin.storage.from("diary-photos").remove(files);
+          if (error) throw error;
+        }
+      }
+    }
+    const familyClient = await createFamilyClient();
+    const { data: ownedBabies, error: childError } = await familyClient.from("babies").select("id").eq("user_id", userId);
+    if (childError) throw childError;
+    if (ownedBabies?.length) {
+      const { data: entries, error } = await familyClient.from("diary_entries").select("photo_url").in("baby_id", ownedBabies.map(child => child.id));
+      if (error) throw error;
+      const media = (entries as unknown as {photo_url: string | null}[] | null)?.map(entry => diaryStoragePath(entry.photo_url)).filter((path): path is string => Boolean(path)) ?? [];
+      for (let start = 0; start < media.length; start += 100) {
+        const { error } = await admin.storage.from("diary-photos").remove(media.slice(start,start+100));
+        if (error) throw error;
+      }
+    }
+    await removeFolder(userId);
 
     // 2. Suppression du compte auth → cascade sur toutes les tables.
     if (isAdminConfigured()) {
@@ -57,63 +93,7 @@ export async function DELETE() {
       return NextResponse.json({ success: true, message: "Compte et données supprimés avec succès" });
     }
 
-    // 3. Fallback sans clé service : purge au mieux via RLS, le compte auth reste.
-    const tables: { name: string; column: string }[] = [
-      { name: "push_subscriptions", column: "user_id" },
-      { name: "notification_preferences", column: "user_id" },
-      { name: "notification_settings", column: "user_id" },
-      { name: "community_reactions", column: "user_id" },
-      { name: "community_reports", column: "user_id" },
-      { name: "community_posts", column: "author_id" },
-      { name: "journal_notes", column: "user_id" },
-      { name: "bump_photos", column: "user_id" },
-      { name: "checklist_items", column: "user_id" },
-      { name: "shopping_items", column: "user_id" },
-      { name: "shopping_budget", column: "user_id" },
-      { name: "baby_name_favorites", column: "user_id" },
-      { name: "medication_logs", column: "user_id" },
-      { name: "medications", column: "user_id" },
-      { name: "emergency_contacts", column: "user_id" },
-      { name: "birth_plan", column: "user_id" },
-      { name: "nutrition_checks", column: "user_id" },
-      { name: "meal_plans", column: "user_id" },
-      { name: "daily_stories", column: "user_id" },
-      { name: "mood_entries", column: "user_id" },
-      { name: "sleep_entries", column: "user_id" },
-      { name: "exercise_entries", column: "user_id" },
-      { name: "exercise_sessions", column: "user_id" },
-      { name: "abdomen_entries", column: "user_id" },
-      { name: "abdomen_measurements", column: "user_id" },
-      { name: "blood_pressure_entries", column: "user_id" },
-      { name: "blood_test_entries", column: "user_id" },
-      { name: "breathing_sessions", column: "user_id" },
-      { name: "water_intake", column: "user_id" },
-      { name: "appointments", column: "user_id" },
-      { name: "contraction_sessions", column: "user_id" },
-      { name: "kick_sessions", column: "user_id" },
-      { name: "symptom_entries", column: "user_id" },
-      { name: "weight_entries", column: "user_id" },
-      { name: "duo_messages", column: "sender_id" },
-      { name: "duo_access", column: "mama_id" },
-      { name: "duo_invitations", column: "mama_id" },
-    ];
-
-    const errors: string[] = [];
-    for (const table of tables) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { error } = await (supabase as any).from(table.name).delete().eq(table.column, userId);
-      if (error) {
-        console.error(`[account/delete] error deleting from ${table.name}:`, error);
-        errors.push(table.name);
-      }
-    }
-    console.warn("[account/delete] SUPABASE_SERVICE_ROLE_KEY absente : compte auth non supprimé");
-
-    return NextResponse.json({
-      success: true,
-      message: "Données supprimées. Le compte sera définitivement clôturé sous 48h.",
-      warnings: errors.length > 0 ? `Erreurs sur : ${errors.join(", ")}` : undefined,
-    });
+    return NextResponse.json({ error: "La suppression du compte est momentanément indisponible. Contacte le support." }, { status: 503 });
   } catch (err) {
     console.error("[account/delete] error:", err);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });

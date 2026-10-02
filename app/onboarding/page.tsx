@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { m as motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "@/lib/auth";
+
+import JourneyChoice from "@/components/JourneyChoice";
 import { useToast } from "@/lib/toast";
 import { Heart, Baby, Calendar, Sparkles, ArrowRight, ArrowLeft, Loader2, FlaskConical, Bell } from "lucide-react";
 import {
@@ -22,7 +23,7 @@ type WeekMode = "SA" | "GA";
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const [journeyChosen, setJourneyChosen] = useState(false);
   const toast = useToast();
   const [step, setStep] = useState<Step>(1);
 
@@ -116,6 +117,7 @@ export default function OnboardingPage() {
         data: { user: currentUser },
       } = await supabase.auth.getUser();
 
+      if (!currentUser) { router.push("/auth/login?next=/onboarding"); return; }
       if (currentUser) {
         // Écriture Supabase bloquante : si elle échoue, on n'écrit PAS localStorage
         // et on ne navigue PAS pour éviter toute divergence entre cloud et local.
@@ -126,6 +128,7 @@ export default function OnboardingPage() {
           baby_name: babyName.trim() || null,
           mama_name: mamaName.trim(),
           conception_mode: conceptionMode,
+          week_mode: weekMode,
         });
 
         if (upsertError) {
@@ -138,7 +141,9 @@ export default function OnboardingPage() {
       }
 
       const existingData = localStorage.getItem("pregnancy-tracker");
-      const data = existingData ? JSON.parse(existingData) : {};
+      const previous = existingData ? JSON.parse(existingData) : {};
+      const data = previous._userId === currentUser.id ? previous : {};
+      data._userId = currentUser.id;
       data.dueDate = finalDueDate;
       data.mamaName = mamaName.trim();
       data.babyName = babyName.trim() || null;
@@ -146,7 +151,7 @@ export default function OnboardingPage() {
       data.notifications = { rdv: notifRdv, daily: notifDaily, meds: notifMeds };
       localStorage.setItem("pregnancy-tracker", JSON.stringify(data));
 
-      router.push("/");
+      window.location.assign("/");
     } catch (err) {
       console.error("Onboarding error:", err);
       toast.error("Impossible d'enregistrer votre profil. Veuillez réessayer.");
@@ -188,6 +193,8 @@ export default function OnboardingPage() {
         ];
 
   const finalDueDate = computedDueDate();
+
+  if (!journeyChosen) return <JourneyChoice onPregnancy={() => setJourneyChosen(true)} />;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-b from-pink-50 via-white to-purple-50 dark:from-[#0f0f1a] dark:via-[#0f0f1a] dark:to-[#1a1a2e]">

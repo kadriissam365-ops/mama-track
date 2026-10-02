@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useHydrated } from "@/lib/client-state";
 import { m as motion } from "framer-motion";
 import { format } from "date-fns";
 import { useStore } from "@/lib/store";
@@ -71,9 +71,7 @@ export default function NutritionTab() {
   const today = format(new Date(), "yyyy-MM-dd");
   const { nutritionChecks, setNutritionChecksForDate } = useStore();
   const checked = nutritionChecks[today] ?? {};
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => { setLoaded(true); }, []);
+  const loaded = useHydrated();
 
   const toggleItem = (id: string) => {
     const next = { ...checked, [id]: !checked[id] };
@@ -94,7 +92,7 @@ export default function NutritionTab() {
     >
       {/* Header */}
       <div className="text-center">
-        <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Aujourd'hui</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-1">Aujourd&apos;hui</p>
         <p className="text-sm font-medium text-gray-600 dark:text-gray-300">Cochez ce que vous avez consommé</p>
       </div>
 
@@ -186,7 +184,7 @@ export default function NutritionTab() {
       {/* Daily tip */}
       <div className="bg-amber-50 dark:bg-amber-950/30 rounded-2xl border border-amber-100 dark:border-amber-900/30 p-3">
         <p className="text-xs text-amber-700 dark:text-amber-400">
-          💡 <strong>Rappel :</strong> Ces besoins sont en plus d'une alimentation équilibrée variée. En cas de doute, parlez-en à votre sage-femme ou médecin.
+          💡 <strong>Rappel :</strong> Ces besoins sont en plus d&apos;une alimentation équilibrée variée. En cas de doute, parlez-en à votre sage-femme ou médecin.
         </p>
       </div>
     </motion.div>

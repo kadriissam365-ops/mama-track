@@ -1,3 +1,4 @@
+import { hasAiConsent, aiConsentRequiredResponse } from "@/lib/ai-consent-server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClientFromCookies } from "@/lib/supabase";
@@ -67,6 +68,8 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
+  if (!(await hasAiConsent(supabase, user.id))) return aiConsentRequiredResponse();
+
 
   const { data: profileRaw } = await supabase
     .from("profiles")

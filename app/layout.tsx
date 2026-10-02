@@ -10,6 +10,9 @@ import OfflineBanner from "@/components/OfflineBanner";
 import { ThemeProvider } from "next-themes";
 import { I18nProvider } from "@/lib/i18n";
 import MotionProvider from "@/components/MotionProvider";
+import { FamilyProvider } from "@/lib/family";
+import { AiConsentProvider } from "@/lib/use-ai-consent";
+import "./enfant.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +26,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "MamaTrack — Suivi de grossesse gratuit et complet",
+    default: "MamaTrack — De la grossesse aux premiers pas",
     template: "%s | MamaTrack",
   },
   icons: {
@@ -32,7 +35,7 @@ export const metadata: Metadata = {
     ],
     apple: "/icons/icon-192x192.png",
   },
-  description: "L'app gratuite pour suivre votre grossesse semaine par semaine. Poids, symptomes, contractions, mode duo, prenoms, projet naissance et plus. Sans pub, sans abonnement.",
+  description: "Grossesse, naissance et suivi de bébé jusqu’à 3 ans : une application pour toute la famille. Repas, sommeil, croissance, rendez-vous et souvenirs. Suivi essentiel gratuit, options Premium.",
   manifest: "/manifest.json",
   metadataBase: new URL("https://mamatrack.fr"),
   alternates: {
@@ -43,8 +46,8 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: "https://mamatrack.fr",
     siteName: "MamaTrack",
-    title: "MamaTrack — Suivi de grossesse gratuit et complet",
-    description: "Suivez votre grossesse semaine par semaine : 10+ trackers sante, mode duo, 250+ prenoms, chrono contractions, projet naissance PDF. 100% gratuit, sans pub, sans abonnement.",
+    title: "MamaTrack — De la grossesse aux premiers pas",
+    description: "Un carnet familial de la grossesse aux premiers pas : naissance, repas, sommeil, croissance et souvenirs. Suivi essentiel gratuit, options Premium.",
     images: [
       {
         url: "/opengraph-image",
@@ -59,8 +62,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@mamatrack_fr",
     creator: "@mamatrack_fr",
-    title: "MamaTrack — Suivi de grossesse gratuit et complet",
-    description: "Suivez votre grossesse semaine par semaine. 10+ trackers, mode duo, 250+ prenoms, projet naissance PDF. 100% gratuit, sans pub.",
+    title: "MamaTrack — De la grossesse aux premiers pas",
+    description: "De la grossesse aux 3 ans de bébé : un suivi et un carnet familial réunis dans MamaTrack.",
     images: [
       {
         url: "/opengraph-image",
@@ -149,9 +152,11 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="h-screen flex flex-col overflow-hidden bg-[#fdf6f0] dark:bg-[#0f0f1a]">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
         <I18nProvider>
         <AuthProvider>
+          <FamilyProvider>
+          <AiConsentProvider>
           <ToastProvider>
             <StoreProvider>
               <MotionProvider>
@@ -167,6 +172,8 @@ export default function RootLayout({
               </MotionProvider>
             </StoreProvider>
           </ToastProvider>
+          </AiConsentProvider>
+          </FamilyProvider>
         </AuthProvider>
         </I18nProvider>
         </ThemeProvider>

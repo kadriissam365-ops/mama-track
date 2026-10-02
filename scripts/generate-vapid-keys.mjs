@@ -4,7 +4,7 @@
  * Generate VAPID keys for Web Push notifications.
  *
  * Usage:
- *   node scripts/generate-vapid-keys.js
+ *   node scripts/generate-vapid-keys.mjs
  *
  * The script prints the key pair and the environment variables you need to set
  * in your .env.local (or hosting provider):
@@ -18,7 +18,7 @@
  * VAPID_SUBJECT must be a mailto: or https: URL identifying the application.
  */
 
-const webpush = require("web-push");
+const webpush = (await import("web-push")).default;
 
 const vapidKeys = webpush.generateVAPIDKeys();
 

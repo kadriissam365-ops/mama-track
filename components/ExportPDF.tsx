@@ -3,16 +3,15 @@
 import { useState } from "react";
 import { m as motion } from "framer-motion";
 import { useStore } from "@/lib/store";
-import { useAuth } from "@/lib/auth";
+
 import { FileDown, Loader2, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import type jsPDFType from "jspdf";
+
 import { getCurrentWeek, getDaysRemaining, getWeekData } from "@/lib/pregnancy-data";
 
 export default function ExportPDF() {
   const store = useStore();
-  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 

@@ -14,6 +14,14 @@ const navItems = [
   { href: "/agenda", labelKey: "nav.agenda", icon: Calendar },
   { href: "/plus", labelKey: "nav.more", icon: MoreHorizontal },
 ];
+const babyNavItems = [
+  { href: "/enfant/dashboard", labelKey: "nav.home", icon: Home },
+  { href: "/enfant/feed", labelKey: "nav.tracking", icon: Activity },
+  { href: "/enfant/coach", labelKey: "nav.coach", icon: Sparkles },
+  { href: "/enfant/diary", labelKey: "nav.baby", icon: Baby },
+  { href: "/enfant/agenda", labelKey: "nav.agenda", icon: Calendar },
+  { href: "/enfant/plus", labelKey: "nav.more", icon: MoreHorizontal },
+];
 
 const plusPaths = [
   "/journal", "/checklist", "/contractions", "/timeline", "/bump",
@@ -24,8 +32,16 @@ const plusPaths = [
 export default function BottomNav() {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const inBaby = pathname.startsWith("/enfant");
+  const items = inBaby ? babyNavItems : navItems;
 
   const isActive = (href: string) => {
+    if (inBaby) {
+      if (href === "/enfant/feed") return ["feed", "sleep", "diapers", "health", "growth", "vaccines", "diversification"].some(slug => pathname.startsWith(`/enfant/${slug}`));
+      if (href === "/enfant/diary") return ["diary", "milestones"].some(slug => pathname.startsWith(`/enfant/${slug}`));
+      if (href === "/enfant/plus") return ["plus", "duo", "conseils", "urgences", "timeline", "reports", "pediatrician", "settings", "naissance", "import", "baby", "onboarding", "pricing"].some(slug => pathname.startsWith(`/enfant/${slug}`));
+      return pathname === href;
+    }
     if (href === "/") return pathname === "/";
     if (href === "/plus") {
       return pathname === "/plus" || plusPaths.some((p) => pathname.startsWith(p));
@@ -41,7 +57,7 @@ export default function BottomNav() {
       <div className="max-w-lg mx-auto px-3 pb-2 pt-1.5">
         <div className="relative rounded-full border border-pink-100/80 dark:border-gray-700/70 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-lg shadow-pink-300/25 dark:shadow-black/40">
           <ul className="relative flex items-stretch justify-between px-1.5 py-1.5">
-            {navItems.map(({ href, labelKey, icon: Icon }) => {
+            {items.map(({ href, labelKey, icon: Icon }) => {
               const active = isActive(href);
               return (
                 <li key={href} className="relative flex-1">

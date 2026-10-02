@@ -103,7 +103,7 @@ const weekPreviewData = [
   { week: 36, fruit: "Melon", emoji: "🍈", size: "47 cm" },
 ];
 
-const sectionVariants = {
+const sectionVariants: import("framer-motion").Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
@@ -293,10 +293,10 @@ export default function LandingPage() {
           transition={{ delay: 0.2 }}
           className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#3d2b2b] dark:text-gray-100 mb-5 leading-[1.1] tracking-tight"
         >
-          Suivez votre grossesse
+          De la grossesse
           <br />
           <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-emerald-400 bg-clip-text text-transparent">
-            semaine par semaine
+            aux premiers pas
           </span>
         </motion.h1>
 
@@ -306,7 +306,7 @@ export default function LandingPage() {
           transition={{ delay: 0.3 }}
           className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-3 max-w-lg mx-auto leading-relaxed"
         >
-          Votre compagnon de grossesse complet, sans pub.
+          Un seul compagnon pour les débuts de votre famille.
         </motion.p>
 
         <motion.p
@@ -315,7 +315,7 @@ export default function LandingPage() {
           transition={{ delay: 0.35 }}
           className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-10 max-w-md mx-auto"
         >
-          Du premier jour jusqu&apos;a la naissance : suivi bebe, 10+ trackers sante, mode duo, 250+ prenoms et projet naissance PDF.
+          Préparez la naissance, puis retrouvez les repas, le sommeil, la croissance et les souvenirs de bébé jusqu’à 3 ans. Votre carnet continue, votre famille grandit.
         </motion.p>
 
         <motion.div
@@ -414,6 +414,14 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-6xl px-5 py-12" aria-label="Un suivi qui grandit avec votre famille">
+        <div className="grid gap-4 md:grid-cols-3">{[
+          ["🤰", "Pendant la grossesse", "Les semaines, les rendez-vous et la préparation à la naissance."],
+          ["🌸", "À la naissance", "Un passage simple vers le profil de bébé, en gardant vos souvenirs."],
+          ["🧸", "Les premières années", "Les repas, le sommeil, la croissance et un carnet partagé jusqu’à 3 ans."],
+        ].map(([emoji, title, description]) => <div key={title} className="rounded-3xl border border-pink-100 bg-white p-6 shadow-sm dark:border-pink-900/40 dark:bg-gray-900"><span className="text-3xl">{emoji}</span><h2 className="mt-4 text-lg font-semibold">{title}</h2><p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{description}</p></div>)}</div>
+      </section>
+
       {/* Features */}
       <section className="px-4 py-20 max-w-3xl mx-auto">
         <motion.div
@@ -427,7 +435,7 @@ export default function LandingPage() {
             Tout ce dont vous avez besoin, <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">en un seul endroit</span>
           </h2>
           <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-md mx-auto">
-            Une application complete pour vivre sereinement chaque etape de votre grossesse.
+            Une application complete pour vivre sereinement chaque étape, de la grossesse aux premières années.
           </p>
         </motion.div>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
@@ -902,7 +910,7 @@ export default function LandingPage() {
               <span className="font-bold text-[#3d2b2b] dark:text-gray-100 text-lg">MamaTrack</span>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
-              Votre compagnon de grossesse complet, sans pub. Fait avec amour en France.
+              Un seul compagnon pour les débuts de votre famille. Fait avec amour en France.
             </p>
           </div>
 

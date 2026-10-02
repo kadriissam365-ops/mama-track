@@ -69,6 +69,13 @@ export default function ConfidentialitePage() {
           </section>
 
           <section className="space-y-2">
+            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Carnet de l’enfant et transfert BabyTrack</h2>
+            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">Le carnet peut contenir le prénom et la date de naissance, les repas, le sommeil, les mesures de croissance, les rendez-vous, les événements de santé, les étapes du développement et les souvenirs de l’enfant. Le parent choisit les proches autorisés et leur rôle. Un lien temporaire pour un professionnel ne doit être transmis qu’à son destinataire.</p>
+            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">Le transfert d’un ancien carnet demande une connexion aux deux comptes. Le mot de passe BabyTrack est utilisé pour cette connexion ponctuelle et n’est pas enregistré dans le carnet. Les données d’origine restent disponibles dans BabyTrack. Les proches doivent recevoir une nouvelle invitation pour accéder à la copie MamaTrack.</p>
+            <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-300">Les conversations enregistrées restent dans votre compte jusqu’à leur suppression ou celle du compte. La révocation du consentement IA bloque les nouvelles demandes ; elle ne supprime pas les conversations déjà enregistrées.</p>
+          </section>
+
+          <section className="space-y-2">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Base l&eacute;gale du traitement</h2>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
               Le traitement de vos donn&eacute;es repose sur :
@@ -83,7 +90,7 @@ export default function ConfidentialitePage() {
           <section className="space-y-2">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Finalit&eacute;s du traitement</h2>
             <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 text-sm space-y-1 pl-2">
-              <li>Fournir le service de suivi de grossesse personnalis&eacute;</li>
+              <li>Fournir le suivi de grossesse et le carnet de l’enfant jusqu’aux premières années</li>
               <li>Sauvegarder et synchroniser vos donn&eacute;es entre vos appareils</li>
               <li>Permettre le partage en mode duo avec votre partenaire (si activ&eacute;)</li>
               <li>Am&eacute;liorer l&apos;application et corriger les dysfonctionnements</li>
@@ -97,7 +104,7 @@ export default function ConfidentialitePage() {
                 Vos donn&eacute;es sont stock&eacute;es sur des <strong>serveurs Supabase situ&eacute;s dans l&apos;Union europ&eacute;enne</strong> (r&eacute;gion eu-west).
                 La communication est chiffr&eacute;e via HTTPS/TLS. L&apos;acc&egrave;s aux donn&eacute;es est prot&eacute;g&eacute; par
                 des politiques de s&eacute;curit&eacute; Row Level Security (RLS), garantissant que chaque
-                utilisatrice n&apos;acc&egrave;de qu&apos;&agrave; ses propres donn&eacute;es.
+                personne accède à ses données et aux carnets qui lui sont explicitement partagés.
               </p>
             </div>
             <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
@@ -146,9 +153,9 @@ export default function ConfidentialitePage() {
                 <ul className="text-xs text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside leading-relaxed">
                   <li>Mod&egrave;le utilis&eacute; : Claude (claude-haiku-4-5)</li>
                   <li>Si&egrave;ge : San Francisco, USA</li>
-                  <li>Donn&eacute;es transmises : votre message dans le chat + r&eacute;sum&eacute; non nominatif de votre contexte de grossesse (semaine, derniers relev&eacute;s agr&eacute;g&eacute;s)</li>
+                  <li>Donn&eacute;es transmises : vos messages et le contexte indiqué avant activation : grossesse ou, pour l’assistant bébé, prénom, âge, sexe et dernières mesures de croissance</li>
                   <li>Finalit&eacute; : g&eacute;n&eacute;rer une r&eacute;ponse personnalis&eacute;e</li>
-                  <li>Conservation : aucune (API &laquo;&nbsp;zero data retention&nbsp;&raquo;, les donn&eacute;es ne sont pas utilis&eacute;es pour l&apos;entra&icirc;nement)</li>
+                  <li>Conservation et utilisation par le prestataire : selon les conditions de l’API et la configuration du service ; consulter sa politique ci-dessous</li>
                   <li>Politique de confidentialit&eacute; : <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-pink-500 dark:text-pink-300 underline">anthropic.com/legal/privacy</a></li>
                 </ul>
               </div>
@@ -162,17 +169,18 @@ export default function ConfidentialitePage() {
                   <li>Si&egrave;ge : Mountain View, USA</li>
                   <li>Donn&eacute;es transmises : votre message + contexte (texte) <em>ou</em> votre image (&eacute;chographie / ordonnance / analyses), sans email ni identifiant utilisateur</li>
                   <li>Finalit&eacute; : g&eacute;n&eacute;rer la r&eacute;ponse texte ou extraire les informations de l&apos;image</li>
-                  <li>Conservation : les donn&eacute;es envoy&eacute;es via l&apos;API Gemini ne sont <strong>pas utilis&eacute;es pour entra&icirc;ner</strong> les mod&egrave;les Google (API payante, voir conditions Gemini API)</li>
+                  <li>Conservation et utilisation par le prestataire : selon les conditions de l’API Gemini et la configuration du service ; consulter sa politique ci-dessous</li>
                   <li>Politique de confidentialit&eacute; : <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-pink-500 dark:text-pink-300 underline">policies.google.com/privacy</a></li>
                 </ul>
               </div>
 
               <div className="bg-amber-50 dark:bg-amber-950/30 rounded-xl p-3 border border-amber-100 dark:border-amber-900/40">
                 <p className="text-xs text-amber-800 dark:text-amber-200 leading-relaxed">
-                  <strong>Transferts hors UE</strong> : les transferts vers les Etats-Unis sont
-                  encadr&eacute;s par les <strong>Clauses Contractuelles Types</strong> (CCT) adopt&eacute;es par
-                  la Commission europ&eacute;enne (d&eacute;cision 2021/914) et, selon le prestataire, par le
-                  cadre Data Privacy Framework (DPF) UE-USA.
+                  <strong>Traitement hors UE</strong> : les prestataires d’IA peuvent traiter
+                  les données aux États-Unis ou dans d’autres pays. Les conditions et mesures
+                  appliquées dépendent du service utilisé et figurent dans leurs politiques et
+                  conditions contractuelles. L’envoi nécessite l’activation explicite de la fonction.
+
                 </p>
               </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useState, useEffect, useCallback } from "react";
+import { useStoredString, notifyStorageChange, useHydrated } from "@/lib/client-state";
+import React, { createContext, useEffect, useCallback } from "react";
 
 import fr from "@/lib/i18n/fr.json";
 import en from "@/lib/i18n/en.json";
@@ -46,25 +47,14 @@ function resolve(dict: TranslationDict, key: string): string {
 const VALID_LOCALES: Locale[] = ["fr", "en", "es", "ar"];
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("fr");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY) as Locale;
-      if (VALID_LOCALES.includes(stored)) {
-        setLocaleState(stored);
-      }
-    } catch {
-      // ignore
-    }
-    setMounted(true);
-  }, []);
+  const stored = useStoredString(STORAGE_KEY, "fr") as Locale;
+  const locale = VALID_LOCALES.includes(stored) ? stored : "fr";
+  const mounted = useHydrated();
 
   const setLocale = useCallback((newLocale: Locale) => {
-    setLocaleState(newLocale);
     try {
       localStorage.setItem(STORAGE_KEY, newLocale);
+      notifyStorageChange();
     } catch {
       // ignore
     }

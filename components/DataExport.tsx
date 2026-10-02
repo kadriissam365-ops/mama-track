@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/lib/toast";
-import { Download, FileJson, FileText, Trash2, Loader2, Shield, ChevronDown, ChevronUp } from "lucide-react";
+import { FileJson, FileText, Trash2, Loader2, Shield, ChevronDown, ChevronUp } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
 interface ExportData {

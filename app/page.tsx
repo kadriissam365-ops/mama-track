@@ -1,5 +1,6 @@
 "use client";
 
+import { useStoredString } from "@/lib/client-state";
 import { useState, useEffect } from "react";
 import { m as motion } from "framer-motion";
 import { useStore } from "@/lib/store";
@@ -13,7 +14,7 @@ import {
 } from "@/lib/pregnancy-data";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Scale, Activity, Calendar, Droplets, Settings, Loader2, Timer, Share2, BarChart3, Calculator } from "lucide-react";
+import { Scale, Activity, Calendar, Droplets, Settings, Timer, Share2, BarChart3, Calculator } from "lucide-react";
 import DpaCalculator from "@/components/DpaCalculator";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -26,8 +27,10 @@ import Paywall from "@/components/Paywall";
 import { MedicalSources } from "@/components/MedicalSources";
 import { Skeleton } from "@/components/Skeleton";
 import { useIsPremium } from "@/lib/use-premium";
-import { useTheme } from "next-themes";
+
 import { getPartnerAccess } from "@/lib/duo-api";
+import { useFamily } from "@/lib/family";
+import Link from "next/link";
 
 const LandingPage = dynamic(() => import("@/components/LandingPage"), {
   ssr: false,
@@ -42,10 +45,6 @@ const ShareCard = dynamic(() => import("@/components/ShareCard"), {
   ssr: false,
   loading: () => <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center"><div className="bg-white dark:bg-gray-900 rounded-3xl p-6 w-full max-w-sm h-96 animate-pulse" /></div>,
 });
-const BabyIllustration = dynamic(() => import("@/components/BabyIllustration"), {
-  ssr: false,
-  loading: () => <div className="flex items-center justify-center py-2"><div className="w-32 h-32 rounded-full bg-pink-50 dark:bg-pink-950/30 animate-pulse" /></div>,
-});
 const DailyStory = dynamic(() => import("@/components/DailyStory"), {
   ssr: false,
   loading: () => <Skeleton className="h-32 w-full rounded-3xl" />,
@@ -55,26 +54,20 @@ export default function DashboardPage() {
   const store = useStore();
   const { user, isAuthenticated } = useAuth();
   const { isPremium, loading: premiumLoading } = useIsPremium();
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
   const router = useRouter();
+  const family = useFamily();
+  useEffect(() => {
+    if (isAuthenticated && !family.loading && family.activeStage === "baby") router.replace("/enfant/dashboard");
+  }, [isAuthenticated, family.loading, family.activeStage, router]);
   const [showSetup, setShowSetup] = useState(false);
   const [showDpaCalc, setShowDpaCalc] = useState(false);
-  const [dateInput, setDateInput] = useState(store.dueDate ?? "");
-  const [prenomFavorisCount, setPrenomFavorisCount] = useState(0);
+  const [dateDraft, setDateInput] = useState<string | null>(null);
+  const dateInput = dateDraft ?? store.dueDate ?? "";
+  const favorites = useStoredString("prenom-favoris", "[]");
+  let prenomFavorisCount = 0;
+  try { const values = JSON.parse(favorites); if (Array.isArray(values)) prenomFavorisCount = values.length; } catch {}
   const [showShare, setShowShare] = useState(false);
   const [showReport, setShowReport] = useState(false);
-
-  useEffect(() => {
-    setDateInput(store.dueDate ?? "");
-  }, [store.dueDate]);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('prenom-favoris');
-    if (stored) {
-      try { setPrenomFavorisCount(JSON.parse(stored).length); } catch {}
-    }
-  }, []);
 
   // Initialize notifications when component mounts
   useEffect(() => {
@@ -107,7 +100,7 @@ export default function DashboardPage() {
   }
 
   // Show loading skeleton while data is being fetched
-  if (store.loading) {
+  if (store.loading || (isAuthenticated && (family.loading || family.activeStage === "baby"))) {
     return <DashboardSkeleton />;
   }
 
@@ -158,6 +151,10 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
+      <Link href="/enfant/naissance" className="flex items-center justify-between gap-4 rounded-2xl border border-purple-100 bg-white/80 dark:bg-gray-900 dark:border-purple-900/40 px-4 py-3 shadow-sm">
+        <div><p className="text-sm font-semibold text-purple-800 dark:text-purple-200">Bébé est arrivé ?</p><p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">Continuez ensemble, de sa naissance à ses 3 ans.</p></div><span aria-hidden className="text-purple-500">→</span>
+      </Link>
+
       {/* Setup DPA */}
       {(!store.dueDate || showSetup) && (
         <motion.div

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { FileDown, ChevronDown, ChevronUp, Check, X, Loader2, CheckCircle2 } from "lucide-react";
-import type jsPDFType from "jspdf";
+
 import { notifyPartner } from "@/lib/partner-notify-client";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";

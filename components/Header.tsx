@@ -8,6 +8,8 @@ import { getCurrentWeek, getDaysRemaining } from "@/lib/pregnancy-data";
 import { Heart, LogOut, Settings } from "lucide-react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
+import FamilySwitcher from "@/components/FamilySwitcher";
+import { useFamily } from "@/lib/family";
 
 const ExportPDF = dynamic(() => import("./ExportPDF"), { ssr: false });
 
@@ -17,6 +19,9 @@ export default function Header() {
   const { dueDate } = useStore();
   const { user, signOut, isAuthenticated } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
+  const family = useFamily();
+  const inBaby = pathname.startsWith("/enfant");
+  const activeBaby = family.babies.find(baby => baby.id === family.activeBabyId);
 
   const week = dueDate ? getCurrentWeek(new Date(dueDate)) : null;
   const days = dueDate ? getDaysRemaining(new Date(dueDate)) : null;
@@ -33,7 +38,7 @@ export default function Header() {
 
   const handleSettings = () => {
     setShowMenu(false);
-    router.push('/settings');
+    router.push(inBaby ? '/enfant/settings' : '/settings');
   };
 
   const userInitial = user?.email?.charAt(0).toUpperCase() || '?';
@@ -47,7 +52,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-3">
-          {week !== null && days !== null ? (
+          {inBaby && activeBaby ? <span className="max-w-32 truncate rounded-full bg-purple-50 dark:bg-purple-950/40 px-3 py-1 text-xs font-semibold text-purple-700 dark:text-purple-200">{activeBaby.name}</span> : !inBaby && week !== null && days !== null ? (
             <>
               {/* Repère semaine + compte à rebours : visible aussi sur mobile,
                   c'est l'information la plus consultée de l'app. */}
@@ -131,6 +136,7 @@ export default function Header() {
           )}
         </div>
       </div>
+      <FamilySwitcher />
     </header>
   );
 }

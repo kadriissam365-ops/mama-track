@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
-import { Camera, Loader2, X, Check, Sparkles, Baby } from "lucide-react";
+import { Loader2, X, Check, Sparkles, Baby } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useToast } from "@/lib/toast";
 import { useAiConsent } from "@/lib/use-ai-consent";

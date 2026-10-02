@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
-import { Pill, Plus, Check, Trash2, Clock, Bell, X } from "lucide-react";
+import { Pill, Plus, Check, Trash2, X } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import { useStore, type Medication } from "@/lib/store";
+import { useStore } from "@/lib/store";
 import Paywall from "@/components/Paywall";
 import ScanOrdonnance from "@/components/ScanOrdonnance";
 import ScanAnalysesSang from "@/components/ScanAnalysesSang";

@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
 
-const HIDDEN_PATHS = ["/auth", "/onboarding", "/invite"];
+const HIDDEN_PATHS = ["/auth", "/onboarding", "/invite", "/enfant/p/"];
 
 export default function ConditionalNav() {
   const pathname = usePathname();

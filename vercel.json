@@ -16,6 +16,22 @@
     {
       "path": "/api/cron/hourly-med-reminders",
       "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/enfant/cron/vaccine-reminders",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/enfant/cron/monthly-report",
+      "schedule": "0 10 1 * *"
+    },
+    {
+      "path": "/api/enfant/cron/push-reminders",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/enfant/cron/nap-predictor",
+      "schedule": "*/30 * * * *"
     }
   ]
 }

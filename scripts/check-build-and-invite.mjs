@@ -156,7 +156,7 @@ async function asc(method, path, body) {
           data: [{ type: "betaTesters", id: tester.id }],
         }
       );
-    } catch (e) {
+    } catch {
       console.log("    (already in group, ignoring)");
     }
   }
@@ -173,7 +173,7 @@ async function asc(method, path, body) {
       }
     );
     console.log("  linked");
-  } catch (e) {
+  } catch {
     console.log("    (already linked, ignoring)");
   }
 

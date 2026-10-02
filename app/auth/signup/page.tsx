@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { safeNextPath } from "@/lib/auth-redirect";
 import Link from "next/link";
 import { m as motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
@@ -57,8 +58,14 @@ function mapSupabaseError(message: string): string {
   return `Erreur : ${message}`;
 }
 
+const ChecklistItem = ({ ok, label }: { ok: boolean; label: string }) => (
+    <li className={`flex items-center gap-2 text-xs ${ok ? "text-green-600 dark:text-green-400" : "text-gray-400 dark:text-gray-500"}`}>
+      {ok ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
+      <span>{label}</span>
+    </li>
+  );
+
 function SignupForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get("invite");
   const invitedEmail = searchParams.get("email");
@@ -80,11 +87,7 @@ function SignupForm() {
     supabase.auth.signOut().finally(() => setSessionCleared(true));
   }, []);
 
-  // 2) Reset email field when leaving an invite flow (otherwise the
-  //    invitedEmail param is the source of truth).
-  useEffect(() => {
-    if (invitedEmail) setEmail(invitedEmail);
-  }, [invitedEmail]);
+
 
   useEffect(() => {
     if (inviteToken && typeof window !== "undefined") {
@@ -118,7 +121,7 @@ function SignupForm() {
 
     setLoading(true);
 
-    const nextPath = inviteToken ? `/invite?token=${inviteToken}` : undefined;
+    const nextPath = safeNextPath(searchParams.get("next"), inviteToken ? `/invite?token=${encodeURIComponent(inviteToken)}` : "/onboarding");
     const { error: signUpErr } = await signUpWithEmail(trimmedEmail, password, nextPath);
 
     if (signUpErr) {
@@ -182,12 +185,7 @@ function SignupForm() {
     );
   }
 
-  const ChecklistItem = ({ ok, label }: { ok: boolean; label: string }) => (
-    <li className={`flex items-center gap-2 text-xs ${ok ? "text-green-600 dark:text-green-400" : "text-gray-400 dark:text-gray-500"}`}>
-      {ok ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-      <span>{label}</span>
-    </li>
-  );
+
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-b from-pink-50 via-white to-purple-50 dark:from-[#0f0f1a] dark:via-[#0f0f1a] dark:to-[#1a1a2e]">

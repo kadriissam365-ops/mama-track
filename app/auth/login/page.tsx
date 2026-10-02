@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { safeNextPath } from "@/lib/auth-redirect";
 import Link from "next/link";
 import { m as motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
@@ -22,8 +23,9 @@ function mapResendError(message: string): string {
   return `Impossible d'envoyer le mail : ${message}`;
 }
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { signInWithEmail } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,7 +69,10 @@ export default function LoginPage() {
       setLoading(false);
     } else {
       const inviteToken = sessionStorage.getItem("invite_token");
-      if (inviteToken) {
+      const next = safeNextPath(searchParams.get("next"));
+      if (next !== "/") {
+        router.push(next);
+      } else if (inviteToken) {
         sessionStorage.removeItem("invite_token");
         router.push(`/invite?token=${inviteToken}`);
       } else {
@@ -261,3 +266,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export default function LoginPage() { return <Suspense><LoginForm /></Suspense>; }

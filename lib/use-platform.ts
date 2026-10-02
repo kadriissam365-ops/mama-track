@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 interface CapacitorWindow {
   Capacitor?: {
@@ -21,10 +21,5 @@ function detectIOSNative(): boolean {
   }
 }
 
-export function useIsIOSNative(): boolean {
-  const [isIOS, setIsIOS] = useState(false);
-  useEffect(() => {
-    setIsIOS(detectIOSNative());
-  }, []);
-  return isIOS;
-}
+const subscribe = () => () => {};
+export function useIsIOSNative(): boolean { return useSyncExternalStore(subscribe, detectIOSNative, () => false); }

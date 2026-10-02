@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createServerClientFromCookies } from "@/lib/supabase";
 import { cookies } from "next/headers";
+import { createClient as createFamilyClient } from "@/lib/enfant/supabase/server";
+import { exportFamily } from "@/lib/enfant/export";
 
 /**
  * GET /api/export
@@ -53,7 +55,9 @@ export async function GET() {
       sb.from("push_subscriptions").select("*").eq("user_id", userId),
     ]);
 
+    const family = await exportFamily(await createFamilyClient(), userId);
     const exportData = {
+      family,
       metadata: {
         exportDate: new Date().toISOString(),
         userEmail: user.email,
@@ -77,7 +81,7 @@ export async function GET() {
       pushSubscriptions: pushRes.data ?? [],
     };
 
-    return NextResponse.json(exportData);
+    return NextResponse.json(exportData, { headers: { "Cache-Control": "private, no-store" } });
   } catch (err) {
     console.error("Export error:", err);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });

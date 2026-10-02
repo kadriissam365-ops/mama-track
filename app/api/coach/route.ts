@@ -1,3 +1,4 @@
+import { hasAiConsent, aiConsentRequiredResponse } from "@/lib/ai-consent-server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClientFromCookies } from "@/lib/supabase";
@@ -45,6 +46,8 @@ export async function POST(req: Request) {
     const alerts = computeAlerts(ctx);
     return NextResponse.json({ alerts });
   }
+
+  if (!(await hasAiConsent(supabase, user.id))) return aiConsentRequiredResponse();
 
   // Limitation de débit : chaque appel ci-dessous déclenche une génération IA payante.
   const rule = body.action === "weekly_tip" ? RATE_LIMITS.coachTip : RATE_LIMITS.coachChat;

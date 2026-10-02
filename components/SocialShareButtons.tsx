@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { m as motion } from "framer-motion";
-import { Download, Copy, Check, MessageCircle, Share2 } from "lucide-react";
+import { Download, Copy, Check, MessageCircle } from "lucide-react";
 
 export interface ShareContent {
   text: string;

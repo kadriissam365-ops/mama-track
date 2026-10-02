@@ -71,10 +71,10 @@ export default function MoodTab() {
       className="space-y-4"
     >
       <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30">
-        <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-1">Comment tu te sens aujourd'hui ?</h3>
+        <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-1">Comment tu te sens aujourd&apos;hui ?</h3>
         {todayEntry && (
           <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">
-            Aujourd'hui : {todayEntry.moodEmoji} {todayEntry.moodLabel}
+            Aujourd&apos;hui : {todayEntry.moodEmoji} {todayEntry.moodLabel}
           </p>
         )}
 

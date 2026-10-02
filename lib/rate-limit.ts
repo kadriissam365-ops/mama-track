@@ -22,6 +22,8 @@ export const RATE_LIMITS = {
   duoInvite: { bucket: "duo_invite", limit: 10, windowSeconds: 3600 },
   weeklyEmail: { bucket: "weekly_email", limit: 3, windowSeconds: 3600 },
   pushSend: { bucket: "push_send", limit: 20, windowSeconds: 3600 },
+  babyCoach: { bucket: "baby_coach", limit: 5, windowSeconds: 86400 },
+  babyImport: { bucket: "baby_import", limit: 3, windowSeconds: 3600 },
 } as const satisfies Record<string, RateLimitRule>;
 
 interface RpcClient {
@@ -33,8 +35,8 @@ interface RpcClient {
 
 /**
  * Consomme un jeton pour l'utilisateur courant (identifié côté SQL via auth.uid()).
- * Retourne true si l'appel est autorisé. En cas d'indisponibilité de la fonction
- * SQL, on laisse passer (fail-open) mais on trace l'incident.
+ * La base valide les quotas par bucket. Une panne ne doit pas ouvrir
+ * l'accès sans limite aux services payants.
  */
 export async function consumeRateLimit(supabase: unknown, rule: RateLimitRule): Promise<boolean> {
   try {
@@ -46,12 +48,12 @@ export async function consumeRateLimit(supabase: unknown, rule: RateLimitRule): 
     });
     if (error) {
       console.warn("[rate-limit] rpc error:", error.message);
-      return true;
+      return false;
     }
-    return data !== false;
+    return data === true;
   } catch (err) {
     console.warn("[rate-limit] failed:", err);
-    return true;
+    return false;
   }
 }
 

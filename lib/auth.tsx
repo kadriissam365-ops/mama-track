@@ -22,7 +22,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const supabase = createClient();
-    let initialSessionReceived = false;
 
     // Listen for auth changes FIRST — INITIAL_SESSION fires synchronously
     const {
@@ -30,7 +29,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "INITIAL_SESSION") {
         // Let getUser() (server-validated) take priority — skip this
-        initialSessionReceived = true;
         return;
       }
       setUser(session?.user ?? null);
@@ -41,7 +39,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user ?? null);
       setLoading(false);
-      initialSessionReceived = true;
     }).catch(() => {
       setUser(null);
       setLoading(false);

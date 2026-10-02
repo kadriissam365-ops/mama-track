@@ -435,7 +435,6 @@ export default function CarnetMaternite() {
       setDraw(doc, { r: 180, g: 200, b: 180 });
       doc.setLineWidth(0.2);
       doc.setLineDashPattern([1, 1], 0);
-      const baseY = chartY + chartH - 2;
       const baseKg = allWeights.length ? allWeights[0] : minKg + 2;
       const guidePoints = [
         { week: 0, kgGain: 0 },

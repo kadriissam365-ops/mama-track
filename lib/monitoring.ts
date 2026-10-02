@@ -1,6 +1,6 @@
 type ErrorLevel = 'error' | 'warning' | 'info';
 
-export function captureError(error: unknown, context?: Record<string, unknown>, level: ErrorLevel = 'error') {
+export function captureError(error: unknown, context?: Record<string, unknown>, _level: ErrorLevel = 'error') {
   if (process.env.NODE_ENV === 'development') {
     console.error('[MamaTrack Error]', error, context);
     return;

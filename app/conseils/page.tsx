@@ -397,8 +397,8 @@ function SportGuide() {
     <div className="space-y-4">
       {/* Golden rule */}
       <div className="bg-gradient-to-r from-pink-400 to-rose-500 rounded-2xl p-4 text-white">
-        <p className="text-lg font-bold mb-1">💬 La règle d'or</p>
-        <p className="text-base font-medium italic">"Si tu peux parler, le rythme est bon."</p>
+        <p className="text-lg font-bold mb-1">💬 La règle d&apos;or</p>
+        <p className="text-base font-medium italic">&quot;Si tu peux parler, le rythme est bon.&quot;</p>
         <p className="text-sm mt-1 text-pink-100">Gardez une intensité où vous pouvez tenir une conversation.</p>
       </div>
 
@@ -481,7 +481,7 @@ function SportGuide() {
         <div className="bg-white dark:bg-gray-900 rounded-xl p-3 mb-3">
           <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">Comment faire ?</p>
           <ol className="text-sm text-gray-600 dark:text-gray-300 space-y-1 list-decimal list-inside">
-            <li>Contractez les muscles du périnée (comme si vous vouliez arrêter d'uriner)</li>
+            <li>Contractez les muscles du périnée (comme si vous vouliez arrêter d&apos;uriner)</li>
             <li>Maintenez la contraction 5-8 secondes</li>
             <li>Relâchez complètement 10 secondes</li>
             <li>Répétez 10 fois → 1 série</li>
@@ -560,7 +560,7 @@ export default function ConseilsPage() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wide">Bébé cette semaine</p>
-                  <p className="font-bold text-gray-800 dark:text-gray-200">Taille d'un(e) {weekData.fruit}</p>
+                  <p className="font-bold text-gray-800 dark:text-gray-200">Taille d&apos;un(e) {weekData.fruit}</p>
                 </div>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.babyDevelopment}</p>
@@ -686,7 +686,7 @@ export default function ConseilsPage() {
             />
             <div className="bg-pink-50 dark:bg-pink-950/30 rounded-2xl p-4 mt-4">
               <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                Ces informations sont générales et ne remplacent pas l'avis médical. En cas de doute, contactez toujours votre médecin ou sage-femme. 💗
+                Ces informations sont générales et ne remplacent pas l&apos;avis médical. En cas de doute, contactez toujours votre médecin ou sage-femme. 💗
               </p>
             </div>
           </motion.div>

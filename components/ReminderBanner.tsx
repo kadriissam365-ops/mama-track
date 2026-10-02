@@ -1,31 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { getSmartReminders, type Reminder } from "@/lib/smart-reminders";
+import { getSmartReminders } from "@/lib/smart-reminders";
 
 export default function ReminderBanner() {
   const store = useStore();
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
-  const [reminder, setReminder] = useState<Reminder | null>(null);
-
-  useEffect(() => {
-    if (store.loading) return;
-
-    const reminders = getSmartReminders({
-      weightEntries: store.weightEntries,
-      waterIntake: store.waterIntake,
-      appointments: store.appointments,
-      kickSessions: store.kickSessions,
-      checklistItems: store.checklistItems,
-      dueDate: store.dueDate,
-    });
-
-    const first = reminders.find(r => !dismissed.has(r.id));
-    setReminder(first ?? null);
-  }, [store, dismissed]);
+  const reminder = store.loading ? null : getSmartReminders({ weightEntries: store.weightEntries, waterIntake: store.waterIntake, appointments: store.appointments, kickSessions: store.kickSessions, checklistItems: store.checklistItems, dueDate: store.dueDate }).find(r => !dismissed.has(r.id)) ?? null;
 
   const handleDismiss = () => {
     if (reminder) {

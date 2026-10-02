@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
-import { Camera, Trash2, ChevronLeft, ChevronRight, Image, Calendar, ArrowLeftRight } from "lucide-react";
+import { Camera, Trash2, ChevronLeft, ChevronRight, Image, ArrowLeftRight } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useStore } from "@/lib/store";

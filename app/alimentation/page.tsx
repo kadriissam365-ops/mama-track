@@ -1,5 +1,7 @@
 "use client";
 
+import { AiConsentGate } from "@/components/AiConsentGate";
+
 import { useState, useMemo } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { Search, ShieldCheck, ShieldAlert, ShieldX, Info, BookOpen, ChefHat } from "lucide-react";
@@ -191,7 +193,7 @@ export default function AlimentationPage() {
 
       {mainTab === "plan" && (
         <Paywall feature="Plan repas personnalisé" compact>
-          <MealPlanWeek />
+          <AiConsentGate feature="Plan repas" description="L’assistant utilise tes préférences pour proposer des idées de repas." dataSent={["Semaine de grossesse", "Allergies et préférences alimentaires"]}><MealPlanWeek /></AiConsentGate>
         </Paywall>
       )}
 

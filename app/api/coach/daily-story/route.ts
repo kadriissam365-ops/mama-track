@@ -1,3 +1,4 @@
+import { hasAiConsent, aiConsentRequiredResponse } from "@/lib/ai-consent-server";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClientFromCookies } from "@/lib/supabase";
@@ -93,6 +94,8 @@ async function handle(req: Request): Promise<Response> {
   if (!user) {
     return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
   }
+  if (!(await hasAiConsent(supabase, user.id))) return aiConsentRequiredResponse();
+
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sb = supabase as any;

@@ -40,7 +40,7 @@ export default function WeeklyReportPage() {
     return (
       <div className="min-h-screen bg-[#fdf2f8] dark:bg-gray-950 flex flex-col items-center justify-center p-6 text-center">
         <h1 className="text-xl font-bold text-[#3d2b2b] dark:text-gray-100 mb-2">Bilan indisponible</h1>
-        <p className="text-gray-500 dark:text-gray-400 mb-6">Configure ta date d'accouchement pour voir ton bilan hebdo.</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-6">Configure ta date d&apos;accouchement pour voir ton bilan hebdo.</p>
         <button onClick={() => router.push("/")} className="px-6 py-3 rounded-full bg-pink-500 text-white font-semibold">Retour au dashboard</button>
       </div>
     );
@@ -109,7 +109,7 @@ export default function WeeklyReportPage() {
             <div className="w-full bg-purple-100 dark:bg-purple-900/30 rounded-full h-1.5 mt-2">
               <div className="bg-purple-400 h-1.5 rounded-full" style={{ width: `${report.water.percent}%` }} />
             </div>
-            <div className="text-xs text-gray-400 mt-1">{report.water.percent}% de l'objectif</div>
+            <div className="text-xs text-gray-400 mt-1">{report.water.percent}% de l&apos;objectif</div>
           </div>
         </div>
 
@@ -159,7 +159,7 @@ export default function WeeklyReportPage() {
               {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
               {sent === "success" ? "Envoyé ✓" : sending ? "Envoi..." : "M'envoyer par mail"}
             </button>
-            {sent === "error" && <div className="text-xs text-red-500 mt-2">Échec de l'envoi. Réessaye dans un instant.</div>}
+            {sent === "error" && <div className="text-xs text-red-500 mt-2">Échec de l&apos;envoi. Réessaye dans un instant.</div>}
             {sent === "success" && <div className="text-xs text-green-600 mt-2">Check ta boîte ({user.email}) 📬</div>}
           </div>
         )}

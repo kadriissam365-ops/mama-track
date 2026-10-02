@@ -20,21 +20,19 @@ export default function GalerieContent() {
   const [modal, setModal] = useState<PhotoWithUrl | null>(null);
 
   const loadPhotos = useCallback(async () => {
-    if (!user) return;
-    setLoading(true);
+    if (!user) return [];
     const raw = await getBumpPhotos(user.id);
     const withUrls: PhotoWithUrl[] = [];
-    for (const p of raw) {
-      const url = await getBumpPhotoSignedUrl(p.storage_path);
-      if (url) withUrls.push({ ...p, signedUrl: url });
+    for (const photo of raw) {
+      const url = await getBumpPhotoSignedUrl(photo.storage_path);
+      if (url) withUrls.push({ ...photo, signedUrl: url });
     }
-    withUrls.sort((a, b) => a.week - b.week);
-    setPhotos(withUrls);
-    setLoading(false);
+    return withUrls.sort((a, b) => a.week - b.week);
   }, [user]);
-
   useEffect(() => {
-    loadPhotos();
+    let cancelled = false;
+    loadPhotos().then(rows => { if (!cancelled) setPhotos(rows); }).finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [loadPhotos]);
 
   return (

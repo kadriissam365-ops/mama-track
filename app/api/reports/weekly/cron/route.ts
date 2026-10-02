@@ -8,11 +8,7 @@ import { fetchUserReportInputs } from "@/lib/weekly-report-fetch";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-interface PushSub {
-  user_id: string;
-  endpoint: string;
-  subscription_json: string;
-}
+
 
 async function sendPushForUser(
   webpush: typeof import("web-push"),

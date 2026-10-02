@@ -1,5 +1,6 @@
 "use client";
 
+import { useStoredString } from "@/lib/client-state";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { m as motion, AnimatePresence } from "framer-motion";
@@ -14,16 +15,6 @@ interface CoachAlert {
 }
 
 const STORAGE_KEY = "mamacoach-dismissed-alerts";
-
-function getDismissed(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as string[]) : [];
-  } catch {
-    return [];
-  }
-}
 
 function saveDismissed(keys: string[]) {
   try {
@@ -44,11 +35,10 @@ export default function MamaCoachAlerts() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const isIOSNative = useIsIOSNative();
   const [alerts, setAlerts] = useState<CoachAlert[]>([]);
-  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    setDismissed(new Set(getDismissed()));
-  }, []);
+  const storedDismissed = useStoredString(STORAGE_KEY, "[]");
+  const [localDismissed, setDismissed] = useState<Set<string> | null>(null);
+  let dismissed = localDismissed ?? new Set<string>();
+  if (!localDismissed) { try { dismissed = new Set(JSON.parse(storedDismissed)); } catch {} }
 
   useEffect(() => {
     if (authLoading || !isAuthenticated) return;

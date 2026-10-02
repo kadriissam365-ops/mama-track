@@ -15,7 +15,7 @@ interface AiConsentGateProps {
 }
 
 export function AiConsentGate({ feature, description, dataSent, children, footer }: AiConsentGateProps) {
-  const { hydrated, accepted, accept } = useAiConsent();
+  const { hydrated, accepted, accept, error } = useAiConsent();
   const [checked, setChecked] = useState(false);
 
   if (!hydrated) {
@@ -67,23 +67,9 @@ export function AiConsentGate({ feature, description, dataSent, children, footer
             </h2>
           </div>
           <ul className="text-xs text-gray-600 dark:text-gray-300 space-y-1.5 leading-relaxed">
-            <li>
-              <strong>Anthropic, PBC</strong> (USA) — modèle Claude. Données traitées
-              uniquement pour générer la réponse, non utilisées pour l&apos;entraînement
-              (politique « zero data retention » via API).
-            </li>
-            <li>
-              <strong>Google LLC</strong> (USA) — modèle Gemini, en fallback uniquement
-              si Claude est indisponible. Non utilisées pour l&apos;entraînement (API Gemini).
-            </li>
-            <li>
-              Transferts hors UE encadrés par les <em>Clauses Contractuelles Types</em> de la
-              Commission européenne.
-            </li>
-            <li>
-              Aucune publicité, aucune revente, aucun partage avec d&apos;autres tiers.
-              Conservation de 30 jours maximum côté MamaTrack.
-            </li>
+            <li>Les données indiquées ci-dessus sont envoyées à <strong>Anthropic (Claude)</strong> et, pour certaines fonctions en secours, à <strong>Google (Gemini)</strong>. Ces prestataires peuvent traiter les données hors de l’Union européenne.</li>
+            <li>Les échanges enregistrés dans ton carnet restent accessibles jusqu’à leur suppression ou celle du compte. Révoquer le consentement bloque les prochaines demandes à l’IA.</li>
+            <li>Évite d’envoyer des informations personnelles qui ne sont pas utiles à ta question.</li>
           </ul>
         </div>
 
@@ -125,6 +111,7 @@ export function AiConsentGate({ feature, description, dataSent, children, footer
         >
           Activer {feature}
         </button>
+        {error && <p role="alert" className="text-xs text-red-600 dark:text-red-300">{error}</p>}
 
         <p className="text-[11px] text-gray-500 dark:text-gray-400 text-center">
           Vous pouvez révoquer ce consentement à tout moment depuis les{" "}

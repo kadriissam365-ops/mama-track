@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { validPushEndpoint, validPushKey } from "@/lib/push-validation";
 import { createServerClientFromCookies } from "@/lib/supabase";
 import { cookies } from "next/headers";
 
@@ -24,7 +25,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const subscription = body.subscription;
 
-    if (!subscription?.endpoint) {
+    if (!validPushEndpoint(subscription?.endpoint) || !validPushKey(subscription?.keys?.p256dh) || !validPushKey(subscription?.keys?.auth)) {
       return NextResponse.json(
         { error: "Subscription invalide" },
         { status: 400 }

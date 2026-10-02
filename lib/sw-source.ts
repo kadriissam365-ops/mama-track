@@ -1,13 +1,11 @@
 // Service worker source served by app/sw.js/route.ts
 // Keep this file in sync — do NOT reference public/sw.js (deleted to bypass Vercel edge cache).
-export const SW_SOURCE = `const CACHE_VERSION = 'v8';
+export const SW_SOURCE = `const CACHE_VERSION = 'v9';
 const STATIC_CACHE = \`mamatrack-static-\${CACHE_VERSION}\`;
 const DYNAMIC_CACHE = \`mamatrack-dynamic-\${CACHE_VERSION}\`;
 
 const PRECACHE_URLS = [
-  '/',
-  '/tracking',
-  '/agenda',
+  '/offline.html',
   '/manifest.json',
   '/icons/icon-192x192.png',
 ];
@@ -42,16 +40,9 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/api/')) return;
   if (url.pathname === '/sw.js' || url.pathname === '/service-worker.js') return;
 
+  // Health records and RSC responses must never enter an origin-wide cache.
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          const clone = response.clone();
-          caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, clone)).catch(() => {});
-          return response;
-        })
-        .catch(() => caches.match(request).then(r => r || caches.match('/')))
-    );
+    event.respondWith(fetch(request).catch(() => caches.match('/offline.html')));
     return;
   }
 
@@ -69,17 +60,10 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(
-    fetch(request)
-      .then(response => {
-        if (response.ok) {
-          const clone = response.clone();
-          caches.open(DYNAMIC_CACHE).then(cache => cache.put(request, clone)).catch(() => {});
-        }
-        return response;
-      })
-      .catch(() => caches.match(request))
-  );
+  // Only known public files can use the offline cache.
+  if (PRECACHE_URLS.includes(url.pathname)) {
+    event.respondWith(fetch(request).catch(() => caches.match(request)));
+  }
 });
 
 self.addEventListener('message', (event) => {

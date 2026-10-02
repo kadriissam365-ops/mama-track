@@ -1,66 +1,25 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/enfant/supabase/server";
+import { safeNextPath } from "@/lib/auth-redirect";
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/'
-
+  const { searchParams, origin } = new URL(request.url);
+  const code = searchParams.get("code");
+  const next = safeNextPath(searchParams.get("next"));
   if (code) {
-    const cookieStore = await cookies()
-    
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value
-          },
-          set(name: string, value: string, options: CookieOptions) {
-            cookieStore.set({ name, value, ...options })
-          },
-          remove(name: string, options: CookieOptions) {
-            cookieStore.delete({ name, ...options })
-          },
-        },
-      }
-    )
-
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-    
+    const supabase = await createClient();
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      // Password recovery flow → redirect to reset page (session established via cookies)
-      if (next === '/auth/reset-password') {
-        return NextResponse.redirect(`${origin}/auth/reset-password`)
-      }
-
-      // Invite flow → skip onboarding, send straight back to /invite to accept
-      if (next.startsWith('/invite')) {
-        return NextResponse.redirect(`${origin}${next}`)
-      }
-
-      const { data: { user } } = await supabase.auth.getUser()
-
+      if (next !== "/") return NextResponse.redirect(new URL(next, origin));
+      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('id', user.id)
-          .single()
-
-        if (profile) {
-          return NextResponse.redirect(`${origin}/`)
-        } else {
-          return NextResponse.redirect(`${origin}/onboarding`)
-        }
+        const [profile, babies] = await Promise.all([
+          supabase.from("profiles").select("due_date").eq("id", user.id).maybeSingle(),
+          supabase.from("babies").select("id").limit(1),
+        ]);
+        return NextResponse.redirect(new URL(profile.data?.due_date || babies.data?.length ? "/" : "/onboarding", origin));
       }
-
-      return NextResponse.redirect(`${origin}${next}`)
     }
   }
-
-  // Return the user to an error page with some instructions
-  return NextResponse.redirect(`${origin}/auth/login?error=auth_callback_error`)
+  return NextResponse.redirect(new URL("/auth/login?error=auth_callback_error", origin));
 }

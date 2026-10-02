@@ -120,7 +120,7 @@ function SizeRuler({ sizeMm, week }: { sizeMm: number; week: number }) {
 /* ------------------------------------------------------------------ */
 /*  Weight fun visualization                                           */
 /* ------------------------------------------------------------------ */
-function WeightViz({ weightG, week }: { weightG: number; week: number }) {
+function WeightViz({ weightG, week: _week }: { weightG: number; week: number }) {
   const equiv = weightEquivalent(weightG);
 
   // Show up to 10 emoji icons representing the count

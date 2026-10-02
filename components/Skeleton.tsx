@@ -4,12 +4,14 @@ import { m as motion } from "framer-motion";
 
 interface SkeletonProps {
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export function Skeleton({ className = "" }: SkeletonProps) {
+export function Skeleton({ className = "", style }: SkeletonProps) {
   return (
     <motion.div
       className={`bg-gray-200 dark:bg-gray-700 rounded-xl ${className}`}
+      style={style}
       animate={{ opacity: [0.5, 0.8, 0.5] }}
       transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
     />

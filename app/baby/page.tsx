@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { getCurrentWeek, getWeekData, pregnancyData } from "@/lib/pregnancy-data";
@@ -27,18 +27,9 @@ export default function BabyPage() {
   // Derive the current pregnancy week from the profile's dueDate (same helper as Accueil).
   // Fallback to 20 only when no dueDate is set yet.
   const derivedWeek = dueDate ? getCurrentWeek(new Date(dueDate)) : 20;
-  const [selectedWeek, setSelectedWeek] = useState(derivedWeek);
-  const [userPickedWeek, setUserPickedWeek] = useState(false);
-  const [direction, setDirection] = useState(0);
+  const [pickedWeek, setSelectedWeek] = useState<number | null>(null);
+  const selectedWeek = pickedWeek ?? derivedWeek;
   const [showShare, setShowShare] = useState(false);
-
-  // Sync selectedWeek to the profile's derived week once data loads from Supabase,
-  // unless the user has manually navigated to another week.
-  useEffect(() => {
-    if (!userPickedWeek) {
-      setSelectedWeek(derivedWeek);
-    }
-  }, [derivedWeek, userPickedWeek]);
 
   // Avoid flashing the default Week 20 while the profile is still loading.
   if (loading) {
@@ -49,9 +40,7 @@ export default function BabyPage() {
 
   const goTo = (w: number) => {
     const clamped = Math.max(1, Math.min(42, w));
-    setDirection(clamped > selectedWeek ? 1 : -1);
     setSelectedWeek(clamped);
-    setUserPickedWeek(true);
   };
 
   const trimesterLabel =

@@ -1,26 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useSyncExternalStore } from "react";
 import { m as motion, AnimatePresence } from "framer-motion";
 
+function subscribeNetwork(listener: () => void) {
+  window.addEventListener("offline", listener); window.addEventListener("online", listener);
+  return () => { window.removeEventListener("offline", listener); window.removeEventListener("online", listener); };
+}
+
 export default function OfflineBanner() {
-  const [isOffline, setIsOffline] = useState(false);
-
-  useEffect(() => {
-    // Set initial state
-    setIsOffline(!navigator.onLine);
-
-    const handleOffline = () => setIsOffline(true);
-    const handleOnline = () => setIsOffline(false);
-
-    window.addEventListener("offline", handleOffline);
-    window.addEventListener("online", handleOnline);
-
-    return () => {
-      window.removeEventListener("offline", handleOffline);
-      window.removeEventListener("online", handleOnline);
-    };
-  }, []);
+  const isOffline = useSyncExternalStore(subscribeNetwork, () => !navigator.onLine, () => false);
 
   return (
     <AnimatePresence>

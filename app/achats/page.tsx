@@ -49,8 +49,9 @@ export default function AchatsPage() {
     synced,
   } = useStore();
   const items = shoppingItems;
-  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({});
-  const [budgetUser, setBudgetUser] = useState<string>('');
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(() => Object.fromEntries(CATEGORIES_ORDER.map(category => [category,true])));
+  const [budgetDraft, setBudgetUser] = useState<string | null>(null);
+  const budgetUser = budgetDraft ?? (shoppingBudget == null ? '' : String(shoppingBudget));
   const [showAddForm, setShowAddForm] = useState(false);
   const [newItem, setNewItem] = useState({
     nom: '',
@@ -67,18 +68,6 @@ export default function AchatsPage() {
   useEffect(() => {
     setShoppingBudgetRef.current = setShoppingBudgetValue;
   }, [setShoppingBudgetValue]);
-
-  // First mount: open all categories.
-  useEffect(() => {
-    const open: Record<string, boolean> = {};
-    CATEGORIES_ORDER.forEach(c => { open[c] = true; });
-    setOpenCategories(open);
-  }, []);
-
-  // Hydrate budget display from store once authoritative value is available.
-  useEffect(() => {
-    if (shoppingBudget != null) setBudgetUser(String(shoppingBudget));
-  }, [shoppingBudget]);
 
   // Seed defaults once the first load completes and both remote + local are empty.
   // synced gates this so we never replace a valid remote list with defaults.
