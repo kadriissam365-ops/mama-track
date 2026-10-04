@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       if (error || !photo || photo.size > 8388608) throw new Error("Legacy photo unavailable");
       const extension = path.split(".").pop()?.replace(/[^a-z0-9]/gi, "").slice(0, 5) || "jpg";
       const destination = `${user.id}/${row.baby_id}/import-${row.id}.${extension}`;
-      const { error: uploadError } = await service.storage.from("diary-photos").upload(destination, photo, { contentType: photo.type, upsert: false });
+      const { error: uploadError } = await service.storage.from("diary-photos").upload(destination, photo, { contentType: photo.type, cacheControl: "0", upsert: false });
       if (uploadError && !("statusCode" in uploadError && String(uploadError.statusCode) === "409")) throw uploadError;
       if (!uploadError) uploaded.push(destination);
       row.photo_url = `storage:${destination}`;

@@ -26,7 +26,7 @@ La configuration serveur MamaTrack doit inclure `BABYTRACK_SUPABASE_PUBLISHABLE_
 - Journaux d’envoi réservés au serveur ; adresse de notification issue de l’authentification.
 - Consentement IA enregistré par compte et contrôlé par le serveur ; quotas validés en SQL, sans ouverture illimitée en cas de panne.
 - Limites sur les corps JSON, vérification des redirections et des destinations Web Push.
-- Photos privées et liens de consultation de cinq minutes ; suppression des médias lors de la suppression du compte.
+- Photos privées et liens de consultation de cinq minutes ; affichage direct sans cache d’optimisation Next.js, nouveaux fichiers et imports avec durée de cache nulle ; suppression des médias lors de la suppression du compte.
 - Aucun HTML authentifié ni réponse RSC conservé dans le cache hors connexion. La mise à jour du service worker purge les anciens caches.
 - Next.js mis à jour en 16.3.6 ; audit npm complet, y compris les outils de développement, sans vulnérabilité signalée. Les versions de CLI Capacitor, Sharp et UUID de l’outil d’icônes sont explicitement remplacées par les versions corrigées ; son démarrage, le traitement d’une image et la génération d’identifiant Xcode ont été vérifiés.
 

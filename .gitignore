@@ -62,3 +62,4 @@ android/.cxx/
 
 # Local browser verification artifacts
 .playwright-cli/
+supabase/.temp/

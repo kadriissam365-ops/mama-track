@@ -78,7 +78,7 @@ async function addDiaryEntry(formData: FormData) {
     const path = `${user.id}/${baby.id}/${crypto.randomUUID()}.${ext}`;
     const { error: upErr } = await supabase.storage
       .from("diary-photos")
-      .upload(path, photo, { upsert: false, contentType: photo.type });
+      .upload(path, photo, { upsert: false, contentType: photo.type, cacheControl: "0" });
     if (upErr) {
       redirect("/enfant/diary?err=upload-failed");
     }
@@ -202,6 +202,7 @@ export default async function DiaryPage({
                 {e.photo_url && (
                   <Image
                     src={e.photo_url}
+                    unoptimized
                     alt={e.title ?? ""}
                     fill
                     sizes="(max-width: 640px) 33vw, 16vw"
@@ -235,6 +236,7 @@ export default async function DiaryPage({
                   <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-surface-muted">
                     <Image
                       src={e.photo_url}
+                      unoptimized
                       alt={e.title ?? ""}
                       fill
                       sizes="80px"

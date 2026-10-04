@@ -5,3 +5,4 @@ android/
 .playwright-cli/
 coverage/
 output/
+supabase/.temp/

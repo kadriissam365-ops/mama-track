@@ -17,7 +17,7 @@ const ContentSecurityPolicy = [
   // Styles: unsafe-inline required for Framer Motion and next-themes
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   // Images: self, data URIs, Supabase storage, blob for PWA icons
-  "img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in",
+  `img-src 'self' data: blob: https://*.supabase.co https://*.supabase.in${localConnections ? ` ${localSupabase!.origin}` : ""}`,
   // Fonts: self and Google Fonts CDN
   "font-src 'self' https://fonts.gstatic.com",
   // API connections: self and Supabase
