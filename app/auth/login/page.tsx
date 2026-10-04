@@ -138,7 +138,7 @@ function LoginForm() {
             <Heart className="w-10 h-10 text-white fill-white" />
           </motion.div>
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">MamaTrack</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Suivez votre grossesse en toute sérénité</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Votre grossesse et le carnet de bébé, au même endroit</p>
         </motion.div>
 
         {/* Form */}
@@ -166,13 +166,15 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label htmlFor="login-email" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
                 Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
+                  id="login-email"
                   type="email"
+                  autoComplete="username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="votre@email.com"
@@ -183,13 +185,15 @@ function LoginForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label htmlFor="login-password" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
                 Mot de passe
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
+                  id="login-password"
                   type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
@@ -198,6 +202,7 @@ function LoginForm() {
                 />
                 <button
                   type="button"
+                  aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-300"
                 >

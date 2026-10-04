@@ -2,7 +2,7 @@ import { readJsonBody } from "@/lib/request-json";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/enfant/supabase/server";
 import { createServiceClient } from "@/lib/enfant/supabase/service";
-import { LEGACY_BABYTRACK_URL, IMPORT_TABLES, legacyPhotoPath } from "@/lib/enfant/legacy-import";
+import { legacySourceUrl, IMPORT_TABLES, legacyPhotoPath } from "@/lib/enfant/legacy-import";
 import { RATE_LIMITS, consumeRateLimit, rateLimitedResponse } from "@/lib/rate-limit";
 
 export const maxDuration = 60;
@@ -19,7 +19,8 @@ export async function POST(request: Request) {
 
   // No service key for the source: every read uses the authenticated legacy
   // account and its RLS. Never link accounts by matching email alone.
-  const legacy = createSupabaseClient(LEGACY_BABYTRACK_URL, key, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
+  const sourceUrl = legacySourceUrl();
+  const legacy = createSupabaseClient(sourceUrl, key, { auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } });
   const uploaded: string[] = [];
   const service = createServiceClient();
   try {
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
     // expired signed URLs or download any client-chosen external address.
     for (const row of payload.diary_entries as Record<string, unknown>[]) {
       if (!row.photo_url) continue;
-      const path = legacyPhotoPath(row.photo_url);
+      const path = legacyPhotoPath(row.photo_url, sourceUrl);
       if (!path) throw new Error("Unsupported legacy photo");
       const { data: photo, error } = await legacy.storage.from("diary-photos").download(path);
       if (error || !photo || photo.size > 8388608) throw new Error("Legacy photo unavailable");

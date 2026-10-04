@@ -1,6 +1,10 @@
 # MamaTrack — grossesse, naissance et premières années
 
-## Version préparée le 2 octobre 2026
+## État du 4 octobre 2026
+
+L’utilisateur a autorisé la mise en service le 4 octobre. Les trois migrations MamaTrack et le correctif SQL BabyTrack sont maintenant appliqués sur les projets identifiés ci-dessous. Les 20 profils MamaTrack ont conservé la même empreinte avant et après migration ; les 10 comptes et les deux carnets BabyTrack restent présents. La clé publique de transfert est configurée dans les trois environnements Vercel MamaTrack.
+
+La publication de l’application unifiée est en cours de validation. La rotation des secrets BabyTrack reste une intervention distincte nécessitant l’accès administrateur à Supabase.
 
 Le dépôt principal est `kadriissam365-ops/mama-track`, branche `codex/mamatrack-unified-family`. La cible existante est Vercel `pregnancy-tracker` (`mamatrack.fr`) et Supabase `xddutehapskhgrgimpme`. L’ancien BabyTrack reste sur son dépôt, Vercel `baby-track` (`babytrack.mamatrack.fr`) et Supabase `fjxoxdagmcsepmukosav`.
 
@@ -28,26 +32,28 @@ La configuration serveur MamaTrack doit inclure `BABYTRACK_SUPABASE_PUBLISHABLE_
 
 ## Vérifications réalisées
 
-- 61 tests passent, dont les migrations exécutées dans un vrai moteur PostgreSQL isolé via PGlite : accès entre comptes, rôle lecture seule, invitations à usage unique, média privé, quota non contournable et transfert relançable sans écrasement.
+- 64 tests passent, dont les migrations exécutées dans un vrai moteur PostgreSQL isolé via PGlite : accès entre comptes, rôle lecture seule, invitations à usage unique, média privé, quota non contournable et transfert relançable sans écrasement. Les nouveaux contrôles couvrent aussi les chemins de photos et l’impossibilité d’utiliser une source de test en production.
 - TypeScript et ESLint passent pour l’application unifiée.
 - Compilation Next.js réussie avec Webpack. Turbopack rencontre une restriction locale sur ses ports internes ; aucun masquage des erreurs TypeScript n’est conservé.
 - Vérification Playwright de l’accueil à 390 px, du lien de connexion depuis une invitation, des redirections protégées et des réponses 401 des API et tâches internes sans authentification.
 - BabyTrack : erreurs TypeScript existantes corrigées et compilation Webpack vérifiée.
 
-La validation des parcours authentifiés sur une base Supabase de staging et le transfert réel d’un compte n’ont **pas encore été réalisés**. Les tests PostgreSQL utilisent des identités fictives et ne modifient aucune donnée de production.
+Une validation supplémentaire utilise deux piles Supabase locales complètes (Auth, PostgreSQL 17, PostgREST et Storage), avec les schémas actuels des deux projets et des comptes fictifs. Le navigateur mobile vérifie connexion, naissance, sauvegarde d’un biberon, transfert du carnet et de sa photo, puis retour au suivi grossesse. Les API vérifient les accès entre comptes, l’invitation unique, la lecture seule, l’export complet et la suppression du compte avec ses médias. Aucune donnée personnelle de production n’est copiée dans ces tests.
 
-## Mise en service — accord requis
+Pour reproduire le transfert local, `BABYTRACK_LOCAL_TEST_URL` peut désigner une API Supabase sur `localhost` ou `127.0.0.1`. Cette variable est ignorée en production, où la source reste le projet BabyTrack vérifié.
 
-**Aucune migration de production n’a été appliquée et aucun site n’a été publié pendant cette préparation.** La validation automatique a refusé l’application de la migration principale en raison de son impact sur plusieurs tables, règles d’accès, privilèges, triggers et stockage. Elle exige une autorisation explicite pour poursuivre.
+## Migrations de mise en service
 
-Après accord, sauvegarder le schéma actuel, tester sur staging puis appliquer dans cet ordre :
+L’application initiale avait été refusée par la validation automatique en raison de son impact sur les tables et règles d’accès. Après l’accord explicite de l’utilisateur et les tests sur les copies locales des schémas, les quatre migrations ont réussi le 4 octobre.
+
+Les états des schémas avant modification sont conservés localement hors Git. Ordre effectivement appliqué :
 
 1. MamaTrack : `20261002_unified_family.sql` — tables enfant, réglages, consentement, droits d’accès, stockage privé et colonne de conception manquante.
 2. MamaTrack : `20261002_rate_limit_rules.sql` — quotas fixés côté serveur.
 3. MamaTrack : `20261002_babytrack_import.sql` — transfert réservé au serveur.
 4. BabyTrack : `20261002_security_hardening.sql` — journal de notifications privé, fonctions et champs privilégiés protégés.
 
-Configurer les variables sur la bonne cible Vercel, vérifier les fonctions de rappel seulement si leurs transports sont configurés (SMTP et VAPID), et déployer d’abord une preview. Vérifier naissance, premier repas, sélection d’enfant, partage, révocation, export, suppression et import avant toute promotion sur `mamatrack.fr`.
+La prochaine étape est la vérification d’un déploiement de production sans attribution de domaine, puis sa promotion sur `mamatrack.fr`. Les fonctions de rappel email ne sont activées que lorsque SMTP est configuré ; les notifications Web Push nécessitent VAPID. Les tests locaux n’utilisent pas les services payants d’IA ni les transports d’envoi réels.
 
 Ne pas rediriger automatiquement l’ancien domaine avant le transfert des carnets et la vérification des anciens liens. Le changement d’URL de l’app native et la nouvelle soumission Apple restent une étape distincte.
 

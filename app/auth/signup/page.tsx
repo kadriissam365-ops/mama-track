@@ -167,7 +167,7 @@ function SignupForm() {
             <span className="font-medium text-pink-500 dark:text-pink-400">{email}</span>
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Cliquez sur le lien dans l&apos;email pour activer votre compte et commencer votre suivi de grossesse.
+            Cliquez sur le lien dans l&apos;email pour activer votre compte et commencer votre suivi de grossesse ou le carnet de bébé.
           </p>
           {isInvitedFlow && (
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
@@ -244,12 +244,13 @@ function SignupForm() {
 
           <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
             <div>
-              <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label htmlFor="signup-email" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
                 Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
+                  id="signup-email"
                   type="email"
                   name="signup-email"
                   autoComplete="off"
@@ -264,12 +265,13 @@ function SignupForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label htmlFor="signup-password" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
                 Mot de passe
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
+                  id="signup-password"
                   type={showPassword ? "text" : "password"}
                   name="new-password"
                   autoComplete="new-password"
@@ -281,6 +283,7 @@ function SignupForm() {
                 />
                 <button
                   type="button"
+                  aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-300"
                 >
@@ -299,12 +302,13 @@ function SignupForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label htmlFor="signup-confirm-password" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
                 Confirmer le mot de passe
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
                 <input
+                  id="signup-confirm-password"
                   type={showPassword ? "text" : "password"}
                   name="confirm-password"
                   autoComplete="new-password"

@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 // Content-Security-Policy directives for MamaTrack
 const isDev = process.env.NODE_ENV !== "production";
+const localSupabase = isDev && process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL)
+  : null;
+const localConnections = localSupabase && ["localhost", "127.0.0.1"].includes(localSupabase.hostname)
+  ? ` ${localSupabase.origin} ${localSupabase.origin.replace(/^http/, "ws")}`
+  : "";
 const ContentSecurityPolicy = [
   // Default: restrict to self
   "default-src 'self'",
@@ -15,7 +21,7 @@ const ContentSecurityPolicy = [
   // Fonts: self and Google Fonts CDN
   "font-src 'self' https://fonts.gstatic.com",
   // API connections: self and Supabase
-  "connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co",
+  `connect-src 'self' https://*.supabase.co https://*.supabase.in wss://*.supabase.co${localConnections}`,
   // Workers: self (service worker)
   "worker-src 'self'",
   // Manifest for PWA
