@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { m as motion, AnimatePresence } from "framer-motion";
 
 import JourneyChoice from "@/components/JourneyChoice";
+import { useFamily } from "@/lib/family";
 import { useToast } from "@/lib/toast";
 import { Heart, Baby, Calendar, Sparkles, ArrowRight, ArrowLeft, Loader2, FlaskConical, Bell } from "lucide-react";
 import {
@@ -23,6 +24,7 @@ type WeekMode = "SA" | "GA";
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const family = useFamily();
   const [journeyChosen, setJourneyChosen] = useState(false);
   const toast = useToast();
   const [step, setStep] = useState<Step>(1);
@@ -122,17 +124,16 @@ export default function OnboardingPage() {
         // Écriture Supabase bloquante : si elle échoue, on n'écrit PAS localStorage
         // et on ne navigue PAS pour éviter toute divergence entre cloud et local.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error: upsertError } = await (supabase.from("profiles") as any).upsert({
-          id: currentUser.id,
+        const { error: saveError } = await (supabase.from("profiles") as any).update({
           due_date: finalDueDate || null,
           baby_name: babyName.trim() || null,
           mama_name: mamaName.trim(),
           conception_mode: conceptionMode,
           week_mode: weekMode,
-        });
+        }).eq("id", currentUser.id).select("id").single();
 
-        if (upsertError) {
-          console.error("Onboarding Supabase error:", upsertError);
+        if (saveError) {
+          console.error("Onboarding Supabase error:", saveError);
           toast.error("Impossible d'enregistrer votre profil. Veuillez réessayer.");
           setError("Impossible d'enregistrer votre profil. Veuillez réessayer.");
           setLoading(false);
@@ -140,6 +141,7 @@ export default function OnboardingPage() {
         }
       }
 
+      await family.select("pregnancy");
       const existingData = localStorage.getItem("pregnancy-tracker");
       const previous = existingData ? JSON.parse(existingData) : {};
       const data = previous._userId === currentUser.id ? previous : {};

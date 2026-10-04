@@ -4,7 +4,7 @@
 
 L’utilisateur a autorisé la mise en service le 4 octobre. Les trois migrations MamaTrack et le correctif SQL BabyTrack sont maintenant appliqués sur les projets identifiés ci-dessous. Les 20 profils MamaTrack ont conservé la même empreinte avant et après migration ; les 10 comptes et les deux carnets BabyTrack restent présents. La clé publique de transfert est configurée dans les trois environnements Vercel MamaTrack.
 
-La publication de l’application unifiée est en cours de validation. La rotation des secrets BabyTrack reste une intervention distincte nécessitant l’accès administrateur à Supabase.
+L’application unifiée est publiée sur `https://mamatrack.fr`. L’ancien site `https://babytrack.mamatrack.fr` reste accessible et affiche un lien vers le transfert des carnets dans MamaTrack. Les deux déploiements de production sont prêts. La rotation des secrets BabyTrack reste une intervention distincte nécessitant l’accès administrateur à Supabase.
 
 Le dépôt principal est `kadriissam365-ops/mama-track`, branche `codex/mamatrack-unified-family`. La cible existante est Vercel `pregnancy-tracker` (`mamatrack.fr`) et Supabase `xddutehapskhgrgimpme`. L’ancien BabyTrack reste sur son dépôt, Vercel `baby-track` (`babytrack.mamatrack.fr`) et Supabase `fjxoxdagmcsepmukosav`.
 
@@ -37,8 +37,13 @@ La configuration serveur MamaTrack doit inclure `BABYTRACK_SUPABASE_PUBLISHABLE_
 - Compilation Next.js réussie avec Webpack. Turbopack rencontre une restriction locale sur ses ports internes ; aucun masquage des erreurs TypeScript n’est conservé.
 - Vérification Playwright de l’accueil à 390 px, du lien de connexion depuis une invitation, des redirections protégées et des réponses 401 des API et tâches internes sans authentification.
 - BabyTrack : erreurs TypeScript existantes corrigées et compilation Webpack vérifiée.
+- Déploiements Vercel de production compilés avec Turbopack ; accueil, connexion et page hors connexion accessibles, API familiale renvoyant 401 sans session et espace enfant redirigeant vers la connexion. La page de connexion publiée ne présente aucune erreur console.
 
 Une validation supplémentaire utilise deux piles Supabase locales complètes (Auth, PostgreSQL 17, PostgREST et Storage), avec les schémas actuels des deux projets et des comptes fictifs. Le navigateur mobile vérifie connexion, naissance, sauvegarde d’un biberon, transfert du carnet et de sa photo, puis retour au suivi grossesse. Les API vérifient les accès entre comptes, l’invitation unique, la lecture seule, l’export complet et la suppression du compte avec ses médias. Aucune donnée personnelle de production n’est copiée dans ces tests.
+
+Le formulaire de grossesse met à jour le profil créé à l’inscription au lieu de demander un droit d’insertion supplémentaire. Le parcours complet en cinq étapes a enregistré la date prévue d’accouchement et réactivé l’espace grossesse en conservant les deux carnets fictifs. Les appels IA locaux renvoient 503, conformément à l’absence volontaire de clés de services payants dans cet environnement.
+
+Un test supplémentaire avec création puis suppression d’un compte fictif en production a été refusé par la validation automatique, faute d’autorisation explicite pour cette mutation. Il n’a pas été exécuté ; les contrôles distants restent en lecture seule et les parcours authentifiés ont été vérifiés localement. Une demande d’autorisation distincte a été présentée à l’utilisateur.
 
 Pour reproduire le transfert local, `BABYTRACK_LOCAL_TEST_URL` peut désigner une API Supabase sur `localhost` ou `127.0.0.1`. Cette variable est ignorée en production, où la source reste le projet BabyTrack vérifié.
 
@@ -53,7 +58,7 @@ Les états des schémas avant modification sont conservés localement hors Git. 
 3. MamaTrack : `20261002_babytrack_import.sql` — transfert réservé au serveur.
 4. BabyTrack : `20261002_security_hardening.sql` — journal de notifications privé, fonctions et champs privilégiés protégés.
 
-La prochaine étape est la vérification d’un déploiement de production sans attribution de domaine, puis sa promotion sur `mamatrack.fr`. Les fonctions de rappel email ne sont activées que lorsque SMTP est configuré ; les notifications Web Push nécessitent VAPID. Les tests locaux n’utilisent pas les services payants d’IA ni les transports d’envoi réels.
+Les changements des deux dépôts sont commités et publiés sur leurs branches `main` respectives. Le déploiement MamaTrack validé a été promu sur `mamatrack.fr`, puis les mises à jour sont publiées par l’intégration Git Vercel. Les fonctions de rappel email ne sont activées que lorsque SMTP est configuré ; les notifications Web Push nécessitent VAPID. Les tests locaux n’utilisent pas les services payants d’IA ni les transports d’envoi réels.
 
 Ne pas rediriger automatiquement l’ancien domaine avant le transfert des carnets et la vérification des anciens liens. Le changement d’URL de l’app native et la nouvelle soumission Apple restent une étape distincte.
 
@@ -61,4 +66,4 @@ Ne pas rediriger automatiquement l’ancien domaine avant le transfert des carne
 
 L’ancien `CLAUDE.md` public contenait une clé secrète Supabase et un mot de passe de base de données. Les valeurs ont été retirées du fichier actuel, mais demeurent dans l’historique Git. La clé exposée était encore acceptée par l’API lors de l’audit. Elle doit être révoquée/renouvelée, avec mise à jour des variables serveur BabyTrack et changement du mot de passe de base. Le retrait du fichier ne suffit pas.
 
-L’accès à l’interface de gestion était bloqué par le verrouillage du Mac. Ne pas déclarer cet incident clos avant vérification de la révocation et du fonctionnement du service. Ne jamais recopier les anciennes valeurs dans un ticket, une description de commit ou une sortie d’outil.
+La rotation n’est pas disponible avec les outils Supabase actuellement connectés ; un accès administrateur au tableau de bord a été demandé à l’utilisateur. Ne pas déclarer cet incident clos avant vérification de la révocation et du fonctionnement du service. Ne jamais recopier les anciennes valeurs dans un ticket, une description de commit ou une sortie d’outil.
