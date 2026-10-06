@@ -1,3 +1,5 @@
+import { calendarDate, parseCalendarDate } from "@/lib/family-journey";
+
 export interface WeekData {
   week: number;
   sizeMm: number;
@@ -30,13 +32,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🌱",
     funComparison: "une tête d'épingle",
     funComparisonEmoji: "📌",
-    babyDevelopment: "La fécondation vient d'avoir lieu. L'œuf fécondé, appelé zygote, commence son voyage vers l'utérus. La division cellulaire a commencé.",
-    momTips: "Commencez à prendre de l'acide folique si ce n'est pas déjà fait. Évitez l'alcool et la caféine.",
+    babyDevelopment:
+      "La fécondation vient d'avoir lieu. L'œuf fécondé, appelé zygote, commence son voyage vers l'utérus. La division cellulaire a commencé.",
+    momTips:
+      "Commencez à prendre de l'acide folique si ce n'est pas déjà fait. Évitez l'alcool et la caféine.",
     trimester: 1,
-    weeklyTip: "Prenez 400 µg d'acide folique par jour pour protéger le tube neural de bébé. C'est le moment le plus important pour ce supplément.",
-    weeklySymptoms: ["Aucun symptôme visible", "Légère fatigue possible", "Règles absentes"],
+    weeklyTip:
+      "Prenez 400 µg d'acide folique par jour pour protéger le tube neural de bébé. C'est le moment le plus important pour ce supplément.",
+    weeklySymptoms: [
+      "Aucun symptôme visible",
+      "Légère fatigue possible",
+      "Règles absentes",
+    ],
     weeklyMilestone: "Le voyage commence ! ✨",
-    testimonials: ["Je ne sais même pas encore si je suis enceinte mais j'ai commencé l'acide folique 🤞", "On essaie depuis 6 mois, cette fois-ci j'y crois à fond 💫"],
+    testimonials: [
+      "Je ne sais même pas encore si je suis enceinte mais j'ai commencé l'acide folique 🤞",
+      "On essaie depuis 6 mois, cette fois-ci j'y crois à fond 💫",
+    ],
     dailyTips: [
       "Prenez votre acide folique dès le matin avec un grand verre d'eau.",
       "Notez la date de vos dernières règles, elle sera importante pour votre médecin.",
@@ -47,10 +59,14 @@ export const pregnancyData: WeekData[] = [
       "Parlez à votre partenaire de vos ressentis et de vos attentes.",
     ],
     articleTitle: "L'acide folique : pourquoi c'est essentiel dès la semaine 1",
-    articleContent: "L'acide folique (vitamine B9) est crucial dès les premières semaines de grossesse. Il protège le tube neural de votre bébé, qui deviendra le cerveau et la moelle épinière. Une carence peut entraîner des malformations comme le spina bifida.\n\nLa dose recommandée est de 400 µg par jour, idéalement commencée avant la conception. On trouve des folates naturels dans les légumes verts à feuilles, les agrumes, les légumineuses et les céréales complètes. Cependant, un supplément reste indispensable car l'alimentation seule ne suffit pas toujours.\n\nParlez à votre médecin de vos antécédents : certaines femmes ont besoin d'une dose plus élevée (5 mg/jour), notamment en cas d'antécédent de malformation du tube neural ou de prise de certains médicaments.",
-    partnerTip: "Accompagnez votre partenaire dans l'arrêt de l'alcool et de la caféine. Un soutien mutuel rend les changements plus faciles.",
-    exerciseTip: "Continuez votre activité physique habituelle si vous en avez une. La marche de 30 minutes par jour est un excellent point de départ.",
-    nutritionTip: "Privilégiez les aliments riches en folates : épinards, brocolis, lentilles, avocat. Ajoutez un supplément de 400 µg d'acide folique quotidien.",
+    articleContent:
+      "L'acide folique (vitamine B9) est crucial dès les premières semaines de grossesse. Il protège le tube neural de votre bébé, qui deviendra le cerveau et la moelle épinière. Une carence peut entraîner des malformations comme le spina bifida.\n\nLa dose recommandée est de 400 µg par jour, idéalement commencée avant la conception. On trouve des folates naturels dans les légumes verts à feuilles, les agrumes, les légumineuses et les céréales complètes. Cependant, un supplément reste indispensable car l'alimentation seule ne suffit pas toujours.\n\nParlez à votre médecin de vos antécédents : certaines femmes ont besoin d'une dose plus élevée (5 mg/jour), notamment en cas d'antécédent de malformation du tube neural ou de prise de certains médicaments.",
+    partnerTip:
+      "Accompagnez votre partenaire dans l'arrêt de l'alcool et de la caféine. Un soutien mutuel rend les changements plus faciles.",
+    exerciseTip:
+      "Continuez votre activité physique habituelle si vous en avez une. La marche de 30 minutes par jour est un excellent point de départ.",
+    nutritionTip:
+      "Privilégiez les aliments riches en folates : épinards, brocolis, lentilles, avocat. Ajoutez un supplément de 400 µg d'acide folique quotidien.",
   },
   {
     week: 2,
@@ -60,12 +76,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🫘",
     funComparison: "un grain de sable",
     funComparisonEmoji: "⏳",
-    babyDevelopment: "L'embryon s'implante dans la paroi utérine. Le blastocyste se développe et les premières cellules spécialisées apparaissent.",
-    momTips: "Continuez l'acide folique. Consultez votre médecin pour confirmer la grossesse.",
+    babyDevelopment:
+      "L'embryon s'implante dans la paroi utérine. Le blastocyste se développe et les premières cellules spécialisées apparaissent.",
+    momTips:
+      "Continuez l'acide folique. Consultez votre médecin pour confirmer la grossesse.",
     trimester: 1,
-    weeklyTip: "Hydratez-vous bien (1,5 à 2 litres d'eau par jour) et continuez vos compléments d'acide folique sans interruption.",
-    weeklySymptoms: ["Implantation (légères crampes)", "Spotting d'implantation possible", "Seins sensibles"],
-    testimonials: ["J'ai eu un léger spotting, j'ai paniqué avant de comprendre que c'était l'implantation 😅", "Mes seins sont super sensibles, je sens que quelque chose a changé 💕"],
+    weeklyTip:
+      "Hydratez-vous bien (1,5 à 2 litres d'eau par jour) et continuez vos compléments d'acide folique sans interruption.",
+    weeklySymptoms: [
+      "Implantation (légères crampes)",
+      "Spotting d'implantation possible",
+      "Seins sensibles",
+    ],
+    testimonials: [
+      "J'ai eu un léger spotting, j'ai paniqué avant de comprendre que c'était l'implantation 😅",
+      "Mes seins sont super sensibles, je sens que quelque chose a changé 💕",
+    ],
     dailyTips: [
       "Un léger saignement d'implantation est normal, ne paniquez pas.",
       "Buvez au moins 1,5 litre d'eau aujourd'hui pour favoriser l'implantation.",
@@ -76,10 +102,14 @@ export const pregnancyData: WeekData[] = [
       "Notez vos symptômes dans un carnet, ils seront utiles lors du premier rendez-vous.",
     ],
     articleTitle: "L'implantation : que se passe-t-il dans votre corps ?",
-    articleContent: "L'implantation est le moment où l'embryon s'attache à la paroi utérine, environ 6 à 12 jours après la fécondation. C'est une étape cruciale qui marque le vrai début de votre grossesse. Vous pourriez ressentir de légères crampes ou observer un léger saignement rosé, appelé spotting d'implantation.\n\nCe phénomène est tout à fait normal et ne doit pas vous inquiéter. Il se distingue des règles par sa durée courte (1-2 jours) et sa faible abondance. Pendant ce temps, votre corps commence à produire l'hormone hCG, celle qui rendra votre test de grossesse positif.\n\nPour favoriser une bonne implantation, maintenez une alimentation équilibrée, évitez le stress excessif et continuez votre supplément d'acide folique. Le repos est votre allié durant cette période.",
-    partnerTip: "Soyez patient et rassurant si votre partenaire est anxieuse. Les premières semaines sont remplies d'incertitude et votre soutien émotionnel est précieux.",
-    exerciseTip: "La marche douce et le yoga léger sont parfaits. Évitez les sports à impact et les mouvements brusques.",
-    nutritionTip: "Augmentez votre apport en vitamine C (agrumes, kiwi, poivrons) pour améliorer l'absorption du fer et renforcer votre immunité.",
+    articleContent:
+      "L'implantation est le moment où l'embryon s'attache à la paroi utérine, environ 6 à 12 jours après la fécondation. C'est une étape cruciale qui marque le vrai début de votre grossesse. Vous pourriez ressentir de légères crampes ou observer un léger saignement rosé, appelé spotting d'implantation.\n\nCe phénomène est tout à fait normal et ne doit pas vous inquiéter. Il se distingue des règles par sa durée courte (1-2 jours) et sa faible abondance. Pendant ce temps, votre corps commence à produire l'hormone hCG, celle qui rendra votre test de grossesse positif.\n\nPour favoriser une bonne implantation, maintenez une alimentation équilibrée, évitez le stress excessif et continuez votre supplément d'acide folique. Le repos est votre allié durant cette période.",
+    partnerTip:
+      "Soyez patient et rassurant si votre partenaire est anxieuse. Les premières semaines sont remplies d'incertitude et votre soutien émotionnel est précieux.",
+    exerciseTip:
+      "La marche douce et le yoga léger sont parfaits. Évitez les sports à impact et les mouvements brusques.",
+    nutritionTip:
+      "Augmentez votre apport en vitamine C (agrumes, kiwi, poivrons) pour améliorer l'absorption du fer et renforcer votre immunité.",
   },
   {
     week: 3,
@@ -89,13 +119,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🌰",
     funComparison: "une puce électronique",
     funComparisonEmoji: "🔲",
-    babyDevelopment: "Les trois couches germinales se forment : l'ectoderme, le mésoderme et l'endoderme. Le système nerveux commence à se former.",
-    momTips: "Vous pourriez ressentir les premiers signes de grossesse : fatigue, nausées légères. Reposez-vous.",
+    babyDevelopment:
+      "Les trois couches germinales se forment : l'ectoderme, le mésoderme et l'endoderme. Le système nerveux commence à se former.",
+    momTips:
+      "Vous pourriez ressentir les premiers signes de grossesse : fatigue, nausées légères. Reposez-vous.",
     trimester: 1,
-    weeklyTip: "Évitez la charcuterie crue, les fromages à pâte molle et les œufs crus dès maintenant pour protéger bébé des infections.",
-    weeklySymptoms: ["Fatigue inhabituelle", "Légères nausées", "Seins gonflés"],
+    weeklyTip:
+      "Évitez la charcuterie crue, les fromages à pâte molle et les œufs crus dès maintenant pour protéger bébé des infections.",
+    weeklySymptoms: [
+      "Fatigue inhabituelle",
+      "Légères nausées",
+      "Seins gonflés",
+    ],
     weeklyMilestone: "Le système nerveux se met en place !",
-    testimonials: ["Je dors 12h par nuit et je pourrais encore faire la sieste, c'est dingue 😴", "Les odeurs que j'adorais me donnent la nausée maintenant, trop bizarre !"],
+    testimonials: [
+      "Je dors 12h par nuit et je pourrais encore faire la sieste, c'est dingue 😴",
+      "Les odeurs que j'adorais me donnent la nausée maintenant, trop bizarre !",
+    ],
     dailyTips: [
       "Reposez-vous autant que possible, votre corps travaille énormément.",
       "Continuez l'acide folique sans interruption.",
@@ -106,10 +146,14 @@ export const pregnancyData: WeekData[] = [
       "Parlez de vos ressentis avec votre partenaire ou un proche de confiance.",
     ],
     articleTitle: "Les premières divisions cellulaires : le miracle de la vie",
-    articleContent: "À la semaine 3, l'embryon est constitué de quelques centaines de cellules qui se spécialisent rapidement. Trois couches germinales se forment : l'ectoderme (peau, système nerveux), le mésoderme (muscles, os, cœur) et l'endoderme (organes internes). C'est le tout début de la formation de votre bébé.\n\nVotre corps commence à produire davantage d'hormones, notamment la progestérone et l'hCG. Ces hormones peuvent provoquer les premiers symptômes de grossesse comme la fatigue et les nausées légères.\n\nContinuez à prendre soin de vous et à éviter les substances nocives. Chaque jour compte dans cette phase cruciale du développement.",
-    partnerTip: "Votre partenaire peut commencer à ressentir de la fatigue. Proposez de prendre en charge certaines tâches du quotidien.",
-    exerciseTip: "La marche douce reste l'activité idéale. Évitez les efforts intenses et les sports à risque de chute.",
-    nutritionTip: "Variez vos sources de protéines : poisson, œufs bien cuits, légumineuses. Continuez à éviter les aliments à risque (charcuterie crue, fromages non pasteurisés).",
+    articleContent:
+      "À la semaine 3, l'embryon est constitué de quelques centaines de cellules qui se spécialisent rapidement. Trois couches germinales se forment : l'ectoderme (peau, système nerveux), le mésoderme (muscles, os, cœur) et l'endoderme (organes internes). C'est le tout début de la formation de votre bébé.\n\nVotre corps commence à produire davantage d'hormones, notamment la progestérone et l'hCG. Ces hormones peuvent provoquer les premiers symptômes de grossesse comme la fatigue et les nausées légères.\n\nContinuez à prendre soin de vous et à éviter les substances nocives. Chaque jour compte dans cette phase cruciale du développement.",
+    partnerTip:
+      "Votre partenaire peut commencer à ressentir de la fatigue. Proposez de prendre en charge certaines tâches du quotidien.",
+    exerciseTip:
+      "La marche douce reste l'activité idéale. Évitez les efforts intenses et les sports à risque de chute.",
+    nutritionTip:
+      "Variez vos sources de protéines : poisson, œufs bien cuits, légumineuses. Continuez à éviter les aliments à risque (charcuterie crue, fromages non pasteurisés).",
   },
   {
     week: 4,
@@ -119,13 +163,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍚",
     funComparison: "un grain de riz",
     funComparisonEmoji: "🍚",
-    babyDevelopment: "Le tube neural se forme, précurseur du cerveau et de la moelle épinière. Le cœur primitif commence à battre.",
-    momTips: "Testez votre grossesse à la maison. Prenez rendez-vous chez votre gynécologue.",
+    babyDevelopment:
+      "Le tube neural se forme, précurseur du cerveau et de la moelle épinière. Le cœur primitif commence à battre.",
+    momTips:
+      "Testez votre grossesse à la maison. Prenez rendez-vous chez votre gynécologue.",
     trimester: 1,
-    weeklyTip: "Un test de grossesse positif ? Félicitations ! Prenez rendez-vous rapidement avec votre médecin ou sage-femme.",
-    weeklySymptoms: ["Test de grossesse positif", "Nausées légères le matin", "Envies fréquentes d'uriner"],
+    weeklyTip:
+      "Un test de grossesse positif ? Félicitations ! Prenez rendez-vous rapidement avec votre médecin ou sage-femme.",
+    weeklySymptoms: [
+      "Test de grossesse positif",
+      "Nausées légères le matin",
+      "Envies fréquentes d'uriner",
+    ],
     weeklyMilestone: "Grossesse confirmée ! 🎉",
-    testimonials: ["Je viens de voir le test positif, je n'en reviens pas encore ! 🥹", "Mon ventre est tout plat mais je sais que tu es là 💕"],
+    testimonials: [
+      "Je viens de voir le test positif, je n'en reviens pas encore ! 🥹",
+      "Mon ventre est tout plat mais je sais que tu es là 💕",
+    ],
   },
   {
     week: 5,
@@ -135,13 +189,19 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🌾",
     funComparison: "une graine de tournesol",
     funComparisonEmoji: "🌻",
-    babyDevelopment: "Le cœur bat pour la première fois ! Les bourgeons des membres apparaissent. Le cerveau, les yeux et les oreilles commencent à se former.",
-    momTips: "Les nausées matinales peuvent commencer. Mangez de petits repas fréquents et restez hydratée.",
+    babyDevelopment:
+      "Le cœur bat pour la première fois ! Les bourgeons des membres apparaissent. Le cerveau, les yeux et les oreilles commencent à se former.",
+    momTips:
+      "Les nausées matinales peuvent commencer. Mangez de petits repas fréquents et restez hydratée.",
     trimester: 1,
-    weeklyTip: "Contre les nausées : grignotez des crackers avant de lever, buvez du gingembre en infusion, fractionnez vos repas en 5-6 petites prises.",
+    weeklyTip:
+      "Contre les nausées : grignotez des crackers avant de lever, buvez du gingembre en infusion, fractionnez vos repas en 5-6 petites prises.",
     weeklySymptoms: ["Nausées matinales", "Fatigue intense", "Sautes d'humeur"],
     weeklyMilestone: "Le cœur de bébé bat pour la première fois ! 💓",
-    testimonials: ["Premier écho, j'ai vu le petit cœur qui battait... j'ai pleuré 😭❤️", "Les nausées arrivent tôt le matin, j'ai toujours une biscotte près du lit 🍞"],
+    testimonials: [
+      "Premier écho, j'ai vu le petit cœur qui battait... j'ai pleuré 😭❤️",
+      "Les nausées arrivent tôt le matin, j'ai toujours une biscotte près du lit 🍞",
+    ],
   },
   {
     week: 6,
@@ -151,12 +211,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🫘",
     funComparison: "un ongle de petit doigt",
     funComparisonEmoji: "💅",
-    babyDevelopment: "Le visage prend forme avec les yeux, les narines et la bouche. Les bras et les jambes s'allongent. Le cœur a maintenant 4 chambres.",
-    momTips: "Évitez les odeurs fortes si elles causent des nausées. Le gingembre peut aider à soulager les nausées.",
+    babyDevelopment:
+      "Le visage prend forme avec les yeux, les narines et la bouche. Les bras et les jambes s'allongent. Le cœur a maintenant 4 chambres.",
+    momTips:
+      "Évitez les odeurs fortes si elles causent des nausées. Le gingembre peut aider à soulager les nausées.",
     trimester: 1,
-    weeklyTip: "Le gingembre (tisane, biscuits au gingembre) est votre allié contre les nausées. Gardez toujours un en-cas à portée de main.",
-    weeklySymptoms: ["Nausées et vomissements", "Hypersensibilité aux odeurs", "Poitrine très sensible"],
-    testimonials: ["Les nausées ont commencé... gingembre et crackers sont mes meilleurs amis 😅", "Fatiguée mais tellement heureuse malgré tout 🌸"],
+    weeklyTip:
+      "Le gingembre (tisane, biscuits au gingembre) est votre allié contre les nausées. Gardez toujours un en-cas à portée de main.",
+    weeklySymptoms: [
+      "Nausées et vomissements",
+      "Hypersensibilité aux odeurs",
+      "Poitrine très sensible",
+    ],
+    testimonials: [
+      "Les nausées ont commencé... gingembre et crackers sont mes meilleurs amis 😅",
+      "Fatiguée mais tellement heureuse malgré tout 🌸",
+    ],
   },
   {
     week: 7,
@@ -166,12 +236,18 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🫐",
     funComparison: "un AirPod",
     funComparisonEmoji: "🎧",
-    babyDevelopment: "Le cerveau se développe rapidement. Les doigts et les orteils commencent à apparaître. Le foie produit les globules rouges.",
-    momTips: "Votre utérus a doublé de taille. Vous pourriez ressentir des ballonnements. Portez des vêtements confortables.",
+    babyDevelopment:
+      "Le cerveau se développe rapidement. Les doigts et les orteils commencent à apparaître. Le foie produit les globules rouges.",
+    momTips:
+      "Votre utérus a doublé de taille. Vous pourriez ressentir des ballonnements. Portez des vêtements confortables.",
     trimester: 1,
-    weeklyTip: "Misez sur les légumes verts (épinards, brocolis) riches en folates naturels, en plus de votre supplément d'acide folique.",
+    weeklyTip:
+      "Misez sur les légumes verts (épinards, brocolis) riches en folates naturels, en plus de votre supplément d'acide folique.",
     weeklySymptoms: ["Ballonnements", "Constipation", "Salive excessive"],
-    testimonials: ["Mon jean ne ferme déjà plus à cause des ballonnements... bienvenue les pantalons stretch 👖", "Je rêve de bébé toutes les nuits, mon cerveau est déjà en mode maman 🌸"],
+    testimonials: [
+      "Mon jean ne ferme déjà plus à cause des ballonnements... bienvenue les pantalons stretch 👖",
+      "Je rêve de bébé toutes les nuits, mon cerveau est déjà en mode maman 🌸",
+    ],
   },
   {
     week: 8,
@@ -181,13 +257,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍓",
     funComparison: "une clé USB",
     funComparisonEmoji: "💾",
-    babyDevelopment: "Tous les organes vitaux sont en place. Le bébé peut faire de petits mouvements. Les paupières se forment.",
-    momTips: "Première échographie possible. Parlez à votre médecin de vos médicaments habituels.",
+    babyDevelopment:
+      "Tous les organes vitaux sont en place. Le bébé peut faire de petits mouvements. Les paupières se forment.",
+    momTips:
+      "Première échographie possible. Parlez à votre médecin de vos médicaments habituels.",
     trimester: 1,
-    weeklyTip: "Évitez tout médicament sans avis médical. Même l'ibuprofène est contre-indiqué ; préférez le paracétamol si nécessaire.",
-    weeklySymptoms: ["Fatigue intense", "Nausées persistantes", "Envies et aversions alimentaires"],
+    weeklyTip:
+      "Évitez tout médicament sans avis médical. Même l'ibuprofène est contre-indiqué ; préférez le paracétamol si nécessaire.",
+    weeklySymptoms: [
+      "Fatigue intense",
+      "Nausées persistantes",
+      "Envies et aversions alimentaires",
+    ],
     weeklyMilestone: "Première échographie possible 🖤",
-    testimonials: ["Premier écho prévu la semaine prochaine, j'ai tellement hâte d'entendre son cœur ❤️", "Je mange des choses bizarres à 3h du matin, grossesse quand tu nous tiens 😂"],
+    testimonials: [
+      "Premier écho prévu la semaine prochaine, j'ai tellement hâte d'entendre son cœur ❤️",
+      "Je mange des choses bizarres à 3h du matin, grossesse quand tu nous tiens 😂",
+    ],
   },
   {
     week: 9,
@@ -197,12 +283,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍒",
     funComparison: "une olive de table",
     funComparisonEmoji: "🫒",
-    babyDevelopment: "Le bébé ressemble maintenant à un petit humain. Les muscles faciaux se développent. Les dents commencent à se former sous les gencives.",
-    momTips: "La fatigue est normale au premier trimestre. Dormez autant que possible et acceptez l'aide de vos proches.",
+    babyDevelopment:
+      "Le bébé ressemble maintenant à un petit humain. Les muscles faciaux se développent. Les dents commencent à se former sous les gencives.",
+    momTips:
+      "La fatigue est normale au premier trimestre. Dormez autant que possible et acceptez l'aide de vos proches.",
     trimester: 1,
-    weeklyTip: "Consultez un dentiste si besoin : les hormones fragilisent les gencives. La santé dentaire est liée à la santé de bébé.",
-    weeklySymptoms: ["Fatigue extrême", "Gencives sensibles", "Pertes blanches légères"],
-    testimonials: ["Mes gencives saignent quand je me brosse les dents, RDV chez le dentiste pris 🦷", "Je pleure pour une pub de papier toilette, les hormones sont en folie 😂"],
+    weeklyTip:
+      "Consultez un dentiste si besoin : les hormones fragilisent les gencives. La santé dentaire est liée à la santé de bébé.",
+    weeklySymptoms: [
+      "Fatigue extrême",
+      "Gencives sensibles",
+      "Pertes blanches légères",
+    ],
+    testimonials: [
+      "Mes gencives saignent quand je me brosse les dents, RDV chez le dentiste pris 🦷",
+      "Je pleure pour une pub de papier toilette, les hormones sont en folie 😂",
+    ],
   },
   {
     week: 10,
@@ -212,12 +308,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🟠",
     funComparison: "une pile AA",
     funComparisonEmoji: "🔋",
-    babyDevelopment: "Le bébé commence à bouger librement dans le liquide amniotique. Tous les organes sont formés. Les ongles apparaissent.",
-    momTips: "Votre ventre commence à s'arrondir. Profitez du 2ème trimestre qui approche pour vous sentir mieux.",
+    babyDevelopment:
+      "Le bébé commence à bouger librement dans le liquide amniotique. Tous les organes sont formés. Les ongles apparaissent.",
+    momTips:
+      "Votre ventre commence à s'arrondir. Profitez du 2ème trimestre qui approche pour vous sentir mieux.",
     trimester: 1,
-    weeklyTip: "Intégrez des protéines à chaque repas : œufs, légumineuses, viande maigre. Elles sont essentielles à la croissance de bébé.",
-    weeklySymptoms: ["Nausées qui s'atténuent", "Légère prise de poids", "Moins de fatigue"],
-    testimonials: ["Les nausées s'apaisent enfin, je recommence à aimer la vie 🌈", "J'ai enfin retrouvé de l'appétit, je rattrape les semaines perdues 🍽️"],
+    weeklyTip:
+      "Intégrez des protéines à chaque repas : œufs, légumineuses, viande maigre. Elles sont essentielles à la croissance de bébé.",
+    weeklySymptoms: [
+      "Nausées qui s'atténuent",
+      "Légère prise de poids",
+      "Moins de fatigue",
+    ],
+    testimonials: [
+      "Les nausées s'apaisent enfin, je recommence à aimer la vie 🌈",
+      "J'ai enfin retrouvé de l'appétit, je rattrape les semaines perdues 🍽️",
+    ],
   },
   {
     week: 11,
@@ -227,13 +333,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🟤",
     funComparison: "un bouchon de liège",
     funComparisonEmoji: "🍷",
-    babyDevelopment: "Les dents de lait se forment. Le bébé peut sucer son pouce. Son corps se redresse et il commence à ressembler à un bébé.",
-    momTips: "La dépistage de la trisomie 21 (clarté nucale + prise de sang) se fait entre 11 et 13 semaines.",
+    babyDevelopment:
+      "Les dents de lait se forment. Le bébé peut sucer son pouce. Son corps se redresse et il commence à ressembler à un bébé.",
+    momTips:
+      "La dépistage de la trisomie 21 (clarté nucale + prise de sang) se fait entre 11 et 13 semaines.",
     trimester: 1,
-    weeklyTip: "Bientôt le dépistage du 1er trimestre ! Assurez-vous d'avoir un rendez-vous pour la clarté nucale entre SA 11 et SA 13+6.",
-    weeklySymptoms: ["Nausées en diminution", "Constipation", "Légères douleurs ligamentaires"],
+    weeklyTip:
+      "Bientôt le dépistage du 1er trimestre ! Assurez-vous d'avoir un rendez-vous pour la clarté nucale entre SA 11 et SA 13+6.",
+    weeklySymptoms: [
+      "Nausées en diminution",
+      "Constipation",
+      "Légères douleurs ligamentaires",
+    ],
     weeklyMilestone: "Dépistage T1 à programmer 🩺",
-    testimonials: ["Clarté nucale ce matin, tout va bien ! Je respire enfin 🙏", "Bébé ressemble vraiment à un bébé sur l'écho, c'est magique ✨"],
+    testimonials: [
+      "Clarté nucale ce matin, tout va bien ! Je respire enfin 🙏",
+      "Bébé ressemble vraiment à un bébé sur l'écho, c'est magique ✨",
+    ],
   },
   {
     week: 12,
@@ -243,13 +359,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍏",
     funComparison: "une balle de golf",
     funComparisonEmoji: "⛳",
-    babyDevelopment: "Les réflexes apparaissent. Le bébé peut ouvrir et fermer les poings. Son sexe commence à se différencier.",
-    momTips: "Fin du premier trimestre ! Le risque de fausse couche diminue considérablement. Vous pouvez annoncer votre grossesse.",
+    babyDevelopment:
+      "Les réflexes apparaissent. Le bébé peut ouvrir et fermer les poings. Son sexe commence à se différencier.",
+    momTips:
+      "Fin du premier trimestre ! Le risque de fausse couche diminue considérablement. Vous pouvez annoncer votre grossesse.",
     trimester: 1,
-    weeklyTip: "Fin du 1er trimestre ! Vous pouvez commencer à masser votre ventre avec de l'huile de calendula pour prévenir les vergetures.",
-    weeklySymptoms: ["Nausées qui s'atténuent", "Seins moins douloureux", "Légère rondeur abdominale"],
+    weeklyTip:
+      "Fin du 1er trimestre ! Vous pouvez commencer à masser votre ventre avec de l'huile de calendula pour prévenir les vergetures.",
+    weeklySymptoms: [
+      "Nausées qui s'atténuent",
+      "Seins moins douloureux",
+      "Légère rondeur abdominale",
+    ],
     weeklyMilestone: "Fin du 1er trimestre ! 🎊",
-    testimonials: ["Le risque de fausse couche diminue, je commence enfin à y croire vraiment 🙏", "On a annoncé la nouvelle aux grands-parents, leurs visages... inoubliable 😭❤️"],
+    testimonials: [
+      "Le risque de fausse couche diminue, je commence enfin à y croire vraiment 🙏",
+      "On a annoncé la nouvelle aux grands-parents, leurs visages... inoubliable 😭❤️",
+    ],
   },
   {
     week: 13,
@@ -259,13 +385,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🫛",
     funComparison: "un oeuf de poule",
     funComparisonEmoji: "🥚",
-    babyDevelopment: "Le bébé développe ses empreintes digitales uniques. Son intestin se forme. Les os commencent à se durcir.",
-    momTips: "Bienvenue au 2ème trimestre ! L'énergie revient souvent. Profitez-en pour faire de l'exercice doux.",
+    babyDevelopment:
+      "Le bébé développe ses empreintes digitales uniques. Son intestin se forme. Les os commencent à se durcir.",
+    momTips:
+      "Bienvenue au 2ème trimestre ! L'énergie revient souvent. Profitez-en pour faire de l'exercice doux.",
     trimester: 2,
-    weeklyTip: "Bienvenue au 2ème trimestre ! Augmentez votre apport en fer avec des épinards, lentilles et viande rouge maigre.",
-    weeklySymptoms: ["Regain d'énergie", "Appétit qui revient", "Légère congestion nasale"],
+    weeklyTip:
+      "Bienvenue au 2ème trimestre ! Augmentez votre apport en fer avec des épinards, lentilles et viande rouge maigre.",
+    weeklySymptoms: [
+      "Regain d'énergie",
+      "Appétit qui revient",
+      "Légère congestion nasale",
+    ],
     weeklyMilestone: "Entrée dans le 2ème trimestre 🌸",
-    testimonials: ["Bienvenue au 2ème trimestre ! Je me sens revivre 💪✨", "J'ai repris le sport doux, c'est fou comme ça fait du bien 🧘‍♀️"],
+    testimonials: [
+      "Bienvenue au 2ème trimestre ! Je me sens revivre 💪✨",
+      "J'ai repris le sport doux, c'est fou comme ça fait du bien 🧘‍♀️",
+    ],
   },
   {
     week: 14,
@@ -275,12 +411,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍋",
     funComparison: "un macaron",
     funComparisonEmoji: "🧁",
-    babyDevelopment: "Le bébé commence à faire des grimaces. Ses sourcils et ses cils poussent. Il peut avaler du liquide amniotique.",
-    momTips: "Le risque de nausées diminue. Profitez de cet élan d'énergie pour préparer la chambre de bébé.",
+    babyDevelopment:
+      "Le bébé commence à faire des grimaces. Ses sourcils et ses cils poussent. Il peut avaler du liquide amniotique.",
+    momTips:
+      "Le risque de nausées diminue. Profitez de cet élan d'énergie pour préparer la chambre de bébé.",
     trimester: 2,
-    weeklyTip: "Consommez du calcium quotidiennement : 3-4 portions de produits laitiers ou équivalents végétaux (amandes, tofu, brocolis).",
-    weeklySymptoms: ["Énergie retrouvée", "Appétit augmenté", "Ventre qui s'arrondit"],
-    testimonials: ["Mon ventre commence à se voir, je peux enfin porter mes robes de grossesse 👗", "Première séance de yoga prénatal, j'ai adoré me reconnecter à bébé 🕉️"],
+    weeklyTip:
+      "Consommez du calcium quotidiennement : 3-4 portions de produits laitiers ou équivalents végétaux (amandes, tofu, brocolis).",
+    weeklySymptoms: [
+      "Énergie retrouvée",
+      "Appétit augmenté",
+      "Ventre qui s'arrondit",
+    ],
+    testimonials: [
+      "Mon ventre commence à se voir, je peux enfin porter mes robes de grossesse 👗",
+      "Première séance de yoga prénatal, j'ai adoré me reconnecter à bébé 🕉️",
+    ],
   },
   {
     week: 15,
@@ -290,12 +436,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍊",
     funComparison: "une balle de tennis",
     funComparisonEmoji: "🎾",
-    babyDevelopment: "Le bébé peut former des expressions faciales. Il s'agite beaucoup mais vous ne le sentez pas encore. Ses os deviennent plus solides.",
-    momTips: "Vous pouvez reprendre une activité sportive douce. La natation et le yoga prénatal sont idéaux.",
+    babyDevelopment:
+      "Le bébé peut former des expressions faciales. Il s'agite beaucoup mais vous ne le sentez pas encore. Ses os deviennent plus solides.",
+    momTips:
+      "Vous pouvez reprendre une activité sportive douce. La natation et le yoga prénatal sont idéaux.",
     trimester: 2,
-    weeklyTip: "La marche 30 min/jour est idéale à ce stade. Elle améliore la circulation, réduit les œdèmes et prépare votre corps à l'accouchement.",
-    weeklySymptoms: ["Ventre visible", "Fourmillements dans les mains", "Légers maux de dos"],
-    testimonials: ["J'ai annoncé la grossesse au boulot, tout le monde est aux petits soins 🥰", "On va bientôt connaître le sexe, on a choisi de ne pas savoir... enfin on hésite 😅"],
+    weeklyTip:
+      "La marche 30 min/jour est idéale à ce stade. Elle améliore la circulation, réduit les œdèmes et prépare votre corps à l'accouchement.",
+    weeklySymptoms: [
+      "Ventre visible",
+      "Fourmillements dans les mains",
+      "Légers maux de dos",
+    ],
+    testimonials: [
+      "J'ai annoncé la grossesse au boulot, tout le monde est aux petits soins 🥰",
+      "On va bientôt connaître le sexe, on a choisi de ne pas savoir... enfin on hésite 😅",
+    ],
   },
   {
     week: 16,
@@ -305,13 +461,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🥑",
     funComparison: "un iPhone",
     funComparisonEmoji: "📱",
-    babyDevelopment: "Le bébé peut entendre vos sons cardiaques et votre voix. Ses mouvements deviennent coordonnés. Le système circulatoire fonctionne bien.",
-    momTips: "Parlez et chantez à votre bébé - il peut vous entendre ! Débutez la lecture ou la musique douce.",
+    babyDevelopment:
+      "Le bébé peut entendre vos sons cardiaques et votre voix. Ses mouvements deviennent coordonnés. Le système circulatoire fonctionne bien.",
+    momTips:
+      "Parlez et chantez à votre bébé - il peut vous entendre ! Débutez la lecture ou la musique douce.",
     trimester: 2,
-    weeklyTip: "Bébé entend ! Parlez-lui, lisez-lui des histoires, mettez de la musique douce. Votre voix le rassure déjà.",
-    weeklySymptoms: ["Rondeurs de grossesse visibles", "Légères douleurs ligamentaires", "Peau plus lumineuse"],
+    weeklyTip:
+      "Bébé entend ! Parlez-lui, lisez-lui des histoires, mettez de la musique douce. Votre voix le rassure déjà.",
+    weeklySymptoms: [
+      "Rondeurs de grossesse visibles",
+      "Légères douleurs ligamentaires",
+      "Peau plus lumineuse",
+    ],
     weeklyMilestone: "Bébé vous entend ! 👂",
-    testimonials: ["J'ai senti quelque chose comme des petites bulles... premiers mouvements ? 🤔💕", "Mon ventre commence à se voir, j'adore ! Je le caresse tout le temps 🥰"],
+    testimonials: [
+      "J'ai senti quelque chose comme des petites bulles... premiers mouvements ? 🤔💕",
+      "Mon ventre commence à se voir, j'adore ! Je le caresse tout le temps 🥰",
+    ],
   },
   {
     week: 17,
@@ -321,12 +487,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍐",
     funComparison: "une canette de soda",
     funComparisonEmoji: "🥫",
-    babyDevelopment: "Le bébé accumule de la graisse sous sa peau. Ses empreintes digitales sont définitives. Il peut faire des grimaces et cligner des yeux.",
-    momTips: "Les ronds de ligament (douleurs sur les côtés) sont normaux. Évitez les mouvements brusques.",
+    babyDevelopment:
+      "Le bébé accumule de la graisse sous sa peau. Ses empreintes digitales sont définitives. Il peut faire des grimaces et cligner des yeux.",
+    momTips:
+      "Les ronds de ligament (douleurs sur les côtés) sont normaux. Évitez les mouvements brusques.",
     trimester: 2,
-    weeklyTip: "Les douleurs ligamentaires sont normales. Le yoga prénatal et les étirements doux soulagent considérablement ces tensions.",
-    weeklySymptoms: ["Douleurs ligamentaires", "Léger gain de poids", "Nez bouché"],
-    testimonials: ["Douleurs dans le bas du ventre quand je me lève trop vite, c'est les ligaments qui travaillent 😣", "J'ai fait mes premiers achats bébé, je craque sur tous les petits pyjamas 🥺"],
+    weeklyTip:
+      "Les douleurs ligamentaires sont normales. Le yoga prénatal et les étirements doux soulagent considérablement ces tensions.",
+    weeklySymptoms: [
+      "Douleurs ligamentaires",
+      "Léger gain de poids",
+      "Nez bouché",
+    ],
+    testimonials: [
+      "Douleurs dans le bas du ventre quand je me lève trop vite, c'est les ligaments qui travaillent 😣",
+      "J'ai fait mes premiers achats bébé, je craque sur tous les petits pyjamas 🥺",
+    ],
   },
   {
     week: 18,
@@ -336,13 +512,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🫑",
     funComparison: "une manette de jeu",
     funComparisonEmoji: "🎮",
-    babyDevelopment: "Les os de l'oreille interne sont développés. Le bébé peut entendre des sons externes. Il grimace et fait des mimiques.",
-    momTips: "Deuxième échographie morphologique à prévoir entre 20 et 24 semaines. Pensez à prendre rendez-vous.",
+    babyDevelopment:
+      "Les os de l'oreille interne sont développés. Le bébé peut entendre des sons externes. Il grimace et fait des mimiques.",
+    momTips:
+      "Deuxième échographie morphologique à prévoir entre 20 et 24 semaines. Pensez à prendre rendez-vous.",
     trimester: 2,
-    weeklyTip: "Augmentez votre apport en oméga-3 avec du saumon, des sardines ou des noix. Ils sont essentiels au développement cérébral de bébé.",
-    weeklySymptoms: ["Premiers mouvements perceptibles", "Douleurs dans le bas du dos", "Constipation"],
+    weeklyTip:
+      "Augmentez votre apport en oméga-3 avec du saumon, des sardines ou des noix. Ils sont essentiels au développement cérébral de bébé.",
+    weeklySymptoms: [
+      "Premiers mouvements perceptibles",
+      "Douleurs dans le bas du dos",
+      "Constipation",
+    ],
     weeklyMilestone: "Les premiers coups de pied approchent ! 🥊",
-    testimonials: ["On a pris RDV pour l'écho morpho, je suis excitée et nerveuse à la fois 🤰", "Pour la première fois j'ai senti bébé bouger, comme un petit papillon 🦋"],
+    testimonials: [
+      "On a pris RDV pour l'écho morpho, je suis excitée et nerveuse à la fois 🤰",
+      "Pour la première fois j'ai senti bébé bouger, comme un petit papillon 🦋",
+    ],
   },
   {
     week: 19,
@@ -352,12 +538,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🥭",
     funComparison: "un livre de poche",
     funComparisonEmoji: "📖",
-    babyDevelopment: "Le vernix caseosa protège la peau du bébé. Son cerveau se développe massivement. Les reins produisent de l'urine.",
-    momTips: "Vous pourriez sentir les premiers mouvements du bébé (papillonnements). C'est une sensation unique !",
+    babyDevelopment:
+      "Le vernix caseosa protège la peau du bébé. Son cerveau se développe massivement. Les reins produisent de l'urine.",
+    momTips:
+      "Vous pourriez sentir les premiers mouvements du bébé (papillonnements). C'est une sensation unique !",
     trimester: 2,
-    weeklyTip: "Sentez les premiers papillonnements ? Notez chaque jour les mouvements de bébé – cela vous aidera à connaître son rythme.",
-    weeklySymptoms: ["Premiers mouvements (papillonnements)", "Vertige léger", "Gonflement des pieds"],
-    testimonials: ["Les papillonnements sont confirmés, c'est bien bébé qui bouge ! Magique 💞", "Mon chéri pose sa main sur mon ventre tous les soirs en espérant sentir quelque chose 🤍"],
+    weeklyTip:
+      "Sentez les premiers papillonnements ? Notez chaque jour les mouvements de bébé – cela vous aidera à connaître son rythme.",
+    weeklySymptoms: [
+      "Premiers mouvements (papillonnements)",
+      "Vertige léger",
+      "Gonflement des pieds",
+    ],
+    testimonials: [
+      "Les papillonnements sont confirmés, c'est bien bébé qui bouge ! Magique 💞",
+      "Mon chéri pose sa main sur mon ventre tous les soirs en espérant sentir quelque chose 🤍",
+    ],
   },
   {
     week: 20,
@@ -367,13 +563,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍌",
     funComparison: "une bouteille d'eau 33cl",
     funComparisonEmoji: "🧴",
-    babyDevelopment: "Mi-grossesse ! Le bébé avale, digère et urine. Ses sens s'affinent. Ses sourcils et ses cils sont bien formés.",
-    momTips: "Félicitations, vous êtes à mi-parcours ! L'échographie morphologique est très importante. Profitez de ce moment.",
+    babyDevelopment:
+      "Mi-grossesse ! Le bébé avale, digère et urine. Ses sens s'affinent. Ses sourcils et ses cils sont bien formés.",
+    momTips:
+      "Félicitations, vous êtes à mi-parcours ! L'échographie morphologique est très importante. Profitez de ce moment.",
     trimester: 2,
-    weeklyTip: "Mi-parcours ! L'échographie morphologique va tout vérifier. C'est normal d'être émue – profitez pleinement de ce moment.",
-    weeklySymptoms: ["Ventre bien arrondi", "Essoufflement léger", "Brûlures d'estomac"],
+    weeklyTip:
+      "Mi-parcours ! L'échographie morphologique va tout vérifier. C'est normal d'être émue – profitez pleinement de ce moment.",
+    weeklySymptoms: [
+      "Ventre bien arrondi",
+      "Essoufflement léger",
+      "Brûlures d'estomac",
+    ],
     weeklyMilestone: "Mi-grossesse ! Échographie morphologique 🔬",
-    testimonials: ["L'écho morphologique est passé, tout va bien ! On a vu son petit visage 👶✨", "À mi-chemin ! Je n'arrive pas à croire qu'on en est déjà là 🎉"],
+    testimonials: [
+      "L'écho morphologique est passé, tout va bien ! On a vu son petit visage 👶✨",
+      "À mi-chemin ! Je n'arrive pas à croire qu'on en est déjà là 🎉",
+    ],
   },
   {
     week: 21,
@@ -383,12 +589,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🥕",
     funComparison: "une chaussure de bébé",
     funComparisonEmoji: "👟",
-    babyDevelopment: "Le bébé goûte le liquide amniotique. Ses doigts et orteils sont bien formés avec des ongles. Il dort et se réveille régulièrement.",
-    momTips: "Dormez sur le côté gauche pour une meilleure circulation. Utilisez un coussin de grossesse pour le confort.",
+    babyDevelopment:
+      "Le bébé goûte le liquide amniotique. Ses doigts et orteils sont bien formés avec des ongles. Il dort et se réveille régulièrement.",
+    momTips:
+      "Dormez sur le côté gauche pour une meilleure circulation. Utilisez un coussin de grossesse pour le confort.",
     trimester: 2,
-    weeklyTip: "Dormez sur le côté gauche : cela améliore la circulation vers bébé et réduit les gonflements. Un coussin de grossesse est votre meilleure amie !",
-    weeklySymptoms: ["Mouvements foetaux fréquents", "Reflux gastriques", "Chevilles gonflées"],
-    testimonials: ["Bébé a son rythme, il bouge surtout la nuit quand je veux dormir 😴", "On a commencé à préparer la chambre, peinture choisie, c'est vrai là 🎨"],
+    weeklyTip:
+      "Dormez sur le côté gauche : cela améliore la circulation vers bébé et réduit les gonflements. Un coussin de grossesse est votre meilleure amie !",
+    weeklySymptoms: [
+      "Mouvements foetaux fréquents",
+      "Reflux gastriques",
+      "Chevilles gonflées",
+    ],
+    testimonials: [
+      "Bébé a son rythme, il bouge surtout la nuit quand je veux dormir 😴",
+      "On a commencé à préparer la chambre, peinture choisie, c'est vrai là 🎨",
+    ],
   },
   {
     week: 22,
@@ -398,12 +614,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🌽",
     funComparison: "une trousse d'école",
     funComparisonEmoji: "✏️",
-    babyDevelopment: "Le bébé réagit aux sons forts. Ses lèvres et ses sourcils sont bien définis. Il a des cycles de sommeil de 12 à 14 heures.",
-    momTips: "Des crampes aux jambes ? Étirez vos mollets, hydratez-vous et augmentez votre apport en magnésium.",
+    babyDevelopment:
+      "Le bébé réagit aux sons forts. Ses lèvres et ses sourcils sont bien définis. Il a des cycles de sommeil de 12 à 14 heures.",
+    momTips:
+      "Des crampes aux jambes ? Étirez vos mollets, hydratez-vous et augmentez votre apport en magnésium.",
     trimester: 2,
-    weeklyTip: "Les crampes nocturnes ? Le magnésium (amandes, chocolat noir, bananes) peut aider. Parlez-en à votre sage-femme.",
-    weeklySymptoms: ["Crampes nocturnes", "Douleurs pelviennes", "Varices légères"],
-    testimonials: ["Crampes dans les mollets à 3h du matin, je me lève d'un bond ! 😩", "Bas de contention enfilés tous les jours, adieu les varices 💪"],
+    weeklyTip:
+      "Les crampes nocturnes ? Le magnésium (amandes, chocolat noir, bananes) peut aider. Parlez-en à votre sage-femme.",
+    weeklySymptoms: [
+      "Crampes nocturnes",
+      "Douleurs pelviennes",
+      "Varices légères",
+    ],
+    testimonials: [
+      "Crampes dans les mollets à 3h du matin, je me lève d'un bond ! 😩",
+      "Bas de contention enfilés tous les jours, adieu les varices 💪",
+    ],
   },
   {
     week: 23,
@@ -413,12 +639,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍊",
     funComparison: "un ballon de handball",
     funComparisonEmoji: "🤾",
-    babyDevelopment: "Le bébé pèse maintenant plus de 500g. Ses poumons se préparent à respirer. Il peut percevoir la lumière à travers la paroi abdominale.",
-    momTips: "Votre ventre grossit vite. Hydratez votre peau pour éviter les vergetures. Les massages à l'huile sont agréables.",
+    babyDevelopment:
+      "Le bébé pèse maintenant plus de 500g. Ses poumons se préparent à respirer. Il peut percevoir la lumière à travers la paroi abdominale.",
+    momTips:
+      "Votre ventre grossit vite. Hydratez votre peau pour éviter les vergetures. Les massages à l'huile sont agréables.",
     trimester: 2,
-    weeklyTip: "Massez votre ventre avec de l'huile de rose musquée ou d'argan chaque soir – cela prévient les vergetures et renforce le lien avec bébé.",
-    weeklySymptoms: ["Vergetures possibles", "Insomnie légère", "Brûlures d'estomac"],
-    testimonials: ["Je crème mon ventre 3 fois par jour, je croise les doigts pour les vergetures 🤞", "On ressent la lumière à travers mon ventre maintenant, j'ai testé avec une lampe 💡"],
+    weeklyTip:
+      "Massez votre ventre avec de l'huile de rose musquée ou d'argan chaque soir – cela prévient les vergetures et renforce le lien avec bébé.",
+    weeklySymptoms: [
+      "Vergetures possibles",
+      "Insomnie légère",
+      "Brûlures d'estomac",
+    ],
+    testimonials: [
+      "Je crème mon ventre 3 fois par jour, je croise les doigts pour les vergetures 🤞",
+      "On ressent la lumière à travers mon ventre maintenant, j'ai testé avec une lampe 💡",
+    ],
   },
   {
     week: 24,
@@ -428,13 +664,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🟡",
     funComparison: "un paquet de chips",
     funComparisonEmoji: "🍿",
-    babyDevelopment: "La viabilité foetale est atteinte. Le bébé pèse environ 600g. Il peut survivre avec une aide médicale intensive s'il naît maintenant.",
-    momTips: "Parlez du congé maternité avec votre employeur. Commencez à penser à la préparation à la naissance.",
+    babyDevelopment:
+      "La viabilité foetale est atteinte. Le bébé pèse environ 600g. Il peut survivre avec une aide médicale intensive s'il naît maintenant.",
+    momTips:
+      "Parlez du congé maternité avec votre employeur. Commencez à penser à la préparation à la naissance.",
     trimester: 2,
-    weeklyTip: "Inscrivez-vous aux cours de préparation à la naissance (haptonomioe, yoga prénatal, sophrologie). Les places partent vite !",
-    weeklySymptoms: ["Fond utérin à hauteur du nombril", "Gêne respiratoire légère", "Troubles du sommeil"],
+    weeklyTip:
+      "Inscrivez-vous aux cours de préparation à la naissance (haptonomioe, yoga prénatal, sophrologie). Les places partent vite !",
+    weeklySymptoms: [
+      "Fond utérin à hauteur du nombril",
+      "Gêne respiratoire légère",
+      "Troubles du sommeil",
+    ],
     weeklyMilestone: "Seuil de viabilité foetale atteint 💪",
-    testimonials: ["Les coups de pied sont de plus en plus forts, papa peut les sentir maintenant ! 🥹", "Mon ventre a doublé en 2 semaines on dirait... je roule plutôt que je marche 😂"],
+    testimonials: [
+      "Les coups de pied sont de plus en plus forts, papa peut les sentir maintenant ! 🥹",
+      "Mon ventre a doublé en 2 semaines on dirait... je roule plutôt que je marche 😂",
+    ],
   },
   {
     week: 25,
@@ -444,15 +690,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🥔",
     funComparison: "une bouteille de shampoing",
     funComparisonEmoji: "🧴",
-    babyDevelopment: "Les mains sont pleinement développées. Le bébé répond à la lumière. Sa peau devient moins translucide.",
-    momTips: "Commencez à penser à l'allaitement. Consultez une consultante en lactation si nécessaire.",
+    babyDevelopment:
+      "Les mains sont pleinement développées. Le bébé répond à la lumière. Sa peau devient moins translucide.",
+    momTips:
+      "Commencez à penser à l'allaitement. Consultez une consultante en lactation si nécessaire.",
     trimester: 2,
     testimonials: [
       "Semaine 25 et babé gigote comme un poisson ! Les nuits sont animées mais je kiffe chaque mouvement 😊 — Yasmine, 30 ans",
-      "J'ai commencé les cours de hapto cette semaine, mon mari adore. Babé répond quand on lui parle ! — Sophie, maman de Jules"
+      "J'ai commencé les cours de hapto cette semaine, mon mari adore. Babé répond quand on lui parle ! — Sophie, maman de Jules",
     ],
-    weeklyTip: "Testez de dépistage du diabète gestationnel (HGPO) prévu vers 24-28 semaines. Ne sautez pas cette analyse importante.",
-    weeklySymptoms: ["Mouvements fréquents et forts", "Gonflements des mains", "Fatigue après effort"],
+    weeklyTip:
+      "Testez de dépistage du diabète gestationnel (HGPO) prévu vers 24-28 semaines. Ne sautez pas cette analyse importante.",
+    weeklySymptoms: [
+      "Mouvements fréquents et forts",
+      "Gonflements des mains",
+      "Fatigue après effort",
+    ],
   },
   {
     week: 26,
@@ -462,13 +715,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🥬",
     funComparison: "une baguette de pain",
     funComparisonEmoji: "🥖",
-    babyDevelopment: "Les yeux s'ouvrent pour la première fois. Le bébé peut cligner des yeux. Le cerveau connaît une croissance rapide.",
-    momTips: "Reposez-vous quand vous pouvez. Les crampes nocturnes sont fréquentes - étirez vos mollets avant de dormir.",
+    babyDevelopment:
+      "Les yeux s'ouvrent pour la première fois. Le bébé peut cligner des yeux. Le cerveau connaît une croissance rapide.",
+    momTips:
+      "Reposez-vous quand vous pouvez. Les crampes nocturnes sont fréquentes - étirez vos mollets avant de dormir.",
     trimester: 2,
-    weeklyTip: "Les yeux de bébé s'ouvrent ! Éclairez doucement votre ventre avec une lampe de poche – bébé peut réagir à la lumière.",
-    weeklySymptoms: ["Crampes dans les jambes", "Fourmillements (syndrome du canal carpien)", "Prise de poids régulière"],
+    weeklyTip:
+      "Les yeux de bébé s'ouvrent ! Éclairez doucement votre ventre avec une lampe de poche – bébé peut réagir à la lumière.",
+    weeklySymptoms: [
+      "Crampes dans les jambes",
+      "Fourmillements (syndrome du canal carpien)",
+      "Prise de poids régulière",
+    ],
     weeklyMilestone: "Bébé ouvre les yeux ! 👀",
-    testimonials: ["Bébé ouvre les yeux, je lui parle tous les soirs en éclairant doucement mon ventre 💡💕", "Prénom choisi ! On le garde secret mais c'est décidé, on a hâte 🤫"],
+    testimonials: [
+      "Bébé ouvre les yeux, je lui parle tous les soirs en éclairant doucement mon ventre 💡💕",
+      "Prénom choisi ! On le garde secret mais c'est décidé, on a hâte 🤫",
+    ],
   },
   {
     week: 27,
@@ -478,12 +741,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🥦",
     funComparison: "un bouquet de fleurs",
     funComparisonEmoji: "💐",
-    babyDevelopment: "Le cerveau continue de se développer rapidement. Le bébé peut reconnaître votre voix. Les cycles de sommeil/éveil sont établis.",
-    momTips: "Dernier mois du 2ème trimestre. Préparez votre valise de maternité (vous avez encore le temps !)",
+    babyDevelopment:
+      "Le cerveau continue de se développer rapidement. Le bébé peut reconnaître votre voix. Les cycles de sommeil/éveil sont établis.",
+    momTips:
+      "Dernier mois du 2ème trimestre. Préparez votre valise de maternité (vous avez encore le temps !)",
     trimester: 2,
-    weeklyTip: "Bébé reconnaît votre voix ! Parlez-lui de votre journée, lisez-lui des histoires – c'est le début de votre relation.",
-    weeklySymptoms: ["Douleurs sciatiques", "Gêne abdominale", "Mouvements rythmiques (hoquet fœtal)"],
-    testimonials: ["Le hoquet de bébé c'est trop mignon, ça fait des petits 'poc poc' réguliers 🥹", "La sciatique me tue, je marche comme un pingouin mais je m'en fiche 🐧"],
+    weeklyTip:
+      "Bébé reconnaît votre voix ! Parlez-lui de votre journée, lisez-lui des histoires – c'est le début de votre relation.",
+    weeklySymptoms: [
+      "Douleurs sciatiques",
+      "Gêne abdominale",
+      "Mouvements rythmiques (hoquet fœtal)",
+    ],
+    testimonials: [
+      "Le hoquet de bébé c'est trop mignon, ça fait des petits 'poc poc' réguliers 🥹",
+      "La sciatique me tue, je marche comme un pingouin mais je m'en fiche 🐧",
+    ],
   },
   {
     week: 28,
@@ -493,12 +766,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍆",
     funComparison: "un coussin de voyage",
     funComparisonEmoji: "🛫",
-    babyDevelopment: "Le bébé peut rêver (phase REM). Les poumons sont presque matures. La peau se lisse grâce à la graisse sous-cutanée.",
-    momTips: "Bienvenue au 3ème trimestre ! Troisième échographie prévue. Commencez à compter les mouvements quotidiennement.",
+    babyDevelopment:
+      "Le bébé peut rêver (phase REM). Les poumons sont presque matures. La peau se lisse grâce à la graisse sous-cutanée.",
+    momTips:
+      "Bienvenue au 3ème trimestre ! Troisième échographie prévue. Commencez à compter les mouvements quotidiennement.",
     trimester: 3,
-    testimonials: ["3ème trimestre ! La ligne d'arrivée se dessine, courage à toutes 💪", "Les nuits se compliquent mais chaque coup de pied me rappelle pourquoi 👶❤️"],
-    weeklyTip: "Augmentez votre apport en vitamine D (soleil, poissons gras, œufs). Elle est essentielle pour les os de bébé en cette phase de croissance rapide.",
-    weeklySymptoms: ["Essoufflement plus marqué", "Contractions de Braxton-Hicks", "Insomnie"],
+    testimonials: [
+      "3ème trimestre ! La ligne d'arrivée se dessine, courage à toutes 💪",
+      "Les nuits se compliquent mais chaque coup de pied me rappelle pourquoi 👶❤️",
+    ],
+    weeklyTip:
+      "Augmentez votre apport en vitamine D (soleil, poissons gras, œufs). Elle est essentielle pour les os de bébé en cette phase de croissance rapide.",
+    weeklySymptoms: [
+      "Essoufflement plus marqué",
+      "Contractions de Braxton-Hicks",
+      "Insomnie",
+    ],
     weeklyMilestone: "Entrée dans le 3ème trimestre ! 🌟",
   },
   {
@@ -509,12 +792,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🎃",
     funComparison: "un ordinateur portable",
     funComparisonEmoji: "💻",
-    babyDevelopment: "Le bébé accumule de la graisse. Les muscles et les poumons mûrissent. Il peut saisir solidement si quelque chose touche sa main.",
-    momTips: "Vous pourriez avoir du mal à dormir. Utilisez des coussins pour trouver une position confortable.",
+    babyDevelopment:
+      "Le bébé accumule de la graisse. Les muscles et les poumons mûrissent. Il peut saisir solidement si quelque chose touche sa main.",
+    momTips:
+      "Vous pourriez avoir du mal à dormir. Utilisez des coussins pour trouver une position confortable.",
     trimester: 3,
-    weeklyTip: "Mangez de petits repas fréquents (5-6/jour) pour éviter les brûlures d'estomac. Évitez de vous allonger juste après manger.",
-    weeklySymptoms: ["Brûlures d'estomac intenses", "Dos douloureux", "Fatigue retour"],
-    testimonials: ["Les brûlures d'estomac sont terribles, je dors quasi assise maintenant 😩", "J'ai commandé mon coussin de grossesse, game changer pour les nuits 🛏️"],
+    weeklyTip:
+      "Mangez de petits repas fréquents (5-6/jour) pour éviter les brûlures d'estomac. Évitez de vous allonger juste après manger.",
+    weeklySymptoms: [
+      "Brûlures d'estomac intenses",
+      "Dos douloureux",
+      "Fatigue retour",
+    ],
+    testimonials: [
+      "Les brûlures d'estomac sont terribles, je dors quasi assise maintenant 😩",
+      "J'ai commandé mon coussin de grossesse, game changer pour les nuits 🛏️",
+    ],
   },
   {
     week: 30,
@@ -524,12 +817,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🥗",
     funComparison: "une peluche moyenne",
     funComparisonEmoji: "🧸",
-    babyDevelopment: "Le bébé produit des globules rouges. Son cerveau grandit vite avec des circonvolutions. Il a maintenant les yeux ouverts quand il est éveillé.",
-    momTips: "Le souffle court est fréquent car bébé appuie sur votre diaphragme. Prenez des pauses régulières.",
+    babyDevelopment:
+      "Le bébé produit des globules rouges. Son cerveau grandit vite avec des circonvolutions. Il a maintenant les yeux ouverts quand il est éveillé.",
+    momTips:
+      "Le souffle court est fréquent car bébé appuie sur votre diaphragme. Prenez des pauses régulières.",
     trimester: 3,
-    weeklyTip: "Commencez les exercices de Kegel : 3 séries de 10 contractions par jour pour renforcer le périnée et préparer l'accouchement.",
-    weeklySymptoms: ["Souffle court", "Fréquence urinaire élevée", "Douleurs pelviennes"],
-    testimonials: ["Je monte 2 marches et je suis essoufflée, bébé prend toute la place 🫁", "Le Kegel tous les jours, je me sens prête à tout affronter 💪"],
+    weeklyTip:
+      "Commencez les exercices de Kegel : 3 séries de 10 contractions par jour pour renforcer le périnée et préparer l'accouchement.",
+    weeklySymptoms: [
+      "Souffle court",
+      "Fréquence urinaire élevée",
+      "Douleurs pelviennes",
+    ],
+    testimonials: [
+      "Je monte 2 marches et je suis essoufflée, bébé prend toute la place 🫁",
+      "Le Kegel tous les jours, je me sens prête à tout affronter 💪",
+    ],
   },
   {
     week: 31,
@@ -539,12 +842,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🥥",
     funComparison: "un sac à dos d'enfant",
     funComparisonEmoji: "🎒",
-    babyDevelopment: "Les reins fonctionnent pleinement. Le bébé peut tourner la tête. Ses pupilles réagissent à la lumière et à l'obscurité.",
-    momTips: "Réfléchissez à votre plan de naissance. Visitez la maternité si ce n'est pas encore fait.",
+    babyDevelopment:
+      "Les reins fonctionnent pleinement. Le bébé peut tourner la tête. Ses pupilles réagissent à la lumière et à l'obscurité.",
+    momTips:
+      "Réfléchissez à votre plan de naissance. Visitez la maternité si ce n'est pas encore fait.",
     trimester: 3,
-    weeklyTip: "Rédigez votre plan de naissance : péridurale ou non, positions souhaitées, peau-à-peau, allaitement. Partagez-le avec l'équipe médicale.",
-    weeklySymptoms: ["Contractions de Braxton-Hicks plus fréquentes", "Lourdeur des jambes", "Œdèmes des chevilles"],
-    testimonials: ["Premières Braxton-Hicks, mon ventre devient tout dur, c'est perturbant 😳", "Plan de naissance en cours de rédaction, on a plein de questions pour la sage-femme 📋"],
+    weeklyTip:
+      "Rédigez votre plan de naissance : péridurale ou non, positions souhaitées, peau-à-peau, allaitement. Partagez-le avec l'équipe médicale.",
+    weeklySymptoms: [
+      "Contractions de Braxton-Hicks plus fréquentes",
+      "Lourdeur des jambes",
+      "Œdèmes des chevilles",
+    ],
+    testimonials: [
+      "Premières Braxton-Hicks, mon ventre devient tout dur, c'est perturbant 😳",
+      "Plan de naissance en cours de rédaction, on a plein de questions pour la sage-femme 📋",
+    ],
   },
   {
     week: 32,
@@ -554,13 +867,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "⚪",
     funComparison: "un ballon de basket",
     funComparisonEmoji: "🏀",
-    babyDevelopment: "Le bébé pratique la respiration. Ses ongles et cheveux continuent de pousser. Il se positionne souvent tête en bas.",
-    momTips: "Les contractions de Braxton-Hicks peuvent commencer. Ce sont des contractions d'entraînement, normales.",
+    babyDevelopment:
+      "Le bébé pratique la respiration. Ses ongles et cheveux continuent de pousser. Il se positionne souvent tête en bas.",
+    momTips:
+      "Les contractions de Braxton-Hicks peuvent commencer. Ce sont des contractions d'entraînement, normales.",
     trimester: 3,
-    weeklyTip: "Pratiquez la respiration abdominale et la relaxation pour gérer les contractions. La sophrologie ou l'hypnobirthing peuvent vraiment aider.",
-    weeklySymptoms: ["Contractions d'entraînement", "Difficulté à respirer profondément", "Mouvements de bébé très perceptibles"],
+    weeklyTip:
+      "Pratiquez la respiration abdominale et la relaxation pour gérer les contractions. La sophrologie ou l'hypnobirthing peuvent vraiment aider.",
+    weeklySymptoms: [
+      "Contractions d'entraînement",
+      "Difficulté à respirer profondément",
+      "Mouvements de bébé très perceptibles",
+    ],
     weeklyMilestone: "Bébé se met souvent en position tête en bas 👶",
-    testimonials: ["Le congé maternité commence dans 2 semaines, je compte les jours ! 🥳", "Le sac de maternité est prêt depuis une semaine, je suis peut-être un peu trop préparée 😅"],
+    testimonials: [
+      "Le congé maternité commence dans 2 semaines, je compte les jours ! 🥳",
+      "Le sac de maternité est prêt depuis une semaine, je suis peut-être un peu trop préparée 😅",
+    ],
   },
   {
     week: 33,
@@ -570,12 +893,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍍",
     funComparison: "un ananas entier",
     funComparisonEmoji: "🍍",
-    babyDevelopment: "Le crâne reste souple pour faciliter l'accouchement. Le bébé coordonne respiration, succion et déglutition.",
-    momTips: "Commencez à préparer votre valise de maternité si ce n'est pas encore fait. Notez les contractions.",
+    babyDevelopment:
+      "Le crâne reste souple pour faciliter l'accouchement. Le bébé coordonne respiration, succion et déglutition.",
+    momTips:
+      "Commencez à préparer votre valise de maternité si ce n'est pas encore fait. Notez les contractions.",
     trimester: 3,
-    weeklyTip: "Préparez votre valise de maternité ! Checklist : documents, vêtements confortables, affaires de bébé, snacks pour le travail.",
-    weeklySymptoms: ["Lourdeur abdominale", "Difficultés à dormir", "Brûlures d'estomac persistantes"],
-    testimonials: ["Valise de maternité en cours, je check et recheck la liste tous les jours 🎒", "Bébé est positionné tête en bas, soulagement énorme 🙏"],
+    weeklyTip:
+      "Préparez votre valise de maternité ! Checklist : documents, vêtements confortables, affaires de bébé, snacks pour le travail.",
+    weeklySymptoms: [
+      "Lourdeur abdominale",
+      "Difficultés à dormir",
+      "Brûlures d'estomac persistantes",
+    ],
+    testimonials: [
+      "Valise de maternité en cours, je check et recheck la liste tous les jours 🎒",
+      "Bébé est positionné tête en bas, soulagement énorme 🙏",
+    ],
   },
   {
     week: 34,
@@ -585,12 +918,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍈",
     funComparison: "un skateboard mini",
     funComparisonEmoji: "🛹",
-    babyDevelopment: "Le système nerveux central est presque mature. Le bébé reconnaît les voix familières. Sa peau est de moins en moins ridée.",
-    momTips: "Consultez votre sage-femme plus fréquemment. Apprenez les signes du travail prématuré.",
+    babyDevelopment:
+      "Le système nerveux central est presque mature. Le bébé reconnaît les voix familières. Sa peau est de moins en moins ridée.",
+    momTips:
+      "Consultez votre sage-femme plus fréquemment. Apprenez les signes du travail prématuré.",
     trimester: 3,
-    weeklyTip: "Connaissez les signes du travail : contractions régulières toutes les 5 min, perte des eaux, diminution des mouvements. N'hésitez pas à appeler la maternité.",
-    weeklySymptoms: ["Descente de bébé possible", "Pression pelvienne accrue", "Épuisement"],
-    testimonials: ["Mon ventre a descendu d'un coup, je respire mieux mais je cours aux toilettes 😅", "Dernier mois, je suis à la fois impatiente et angoissée, vivement le jour J 💛"],
+    weeklyTip:
+      "Connaissez les signes du travail : contractions régulières toutes les 5 min, perte des eaux, diminution des mouvements. N'hésitez pas à appeler la maternité.",
+    weeklySymptoms: [
+      "Descente de bébé possible",
+      "Pression pelvienne accrue",
+      "Épuisement",
+    ],
+    testimonials: [
+      "Mon ventre a descendu d'un coup, je respire mieux mais je cours aux toilettes 😅",
+      "Dernier mois, je suis à la fois impatiente et angoissée, vivement le jour J 💛",
+    ],
   },
   {
     week: 35,
@@ -600,12 +943,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍈",
     funComparison: "un coussin décoratif",
     funComparisonEmoji: "🛋️",
-    babyDevelopment: "Les reins sont pleinement développés. La plupart des bébés nés à 35 semaines se portent bien. La graisse sous-cutanée continue de s'accumuler.",
-    momTips: "Reposez-vous le plus possible. La fatigue est normale. Préparez-vous mentalement pour l'accouchement.",
+    babyDevelopment:
+      "Les reins sont pleinement développés. La plupart des bébés nés à 35 semaines se portent bien. La graisse sous-cutanée continue de s'accumuler.",
+    momTips:
+      "Reposez-vous le plus possible. La fatigue est normale. Préparez-vous mentalement pour l'accouchement.",
     trimester: 3,
-    weeklyTip: "Mangez des aliments riches en vitamine K (brocolis, choux, épinards) pour une bonne coagulation sanguine à l'accouchement.",
-    weeklySymptoms: ["Fréquence urinaire très élevée", "Douleurs pubis (SPD)", "Fatigue importante"],
-    testimonials: ["La douleur au pubis m'empêche presque de marcher, vivement la fin 😣", "Mon conjoint refait la déco de la chambre de bébé, effet nesting à deux 💕"],
+    weeklyTip:
+      "Mangez des aliments riches en vitamine K (brocolis, choux, épinards) pour une bonne coagulation sanguine à l'accouchement.",
+    weeklySymptoms: [
+      "Fréquence urinaire très élevée",
+      "Douleurs pubis (SPD)",
+      "Fatigue importante",
+    ],
+    testimonials: [
+      "La douleur au pubis m'empêche presque de marcher, vivement la fin 😣",
+      "Mon conjoint refait la déco de la chambre de bébé, effet nesting à deux 💕",
+    ],
   },
   {
     week: 36,
@@ -615,13 +968,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🟧",
     funComparison: "un sac de courses plein",
     funComparisonEmoji: "🛍️",
-    babyDevelopment: "Le bébé est considéré comme prématuré tardif. Il a la taille d'une papaye. Les poumons sont presque totalement matures.",
-    momTips: "Votre ventre peut descendre (engagement). La pression sur le diaphragme diminue mais sur la vessie augmente.",
+    babyDevelopment:
+      "Le bébé est considéré comme prématuré tardif. Il a la taille d'une papaye. Les poumons sont presque totalement matures.",
+    momTips:
+      "Votre ventre peut descendre (engagement). La pression sur le diaphragme diminue mais sur la vessie augmente.",
     trimester: 3,
-    weeklyTip: "Avec l'engagement de bébé, vous respirez mieux mais courez plus souvent aux toilettes. Profitez de ce soulagement !",
-    weeklySymptoms: ["Engagement de bébé (descente)", "Facilité à respirer", "Envies urinaires très fréquentes"],
+    weeklyTip:
+      "Avec l'engagement de bébé, vous respirez mieux mais courez plus souvent aux toilettes. Profitez de ce soulagement !",
+    weeklySymptoms: [
+      "Engagement de bébé (descente)",
+      "Facilité à respirer",
+      "Envies urinaires très fréquentes",
+    ],
     weeklyMilestone: "Bébé est en position d'engagement ! ⬇️",
-    testimonials: ["Chaque matin je me demande si c'est le jour J... l'attente est insupportable ! 😅", "J'ai des contractions de Braxton-Hicks toute la journée, mon corps se prépare 💪"],
+    testimonials: [
+      "Chaque matin je me demande si c'est le jour J... l'attente est insupportable ! 😅",
+      "J'ai des contractions de Braxton-Hicks toute la journée, mon corps se prépare 💪",
+    ],
   },
   {
     week: 37,
@@ -631,13 +994,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🌿",
     funComparison: "une guitare ukulélé",
     funComparisonEmoji: "🎸",
-    babyDevelopment: "Le bébé est considéré à terme précoce. Ses poumons sont matures. Il continue de prendre du poids.",
-    momTips: "Le bébé peut naître à tout moment maintenant. Finalisez votre valise. Connaissez les signes du travail.",
+    babyDevelopment:
+      "Le bébé est considéré à terme précoce. Ses poumons sont matures. Il continue de prendre du poids.",
+    momTips:
+      "Le bébé peut naître à tout moment maintenant. Finalisez votre valise. Connaissez les signes du travail.",
     trimester: 3,
-    weeklyTip: "Bébé est à terme précoce ! Finalisez tout : valise prête, trajet maternité répété, téléphones chargés, personnes prévenues.",
-    weeklySymptoms: ["Contractions irrégulières fréquentes", "Bouchon muqueux possible", "Pelvienne lourde"],
+    weeklyTip:
+      "Bébé est à terme précoce ! Finalisez tout : valise prête, trajet maternité répété, téléphones chargés, personnes prévenues.",
+    weeklySymptoms: [
+      "Contractions irrégulières fréquentes",
+      "Bouchon muqueux possible",
+      "Pelvienne lourde",
+    ],
     weeklyMilestone: "À terme précoce ! Bébé peut arriver 🏥",
-    testimonials: ["Je regarde mon téléphone toutes les 5 min, prête à partir à la maternité 📱", "Le bouchon muqueux est parti ce matin, ça peut être bientôt ! 😳"],
+    testimonials: [
+      "Je regarde mon téléphone toutes les 5 min, prête à partir à la maternité 📱",
+      "Le bouchon muqueux est parti ce matin, ça peut être bientôt ! 😳",
+    ],
   },
   {
     week: 38,
@@ -647,12 +1020,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🧅",
     funComparison: "un ballon de foot",
     funComparisonEmoji: "⚽",
-    babyDevelopment: "Le bébé est à terme. Il a perdu la plupart du vernix. Ses organes sont pleinement fonctionnels.",
-    momTips: "La date d'accouchement approche ! Restez active avec des promenades douces. Reposez-vous quand possible.",
+    babyDevelopment:
+      "Le bébé est à terme. Il a perdu la plupart du vernix. Ses organes sont pleinement fonctionnels.",
+    momTips:
+      "La date d'accouchement approche ! Restez active avec des promenades douces. Reposez-vous quand possible.",
     trimester: 3,
-    weeklyTip: "Continuez la marche douce, elle aide bébé à s'engager. Reposez-vous aussi : vous aurez besoin de toute votre énergie pour l'accouchement.",
-    weeklySymptoms: ["Bouchon muqueux possible", "Fausse route possible", "Anxiété avant accouchement"],
-    testimonials: ["Les médecins disent que tout est en place, plus qu'à attendre ! 🤞", "Je parle à mon ventre depuis des mois, j'ai hâte de voir son visage pour de vrai 😭💕"],
+    weeklyTip:
+      "Continuez la marche douce, elle aide bébé à s'engager. Reposez-vous aussi : vous aurez besoin de toute votre énergie pour l'accouchement.",
+    weeklySymptoms: [
+      "Bouchon muqueux possible",
+      "Fausse route possible",
+      "Anxiété avant accouchement",
+    ],
+    testimonials: [
+      "Les médecins disent que tout est en place, plus qu'à attendre ! 🤞",
+      "Je parle à mon ventre depuis des mois, j'ai hâte de voir son visage pour de vrai 😭💕",
+    ],
   },
   {
     week: 39,
@@ -662,13 +1045,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍉",
     funComparison: "un gros nounours",
     funComparisonEmoji: "🧸",
-    babyDevelopment: "Le bébé est pleinement à terme. Il continue de prendre du poids. Son cerveau continue de se développer même après la naissance.",
-    momTips: "Chaque jour compte pour la maturation du cerveau. Soyez attentive aux contractions régulières et à la perte des eaux.",
+    babyDevelopment:
+      "Le bébé est pleinement à terme. Il continue de prendre du poids. Son cerveau continue de se développer même après la naissance.",
+    momTips:
+      "Chaque jour compte pour la maturation du cerveau. Soyez attentive aux contractions régulières et à la perte des eaux.",
     trimester: 3,
-    weeklyTip: "Restez attentive à la perte des eaux (liquide clair et abondant) et aux contractions régulières toutes les 5 min. C'est LE signal !",
-    weeklySymptoms: ["Contractions régulières possibles", "Perte des eaux possible", "Nesting (envie de tout préparer)"],
+    weeklyTip:
+      "Restez attentive à la perte des eaux (liquide clair et abondant) et aux contractions régulières toutes les 5 min. C'est LE signal !",
+    weeklySymptoms: [
+      "Contractions régulières possibles",
+      "Perte des eaux possible",
+      "Nesting (envie de tout préparer)",
+    ],
     weeklyMilestone: "Bébé est prêt ! L'accouchement est imminent 🌅",
-    testimonials: ["Je range toute la maison à 2h du matin, effet nesting au max 🧹", "Chaque contraction je chronomètre, je suis devenue une machine à stats ⏱️"],
+    testimonials: [
+      "Je range toute la maison à 2h du matin, effet nesting au max 🧹",
+      "Chaque contraction je chronomètre, je suis devenue une machine à stats ⏱️",
+    ],
   },
   {
     week: 40,
@@ -678,13 +1071,23 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🧡",
     funComparison: "une valise cabine",
     funComparisonEmoji: "🧳",
-    babyDevelopment: "C'est la semaine prévue ! Le bébé est prêt à naître. Il pèse en moyenne 3,5 kg et mesure environ 51 cm.",
-    momTips: "C'est la date prévue d'accouchement. Soyez patiente si bébé n'est pas encore là - c'est normal jusqu'à 42 semaines.",
+    babyDevelopment:
+      "C'est la semaine prévue ! Le bébé est prêt à naître. Il pèse en moyenne 3,5 kg et mesure environ 51 cm.",
+    momTips:
+      "C'est la date prévue d'accouchement. Soyez patiente si bébé n'est pas encore là - c'est normal jusqu'à 42 semaines.",
     trimester: 3,
-    weeklyTip: "Soyez patiente si bébé n'est pas encore là : moins de 5% des bébés naissent à leur terme exact. Bébé choisit son moment !",
-    weeklySymptoms: ["Contractions régulières", "Pression pelvienne maximale", "Anxiété et excitation"],
+    weeklyTip:
+      "Soyez patiente si bébé n'est pas encore là : moins de 5% des bébés naissent à leur terme exact. Bébé choisit son moment !",
+    weeklySymptoms: [
+      "Contractions régulières",
+      "Pression pelvienne maximale",
+      "Anxiété et excitation",
+    ],
     weeklyMilestone: "Terme officiel ! Bébé arrive bientôt 🎉",
-    testimonials: ["Terme dépassé mais bébé n'est pas pressé... patience ! 🌸", "Mon gynéco dit que c'est pour bientôt, je suis prête !! 🎉👶"],
+    testimonials: [
+      "Terme dépassé mais bébé n'est pas pressé... patience ! 🌸",
+      "Mon gynéco dit que c'est pour bientôt, je suis prête !! 🎉👶",
+    ],
   },
   {
     week: 41,
@@ -694,12 +1097,22 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍉",
     funComparison: "un sac de voyage",
     funComparisonEmoji: "👜",
-    babyDevelopment: "Le bébé continue de prendre du poids. Le placenta commence à vieillir. Le liquide amniotique peut diminuer légèrement.",
-    momTips: "Votre médecin surveillera de près votre bébé. Un déclenchement peut être envisagé. Restez calme.",
+    babyDevelopment:
+      "Le bébé continue de prendre du poids. Le placenta commence à vieillir. Le liquide amniotique peut diminuer légèrement.",
+    momTips:
+      "Votre médecin surveillera de près votre bébé. Un déclenchement peut être envisagé. Restez calme.",
     trimester: 3,
-    weeklyTip: "Des rendez-vous de surveillance rapprochée sont prévus. Restez sereine – votre équipe médicale veille sur vous et bébé.",
-    weeklySymptoms: ["Surveillance médicale renforcée", "Anxiété de l'attente", "Contractions sporadiques"],
-    testimonials: ["Monitoring tous les 2 jours, bébé va bien mais il prend son temps 😤", "J'ai essayé tous les trucs de grand-mère : marche, ananas, curry... on verra bien 🍍"],
+    weeklyTip:
+      "Des rendez-vous de surveillance rapprochée sont prévus. Restez sereine – votre équipe médicale veille sur vous et bébé.",
+    weeklySymptoms: [
+      "Surveillance médicale renforcée",
+      "Anxiété de l'attente",
+      "Contractions sporadiques",
+    ],
+    testimonials: [
+      "Monitoring tous les 2 jours, bébé va bien mais il prend son temps 😤",
+      "J'ai essayé tous les trucs de grand-mère : marche, ananas, curry... on verra bien 🍍",
+    ],
   },
   {
     week: 42,
@@ -709,13 +1122,24 @@ export const pregnancyData: WeekData[] = [
     fruitEmoji: "🍉",
     funComparison: "une pastèque du marché",
     funComparisonEmoji: "🍉",
-    babyDevelopment: "Le bébé est post-terme. Un déclenchement du travail sera probablement recommandé. Bébé est prêt !",
-    momTips: "Vous êtes suivie de très près par l'équipe médicale. La naissance est imminente. Vous avez fait un travail incroyable !",
+    babyDevelopment:
+      "Le bébé est post-terme. Un déclenchement du travail sera probablement recommandé. Bébé est prêt !",
+    momTips:
+      "Vous êtes suivie de très près par l'équipe médicale. La naissance est imminente. Vous avez fait un travail incroyable !",
     trimester: 3,
-    weeklyTip: "Un déclenchement sera très probablement proposé. C'est une décision médicale sage pour le bien de bébé et de vous. Faites confiance à votre équipe.",
-    weeklySymptoms: ["Déclenchement probable", "Fatigue de fin de grossesse", "Impatience"],
-    weeklyMilestone: "La naissance est toute proche – vous avez été formidable ! 💪",
-    testimonials: ["Déclenchement demain matin, bébé arrive enfin ! 💖", "42 semaines, j'y suis presque, bientôt je tiendrai mon petit dans mes bras 🥹"],
+    weeklyTip:
+      "Un déclenchement sera très probablement proposé. C'est une décision médicale sage pour le bien de bébé et de vous. Faites confiance à votre équipe.",
+    weeklySymptoms: [
+      "Déclenchement probable",
+      "Fatigue de fin de grossesse",
+      "Impatience",
+    ],
+    weeklyMilestone:
+      "La naissance est toute proche – vous avez été formidable ! 💪",
+    testimonials: [
+      "Déclenchement demain matin, bébé arrive enfin ! 💖",
+      "42 semaines, j'y suis presque, bientôt je tiendrai mon petit dans mes bras 🥹",
+    ],
   },
 ];
 
@@ -724,23 +1148,25 @@ export function getWeekData(week: number): WeekData {
   return data ?? pregnancyData[39]; // default to week 40
 }
 
-export function getCurrentWeek(dueDate: Date): number {
-  const now = new Date();
-  const diffMs = dueDate.getTime() - now.getTime();
-  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  const weeksRemaining = Math.ceil(diffDays / 7);
-  const currentWeek = 40 - weeksRemaining;
-  return Math.max(1, Math.min(42, currentWeek));
+function daysUntilDue(dueDate: Date): number {
+  const due = parseCalendarDate(calendarDate(dueDate))!;
+  const today = parseCalendarDate(calendarDate())!;
+  return Math.round((due.getTime() - today.getTime()) / 86400000);
 }
 
-export function getCurrentWeekAndDays(dueDate: Date): { weeks: number; days: number } {
-  const now = new Date();
-  const diffMs = dueDate.getTime() - now.getTime();
-  const daysRemaining = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
-  const daysSinceLMP = Math.max(0, 280 - daysRemaining);
-  const weeks = Math.max(1, Math.min(42, Math.floor(daysSinceLMP / 7)));
-  const days = daysSinceLMP % 7;
-  return { weeks, days };
+export function getCurrentWeek(dueDate: Date): number {
+  return getCurrentWeekAndDays(dueDate).weeks;
+}
+
+export function getCurrentWeekAndDays(dueDate: Date): {
+  weeks: number;
+  days: number;
+} {
+  const daysSinceLMP = Math.max(0, 280 - daysUntilDue(dueDate));
+  return {
+    weeks: Math.max(1, Math.min(42, Math.floor(daysSinceLMP / 7))),
+    days: daysSinceLMP % 7,
+  };
 }
 
 /**
@@ -754,9 +1180,7 @@ export function trimesterFromWeek(week: number): 1 | 2 | 3 {
 }
 
 export function getDaysRemaining(dueDate: Date): number {
-  const now = new Date();
-  const diffMs = dueDate.getTime() - now.getTime();
-  return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  return Math.max(0, daysUntilDue(dueDate));
 }
 
 export function getProgressPercent(dueDate: Date): number {
@@ -783,7 +1207,10 @@ export function calculateDueDateFromConception(conceptionDate: Date): Date {
 /** Calculate due date from FIV transfer date.
  *  J3 embryo: +263 days  /  J5 blastocyst: +261 days
  */
-export function calculateDueDateFIV(transfertDate: Date, stade: "J3" | "J5"): Date {
+export function calculateDueDateFIV(
+  transfertDate: Date,
+  stade: "J3" | "J5",
+): Date {
   const result = new Date(transfertDate);
   const days = stade === "J3" ? 263 : 261;
   result.setDate(result.getDate() + days);

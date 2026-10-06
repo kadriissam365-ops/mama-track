@@ -2,7 +2,11 @@ import { saveMutation } from "@/lib/enfant/mutations";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { ModuleShell } from "@/components/enfant/ModuleShell";
-import { requireUserAndBaby, getUserUnits, getUserRole } from "@/lib/enfant/baby";
+import {
+  requireUserAndBaby,
+  getUserUnits,
+  getUserRole,
+} from "@/lib/enfant/baby";
 import {
   formatLength,
   formatWeight,
@@ -93,19 +97,24 @@ async function addMeasurement(formData: FormData) {
     20,
     70,
   );
-  const notes = String(formData.get("notes") ?? "").trim().slice(0, 500) || null;
+  const notes =
+    String(formData.get("notes") ?? "")
+      .trim()
+      .slice(0, 500) || null;
 
   if (weight_g === null && height_cm === null && head_cm === null) return;
 
-  await saveMutation(supabase.from("measurements").insert({
-    baby_id: baby.id,
-    user_id: user.id,
-    measured_at,
-    weight_g,
-    height_cm,
-    head_cm,
-    notes,
-  }));
+  await saveMutation(
+    supabase.from("measurements").insert({
+      baby_id: baby.id,
+      user_id: user.id,
+      measured_at,
+      weight_g,
+      height_cm,
+      head_cm,
+      notes,
+    }),
+  );
   revalidatePath("/enfant/growth");
 }
 
@@ -115,11 +124,9 @@ async function deleteMeasurement(formData: FormData) {
   if (!user) redirect("/auth/login");
   const id = String(formData.get("id") ?? "");
   if (!id) return;
-  await saveMutation(supabase
-    .from("measurements")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", user.id));
+  await saveMutation(
+    supabase.from("measurements").delete().eq("id", id).eq("user_id", user.id),
+  );
   revalidatePath("/enfant/growth");
 }
 
@@ -205,9 +212,14 @@ export default async function GrowthPage() {
     <ModuleShell
       slug="growth"
       title="Croissance"
-      subtitle={`${baby.name} — courbes OMS ${sex === "F" ? "filles" : "garçons"}`}
+      subtitle={`${baby.name} · Toutes ses mesures, au fil du temps`}
       viewerBadge={role === "viewer"}
     >
+      <p className="mt-note mb-5">
+        Le carnet conserve vos mesures à tout âge. Les courbes de référence
+        disponibles ici couvrent 0 à 36 mois ; aucun percentile n’est calculé
+        au-delà. Les mesures se discutent avec votre médecin.
+      </p>
       <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <SummaryCard
           label="Poids actuel"
@@ -325,10 +337,17 @@ function SummaryCard({
 }) {
   const { latest, previous } = summary;
   const value = latest ? formatter(latest.metricValue) : "—";
-  const pct = latest
-    ? estimatePercentile(metric, resolveSex(sex), latest.ageMonths, latest.metricValue)
-    : null;
-  const delta = latest && previous ? latest.metricValue - previous.metricValue : null;
+  const pct =
+    latest && latest.ageMonths <= 36 && (sex === "M" || sex === "F")
+      ? estimatePercentile(
+          metric,
+          resolveSex(sex),
+          latest.ageMonths,
+          latest.metricValue,
+        )
+      : null;
+  const delta =
+    latest && previous ? latest.metricValue - previous.metricValue : null;
 
   return (
     <div className="rounded-2xl border border-border bg-surface p-4 shadow-sm transition hover:border-border-strong">
@@ -345,7 +364,7 @@ function SummaryCard({
           </span>
         ) : (
           <span className="text-foreground-subtle">
-            Pas encore de mesure
+            {latest ? "Historique personnel" : "Pas encore de mesure"}
           </span>
         )}
         {delta !== null && (
@@ -382,7 +401,9 @@ function MeasurementRow({
 }) {
   return (
     <li className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 shadow-sm transition hover:border-border-strong">
-      <div aria-hidden className="text-2xl">📏</div>
+      <div aria-hidden className="text-2xl">
+        📏
+      </div>
       <div className="min-w-0 flex-1">
         <div className="text-sm font-medium text-foreground">
           {new Date(m.measured_at).toLocaleDateString("fr-FR", {

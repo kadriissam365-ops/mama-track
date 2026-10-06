@@ -57,8 +57,13 @@ function LoginForm() {
 
     if (error) {
       const msg = error.message.toLowerCase();
-      if (msg.includes("email not confirmed") || msg.includes("not confirmed")) {
-        setError("Votre email n'est pas encore confirmé. Cliquez sur le lien envoyé par mail ou renvoyez-en un.");
+      if (
+        msg.includes("email not confirmed") ||
+        msg.includes("not confirmed")
+      ) {
+        setError(
+          "Votre email n'est pas encore confirmé. Cliquez sur le lien envoyé par mail ou renvoyez-en un.",
+        );
         setShowResend(true);
       } else if (error.message === "Invalid login credentials") {
         setError("Email ou mot de passe incorrect.");
@@ -87,7 +92,9 @@ function LoginForm() {
 
     const trimmedEmail = email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
-      setError("Saisissez d'abord votre email avant de renvoyer la confirmation.");
+      setError(
+        "Saisissez d'abord votre email avant de renvoyer la confirmation.",
+      );
       return;
     }
 
@@ -95,7 +102,10 @@ function LoginForm() {
 
     try {
       const supabase = createClient();
-      const inviteToken = typeof window !== "undefined" ? sessionStorage.getItem("invite_token") : null;
+      const inviteToken =
+        typeof window !== "undefined"
+          ? sessionStorage.getItem("invite_token")
+          : null;
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
       const redirectTo = inviteToken
         ? `${appUrl}/auth/callback?next=${encodeURIComponent(`/invite?token=${inviteToken}`)}`
@@ -110,10 +120,14 @@ function LoginForm() {
       if (error) {
         setError(mapResendError(error.message));
       } else {
-        setResendInfo(`Un nouveau lien de confirmation a été envoyé à ${trimmedEmail}. Vérifiez votre boîte mail (et vos spams).`);
+        setResendInfo(
+          `Un nouveau lien de confirmation a été envoyé à ${trimmedEmail}. Vérifiez votre boîte mail (et vos spams).`,
+        );
       }
     } catch (err) {
-      setError(mapResendError(err instanceof Error ? err.message : "Erreur inconnue"));
+      setError(
+        mapResendError(err instanceof Error ? err.message : "Erreur inconnue"),
+      );
     } finally {
       setResending(false);
     }
@@ -137,8 +151,12 @@ function LoginForm() {
           >
             <Heart className="w-10 h-10 text-white fill-white" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">MamaTrack</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">Votre grossesse et le carnet de bébé, au même endroit</p>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+            Contents de vous retrouver.
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
+            Votre petit monde vous attend.
+          </p>
         </motion.div>
 
         {/* Form */}
@@ -166,7 +184,10 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="login-email" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label
+                htmlFor="login-email"
+                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5"
+              >
                 Email
               </label>
               <div className="relative">
@@ -185,7 +206,10 @@ function LoginForm() {
             </div>
 
             <div>
-              <label htmlFor="login-password" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label
+                htmlFor="login-password"
+                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5"
+              >
                 Mot de passe
               </label>
               <div className="relative">
@@ -202,11 +226,19 @@ function LoginForm() {
                 />
                 <button
                   type="button"
-                  aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                  aria-label={
+                    showPassword
+                      ? "Masquer le mot de passe"
+                      : "Afficher le mot de passe"
+                  }
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-300"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -272,4 +304,10 @@ function LoginForm() {
   );
 }
 
-export default function LoginPage() { return <Suspense><LoginForm /></Suspense>; }
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}

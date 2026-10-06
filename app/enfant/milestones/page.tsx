@@ -1,3 +1,9 @@
+import {
+  calendarDate,
+  childAgeMonths,
+  childAgeLabel,
+  parseCalendarDate,
+} from "@/lib/family-journey";
 import { saveMutation } from "@/lib/enfant/mutations";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
@@ -19,54 +25,62 @@ type MilestoneGiven = {
 
 const VALID_MILESTONE_CODES = new Set<string>(MILESTONES.map((m) => m.slug));
 
-async function markMilestone(formData: FormData) {
+async function writableContext(expectedBabyId: string) {
+  const context = await requireUserAndBaby();
+  if (!context.user) redirect("/auth/login");
+  if (!context.baby) redirect("/enfant/naissance");
+  if (context.baby.id !== expectedBabyId)
+    throw new Error(
+      "L’enfant sélectionné a changé. Revenez à son carnet avant d’enregistrer.",
+    );
+  const role = await getUserRole(context.user, context.baby);
+  if (role !== "owner" && role !== "caregiver")
+    throw new Error("Ce carnet est en lecture seule.");
+  return { ...context, user: context.user, baby: context.baby };
+}
+
+async function markMilestone(expectedBabyId: string, formData: FormData) {
   "use server";
-  const { user, baby, supabase } = await requireUserAndBaby();
-  if (!user) redirect("/auth/login");
-  if (!baby) redirect("/enfant/onboarding");
+  const { user, baby, supabase } = await writableContext(expectedBabyId);
 
   const code = String(formData.get("code") ?? "");
   if (!code || !VALID_MILESTONE_CODES.has(code)) return;
 
-  const label = String(formData.get("label") ?? "").slice(0, 200) || null;
-
-  const achieved_at_raw = String(formData.get("achieved_at") ?? "");
-  let achieved_at = new Date().toISOString().slice(0, 10);
-  if (achieved_at_raw) {
-    const d = new Date(achieved_at_raw);
-    if (
-      !Number.isNaN(d.getTime()) &&
-      d.getTime() <= new Date().getTime() + 24 * 60 * 60 * 1000
-    ) {
-      achieved_at = achieved_at_raw;
-    }
-  }
+  const label = MILESTONES.find((m) => m.slug === code)!.label;
+  const achieved_at = String(formData.get("achieved_at") ?? "");
+  if (
+    !parseCalendarDate(achieved_at) ||
+    achieved_at > calendarDate() ||
+    achieved_at < baby.birth_date
+  )
+    throw new Error(
+      "Renseignez la date réelle, entre sa naissance et aujourd’hui.",
+    );
 
   const notesRaw = String(formData.get("notes") ?? "").trim();
   const notes = notesRaw ? notesRaw.slice(0, 500) : null;
 
-  await saveMutation(supabase.from("milestones").insert({
-    baby_id: baby.id,
-    user_id: user.id,
-    code,
-    label,
-    achieved_at,
-    notes,
-  }));
+  await saveMutation(
+    supabase.from("milestones").insert({
+      baby_id: baby.id,
+      user_id: user.id,
+      code,
+      label,
+      achieved_at,
+      notes,
+    }),
+  );
   revalidatePath("/enfant/milestones");
 }
 
-async function deleteMilestone(formData: FormData) {
+async function deleteMilestone(expectedBabyId: string, formData: FormData) {
   "use server";
-  const { user, supabase } = await requireUserAndBaby();
-  if (!user) redirect("/auth/login");
+  const { baby, supabase } = await writableContext(expectedBabyId);
   const id = String(formData.get("id") ?? "");
   if (!id) return;
-  await saveMutation(supabase
-    .from("milestones")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", user.id));
+  await saveMutation(
+    supabase.from("milestones").delete().eq("id", id).eq("baby_id", baby.id),
+  );
   revalidatePath("/enfant/milestones");
 }
 
@@ -87,10 +101,7 @@ export default async function MilestonesPage() {
   const given = (givenRaw as MilestoneGiven[] | null) ?? [];
   const doneCodes = new Map(given.map((g) => [g.code, g]));
 
-  const requestNow = new Date().getTime();
-  const birth = new Date(baby.birth_date);
-  const ageMonths =
-    (requestNow - birth.getTime()) / (1000 * 60 * 60 * 24 * 30.44);
+  const ageMonths = childAgeMonths(baby.birth_date);
 
   const byCategory: Record<string, Milestone[]> = {
     motor: [],
@@ -98,32 +109,40 @@ export default async function MilestonesPage() {
     social: [],
     cognitive: [],
   };
-  for (const m of MILESTONES) byCategory[m.category].push(m);
+  for (const m of MILESTONES.filter((m) =>
+    ageMonths >= 36
+      ? m.typicalAgeMonths >= 36 || doneCodes.has(m.slug)
+      : m.typicalAgeMonths < 36,
+  ))
+    byCategory[m.category].push(m);
 
   const done = given.length;
-  const total = MILESTONES.length;
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = calendarDate();
 
   return (
     <ModuleShell
       slug="milestones"
-      title="Milestones"
+      title="Ses petites fiertés"
       subtitle={`${baby.name} — étapes clés du développement`}
       viewerBadge={role === "viewer"}
     >
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard icon="🏆" label="Franchies" value={`${done}/${total}`} />
-        <StatCard icon="📅" label="Âge" value={`${ageMonths.toFixed(1)}m`} />
+        <StatCard icon="🏆" label="Franchies" value={String(done)} />
+        <StatCard
+          icon="📅"
+          label="Âge"
+          value={childAgeLabel(baby.birth_date)}
+        />
         <StatCard
           icon="🤸"
           label="Moteur"
-          value={`${given.filter((g) => MILESTONES.find((m) => m.slug === g.code)?.category === "motor").length}/${byCategory.motor.length}`}
+          value={`${given.filter((g) => MILESTONES.find((m) => m.slug === g.code)?.category === "motor").length}`}
         />
         <StatCard
           icon="🗣️"
           label="Langage"
-          value={`${given.filter((g) => MILESTONES.find((m) => m.slug === g.code)?.category === "language").length}/${byCategory.language.length}`}
+          value={`${given.filter((g) => MILESTONES.find((m) => m.slug === g.code)?.category === "language").length}`}
         />
       </div>
 
@@ -160,17 +179,25 @@ export default async function MilestonesPage() {
                   >
                     <div className="mb-2 flex items-start justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <span aria-hidden className="text-2xl">{m.emoji}</span>
+                        <span aria-hidden className="text-2xl">
+                          {m.emoji}
+                        </span>
                         <div>
                           <div className="text-sm font-semibold text-foreground">
                             {m.label}
                           </div>
                           <div className="text-xs text-foreground-muted">
-                            Vers {m.typicalAgeMonths} mois
+                            {m.memoryOnly
+                              ? "Un souvenir, à votre rythme"
+                              : `Repère autour de ${m.typicalAgeMonths < 36 ? `${m.typicalAgeMonths} mois` : `${m.typicalAgeMonths / 12} ans`}`}
                           </div>
                         </div>
                       </div>
-                      {achieved && <span aria-hidden className="text-lg">✅</span>}
+                      {achieved && (
+                        <span aria-hidden className="text-lg">
+                          ✅
+                        </span>
+                      )}
                     </div>
 
                     {achieved ? (
@@ -183,7 +210,7 @@ export default async function MilestonesPage() {
                           {achieved.notes && ` · ${achieved.notes}`}
                         </div>
                         {canWrite && (
-                          <form action={deleteMilestone}>
+                          <form action={deleteMilestone.bind(null, baby.id)}>
                             <input
                               type="hidden"
                               name="id"
@@ -200,7 +227,7 @@ export default async function MilestonesPage() {
                       </div>
                     ) : canWrite ? (
                       <form
-                        action={markMilestone}
+                        action={markMilestone.bind(null, baby.id)}
                         className="flex flex-wrap items-center gap-2"
                       >
                         <input type="hidden" name="code" value={m.slug} />
@@ -208,6 +235,10 @@ export default async function MilestonesPage() {
                         <input
                           type="date"
                           name="achieved_at"
+                          aria-label={`Date de ${m.label}`}
+                          min={baby.birth_date}
+                          max={todayStr}
+                          required
                           defaultValue={todayStr}
                           className="rounded-lg border border-border bg-surface px-2 py-1.5 text-xs text-foreground focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15"
                         />
@@ -232,8 +263,18 @@ export default async function MilestonesPage() {
       </div>
 
       <Alert tone="warning" icon="💡" className="mt-10">
-        Chaque bébé évolue à son rythme. Ces repères sont indicatifs (HAS /
-        CAMSP). Parles-en à ton pédiatre si tu as un doute.
+        Chaque enfant avance à son rythme. Ces souvenirs ne constituent pas un
+        test de développement. Les repères de 3 à 5 ans s’appuient sur les{" "}
+        <a
+          href="https://www.cdc.gov/act-early/milestones/index.html"
+          className="underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ressources du CDC
+        </a>
+        . Si une compétence se perd ou qu’un point vous inquiète, parlez-en à
+        son médecin.
       </Alert>
     </ModuleShell>
   );

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import dynamic from "next/dynamic";
 import { m as motion } from "framer-motion";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Timer, Plus, Minus, Activity } from "lucide-react";
 import { TrackingSkeleton } from "@/components/Skeleton";
 import SegmentedTabs from "@/components/SegmentedTabs";
@@ -13,16 +13,50 @@ import EmptyState from "@/components/EmptyState";
 import { useStore } from "@/lib/store";
 import { WATER_GOAL_ML } from "@/lib/constants";
 
-const WeightTab = dynamic(() => import("@/components/tracking/WeightTab"), { loading: () => <TrackingSkeleton />, ssr: false });
-const KicksTab = dynamic(() => import("@/components/tracking/KicksTab"), { loading: () => <TrackingSkeleton />, ssr: false });
-const NutritionTab = dynamic(() => import("@/components/tracking/NutritionTab"), { loading: () => <TrackingSkeleton />, ssr: false });
-const BloodPressureTab = dynamic(() => import("@/components/tracking/BloodPressureTab"), { loading: () => <TrackingSkeleton />, ssr: false });
-const AbdomenTab = dynamic(() => import("@/components/tracking/AbdomenTab"), { loading: () => <TrackingSkeleton />, ssr: false });
-const MoodTab = dynamic(() => import("@/components/tracking/MoodTab"), { loading: () => <TrackingSkeleton />, ssr: false });
-const SleepTab = dynamic(() => import("@/components/tracking/SleepTab"), { loading: () => <TrackingSkeleton />, ssr: false });
-const ExerciseTab = dynamic(() => import("@/components/tracking/ExerciseTab"), { loading: () => <TrackingSkeleton />, ssr: false });
+const WeightTab = dynamic(() => import("@/components/tracking/WeightTab"), {
+  loading: () => <TrackingSkeleton />,
+  ssr: false,
+});
+const KicksTab = dynamic(() => import("@/components/tracking/KicksTab"), {
+  loading: () => <TrackingSkeleton />,
+  ssr: false,
+});
+const NutritionTab = dynamic(
+  () => import("@/components/tracking/NutritionTab"),
+  { loading: () => <TrackingSkeleton />, ssr: false },
+);
+const BloodPressureTab = dynamic(
+  () => import("@/components/tracking/BloodPressureTab"),
+  { loading: () => <TrackingSkeleton />, ssr: false },
+);
+const AbdomenTab = dynamic(() => import("@/components/tracking/AbdomenTab"), {
+  loading: () => <TrackingSkeleton />,
+  ssr: false,
+});
+const MoodTab = dynamic(() => import("@/components/tracking/MoodTab"), {
+  loading: () => <TrackingSkeleton />,
+  ssr: false,
+});
+const SleepTab = dynamic(() => import("@/components/tracking/SleepTab"), {
+  loading: () => <TrackingSkeleton />,
+  ssr: false,
+});
+const ExerciseTab = dynamic(() => import("@/components/tracking/ExerciseTab"), {
+  loading: () => <TrackingSkeleton />,
+  ssr: false,
+});
 
-type Tab = "symptoms" | "weight" | "water" | "kicks" | "nutrition" | "bp" | "abdomen" | "mood" | "sleep" | "exercise";
+type Tab =
+  | "symptoms"
+  | "weight"
+  | "water"
+  | "kicks"
+  | "nutrition"
+  | "bp"
+  | "abdomen"
+  | "mood"
+  | "sleep"
+  | "exercise";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "symptoms", label: "😣 Symptômes" },
@@ -38,15 +72,41 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 const SYMPTOM_OPTIONS = [
-  "Nausées", "Fatigue", "Douleurs dos", "Brûlures d'estomac",
-  "Vertiges", "Gonflement", "Insomnies", "Maux de tête",
-  "Crampes", "Constipation", "Saignements des gencives", "Essoufflement",
+  "Nausées",
+  "Fatigue",
+  "Douleurs dos",
+  "Brûlures d'estomac",
+  "Vertiges",
+  "Gonflement",
+  "Insomnies",
+  "Maux de tête",
+  "Crampes",
+  "Constipation",
+  "Saignements des gencives",
+  "Essoufflement",
 ];
 
 const WATER_AMOUNTS = [250, 500, 750, 1000];
 
 export default function TrackingPage() {
-  const [activeTab, setActiveTab] = useState<Tab>("symptoms");
+  return (
+    <Suspense fallback={<TrackingSkeleton />}>
+      <TrackingFromUrl />
+    </Suspense>
+  );
+}
+
+function TrackingFromUrl() {
+  const searchParams = useSearchParams();
+  const requested = searchParams.get("tab");
+  const initialTab = TABS.some((tab) => tab.id === requested)
+    ? (requested as Tab)
+    : "symptoms";
+  return <TrackingContent key={initialTab} initialTab={initialTab} />;
+}
+
+function TrackingContent({ initialTab }: { initialTab: Tab }) {
+  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const today = format(new Date(), "yyyy-MM-dd");
   const router = useRouter();
   const store = useStore();
@@ -59,7 +119,7 @@ export default function TrackingPage() {
 
   const toggleSymptom = (s: string) => {
     setSelectedSymptoms((prev) =>
-      prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
+      prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s],
     );
   };
 
@@ -101,8 +161,12 @@ export default function TrackingPage() {
           <Timer className="w-5 h-5 text-white" />
         </div>
         <div className="text-left">
-          <p className="text-sm font-semibold text-purple-700 dark:text-purple-300">Contractions</p>
-          <p className="text-xs text-purple-400 dark:text-purple-300">Chronomètre & suivi des contractions</p>
+          <p className="text-sm font-semibold text-purple-700 dark:text-purple-300">
+            Contractions
+          </p>
+          <p className="text-xs text-purple-400 dark:text-purple-300">
+            Chronomètre & suivi des contractions
+          </p>
         </div>
         <span className="ml-auto text-purple-300 text-lg">›</span>
       </button>
@@ -199,7 +263,10 @@ export default function TrackingPage() {
                 icon={Activity}
                 title="Aucun symptôme enregistré"
                 description="Note ce que tu ressens au fil des jours : nausées, fatigue, douleurs. Tu verras l'évolution et pourras en parler à ta sage-femme."
-                action={{ label: "Noter mes symptômes", onClick: () => setShowSymptomForm(true) }}
+                action={{
+                  label: "Noter mes symptômes",
+                  onClick: () => setShowSymptomForm(true),
+                }}
                 variant="pink"
               />
             )}
@@ -215,7 +282,9 @@ export default function TrackingPage() {
                     className="bg-white dark:bg-gray-900 rounded-2xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30"
                   >
                     <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">
-                      {format(new Date(entry.date), "d MMMM yyyy", { locale: fr })}
+                      {format(new Date(entry.date), "d MMMM yyyy", {
+                        locale: fr,
+                      })}
                     </p>
                     <div className="flex flex-wrap gap-1 mb-1">
                       {entry.symptoms.map((s) => (
@@ -232,13 +301,17 @@ export default function TrackingPage() {
                         <span
                           key={v}
                           className={`w-4 h-1.5 rounded-full ${
-                            v <= entry.severity ? "bg-pink-400" : "bg-pink-100 dark:bg-pink-900/30"
+                            v <= entry.severity
+                              ? "bg-pink-400"
+                              : "bg-pink-100 dark:bg-pink-900/30"
                           }`}
                         />
                       ))}
                     </div>
                     {entry.note && (
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{entry.note}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        {entry.note}
+                      </p>
                     )}
                   </div>
                 ))}
@@ -252,7 +325,15 @@ export default function TrackingPage() {
             <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-sm border border-blue-100 dark:border-blue-900/30 text-center">
               <div className="relative w-40 h-40 mx-auto mb-4">
                 <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="#e0f2fe" strokeWidth="10" className="dark:stroke-blue-950" />
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="50"
+                    fill="none"
+                    stroke="#e0f2fe"
+                    strokeWidth="10"
+                    className="dark:stroke-blue-950"
+                  />
                   <circle
                     cx="60"
                     cy="60"
@@ -267,7 +348,9 @@ export default function TrackingPage() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-bold text-blue-500">{waterToday}</span>
+                  <span className="text-3xl font-bold text-blue-500">
+                    {waterToday}
+                  </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
                     ml / {waterGoal} ml
                   </span>
@@ -290,7 +373,9 @@ export default function TrackingPage() {
                   className="bg-white dark:bg-gray-900 rounded-2xl py-4 shadow-sm border border-blue-100 dark:border-blue-900/30 flex flex-col items-center gap-1 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
                 >
                   <span className="text-2xl">💧</span>
-                  <span className="text-sm font-semibold text-blue-500">+ {ml} ml</span>
+                  <span className="text-sm font-semibold text-blue-500">
+                    + {ml} ml
+                  </span>
                 </button>
               ))}
             </div>

@@ -1,4 +1,6 @@
 import {
+  ListChecks,
+  Palette,
   AlertTriangle,
   Baby,
   Calendar,
@@ -73,6 +75,8 @@ export const TONE_FG: Record<ModuleTone, string> = {
 export type ModuleIconDef = { Icon: LucideIcon; tone: ModuleTone };
 
 export const MODULE_ICONS: Record<string, ModuleIconDef> = {
+  routines: { Icon: ListChecks, tone: "emerald" },
+  activities: { Icon: Palette, tone: "orange" },
   feed: { Icon: Utensils, tone: "pink" },
   diversification: { Icon: Salad, tone: "emerald" },
   sleep: { Icon: Moon, tone: "violet" },
@@ -108,11 +112,7 @@ export function ModuleIconCircle({
 }) {
   const { Icon, tone } = getModuleIcon(slug);
   const dims =
-    size === "lg"
-      ? "h-14 w-14"
-      : size === "sm"
-        ? "h-9 w-9"
-        : "h-12 w-12";
+    size === "lg" ? "h-14 w-14" : size === "sm" ? "h-9 w-9" : "h-12 w-12";
   const iconSize =
     size === "lg" ? "h-6 w-6" : size === "sm" ? "h-4 w-4" : "h-5 w-5";
   return (

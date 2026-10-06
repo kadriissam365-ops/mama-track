@@ -7,7 +7,18 @@ import Link from "next/link";
 import { m as motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { createClient } from "@/lib/supabase";
-import { Mail, Lock, Eye, EyeOff, Heart, Loader2, CheckCircle2, UserPlus, Check, X } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  Heart,
+  Loader2,
+  CheckCircle2,
+  UserPlus,
+  Check,
+  X,
+} from "lucide-react";
 
 const PASSWORD_MIN_LENGTH = 10;
 
@@ -30,20 +41,34 @@ function checkPassword(pwd: string): PasswordChecks {
 }
 
 function firstFailedRule(c: PasswordChecks): string | null {
-  if (!c.length) return `Le mot de passe doit contenir au moins ${PASSWORD_MIN_LENGTH} caractères.`;
-  if (!c.lower) return "Le mot de passe doit contenir au moins une lettre minuscule (a-z).";
-  if (!c.upper) return "Le mot de passe doit contenir au moins une lettre majuscule (A-Z).";
-  if (!c.digit) return "Le mot de passe doit contenir au moins un chiffre (0-9).";
-  if (!c.special) return "Le mot de passe doit contenir au moins un caractère spécial (ex : ! @ # $ % & * ?).";
+  if (!c.length)
+    return `Le mot de passe doit contenir au moins ${PASSWORD_MIN_LENGTH} caractères.`;
+  if (!c.lower)
+    return "Le mot de passe doit contenir au moins une lettre minuscule (a-z).";
+  if (!c.upper)
+    return "Le mot de passe doit contenir au moins une lettre majuscule (A-Z).";
+  if (!c.digit)
+    return "Le mot de passe doit contenir au moins un chiffre (0-9).";
+  if (!c.special)
+    return "Le mot de passe doit contenir au moins un caractère spécial (ex : ! @ # $ % & * ?).";
   return null;
 }
 
 function mapSupabaseError(message: string): string {
   const m = message.toLowerCase();
-  if (m.includes("already registered") || m.includes("user already") || m.includes("already exists")) {
+  if (
+    m.includes("already registered") ||
+    m.includes("user already") ||
+    m.includes("already exists")
+  ) {
     return "Un compte existe déjà avec cet email. Vérifiez votre boîte mail (un lien de confirmation a peut-être été envoyé) ou connectez-vous.";
   }
-  if (m.includes("password should contain") || m.includes("password should be") || m.includes("weak password") || m.includes("password")) {
+  if (
+    m.includes("password should contain") ||
+    m.includes("password should be") ||
+    m.includes("weak password") ||
+    m.includes("password")
+  ) {
     return "Mot de passe trop faible. Il doit contenir au moins 10 caractères avec une majuscule, une minuscule, un chiffre et un caractère spécial.";
   }
   if (m.includes("invalid email") || m.includes("email address")) {
@@ -59,11 +84,13 @@ function mapSupabaseError(message: string): string {
 }
 
 const ChecklistItem = ({ ok, label }: { ok: boolean; label: string }) => (
-    <li className={`flex items-center gap-2 text-xs ${ok ? "text-green-600 dark:text-green-400" : "text-gray-400 dark:text-gray-500"}`}>
-      {ok ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-      <span>{label}</span>
-    </li>
-  );
+  <li
+    className={`flex items-center gap-2 text-xs ${ok ? "text-green-600 dark:text-green-400" : "text-gray-400 dark:text-gray-500"}`}
+  >
+    {ok ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
+    <span>{label}</span>
+  </li>
+);
 
 function SignupForm() {
   const searchParams = useSearchParams();
@@ -87,8 +114,6 @@ function SignupForm() {
     supabase.auth.signOut().finally(() => setSessionCleared(true));
   }, []);
 
-
-
   useEffect(() => {
     if (inviteToken && typeof window !== "undefined") {
       sessionStorage.setItem("invite_token", inviteToken);
@@ -96,7 +121,12 @@ function SignupForm() {
   }, [inviteToken]);
 
   const checks = useMemo(() => checkPassword(password), [password]);
-  const allValid = checks.length && checks.lower && checks.upper && checks.digit && checks.special;
+  const allValid =
+    checks.length &&
+    checks.lower &&
+    checks.upper &&
+    checks.digit &&
+    checks.special;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,8 +151,17 @@ function SignupForm() {
 
     setLoading(true);
 
-    const nextPath = safeNextPath(searchParams.get("next"), inviteToken ? `/invite?token=${encodeURIComponent(inviteToken)}` : "/onboarding");
-    const { error: signUpErr } = await signUpWithEmail(trimmedEmail, password, nextPath);
+    const nextPath = safeNextPath(
+      searchParams.get("next"),
+      inviteToken
+        ? `/invite?token=${encodeURIComponent(inviteToken)}`
+        : "/onboarding",
+    );
+    const { error: signUpErr } = await signUpWithEmail(
+      trimmedEmail,
+      password,
+      nextPath,
+    );
 
     if (signUpErr) {
       setError(mapSupabaseError(signUpErr.message));
@@ -164,14 +203,18 @@ function SignupForm() {
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
             Nous avons envoyé un lien de confirmation à <br />
-            <span className="font-medium text-pink-500 dark:text-pink-400">{email}</span>
+            <span className="font-medium text-pink-500 dark:text-pink-400">
+              {email}
+            </span>
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Cliquez sur le lien dans l&apos;email pour activer votre compte et commencer votre suivi de grossesse ou le carnet de bébé.
+            Cliquez sur le lien dans l&apos;email pour activer votre compte et
+            commencer votre carnet familial de la grossesse aux 6 ans.
           </p>
           {isInvitedFlow && (
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
-              Une fois votre email confirmé, vous serez automatiquement redirigé vers l&apos;invitation pour finaliser votre accès partenaire.
+              Une fois votre email confirmé, vous serez automatiquement redirigé
+              vers l&apos;invitation pour finaliser votre accès partenaire.
             </p>
           )}
           <Link
@@ -184,8 +227,6 @@ function SignupForm() {
       </div>
     );
   }
-
-
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-b from-pink-50 via-white to-purple-50 dark:from-[#0f0f1a] dark:via-[#0f0f1a] dark:to-[#1a1a2e]">
@@ -204,8 +245,14 @@ function SignupForm() {
           >
             <Heart className="w-10 h-10 text-white fill-white" />
           </motion.div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">MamaTrack</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-2">{isInvitedFlow ? "Créez votre compte partenaire" : "Créez votre compte"}</p>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+            MamaTrack
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">
+            {isInvitedFlow
+              ? "Créez votre compte partenaire"
+              : "Créez votre compte"}
+          </p>
         </div>
 
         {isInvitedFlow && (
@@ -216,7 +263,11 @@ function SignupForm() {
           >
             <UserPlus className="w-5 h-5 text-pink-500 flex-shrink-0" />
             <p className="text-xs text-gray-700 dark:text-gray-300">
-              Vous avez été invité(e) sur MamaTrack. Créez votre compte avec <strong className="text-pink-600 dark:text-pink-300">{invitedEmail}</strong> pour rejoindre le suivi.
+              Vous avez été invité(e) sur MamaTrack. Créez votre compte avec{" "}
+              <strong className="text-pink-600 dark:text-pink-300">
+                {invitedEmail}
+              </strong>{" "}
+              pour rejoindre le suivi.
             </p>
           </motion.div>
         )}
@@ -242,9 +293,16 @@ function SignupForm() {
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            autoComplete="off"
+          >
             <div>
-              <label htmlFor="signup-email" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label
+                htmlFor="signup-email"
+                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5"
+              >
                 Email
               </label>
               <div className="relative">
@@ -265,7 +323,10 @@ function SignupForm() {
             </div>
 
             <div>
-              <label htmlFor="signup-password" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label
+                htmlFor="signup-password"
+                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5"
+              >
                 Mot de passe
               </label>
               <div className="relative">
@@ -283,26 +344,49 @@ function SignupForm() {
                 />
                 <button
                   type="button"
-                  aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                  aria-label={
+                    showPassword
+                      ? "Masquer le mot de passe"
+                      : "Afficher le mot de passe"
+                  }
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:text-gray-300"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
 
               {/* Password requirements checklist */}
               <ul className="mt-2 space-y-1 px-1">
-                <ChecklistItem ok={checks.length} label={`Au moins ${PASSWORD_MIN_LENGTH} caractères`} />
-                <ChecklistItem ok={checks.lower} label="Une lettre minuscule (a-z)" />
-                <ChecklistItem ok={checks.upper} label="Une lettre majuscule (A-Z)" />
+                <ChecklistItem
+                  ok={checks.length}
+                  label={`Au moins ${PASSWORD_MIN_LENGTH} caractères`}
+                />
+                <ChecklistItem
+                  ok={checks.lower}
+                  label="Une lettre minuscule (a-z)"
+                />
+                <ChecklistItem
+                  ok={checks.upper}
+                  label="Une lettre majuscule (A-Z)"
+                />
                 <ChecklistItem ok={checks.digit} label="Un chiffre (0-9)" />
-                <ChecklistItem ok={checks.special} label="Un caractère spécial (! @ # $ % & * ?)" />
+                <ChecklistItem
+                  ok={checks.special}
+                  label="Un caractère spécial (! @ # $ % & * ?)"
+                />
               </ul>
             </div>
 
             <div>
-              <label htmlFor="signup-confirm-password" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5">
+              <label
+                htmlFor="signup-confirm-password"
+                className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1.5"
+              >
                 Confirmer le mot de passe
               </label>
               <div className="relative">
@@ -320,7 +404,9 @@ function SignupForm() {
                 />
               </div>
               {confirmPassword.length > 0 && confirmPassword !== password && (
-                <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">Les mots de passe ne correspondent pas.</p>
+                <p className="mt-1.5 text-xs text-red-500 dark:text-red-400">
+                  Les mots de passe ne correspondent pas.
+                </p>
               )}
             </div>
 
@@ -339,8 +425,6 @@ function SignupForm() {
               )}
             </button>
           </form>
-
-
 
           <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
             Déjà un compte ?{" "}

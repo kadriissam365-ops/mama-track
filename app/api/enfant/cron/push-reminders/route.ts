@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/enfant/supabase/service";
 import { computeUpcomingVaccines } from "@/lib/enfant/vaccines-due";
-import { HAS_VISITS, visitDueDate } from "@/lib/enfant/checklist-data";
-import { sendPush, type StoredSubscription, type PushPayload } from "@/lib/enfant/push";
+import { HAS_VISITS, scheduledVisitDate } from "@/lib/enfant/checklist-data";
+import {
+  sendPush,
+  type StoredSubscription,
+  type PushPayload,
+} from "@/lib/enfant/push";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -155,7 +159,7 @@ export async function GET(request: Request) {
 
     for (const visit of HAS_VISITS) {
       if (doneCodes.has(visit.code)) continue;
-      const due = visitDueDate(baby.birth_date, visit.ageMonths);
+      const due = scheduledVisitDate(baby.birth_date, visit);
       const daysUntil = Math.floor(
         (due.getTime() - todayMs) / (1000 * 60 * 60 * 24),
       );

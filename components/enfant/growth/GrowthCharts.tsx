@@ -98,21 +98,21 @@ export function GrowthCharts({
 
     return sortedXs.map((x) => {
       // Interpolate OMS values at x
-      const at = interpAtAge(omsRows, x);
+      const at = sex === "M" || sex === "F" ? interpAtAge(omsRows, x) : null;
       const baby = babyByX.get(x);
       return {
         x,
-        p3: round(at.p3 * factor, decimals),
-        p15: round(at.p15 * factor, decimals),
-        p50: round(at.p50 * factor, decimals),
-        p85: round(at.p85 * factor, decimals),
-        p97: round(at.p97 * factor, decimals),
+        p3: at ? round(at.p3 * factor, decimals) : undefined,
+        p15: at ? round(at.p15 * factor, decimals) : undefined,
+        p50: at ? round(at.p50 * factor, decimals) : undefined,
+        p85: at ? round(at.p85 * factor, decimals) : undefined,
+        p97: at ? round(at.p97 * factor, decimals) : undefined,
         baby: baby ? round(baby.displayValue, decimals) : undefined,
         babyMetric: baby?.metricValue,
         measuredAt: baby?.measuredAt,
       };
     });
-  }, [active, resolvedSex, maxAgeMonths, data, factor, decimals]);
+  }, [active, sex, resolvedSex, maxAgeMonths, data, factor, decimals]);
 
   const hasBaby = (data[active] ?? []).length > 0;
 
@@ -146,7 +146,8 @@ export function GrowthCharts({
       <div className="rounded-2xl border border-border bg-surface p-3 shadow-sm sm:p-5">
         {!hasBaby && (
           <div className="mb-3 rounded-xl border border-dashed border-border bg-background/40 px-4 py-3 text-center text-sm text-foreground-muted">
-            Ajoute une première mesure pour voir la courbe de ton bébé apparaître.
+            Ajoute une première mesure pour voir la courbe de ton bébé
+            apparaître.
           </div>
         )}
         <ResponsiveContainer width="100%" height={320}>
@@ -193,6 +194,7 @@ export function GrowthCharts({
               content={
                 <ChartTooltip
                   metric={active}
+                  referenceAvailable={sex === "M" || sex === "F"}
                   sex={resolvedSex}
                   unitLabel={unitLabel}
                   decimals={decimals}
@@ -257,11 +259,13 @@ function ChartTooltip({
   sex,
   unitLabel,
   decimals,
+  referenceAvailable,
 }: {
   active?: boolean;
   payload?: TooltipPayloadEntry[];
   label?: number | string;
   metric: OmsMetric;
+  referenceAvailable: boolean;
   sex: "M" | "F";
   unitLabel: string;
   decimals: number;
@@ -277,7 +281,7 @@ function ChartTooltip({
     baby && baby.payload && typeof baby.payload.babyMetric === "number"
       ? (baby.payload.babyMetric as number)
       : null;
-  if (babyMetric !== null) {
+  if (referenceAvailable && babyMetric !== null && ageMonths <= 36) {
     pctLabel = estimatePercentile(metric, sex, ageMonths, babyMetric).label;
   }
 
@@ -332,11 +336,20 @@ function tickArray(max: number): number[] {
   return [...base.filter((b) => b <= max), ...extra];
 }
 function interpAtAge(
-  rows: { ageMonths: number; p3: number; p15: number; p50: number; p85: number; p97: number }[],
+  rows: {
+    ageMonths: number;
+    p3: number;
+    p15: number;
+    p50: number;
+    p85: number;
+    p97: number;
+  }[],
   ageMonths: number,
 ) {
+  if (!rows.length || ageMonths > rows[rows.length - 1].ageMonths) return null;
   if (ageMonths <= rows[0].ageMonths) return rows[0];
-  if (ageMonths >= rows[rows.length - 1].ageMonths) return rows[rows.length - 1];
+  if (ageMonths >= rows[rows.length - 1].ageMonths)
+    return rows[rows.length - 1];
   for (let i = 0; i < rows.length - 1; i++) {
     const a = rows[i];
     const b = rows[i + 1];

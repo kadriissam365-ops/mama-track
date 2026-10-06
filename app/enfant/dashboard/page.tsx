@@ -1,61 +1,539 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Baby, ArrowRight, Heart, Plus, Milk, Moon, Droplets, Ruler, ShieldCheck, Users, Sparkles } from "lucide-react";
-import { requireUserAndBaby, formatAge, ageInDays } from "@/lib/enfant/baby";
-import { getUserRole } from "@/lib/enfant/baby";
-import { ModuleIconCircle } from "@/lib/enfant/module-icons";
+import {
+  ArrowRight,
+  BookHeart,
+  CalendarDays,
+  Check,
+  Droplets,
+  Heart,
+  ListChecks,
+  Milk,
+  Moon,
+  Plus,
+  Ruler,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import { requireUserAndBaby, getUserRole } from "@/lib/enfant/baby";
+import {
+  childAgeLabel,
+  childPhase,
+  calendarDate,
+  parseCalendarDate,
+} from "@/lib/family-journey";
+import JourneyArtwork from "@/components/JourneyArtwork";
+import JourneyRail from "@/components/JourneyRail";
 import BabyPicker from "@/components/BabyPicker";
-
-export const metadata = { title: "Mon bébé" };
-
-export default async function BabyDashboard() {
+import { ModuleIconCircle } from "@/lib/enfant/module-icons";
+export const metadata = { title: "Notre petit monde" };
+export default async function BabyDashboard({
+  searchParams,
+}: {
+  searchParams: Promise<{ bienvenue?: string }>;
+}) {
   const { user, baby, supabase } = await requireUserAndBaby();
   if (!user) redirect("/auth/login");
-  if (!baby) return <section className="mx-auto max-w-xl px-5 py-8">
-    <div className="relative overflow-hidden rounded-[2rem] border border-border bg-gradient-to-br from-pink-50 via-white to-purple-50 p-7 text-center dark:from-pink-950/30 dark:via-gray-900 dark:to-purple-950/30">
-      <span className="mx-auto mb-5 flex size-20 items-center justify-center rounded-3xl bg-white/80 dark:bg-gray-800 shadow-sm"><Baby className="size-10 text-pink-500" /></span>
-      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-brand">Grossesse · Naissance · Premières années</p>
-      <h1 className="mt-3 text-3xl font-bold text-foreground">Une app qui grandit avec vous</h1>
-      <p className="mt-4 text-sm leading-relaxed text-foreground-muted">Repas, sommeil, croissance et petits souvenirs : tout le quotidien de bébé, au même endroit que votre grossesse.</p>
-      <Link href="/enfant/naissance" className="bt-bg-gradient mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white"><Plus size={18} />Bébé est né : créer son carnet</Link>
-      <Link href="/enfant/import" className="mt-4 block min-h-10 text-sm font-medium text-brand underline underline-offset-4">Récupérer mon ancien suivi BabyTrack</Link>
-    </div>
-    <div className="mt-6 grid grid-cols-2 gap-3">{[{ slug: "feed", label: "Repas & tétées" }, { slug: "sleep", label: "Siestes & nuits" }, { slug: "growth", label: "Sa croissance" }, { slug: "diary", label: "Vos souvenirs" }].map(item => <div key={item.slug} className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4"><ModuleIconCircle slug={item.slug} size="sm" /><span className="text-xs font-medium text-foreground">{item.label}</span></div>)}</div>
-    <p className="mt-6 flex items-center justify-center gap-2 text-xs text-foreground-muted"><Heart size={14} className="text-brand" />Vos relevés de grossesse sont conservés.</p>
-  </section>;
-
-  const cutoff = new Date(new Date().getTime() - 86400000).toISOString();
-  const [feeds, sleeps, diapers, measures, role] = await Promise.all([
-    supabase.from("feedings").select("kind,amount_ml").eq("baby_id", baby.id).gte("started_at", cutoff),
-    supabase.from("sleeps").select("started_at,ended_at").eq("baby_id", baby.id).or(`ended_at.gte.${cutoff},ended_at.is.null`),
-    supabase.from("diapers").select("id", { head: true, count: "exact" }).eq("baby_id", baby.id).gte("changed_at", cutoff),
-    supabase.from("measurements").select("weight_g,height_cm,measured_at").eq("baby_id", baby.id).order("measured_at", { ascending: false }).limit(1).maybeSingle(),
+  if (!baby)
+    return (
+      <section className="mt-shell">
+        <div className="mt-hero">
+          <div className="mt-hero-copy">
+            <span className="mt-pill">Un carnet pour toute son enfance</span>
+            <h1 className="mt-display mt-5">
+              Son petit monde
+              <br />
+              commence avec vous.
+            </h1>
+            <p>
+              Repas, sommeil, premières découvertes et grandes aventures. Votre
+              histoire de famille, réunie jusqu’à 6 ans.
+            </p>
+            <Link href="/enfant/naissance" className="mt-button mt-5">
+              <Plus size={16} />
+              Créer le carnet de mon enfant
+            </Link>
+          </div>
+          <JourneyArtwork phase="baby" className="mt-artwork" />
+          <div className="mt-hero-footer">
+            <JourneyRail phase="baby" />
+          </div>
+        </div>
+        <div className="mt-card mt-6">
+          <h2>Vous utilisiez BabyTrack ?</h2>
+          <p className="mt-3 text-sm text-foreground-muted">
+            Vos enfants, leurs photos et leurs relevés peuvent rejoindre votre
+            espace MamaTrack.
+          </p>
+          <Link href="/enfant/import" className="mt-link mt-4">
+            Récupérer mon suivi <ArrowRight size={14} />
+          </Link>
+        </div>
+      </section>
+    );
+  const requestTime = new Date().getTime();
+  const phase = childPhase(baby.birth_date),
+    older = phase === "child",
+    today = calendarDate(),
+    cutoff = new Date(requestTime - 86400000).toISOString();
+  const [
+    feeds,
+    sleeps,
+    diapers,
+    measure,
+    diary,
+    appointments,
+    routines,
+    checks,
+    role,
+    params,
+  ] = await Promise.all([
+    supabase
+      .from("feedings")
+      .select("id,kind,amount_ml,started_at")
+      .eq("baby_id", baby.id)
+      .gte("started_at", cutoff)
+      .order("started_at", { ascending: false }),
+    supabase
+      .from("sleeps")
+      .select("id,started_at,ended_at")
+      .eq("baby_id", baby.id)
+      .or(`ended_at.gte.${cutoff},ended_at.is.null`),
+    supabase
+      .from("diapers")
+      .select("id", { head: true, count: "exact" })
+      .eq("baby_id", baby.id)
+      .gte("changed_at", cutoff),
+    supabase
+      .from("measurements")
+      .select("weight_g,height_cm,measured_at")
+      .eq("baby_id", baby.id)
+      .order("measured_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("diary_entries")
+      .select("id,title,body,entry_date")
+      .eq("baby_id", baby.id)
+      .order("entry_date", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(3),
+    supabase
+      .from("health_events")
+      .select("id,title,occurred_at")
+      .eq("baby_id", baby.id)
+      .eq("kind", "appointment")
+      .gte("occurred_at", new Date().toISOString())
+      .order("occurred_at")
+      .limit(3),
+    supabase
+      .from("child_routines")
+      .select("id,title,period")
+      .eq("baby_id", baby.id)
+      .eq("active", true)
+      .order("sort_order")
+      .order("created_at"),
+    supabase
+      .from("routine_completions")
+      .select("routine_id")
+      .eq("baby_id", baby.id)
+      .eq("completed_on", today),
     getUserRole(user, baby),
+    searchParams,
   ]);
-  if (feeds.error || sleeps.error || diapers.error || measures.error) throw new Error("Le carnet est temporairement indisponible.");
-  const now = new Date().getTime();
-  const sleepMinutes = Math.round((sleeps.data ?? []).reduce((total, row) => total + Math.max(0, Math.min(row.ended_at ? new Date(row.ended_at).getTime() : now, now) - Math.max(new Date(row.started_at).getTime(), new Date(cutoff).getTime())), 0) / 60000);
-  const ml = (feeds.data ?? []).reduce((total, row) => total + (row.amount_ml ?? 0), 0);
-  const months = Math.max(0, Math.floor(ageInDays(baby.birth_date) / 30.44));
-  const summaries = [
-    { slug: "feed", Icon: Milk, label: "Repas", value: String(feeds.data?.length ?? 0), detail: ml ? `${ml} ml enregistrés` : "Tétées, biberons, repas", color: "text-pink-600 bg-pink-50 dark:bg-pink-950/40" },
-    { slug: "sleep", Icon: Moon, label: "Sommeil", value: sleepMinutes ? `${Math.floor(sleepMinutes / 60)} h ${String(sleepMinutes % 60).padStart(2, "0")}` : "—", detail: sleeps.data?.some(s => !s.ended_at) ? "Un sommeil est en cours" : "Siestes et nuits", color: "text-violet-600 bg-violet-50 dark:bg-violet-950/40" },
-    { slug: "diapers", Icon: Droplets, label: "Couches", value: String(diapers.count ?? 0), detail: "Changes enregistrés", color: "text-sky-600 bg-sky-50 dark:bg-sky-950/40" },
-    { slug: "growth", Icon: Ruler, label: "Dernier poids", value: measures.data?.weight_g ? `${(measures.data.weight_g / 1000).toLocaleString("fr-FR")} kg` : "—", detail: measures.data?.measured_at ? new Date(measures.data.measured_at).toLocaleDateString("fr-FR") : "Ajouter une mesure", color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40" },
+  if (
+    [
+      feeds,
+      sleeps,
+      diapers,
+      measure,
+      diary,
+      appointments,
+      routines,
+      checks,
+    ].some((r) => r.error)
+  )
+    throw new Error("Votre carnet est momentanément indisponible.");
+  const now = requestTime,
+    sleepMinutes = Math.round(
+      (sleeps.data ?? []).reduce(
+        (total, row) =>
+          total +
+          Math.max(
+            0,
+            Math.min(
+              row.ended_at ? new Date(row.ended_at).getTime() : now,
+              now,
+            ) -
+              Math.max(
+                new Date(row.started_at).getTime(),
+                new Date(cutoff).getTime(),
+              ),
+          ),
+        0,
+      ) / 60000,
+    );
+  const done = new Set((checks.data ?? []).map((r) => r.routine_id)),
+    routineRows = routines.data ?? [],
+    completed = routineRows.filter((r) => done.has(r.id)).length;
+  const writable = role === "owner" || role === "caregiver";
+  const metrics = [
+    older
+      ? {
+          slug: "routines",
+          Icon: ListChecks,
+          label: "Nos rituels aujourd’hui",
+          value: routineRows.length
+            ? `${completed} / ${routineRows.length}`
+            : "À inventer",
+          detail: routineRows.length
+            ? "Petits gestes accomplis ensemble"
+            : "Créer les habitudes de votre famille",
+        }
+      : {
+          slug: "feed",
+          Icon: Milk,
+          label: "Repas enregistrés",
+          value: String(feeds.data?.length ?? 0),
+          detail: "Sur les dernières 24 heures",
+        },
+    {
+      slug: "sleep",
+      Icon: Moon,
+      label: "Sommeil enregistré",
+      value: sleepMinutes
+        ? `${Math.floor(sleepMinutes / 60)} h ${String(sleepMinutes % 60).padStart(2, "0")}`
+        : "—",
+      detail: sleeps.data?.some((s) => !s.ended_at)
+        ? "Un sommeil est en cours"
+        : "Sur les dernières 24 heures",
+    },
+    older
+      ? {
+          slug: "growth",
+          Icon: Ruler,
+          label: "Dernière taille",
+          value: measure.data?.height_cm ? `${measure.data.height_cm} cm` : "—",
+          detail: measure.data?.measured_at
+            ? `Mesure du ${parseCalendarDate(measure.data.measured_at)?.toLocaleDateString("fr-FR")}`
+            : "Quand vous le souhaitez",
+        }
+      : {
+          slug: "diapers",
+          Icon: Droplets,
+          label: "Changes enregistrés",
+          value: String(diapers.count ?? 0),
+          detail: "Sur les dernières 24 heures",
+        },
+    {
+      slug: "growth",
+      Icon: Ruler,
+      label: "Dernier poids",
+      value: measure.data?.weight_g
+        ? `${(measure.data.weight_g / 1000).toLocaleString("fr-FR")} kg`
+        : "—",
+      detail: "Vos mesures, conservées au fil du temps",
+    },
   ];
-  return <section className="mx-auto max-w-3xl px-4 py-6 sm:px-6 space-y-6">
-    <BabyPicker />
-    <div className="relative overflow-hidden rounded-[2rem] border border-border bg-gradient-to-br from-pink-100/70 via-white to-purple-100/70 dark:from-pink-950/40 dark:via-gray-900 dark:to-purple-950/40 p-6 sm:p-8 shadow-[var(--shadow-card)]">
-      <span aria-hidden className="absolute -right-10 -top-12 size-48 rounded-full bg-purple-200/20 blur-2xl" />
-      <div className="relative flex items-center gap-5"><div className="flex size-20 shrink-0 items-center justify-center rounded-[1.75rem] bg-white/80 dark:bg-gray-800 text-4xl shadow-sm" aria-hidden>👶</div>
-        <div className="min-w-0"><p className="text-xs font-semibold uppercase tracking-widest text-brand">Votre petit monde</p><h1 className="mt-1 truncate text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{baby.name}</h1><p className="mt-2 text-sm text-foreground-muted">{formatAge(baby.birth_date)} · {new Date(baby.birth_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</p></div>
+  const quick = older
+    ? [
+        { slug: "routines", label: "Un rituel" },
+        { slug: "activities", label: "Un moment de jeu" },
+        { slug: "health", label: "Sa santé" },
+        { slug: "diary", label: "Un souvenir" },
+      ]
+    : [
+        { slug: "feed", label: "Un repas" },
+        { slug: "sleep", label: "Un sommeil" },
+        { slug: "diapers", label: "Une couche" },
+        { slug: "diary", label: "Un souvenir" },
+      ];
+  return (
+    <div className="mt-shell">
+      <BabyPicker />
+      <div className="mt-welcome">
+        <div>
+          <p className="mt-eyebrow">
+            Notre aventure · {older ? "3–6 ans" : "Les premières années"}
+          </p>
+          <h1 className="mt-display">
+            Le petit monde de {baby.name}
+            <span className="text-brand">.</span>
+          </h1>
+          <p>
+            {older
+              ? "Grandir, découvrir, inventer. Et garder les plus beaux moments."
+              : "Les petits gestes d’aujourd’hui. Les souvenirs de demain."}
+          </p>
+        </div>
       </div>
-      <Link href="/enfant/milestones" className="relative mt-6 block rounded-2xl bg-white/60 dark:bg-gray-800/50 p-4"><p className="flex justify-between text-xs font-medium text-foreground-muted"><span>Ses premières années</span><span className="text-brand">Voir ses étapes →</span></p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-pink-100 dark:bg-gray-700"><div className="h-full rounded-full bg-gradient-to-r from-pink-400 to-purple-400" style={{ width: `${Math.min(100, months / 36 * 100)}%` }} /></div><div className="mt-2 flex justify-between text-[10px] text-foreground-subtle"><span>Naissance</span><span>1 an</span><span>2 ans</span><span>3 ans</span></div></Link>
+      {params.bienvenue && (
+        <p role="status" className="mt-note mb-5 flex items-center gap-3">
+          <Sparkles size={20} className="shrink-0 text-brand" />
+          Bienvenue dans son carnet. Votre espace s’est adapté à son âge ;
+          l’histoire de grossesse reste accessible.
+        </p>
+      )}
+      {role === "viewer" && (
+        <p className="mt-note mb-5">
+          Ce carnet est partagé avec vous en lecture seule.
+        </p>
+      )}
+      <div className="mt-dashboard-grid">
+        <div className="mt-stack">
+          <section className="mt-hero">
+            <div className="mt-hero-copy">
+              <span className="mt-pill">
+                <Heart size={12} />
+                {older ? "Chapitre 03 · 3–6 ans" : "Chapitre 02 · 0–3 ans"}
+              </span>
+              <p className="mt-eyebrow mt-5">Son âge aujourd’hui</p>
+              <h2 className="mt-display mt-2">
+                {childAgeLabel(baby.birth_date)}
+              </h2>
+              <p>
+                {older
+                  ? "Des rituels, des jeux et des souvenirs pour ses grandes aventures."
+                  : "Chaque jour, une petite première. Son carnet grandit à votre rythme."}
+              </p>
+              <Link href="/enfant/milestones" className="mt-link mt-5">
+                Célébrer ses petites fiertés <ArrowRight size={14} />
+              </Link>
+            </div>
+            <JourneyArtwork phase={phase} className="mt-artwork" />
+            <div className="mt-hero-footer">
+              <JourneyRail phase={phase} />
+            </div>
+          </section>
+          {writable && (
+            <div>
+              <div className="mt-section-title">
+                <h2>Un petit geste, et c’est noté</h2>
+                <span>Vos essentiels</span>
+              </div>
+              <div className="mt-quick-grid">
+                {quick.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={`/enfant/${item.slug}`}
+                    className="mt-quick-action"
+                  >
+                    <ModuleIconCircle slug={item.slug} size="sm" />
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+          <div>
+            <div className="mt-section-title">
+              <h2>Le quotidien, simplement</h2>
+              <Link href="/enfant/timeline" className="mt-link">
+                Notre histoire <ArrowRight size={12} />
+              </Link>
+            </div>
+            <div className="mt-metrics">
+              {metrics.map(({ slug, Icon, label, value, detail }) => (
+                <Link
+                  href={`/enfant/${slug}`}
+                  key={label}
+                  className="mt-metric"
+                >
+                  <Icon size={19} className="text-foreground-muted" />
+                  <p className="mt-metric-label">{label}</p>
+                  <p className="mt-metric-value">{value}</p>
+                  <p className="mt-metric-detail">{detail}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+          {older && (
+            <section className="mt-card">
+              <div className="mt-card-header">
+                <h2>Nos rituels du jour</h2>
+                <ListChecks size={18} />
+              </div>
+              {routineRows.length ? (
+                <div className="mt-timeline">
+                  {routineRows.slice(0, 4).map((r) => (
+                    <Link
+                      className="mt-timeline-item"
+                      href="/enfant/routines"
+                      key={r.id}
+                    >
+                      <span className="mt-icon-soft">
+                        {done.has(r.id) ? (
+                          <Check size={17} />
+                        ) : (
+                          <ListChecks size={17} />
+                        )}
+                      </span>
+                      <div>
+                        <p>{r.title}</p>
+                        <small>
+                          {done.has(r.id)
+                            ? "Un petit geste accompli"
+                            : "Quand vous êtes prêts"}
+                        </small>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-empty">
+                  Un brossage de dents, une histoire, un moment ensemble…
+                  Inventez les rituels qui vous ressemblent.
+                </p>
+              )}
+              <Link href="/enfant/routines" className="mt-link mt-4">
+                Ouvrir nos rituels <ArrowRight size={13} />
+              </Link>
+            </section>
+          )}
+          <section className="mt-card">
+            <div className="mt-card-header">
+              <h2>Les moments à garder</h2>
+              <BookHeart size={19} />
+            </div>
+            {diary.data?.length ? (
+              <div className="mt-timeline">
+                {diary.data.map((entry) => (
+                  <Link
+                    href="/enfant/diary"
+                    className="mt-timeline-item"
+                    key={entry.id}
+                  >
+                    <span className="mt-icon-soft">
+                      <BookHeart size={17} />
+                    </span>
+                    <div>
+                      <p>{entry.title || "Un moment en famille"}</p>
+                      <small>
+                        {parseCalendarDate(
+                          entry.entry_date,
+                        )?.toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                        })}
+                      </small>
+                      {entry.body && (
+                        <small className="mt-1 line-clamp-2">
+                          {entry.body}
+                        </small>
+                      )}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-empty">
+                Sa première grimace, une phrase drôle, un câlin… Votre première
+                page vous attend.
+              </p>
+            )}
+            <Link href="/enfant/diary" className="mt-link mt-4">
+              Ouvrir notre journal <ArrowRight size={13} />
+            </Link>
+          </section>
+        </div>
+        <aside className="mt-stack mt-stack-secondary">
+          <section className="mt-card">
+            <div className="mt-card-header">
+              <h2>À venir dans son agenda</h2>
+              <CalendarDays size={18} />
+            </div>
+            {appointments.data?.length ? (
+              <div className="mt-timeline">
+                {appointments.data.map((a) => (
+                  <Link
+                    href="/enfant/agenda"
+                    key={a.id}
+                    className="mt-timeline-item"
+                  >
+                    <span className="mt-icon-soft">
+                      <CalendarDays size={16} />
+                    </span>
+                    <div>
+                      <p>{a.title || "Rendez-vous"}</p>
+                      <small>
+                        {new Date(a.occurred_at).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "long",
+                          timeZone: "Europe/Paris",
+                        })}
+                      </small>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-empty">
+                Vos prochains rendez-vous apparaîtront ici. Retrouvez aussi les
+                visites de suivi jusqu’à 6 ans.
+              </p>
+            )}
+            <Link href="/enfant/agenda" className="mt-link mt-4">
+              Ouvrir l’agenda <ArrowRight size={13} />
+            </Link>
+          </section>
+          <section className="mt-care-card">
+            <Sparkles size={22} />
+            <h2 className="mt-4">
+              {older
+                ? "Le meilleur jeu ?\nCelui qu’on partage."
+                : "Un peu de douceur.\nUn peu de soutien."}
+            </h2>
+            <p>
+              {older
+                ? "Une histoire inventée, une danse, une promenade des couleurs. Des idées simples pour se retrouver."
+                : "Les premiers mois apportent beaucoup de questions. Retrouvez vos ressources et votre assistant parental."}
+            </p>
+            <Link
+              href={older ? "/enfant/activities" : "/enfant/coach"}
+              className="mt-link"
+            >
+              {older ? "Trouver une idée de jeu" : "Un peu d’aide"}{" "}
+              <ArrowRight size={14} />
+            </Link>
+          </section>
+          <section className="mt-card">
+            <div className="mt-card-header">
+              <h2>Ses repères de santé</h2>
+              <ShieldCheck size={19} />
+            </div>
+            <p className="text-xs leading-6 text-foreground-muted">
+              Le calendrier français 2026, ses doses enregistrées et le rappel
+              des 6 ans, au même endroit.
+            </p>
+            <Link href="/enfant/vaccines" className="mt-link mt-4">
+              Son carnet vaccinal <ArrowRight size={13} />
+            </Link>
+            <Link href="/enfant/pediatrician" className="mt-link mt-4">
+              Partager avec un professionnel <ArrowRight size={13} />
+            </Link>
+          </section>
+          <section className="mt-card">
+            <div className="mt-card-header">
+              <h2>Ensemble, c’est plus doux</h2>
+              <Users size={19} />
+            </div>
+            <p className="text-xs leading-6 text-foreground-muted">
+              Invitez votre coparent ou un proche. Choisissez qui peut consulter
+              et qui peut participer.
+            </p>
+            <Link href="/enfant/duo" className="mt-link mt-4">
+              Notre cercle de confiance <ArrowRight size={13} />
+            </Link>
+          </section>
+          <Link href="/enfant/plus" className="mt-note">
+            <strong>Votre boîte à outils</strong>
+            <span className="block mt-1">
+              Tous les suivis, les souvenirs et les réglages de la famille. →
+            </span>
+          </Link>
+        </aside>
+      </div>
     </div>
-    {role === "viewer" && <p className="rounded-2xl bg-info-soft p-3 text-xs text-info-text">Ce carnet est partagé avec toi en lecture seule.</p>}
-    {role !== "viewer" && <div><h2 className="mb-3 text-sm font-semibold text-foreground">En un geste</h2><div className="grid grid-cols-4 gap-2 sm:gap-3">{[{ slug: "feed", label: "Un repas" }, { slug: "sleep", label: "Un sommeil" }, { slug: "diapers", label: "Une couche" }, { slug: "diary", label: "Un souvenir" }].map(item => <Link key={item.slug} href={`/enfant/${item.slug}`} className="bt-card-hover flex min-h-24 flex-col items-center justify-center gap-2 rounded-3xl border border-border bg-surface p-3"><ModuleIconCircle slug={item.slug} size="sm" /><span className="text-center text-[11px] font-semibold text-foreground">{item.label}</span></Link>)}</div></div>}
-    <div><h2 className="mb-3 flex justify-between text-sm font-semibold text-foreground"><span>Le quotidien</span><span className="text-xs font-normal text-foreground-muted">Dernières 24 h</span></h2><div className="grid grid-cols-2 gap-3">{summaries.map(({ Icon, ...item }) => <Link key={item.slug} href={`/enfant/${item.slug}`} className="bt-card-hover rounded-3xl border border-border bg-surface p-5 shadow-[var(--shadow-xs)]"><div className="flex items-center justify-between"><span className={`flex size-9 items-center justify-center rounded-xl ${item.color}`}><Icon size={18} /></span><ArrowRight size={14} className="text-foreground-subtle" /></div><p className="mt-4 text-xs text-foreground-muted">{item.label}</p><p className="mt-1 text-2xl font-bold text-foreground">{item.value}</p><p className="mt-1 text-[11px] text-foreground-subtle">{item.detail}</p></Link>)}</div></div>
-    <div className="grid gap-3 sm:grid-cols-3">{[{ href: "vaccines", label: "Son carnet de santé", desc: "Vaccins et rendez-vous", Icon: ShieldCheck }, { href: "duo", label: "Toute la famille", desc: "Partager son quotidien", Icon: Users }, { href: "coach", label: "Un peu d’aide", desc: "Votre assistant bébé", Icon: Sparkles }].map(({ Icon, ...item }) => <Link key={item.href} href={`/enfant/${item.href}`} className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4"><Icon size={20} className="shrink-0 text-brand" /><div><p className="text-xs font-semibold text-foreground">{item.label}</p><p className="mt-1 text-[11px] text-foreground-muted">{item.desc}</p></div></Link>)}</div>
-    <Link href="/enfant/plus" className="block rounded-2xl border border-border bg-surface py-4 text-center text-sm font-semibold text-brand">Découvrir tous les outils de bébé →</Link>
-  </section>;
+  );
 }

@@ -1,4 +1,10 @@
-# MamaTrack — grossesse, naissance et premières années
+# MamaTrack — grossesse, naissance et enfance jusqu’à 6 ans
+
+## Refonte du 6 octobre 2026
+
+La plateforme commune dispose désormais de trois chapitres : grossesse, 0–3 ans et 3–6 ans. La confirmation de la naissance ouvre le carnet ; l’anniversaire des trois ans adapte le même historique. Une nouvelle identité visuelle, une navigation commune, les rituels quotidiens partagés, des activités avec souvenirs et les repères de santé jusqu’à 6 ans complètent le parcours. La migration additive `20261006_child_routines.sql` est appliquée à MamaTrack ; les tables existantes et la source BabyTrack sont conservées. Les 76 tests, la compilation et les parcours locaux authentifiés sont décrits dans [le rapport de refonte](./REFONTE-PARENTS-2026.md).
+
+Le transfert des anciens carnets reste authentifié par les deux comptes : la fusion de la plateforme ne déplace pas automatiquement les comptes BabyTrack. La rotation des secrets signalée ci-dessous reste à réaliser.
 
 ## État du 4 octobre 2026
 

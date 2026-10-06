@@ -13,6 +13,7 @@ import MotionProvider from "@/components/MotionProvider";
 import { FamilyProvider } from "@/lib/family";
 import { AiConsentProvider } from "@/lib/use-ai-consent";
 import "./enfant.css";
+import AppContent from "@/components/AppContent";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,16 +27,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "MamaTrack — De la grossesse aux premiers pas",
+    default: "MamaTrack — De la grossesse aux 6 ans de votre enfant",
     template: "%s | MamaTrack",
   },
   icons: {
-    icon: [
-      { url: "/icons/icon-192x192.png", type: "image/png" },
-    ],
+    icon: [{ url: "/icons/icon-192x192.png", type: "image/png" }],
     apple: "/icons/icon-192x192.png",
   },
-  description: "Grossesse, naissance et suivi de bébé jusqu’à 3 ans : une application pour toute la famille. Repas, sommeil, croissance, rendez-vous et souvenirs. Suivi essentiel gratuit, options Premium.",
+  description:
+    "De la grossesse aux 6 ans : votre carnet de famille pour les repas, le sommeil, la croissance, les vaccins, les routines et tous les beaux souvenirs. Suivi essentiel gratuit, options Premium.",
   manifest: "/manifest.json",
   metadataBase: new URL("https://mamatrack.fr"),
   alternates: {
@@ -46,14 +46,15 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: "https://mamatrack.fr",
     siteName: "MamaTrack",
-    title: "MamaTrack — De la grossesse aux premiers pas",
-    description: "Un carnet familial de la grossesse aux premiers pas : naissance, repas, sommeil, croissance et souvenirs. Suivi essentiel gratuit, options Premium.",
+    title: "MamaTrack — Votre grande aventure, de la grossesse aux 6 ans",
+    description:
+      "Un carnet familial de la grossesse aux 6 ans : naissance, repas, sommeil, routines, croissance et souvenirs. Suivi essentiel gratuit, options Premium.",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "MamaTrack — Votre compagnon de grossesse gratuit",
+        alt: "MamaTrack — Votre histoire de famille, de la grossesse à 6 ans",
         type: "image/png",
       },
     ],
@@ -62,14 +63,15 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@mamatrack_fr",
     creator: "@mamatrack_fr",
-    title: "MamaTrack — De la grossesse aux premiers pas",
-    description: "De la grossesse aux 3 ans de bébé : un suivi et un carnet familial réunis dans MamaTrack.",
+    title: "MamaTrack — De la grossesse aux 6 ans",
+    description:
+      "Grossesse, naissance, premières années et grandes aventures : un carnet pour toute la famille.",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "MamaTrack — Votre compagnon de grossesse gratuit",
+        alt: "MamaTrack — Votre histoire de famille, de la grossesse à 6 ans",
       },
     ],
   },
@@ -120,7 +122,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f472b6",
+  themeColor: "#274c40",
   colorScheme: "light dark",
 };
 
@@ -141,48 +143,65 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="MamaTrack" />
-        
+
         {/* Apple touch icons */}
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
-        <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192x192.png" />
-        
+        <link
+          rel="apple-touch-icon"
+          sizes="152x152"
+          href="/icons/icon-152x152.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/icons/icon-192x192.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="167x167"
+          href="/icons/icon-192x192.png"
+        />
+
         {/* Splash screens for iOS */}
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
       </head>
-      <body className="h-screen flex flex-col overflow-hidden bg-[#fdf6f0] dark:bg-[#0f0f1a]">
+      <body className="h-dvh flex flex-col overflow-hidden bg-background">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-        <I18nProvider>
-        <AuthProvider>
-          <FamilyProvider>
-          <AiConsentProvider>
-          <ToastProvider>
-            <StoreProvider>
-              <MotionProvider>
-                <OfflineBanner />
-                <ConditionalNav />
-                <InstallBanner />
-                <a href="#contenu-principal" className="skip-link">
-                  Aller au contenu principal
-                </a>
-                <main id="contenu-principal" className="flex-1 pb-24 overflow-y-auto">
-                  {children}
-                </main>
-              </MotionProvider>
-            </StoreProvider>
-          </ToastProvider>
-          </AiConsentProvider>
-          </FamilyProvider>
-        </AuthProvider>
-        </I18nProvider>
+          <I18nProvider>
+            <AuthProvider>
+              <FamilyProvider>
+                <AiConsentProvider>
+                  <ToastProvider>
+                    <StoreProvider>
+                      <MotionProvider>
+                        <OfflineBanner />
+                        <ConditionalNav />
+                        <InstallBanner />
+                        <a href="#contenu-principal" className="skip-link">
+                          Aller au contenu principal
+                        </a>
+                        <AppContent>{children}</AppContent>
+                      </MotionProvider>
+                    </StoreProvider>
+                  </ToastProvider>
+                </AiConsentProvider>
+              </FamilyProvider>
+            </AuthProvider>
+          </I18nProvider>
         </ThemeProvider>
-        
+
         {/* Service Worker Registration */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if ('serviceWorker' in navigator) {
+              if ('serviceWorker' in navigator && ${process.env.NODE_ENV !== "production"}) {
+                navigator.serviceWorker.getRegistrations().then(regs => Promise.all(regs.filter(reg => ['/service-worker.js','/sw.js'].some(path => (reg.active?.scriptURL || '').endsWith(path))).map(reg => reg.unregister())));
+                caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('mamatrack-')).map(key => caches.delete(key))));
+              }
+              if ('serviceWorker' in navigator && ${process.env.NODE_ENV === "production"}) {
                 window.addEventListener('load', function() {
                   // Unregister old /sw.js (stuck in Vercel edge cache) before
                   // registering the new /service-worker.js path.

@@ -1,4 +1,4 @@
-// Conseils par tranche d'âge (0-36 mois)
+// Conseils par tranche d’âge (0–6 ans)
 // Sources : Santé publique France, Société française de pédiatrie, OMS, mpedia.fr
 // Contenu indicatif — ne remplace pas l'avis du pédiatre.
 
@@ -224,7 +224,7 @@ export const AGE_RANGES: AgeRange[] = [
     minMonths: 12,
     maxMonths: 24,
     intro:
-      "Premiers pas, premiers mots, premiers \"non\". Bébé devient un petit explorateur qui teste sans cesse les limites — c'est sain.",
+      'Premiers pas, premiers mots, premiers "non". Bébé devient un petit explorateur qui teste sans cesse les limites — c\'est sain.',
     conseils: [
       {
         slug: "lait-vache",
@@ -248,13 +248,13 @@ export const AGE_RANGES: AgeRange[] = [
         slug: "langage",
         title: "Stimuler le langage",
         category: "developpement",
-        body: "Parle beaucoup à bébé, nomme les objets, lis des livres tous les jours, chante. Reformule sans corriger (s'il dit \"o\" pour eau, réponds \"oui, tu veux de l'eau\"). À 24 mois, vocabulaire moyen : 50-200 mots.",
+        body: 'Parle beaucoup à bébé, nomme les objets, lis des livres tous les jours, chante. Reformule sans corriger (s\'il dit "o" pour eau, réponds "oui, tu veux de l\'eau"). À 24 mois, vocabulaire moyen : 50-200 mots.',
       },
       {
         slug: "colere",
         title: "Crises de colère",
         category: "quotidien",
-        body: "Vers 18 mois apparaît le \"terrible two\". Les crises sont liées à un cerveau qui n'arrive pas encore à gérer la frustration. Reste calme, valide l'émotion (\"tu es très en colère\"), pose la limite avec bienveillance.",
+        body: 'Vers 18 mois apparaît le "terrible two". Les crises sont liées à un cerveau qui n\'arrive pas encore à gérer la frustration. Reste calme, valide l\'émotion ("tu es très en colère"), pose la limite avec bienveillance.',
       },
       {
         slug: "noyade",
@@ -319,7 +319,42 @@ export const AGE_RANGES: AgeRange[] = [
         slug: "rdv-pediatre-suivi",
         title: "Rendez-vous de suivi",
         category: "sante",
-        body: "Visite obligatoire à 24 mois (bilan développement) puis à 3-4 ans avant l'école. Carnet de santé à jour, vaccins (ROR rappel, Méningo C), bilan langage si moins de 50 mots à 24 mois.",
+        body: "Apportez le carnet de santé aux examens de suivi entre 23 et 24 mois, puis chaque année de 2 à 6 ans. Vérifiez le calendrier vaccinal avec le médecin et parlez-lui des questions qui vous préoccupent sur son développement.",
+      },
+    ],
+  },
+  {
+    slug: "3-6-ans",
+    label: "3–6 ans",
+    emoji: "🎒",
+    minMonths: 36,
+    maxMonths: 73,
+    intro:
+      "Ses idées grandissent et son monde s’agrandit. Des repères pour l’accompagner, à votre rythme.",
+    conseils: [
+      {
+        slug: "parler-jouer",
+        title: "Un moment vraiment ensemble",
+        category: "developpement",
+        body: "Laissez votre enfant inventer un jeu et vous expliquer ses idées. Un livre, une chanson ou un dessin peuvent ouvrir la conversation. Ses questions comptent autant que les réponses.",
+      },
+      {
+        slug: "petits-choix",
+        title: "L’autonomie par de petits choix",
+        category: "quotidien",
+        body: "Proposez deux options simples, comme choisir une tenue ou un livre. Confiez une petite tâche adaptée à ses capacités. Encouragez son essai sans exiger un résultat parfait.",
+      },
+      {
+        slug: "rituels-souples",
+        title: "Des rituels qui rassurent",
+        category: "sommeil",
+        body: "Créez une suite de petits gestes familiers avant le coucher : se préparer, lire une histoire, se dire bonne nuit. Ajustez-la à votre famille et prenez le temps d’écouter ce qui le préoccupe.",
+      },
+      {
+        slug: "visites-enfance",
+        title: "Préparer les visites de santé",
+        category: "sante",
+        body: "Entre 3 et 6 ans, les examens de suivi permettent de discuter de sa croissance, de son développement, de la vue, de l’audition et de son quotidien. Apportez son carnet de santé et vos questions. Vérifiez avec le médecin les examens réalisés à l’école et le rappel vaccinal des 6 ans.",
       },
     ],
   },

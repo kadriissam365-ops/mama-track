@@ -1,7 +1,12 @@
+import { childAgeMonths } from "@/lib/family-journey";
 import { AiConsentGate } from "@/components/AiConsentGate";
 import { redirect } from "next/navigation";
 import { ModuleShell } from "@/components/enfant/ModuleShell";
-import { getCachedUser, requireUserAndBaby, ageInDays, formatAge } from "@/lib/enfant/baby";
+import {
+  getCachedUser,
+  requireUserAndBaby,
+  formatAge,
+} from "@/lib/enfant/baby";
 import { CoachChat } from "./CoachChat";
 
 export const dynamic = "force-dynamic";
@@ -40,6 +45,13 @@ function suggestionsForAge(months: number, name: string): string[] {
       `Quels jeux pour stimuler la motricité ?`,
     ];
   }
+  if (months >= 36)
+    return [
+      `Quelles idées de jeux partager avec ${name} ?`,
+      `Comment créer une routine du soir qui nous ressemble ?`,
+      `Comment accompagner ses grandes émotions ?`,
+      `Comment préparer les visites de santé entre 3 et 6 ans ?`,
+    ];
   return [
     `Comment démarrer la propreté en douceur ?`,
     `${name} dit non à tout, comment gérer ?`,
@@ -55,25 +67,41 @@ export default async function CoachPage() {
   const { baby, supabase } = await requireUserAndBaby(user);
   if (!baby) redirect("/enfant/onboarding");
 
-  const months = Math.floor(ageInDays(baby.birth_date) / 30.44);
+  const months = childAgeMonths(baby.birth_date);
   const suggestions = suggestionsForAge(months, baby.name);
   const ageLabel = formatAge(baby.birth_date);
-  const { data: history, error } = await supabase.from("coach_messages").select("id,role,content").eq("baby_id", baby.id).eq("user_id", user.id).order("created_at", { ascending: false }).limit(60);
+  const { data: history, error } = await supabase
+    .from("coach_messages")
+    .select("id,role,content")
+    .eq("baby_id", baby.id)
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(60);
   if (error) throw new Error("La conversation est momentanément indisponible.");
 
   return (
     <ModuleShell
       slug="coach"
-      title="Coach IA"
-      subtitle={`Assistant pédiatrique pour ${baby.name} (${ageLabel}). Pose ta question, je m'appuie sur les repères HAS / Santé publique France.`}
+      title="Un peu d’aide"
+      subtitle={`Votre assistant parental pour ${baby.name} (${ageLabel}). Organisation, jeux et repères à discuter avec un professionnel.`}
     >
-      <AiConsentGate feature="Assistant bébé" description="L’assistant utilise le contexte du carnet pour te répondre. Il ne remplace jamais le suivi par un professionnel de santé." dataSent={["Prénom, âge et sexe de bébé", "Dernières mesures de croissance", "Messages de la conversation"]}><CoachChat
-        key={baby.id}
-        initialMessages={(history ?? []).reverse()}
-        babyName={baby.name}
-        ageLabel={ageLabel}
-        suggestions={suggestions}
-      /></AiConsentGate>
+      <AiConsentGate
+        feature="Assistant parental"
+        description="L’assistant utilise le contexte du carnet pour te répondre. Il ne remplace jamais le suivi par un professionnel de santé."
+        dataSent={[
+          "Prénom, âge et sexe de votre enfant",
+          "Dernières mesures de croissance",
+          "Messages de la conversation",
+        ]}
+      >
+        <CoachChat
+          key={baby.id}
+          initialMessages={(history ?? []).reverse()}
+          babyName={baby.name}
+          ageLabel={ageLabel}
+          suggestions={suggestions}
+        />
+      </AiConsentGate>
     </ModuleShell>
   );
 }

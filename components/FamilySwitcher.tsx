@@ -2,32 +2,89 @@
 
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Baby, Heart, Loader2 } from "lucide-react";
+import { Baby, Heart, Loader2, Sprout } from "lucide-react";
 import { useFamily } from "@/lib/family";
+import { childPhase, type JourneyPhase } from "@/lib/family-journey";
 
 export default function FamilySwitcher() {
   const pathname = usePathname();
   const router = useRouter();
   const family = useFamily();
-  const [pending, setPending] = useState(false);
+  const [pending, setPending] = useState<JourneyPhase | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const inBaby = pathname.startsWith("/enfant");
-  const switchTo = async (stage: "pregnancy" | "baby") => {
-    setPending(true); setError(null);
+  const selected = family.babies.find(
+    (baby) => baby.id === family.activeBabyId,
+  );
+  const phase = pathname.startsWith("/enfant")
+    ? selected
+      ? childPhase(selected.birth_date)
+      : "baby"
+    : "pregnancy";
+  const switchTo = async (next: JourneyPhase) => {
+    setPending(next);
+    setError(null);
     try {
-      await family.select(stage);
-      router.push(stage === "baby" ? "/enfant/dashboard" : "/?espace=grossesse");
+      if (next === "pregnancy") {
+        await family.select("pregnancy");
+        router.push("/?espace=grossesse");
+      } else {
+        const target =
+          family.babies.find(
+            (baby) =>
+              baby.id === family.activeBabyId &&
+              childPhase(baby.birth_date) === next,
+          ) ??
+          family.babies.find((baby) => childPhase(baby.birth_date) === next);
+        if (target) {
+          await family.select("baby", target.id);
+          router.push("/enfant/dashboard");
+        } else
+          router.push(
+            `/enfant/naissance${next === "child" ? "?parcours=enfant" : ""}`,
+          );
+      }
       router.refresh();
-    } catch (error) { setError(error instanceof Error ? error.message : "Réessaie dans un instant."); }
-    finally { setPending(false); }
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Réessaie dans un instant.",
+      );
+    } finally {
+      setPending(null);
+    }
   };
-  return <div className="max-w-lg mx-auto mt-3">
-    <div className="flex gap-1 rounded-2xl bg-pink-50/80 dark:bg-gray-800 p-1 border border-pink-100 dark:border-gray-700" aria-label="Choisir un espace">
-      {[{ stage: "pregnancy" as const, label: "Grossesse", icon: Heart }, { stage: "baby" as const, label: "Bébé · 0–3 ans", icon: Baby }].map(({ stage, label, icon: Icon }) => {
-        const active = stage === "baby" ? inBaby : !inBaby;
-        return <button key={stage} type="button" onClick={() => switchTo(stage)} disabled={pending} aria-pressed={active} className={`flex-1 flex items-center justify-center gap-2 min-h-10 rounded-xl text-xs font-semibold transition ${active ? "bg-white dark:bg-gray-900 text-pink-700 dark:text-pink-200 shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-pink-600"}`}><Icon className="w-4 h-4" />{label}{pending && active && <Loader2 className="w-3 h-3 animate-spin" />}</button>;
-      })}
+  return (
+    <div>
+      <div
+        className="mt-stage-switch"
+        aria-label="Choisir un chapitre familial"
+        aria-busy={family.loading}
+      >
+        {[
+          { stage: "pregnancy" as const, label: "Grossesse", Icon: Heart },
+          { stage: "baby" as const, label: "0–3 ans", Icon: Baby },
+          { stage: "child" as const, label: "3–6 ans", Icon: Sprout },
+        ].map(({ stage, label, Icon }) => (
+          <button
+            key={stage}
+            type="button"
+            onClick={() => switchTo(stage)}
+            disabled={pending !== null || family.loading}
+            aria-pressed={!family.loading && phase === stage}
+          >
+            {pending === stage ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Icon size={14} />
+            )}
+            {label}
+          </button>
+        ))}
+      </div>
+      {error && (
+        <p role="alert" className="mt-2 text-xs text-danger">
+          {error}
+        </p>
+      )}
     </div>
-    {error && <p role="alert" className="mt-2 text-xs text-red-600 dark:text-red-300">{error}</p>}
-  </div>;
+  );
 }

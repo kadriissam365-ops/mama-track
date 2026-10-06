@@ -1,602 +1,564 @@
 "use client";
 
-import { useStoredString } from "@/lib/client-state";
-import { useState, useEffect } from "react";
-import { m as motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import {
+  Activity,
+  ArrowRight,
+  Baby,
+  BookHeart,
+  CalendarDays,
+  Check,
+  Droplets,
+  Heart,
+  Loader2,
+  Scale,
+  Share2,
+  Sparkles,
+  Timer,
+  Users,
+} from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
+import { useFamily } from "@/lib/family";
+import { useToast } from "@/lib/toast";
 import {
   getCurrentWeek,
   getCurrentWeekAndDays,
-  getDaysRemaining,
   getProgressPercent,
   getWeekData,
 } from "@/lib/pregnancy-data";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import { Scale, Activity, Calendar, Droplets, Settings, Timer, Share2, BarChart3, Calculator } from "lucide-react";
-import DpaCalculator from "@/components/DpaCalculator";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import { DashboardSkeleton } from "@/components/Skeleton";
-import { initializeNotifications } from "@/lib/notifications";
-import { WATER_GOAL_ML } from "@/lib/constants";
-import ReminderBanner from "@/components/ReminderBanner";
-import MamaCoachAlerts from "@/components/MamaCoachAlerts";
-import Paywall from "@/components/Paywall";
-import { MedicalSources } from "@/components/MedicalSources";
-import { Skeleton } from "@/components/Skeleton";
-import { useIsPremium } from "@/lib/use-premium";
-
+import {
+  calendarDate,
+  parseCalendarDate,
+  pregnancyMoment,
+} from "@/lib/family-journey";
 import { getPartnerAccess } from "@/lib/duo-api";
-import { useFamily } from "@/lib/family";
-import Link from "next/link";
+import { WATER_GOAL_ML } from "@/lib/constants";
+import { MedicalSources } from "@/components/MedicalSources";
+import { DashboardSkeleton } from "@/components/Skeleton";
+import DpaCalculator from "@/components/DpaCalculator";
+import JourneyArtwork from "@/components/JourneyArtwork";
+import JourneyRail from "@/components/JourneyRail";
+import ReminderBanner from "@/components/ReminderBanner";
 
 const LandingPage = dynamic(() => import("@/components/LandingPage"), {
-  ssr: false,
-  loading: () => <div className="min-h-screen flex items-center justify-center"><DashboardSkeleton /></div>,
+  loading: () => <DashboardSkeleton />,
 });
-
 const WeeklyReport = dynamic(() => import("@/components/WeeklyReport"), {
   ssr: false,
-  loading: () => <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center"><div className="bg-white dark:bg-gray-900 rounded-t-3xl p-6 w-full max-w-lg h-[60vh] animate-pulse" /></div>,
 });
 const ShareCard = dynamic(() => import("@/components/ShareCard"), {
   ssr: false,
-  loading: () => <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center"><div className="bg-white dark:bg-gray-900 rounded-3xl p-6 w-full max-w-sm h-96 animate-pulse" /></div>,
-});
-const DailyStory = dynamic(() => import("@/components/DailyStory"), {
-  ssr: false,
-  loading: () => <Skeleton className="h-32 w-full rounded-3xl" />,
 });
 
 export default function DashboardPage() {
-  const store = useStore();
-  const { user, isAuthenticated } = useAuth();
-  const { isPremium, loading: premiumLoading } = useIsPremium();
-  const router = useRouter();
-  const family = useFamily();
+  const store = useStore(),
+    family = useFamily(),
+    toast = useToast(),
+    router = useRouter();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const [showSetup, setShowSetup] = useState(false),
+    [showCalculator, setShowCalculator] = useState(false);
+  const [dateDraft, setDateDraft] = useState<string | null>(null),
+    [saving, setSaving] = useState(false);
+  const [showShare, setShowShare] = useState(false),
+    [showReport, setShowReport] = useState(false);
+  const draft = dateDraft ?? store.dueDate ?? "";
   useEffect(() => {
-    if (isAuthenticated && !family.loading && family.activeStage === "baby") router.replace("/enfant/dashboard");
+    if (isAuthenticated && !family.loading && family.activeStage === "baby")
+      router.replace("/enfant/dashboard");
   }, [isAuthenticated, family.loading, family.activeStage, router]);
-  const [showSetup, setShowSetup] = useState(false);
-  const [showDpaCalc, setShowDpaCalc] = useState(false);
-  const [dateDraft, setDateInput] = useState<string | null>(null);
-  const dateInput = dateDraft ?? store.dueDate ?? "";
-  const favorites = useStoredString("prenom-favoris", "[]");
-  let prenomFavorisCount = 0;
-  try { const values = JSON.parse(favorites); if (Array.isArray(values)) prenomFavorisCount = values.length; } catch {}
-  const [showShare, setShowShare] = useState(false);
-  const [showReport, setShowReport] = useState(false);
-
-  // Initialize notifications when component mounts
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      initializeNotifications();
-    }
-  }, []);
-
-  // Partner-only auto-redirect: if user has linked mamas and no own pregnancy,
-  // they are a pure partner — send them to the partner dashboard.
-  useEffect(() => {
-    if (!user || store.loading) return;
-    if (store.dueDate) return;
+    if (
+      !user ||
+      store.loading ||
+      family.loading ||
+      family.activeStage !== "pregnancy" ||
+      store.dueDate
+    )
+      return;
     let cancelled = false;
-    getPartnerAccess(user.id).then((linked) => {
-      if (cancelled || linked.length === 0) return;
-      if (typeof window !== 'undefined') {
-        const k = `partner-redirected-${user.id}`;
-        if (sessionStorage.getItem(k)) return;
-        sessionStorage.setItem(k, '1');
-      }
-      router.replace(`/partner/${linked[0].mamaId}`);
-    }).catch(() => {});
-    return () => { cancelled = true; };
-  }, [user, store.loading, store.dueDate, router]);
-
-  // Early returns must come AFTER all hooks (Rules of Hooks).
-  if (!isAuthenticated) {
-    return <LandingPage />;
-  }
-
-  // Show loading skeleton while data is being fetched
-  if (store.loading || (isAuthenticated && (family.loading || family.activeStage === "baby"))) {
+    getPartnerAccess(user.id)
+      .then((linked) => {
+        if (
+          cancelled ||
+          linked.length === 0 ||
+          sessionStorage.getItem(`partner-redirected-${user.id}`)
+        )
+          return;
+        sessionStorage.setItem(`partner-redirected-${user.id}`, "1");
+        router.replace(`/partner/${linked[0].mamaId}`);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    user,
+    store.loading,
+    store.dueDate,
+    family.loading,
+    family.activeStage,
+    router,
+  ]);
+  if (authLoading) return <DashboardSkeleton />;
+  if (!isAuthenticated) return <LandingPage />;
+  if (store.loading || family.loading || family.activeStage === "baby")
     return <DashboardSkeleton />;
-  }
 
-  const dueDate = store.dueDate ? new Date(store.dueDate) : null;
-  const weekSA = dueDate ? getCurrentWeek(dueDate) : 20;
-  const week = store.weekMode === "GA" ? Math.max(1, weekSA - 2) : weekSA;
-  const weekDetail = dueDate ? getCurrentWeekAndDays(dueDate) : { weeks: week, days: 0 };
-  const displayDays = weekDetail.days;
-  const days = dueDate ? getDaysRemaining(dueDate) : null;
-  const progress = dueDate ? getProgressPercent(dueDate) : 50;
-  const weekData = getWeekData(weekSA);
-
-  const today = format(new Date(), "yyyy-MM-dd");
-  const waterToday = store.waterIntake[today] ?? 0;
-  const waterGoal = WATER_GOAL_ML;
-
-  const parseLocalDate = (s: string) => {
-    const [y, m, d] = s.split("-").map(Number);
-    return new Date(y, (m ?? 1) - 1, d ?? 1);
-  };
-
-  const lastWeight =
-    store.weightEntries.length > 0
-      ? [...store.weightEntries].sort((a, b) => a.date.localeCompare(b.date)).at(-1) ?? null
-      : null;
-
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-  const upcomingAppts = store.appointments
-    .filter((a) => !a.done && parseLocalDate(a.date) >= todayStart)
-    .slice(0, 2);
-
-  const recentSymptoms = [...store.symptomEntries]
+  const date = store.dueDate ? parseCalendarDate(store.dueDate) : null;
+  const weekSA = date ? getCurrentWeek(date) : null;
+  const week =
+    weekSA === null
+      ? null
+      : store.weekMode === "GA"
+        ? Math.max(1, weekSA - 2)
+        : weekSA;
+  const detail = date ? getCurrentWeekAndDays(date) : null;
+  const remaining = date
+    ? Math.max(
+        0,
+        Math.round(
+          (date.getTime() - parseCalendarDate(calendarDate())!.getTime()) /
+            86400000,
+        ),
+      )
+    : null;
+  const progress = date ? getProgressPercent(date) : 0;
+  const weekData = weekSA === null ? null : getWeekData(weekSA);
+  const moment = pregnancyMoment(store.dueDate);
+  const today = calendarDate();
+  const water = store.waterIntake[today] ?? 0;
+  const weight = [...store.weightEntries]
     .sort((a, b) => a.date.localeCompare(b.date))
-    .slice(-3);
-
-  const handleSaveDueDate = () => {
-    if (dateInput) {
-      store.setDueDate(dateInput);
+    .at(-1);
+  const appointments = store.appointments
+    .filter((item) => !item.done && item.date >= today)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 3);
+  const symptoms = [...store.symptomEntries]
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 2);
+  const greeting = store.mamaName?.trim().split(/\s+/)[0];
+  const saveDate = async () => {
+    if (!parseCalendarDate(draft)) {
+      toast.error("Choisissez une date valide.");
+      return;
+    }
+    setSaving(true);
+    try {
+      await store.setDueDate(draft);
       setShowSetup(false);
+      toast.success("Votre date prévue est enregistrée.");
+    } catch {
+      toast.error("La date n’a pas pu être enregistrée. Réessayez.");
+    } finally {
+      setSaving(false);
     }
   };
-
-  // Circumference for the SVG circle progress
-  const radius = 56;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (progress / 100) * circumference;
-
   return (
-    <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
-      <Link href="/enfant/naissance" className="flex items-center justify-between gap-4 rounded-2xl border border-purple-100 bg-white/80 dark:bg-gray-900 dark:border-purple-900/40 px-4 py-3 shadow-sm">
-        <div><p className="text-sm font-semibold text-purple-800 dark:text-purple-200">Bébé est arrivé ?</p><p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">Continuez ensemble, de sa naissance à ses 3 ans.</p></div><span aria-hidden className="text-purple-500">→</span>
-      </Link>
-
-      {/* Setup DPA */}
-      {(!store.dueDate || showSetup) && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-pink-100 dark:border-pink-900/30"
+    <div className="mt-shell">
+      <div className="mt-welcome">
+        <div>
+          <p className="mt-eyebrow">Notre aventure · Grossesse</p>
+          <h1 className="mt-display">
+            Bonjour{greeting ? ` ${greeting}` : ""}
+            <span className="text-brand">.</span>
+          </h1>
+          <p>Un jour de plus. Un peu plus près de la rencontre.</p>
+        </div>
+        <button
+          className="mt-button mt-button-secondary"
+          onClick={() => setShowShare(true)}
+          aria-label="Partager ma semaine de grossesse"
         >
-          <h2 className="font-semibold text-[#3d2b2b] dark:text-gray-100 mb-3">
-            📅 {store.dueDate ? "Modifier" : "Définir"} votre Date Prévue d&apos;Accouchement
-          </h2>
-          <div className="flex gap-2">
-            <input
-              type="date"
-              value={dateInput}
-              onChange={(e) => setDateInput(e.target.value)}
-              className="flex-1 border border-pink-200 dark:border-pink-800/30 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-            <button
-              onClick={handleSaveDueDate}
-              className="bg-pink-400 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-pink-500 dark:hover:bg-pink-600 dark:bg-pink-500 transition-colors"
-            >
-              OK
-            </button>
-          </div>
-        </motion.div>
-      )}
-
-      {/* DPA calculator panel */}
-      {showDpaCalc && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-purple-100 dark:border-purple-900/30"
-        >
-          <DpaCalculator defaultOpen onSaved={() => setShowDpaCalc(false)} />
-        </motion.div>
-      )}
-
-      {/* Hero Card — Semaine + Fruit */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-gradient-to-br from-pink-100 via-purple-50 to-emerald-50 dark:from-pink-950/40 dark:via-purple-950/30 dark:to-emerald-950/20 rounded-3xl p-6 shadow-sm border border-pink-100 dark:border-pink-900/30 relative overflow-hidden"
-      >
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-medium text-pink-400 uppercase tracking-wider mb-1">
-              Semaine de grossesse
-            </p>
-            <h1 className="text-6xl font-bold text-[#3d2b2b] dark:text-gray-100">
-              {week}
-              <span className="text-2xl text-pink-400 ml-1">{store.weekMode}</span>
-            </h1>
-            {dueDate && (
-              <p className="text-sm font-semibold text-pink-500 dark:text-pink-400 mt-0.5">
-                + {displayDays} jour{displayDays > 1 ? "s" : ""}
-              </p>
-            )}
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              {weekData.fruit}
-            </p>
-            {dueDate && (
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                DPA : {format(dueDate, "d MMMM yyyy", { locale: fr })}
-              </p>
-            )}
-          </div>
-
-          <div className="relative flex items-center justify-center">
-            <svg width="140" height="140" className="-rotate-90">
-              <circle
-                cx="70"
-                cy="70"
-                r={radius}
-                fill="none"
-                stroke="#fce7f3"
-                strokeWidth="10"
-              />
-              <motion.circle
-                cx="70"
-                cy="70"
-                r={radius}
-                fill="none"
-                stroke="#F9A8D4"
-                strokeWidth="10"
-                strokeLinecap="round"
-                strokeDasharray={circumference}
-                initial={{ strokeDashoffset: circumference }}
-                animate={{ strokeDashoffset }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-              />
-            </svg>
-            <motion.div
-              className="absolute text-5xl"
-              animate={{
-                scale: [1, 1.08, 1],
-                rotate: [0, 5, -5, 0],
-              }}
-              transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-            >
-              {weekData.fruitEmoji}
-            </motion.div>
-          </div>
-        </div>
-
-        <div className="mt-4 flex items-center justify-between">
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            Progression : <span className="font-semibold text-pink-500 dark:text-pink-400">{progress}%</span>
-          </div>
-          {days !== null && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.5, type: "spring" }}
-              className="bg-white dark:bg-gray-900 rounded-2xl px-3 py-1.5 shadow-sm"
-            >
-              <span className="text-2xl font-bold text-purple-500 dark:text-purple-400">{days}</span>
-              <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">jours restants</span>
-            </motion.div>
-          )}
-        </div>
-
-        <div className="absolute top-3 right-3 flex items-center gap-2">
-          <button
-            onClick={() => setShowDpaCalc((v) => !v)}
-            aria-label="Calculer ma DPA autrement"
-            title="Calculer ma DPA autrement"
-            className={`transition-colors ${showDpaCalc ? "text-purple-500" : "text-gray-300 hover:text-purple-400 dark:text-gray-400"}`}
-          >
-            <Calculator className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setShowSetup((v) => !v)}
-            aria-label="Modifier la DPA"
-            title="Modifier la DPA"
-            className={`transition-colors ${
-              !store.dueDate
-                ? "text-gray-400 dark:text-gray-500 hover:text-gray-600"
-                : "text-gray-300 hover:text-gray-500 dark:text-gray-400"
-            }`}
-          >
-            <Settings className="w-4 h-4" />
-          </button>
-        </div>
-      </motion.div>
-
-      {/* MamaCoach signaux faibles */}
-      <MamaCoachAlerts />
-
-      {/* Story du jour MamaCoach */}
-      {!premiumLoading && (
-        isPremium ? (
-          <DailyStory />
-        ) : (
-          <Paywall feature="Story du jour MamaCoach" compact>
-            <DailyStory />
-          </Paywall>
-        )
-      )}
-
-      {/* Smart Reminders */}
-      <ReminderBanner />
-
-      {/* Trimestre badge */}
-      <div className="flex gap-2">
-        {[1, 2, 3].map((t) => (
-          <div
-            key={t}
-            className={`flex-1 text-center py-2 rounded-2xl text-xs font-semibold transition-all ${
-              weekData.trimester === t
-                ? "bg-pink-400 text-white shadow-sm"
-                : "bg-white dark:bg-gray-900 text-gray-400 dark:text-gray-500 border border-pink-100 dark:border-pink-900/30"
-            }`}
-          >
-            {t === 1 ? "1er trimestre" : t === 2 ? "2ème trimestre" : "3ème trimestre"}
-          </div>
-        ))}
+          <Share2 size={15} />
+          <span className="hidden sm:inline">Partager</span>
+        </button>
       </div>
-
-      {/* Cards résumé */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* Poids */}
-        <motion.button
-          type="button"
-          onClick={() => router.push("/tracking?tab=weight")}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="text-left bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-pink-100 dark:border-pink-900/30 hover:shadow-md hover:border-pink-200 dark:hover:border-pink-800/50 transition-all active:scale-[0.98]"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-pink-100 dark:bg-pink-900/30 rounded-full flex items-center justify-center">
-              <Scale className="w-4 h-4 text-pink-500 dark:text-pink-400" />
-            </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Poids</span>
-          </div>
-          {lastWeight ? (
-            <>
-              <p className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">
-                {lastWeight.weight} <span className="text-sm font-normal text-gray-400 dark:text-gray-500">kg</span>
+      {family.error && (
+        <div role="alert" className="mt-note mb-5">
+          Le carnet familial est momentanément indisponible.{" "}
+          <button
+            className="underline"
+            onClick={() =>
+              family
+                .refresh()
+                .catch(() => toast.error("Réessayez dans un instant."))
+            }
+          >
+            Réessayer
+          </button>
+        </div>
+      )}
+      <div className="mt-dashboard-grid">
+        <div className="mt-stack">
+          <section className="mt-hero">
+            <div className="mt-hero-copy">
+              <span className="mt-pill">
+                <Heart size={12} />
+                {moment === "term"
+                  ? "La rencontre approche"
+                  : "Chapitre 01 · Grossesse"}
+              </span>
+              <p className="mt-eyebrow !mt-5">
+                {week === null
+                  ? "Votre point de départ"
+                  : "Semaine de grossesse"}
               </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                {format(parseLocalDate(lastWeight.date), "d MMM", { locale: fr })}
-              </p>
-            </>
-          ) : (
-            <p className="text-sm text-gray-400 dark:text-gray-500">Aucune mesure</p>
-          )}
-        </motion.button>
-
-        {/* Eau */}
-        <motion.button
-          type="button"
-          onClick={() => router.push("/tracking?tab=water")}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.25 }}
-          className="text-left bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-purple-100 dark:border-purple-900/30 hover:shadow-md hover:border-purple-200 dark:hover:border-purple-800/50 transition-all active:scale-[0.98]"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-              <Droplets className="w-4 h-4 text-purple-500 dark:text-purple-400" />
+              {week === null ? (
+                <h2 className="mt-display">
+                  Une belle histoire
+                  <br />
+                  commence ici.
+                </h2>
+              ) : (
+                <>
+                  <div className="mt-hero-number">
+                    {week}
+                    <span>{store.weekMode}</span>
+                  </div>
+                  <p>
+                    + {detail?.days ?? 0} jour
+                    {(detail?.days ?? 0) > 1 ? "s" : ""} ·{" "}
+                    {remaining === 0
+                      ? "Date du terme atteinte"
+                      : `${remaining} jours avant le terme`}
+                  </p>
+                </>
+              )}
+              {date ? (
+                <p className="mt-3">
+                  Rencontre prévue le{" "}
+                  {date.toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                    timeZone: "Europe/Paris",
+                  })}
+                </p>
+              ) : (
+                <p>
+                  Renseignez votre date prévue pour retrouver les bons repères,
+                  semaine après semaine.
+                </p>
+              )}
+              <button
+                className="mt-link mt-4"
+                onClick={() => setShowSetup((value) => !value)}
+              >
+                {date ? "Ajuster ma date" : "Renseigner ma date"}
+                <ArrowRight size={13} />
+              </button>
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Hydratation</span>
-          </div>
-          <p className="text-2xl font-bold text-[#3d2b2b] dark:text-gray-100">
-            {waterToday} <span className="text-sm font-normal text-gray-400 dark:text-gray-500">ml</span>
-          </p>
-          <div className="w-full bg-purple-100 dark:bg-purple-900/30 rounded-full h-1.5 mt-2">
-            <div
-              className="bg-purple-400 h-1.5 rounded-full transition-all"
-              style={{ width: `${Math.min(100, (waterToday / waterGoal) * 100)}%` }}
-            />
-          </div>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">objectif {waterGoal} ml</p>
-        </motion.button>
-
-        {/* Symptômes */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-green-100 dark:border-green-900/30"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-              <Activity className="w-4 h-4 text-green-500 dark:text-green-400" />
+            <JourneyArtwork phase="pregnancy" className="mt-artwork" />
+            <div className="mt-hero-footer">
+              <JourneyRail phase="pregnancy" />
             </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Symptômes</span>
-          </div>
-          {recentSymptoms.length > 0 ? (
-            <div className="space-y-1">
-              {recentSymptoms.slice(-1).map((s) => (
-                <div key={s.id} className="flex flex-wrap gap-1">
-                  {s.symptoms.slice(0, 2).map((sym) => (
-                    <span key={sym} className="text-xs bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 px-2 py-0.5 rounded-full">
-                      {sym}
-                    </span>
-                  ))}
+          </section>
+          {(showSetup || !date) && (
+            <section className="mt-card">
+              <div className="mt-card-header">
+                <h2>Votre date prévue de rencontre</h2>
+                <CalendarDays size={18} className="text-brand" />
+              </div>
+              <label
+                htmlFor="due-date"
+                className="block text-xs text-foreground-muted mb-2"
+              >
+                Date prévue d’accouchement
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="due-date"
+                  type="date"
+                  value={draft}
+                  onChange={(event) => setDateDraft(event.target.value)}
+                  className="min-w-0 flex-1 rounded-xl border border-border bg-surface px-3 py-3 text-sm"
+                />
+                <button
+                  disabled={saving}
+                  onClick={saveDate}
+                  className="mt-button"
+                >
+                  {saving ? (
+                    <Loader2 size={15} className="animate-spin" />
+                  ) : (
+                    <Check size={15} />
+                  )}
+                  Enregistrer
+                </button>
+              </div>
+              <button
+                className="mt-link mt-4"
+                onClick={() => setShowCalculator((value) => !value)}
+              >
+                Calculer ma date · cycle, PMA ou FIV
+                <ArrowRight size={13} />
+              </button>
+              {showCalculator && (
+                <div className="mt-5">
+                  <DpaCalculator
+                    defaultOpen
+                    onSaved={() => {
+                      setShowCalculator(false);
+                      setShowSetup(false);
+                    }}
+                  />
                 </div>
+              )}
+            </section>
+          )}
+          {(moment === "approaching" || moment === "term") && (
+            <section className="mt-card !bg-[var(--peach)]">
+              <div className="flex items-start gap-3">
+                <span className="mt-icon-soft">
+                  <Baby size={21} />
+                </span>
+                <div>
+                  <h2>
+                    {moment === "term"
+                      ? "Et si le prochain chapitre commençait ?"
+                      : "Tout est prêt pour la suite."}
+                  </h2>
+                  <p className="mt-2 text-xs leading-6 text-foreground-muted">
+                    {moment === "term"
+                      ? "Bébé est arrivé ? Confirmez sa naissance : son carnet s’ouvre automatiquement. Vous attendez encore ? Votre suivi grossesse continue."
+                      : "À la naissance, votre espace évolue vers les repas, le sommeil et ses premières découvertes. Vos souvenirs de grossesse restent avec vous."}
+                  </p>
+                  <Link href="/enfant/naissance" className="mt-button mt-4">
+                    Bébé est né <ArrowRight size={14} />
+                  </Link>
+                </div>
+              </div>
+            </section>
+          )}
+          <div>
+            <div className="mt-section-title">
+              <h2>Un petit geste pour vous</h2>
+              <span>Vos essentiels</span>
+            </div>
+            <div className="mt-quick-grid">
+              {[
+                {
+                  href: "/tracking?tab=water",
+                  Icon: Droplets,
+                  label: "Hydratation",
+                },
+                { href: "/contractions", Icon: Timer, label: "Contractions" },
+                { href: "/journal", Icon: BookHeart, label: "Un souvenir" },
+                { href: "/checklist", Icon: Check, label: "Préparatifs" },
+              ].map(({ href, Icon, label }) => (
+                <Link key={href} href={href} className="mt-quick-action">
+                  <span className="mt-icon-soft">
+                    <Icon size={19} />
+                  </span>
+                  {label}
+                </Link>
               ))}
             </div>
-          ) : (
-            <p className="text-sm text-gray-400 dark:text-gray-500">Aucun récent</p>
-          )}
-        </motion.div>
-
-        {/* RDV */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.35 }}
-          className="bg-white dark:bg-gray-900 rounded-3xl p-4 shadow-sm border border-orange-100 dark:border-orange-900/30"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-              <Calendar className="w-4 h-4 text-orange-500 dark:text-orange-400" />
-            </div>
-            <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Prochain RDV</span>
           </div>
-          {upcomingAppts.length > 0 ? (
-            <div>
-              <p className="text-sm font-semibold text-[#3d2b2b] dark:text-gray-100 truncate">
-                {upcomingAppts[0].title}
-              </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-                {format(parseLocalDate(upcomingAppts[0].date), "d MMM", { locale: fr })} à {upcomingAppts[0].time}
-              </p>
-            </div>
-          ) : (
-            <p className="text-sm text-gray-400 dark:text-gray-500">Aucun RDV</p>
-          )}
-        </motion.div>
-      </div>
-
-      {/* Contractions shortcut */}
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.38 }}
-        onClick={() => router.push("/contractions")}
-        className="w-full flex items-center gap-3 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/30 rounded-3xl px-4 py-3 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
-      >
-        <div className="w-9 h-9 bg-purple-400 rounded-xl flex items-center justify-center flex-shrink-0">
-          <Timer className="w-5 h-5 text-white" />
-        </div>
-        <div className="text-left">
-          <p className="text-sm font-semibold text-purple-700 dark:text-purple-300">Contractions</p>
-          <p className="text-xs text-purple-400">Chronomètre & suivi</p>
-        </div>
-        <span className="ml-auto text-purple-300 text-lg">›</span>
-      </motion.button>
-
-      {/* Prénoms shortcut */}
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.41 }}
-        onClick={() => router.push("/prenoms")}
-        className="w-full flex items-center gap-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-100 dark:border-yellow-900/30 rounded-3xl px-4 py-3 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors"
-      >
-        <div className="w-9 h-9 bg-yellow-300 rounded-xl flex items-center justify-center flex-shrink-0">
-          <span className="text-lg">💛</span>
-        </div>
-        <div className="text-left">
-          <p className="text-sm font-semibold text-yellow-700 dark:text-yellow-300">Choisir un prénom</p>
-          <p className="text-xs text-yellow-500 dark:text-yellow-400">{prenomFavorisCount} favori(s) sauvegardé(s)</p>
-        </div>
-        <span className="ml-auto text-yellow-300 text-lg">›</span>
-      </motion.button>
-
-      {/* Bilan semaine */}
-      <button onClick={() => setShowReport(true)} className="w-full flex items-center gap-3 bg-white dark:bg-gray-900 border border-purple-100 dark:border-purple-900/30 rounded-3xl px-4 py-3 hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-colors">
-        <BarChart3 className="w-5 h-5 text-purple-400" />
-        <span className="text-sm font-semibold text-purple-700 dark:text-purple-300">Mon bilan de la semaine</span>
-        <span className="ml-auto text-purple-300 text-lg">›</span>
-      </button>
-
-      {/* Explorer — nouvelles sections */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.43 }}
-        className="space-y-3"
-      >
-        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 px-1">Explorer</h3>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { href: "/timeline", emoji: "📅", label: "Timeline", color: "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900/30" },
-            { href: "/bump", emoji: "📸", label: "Bump diary", color: "bg-rose-50 dark:bg-rose-950/30 border-rose-100 dark:border-rose-900/30" },
-            { href: "/alimentation", emoji: "🥗", label: "Alimentation", color: "bg-green-50 dark:bg-green-950/30 border-green-100 dark:border-green-900/30" },
-            { href: "/medicaments", emoji: "💊", label: "Médicaments", color: "bg-blue-50 dark:bg-blue-950/30 border-blue-100 dark:border-blue-900/30" },
-            { href: "/respiration", emoji: "🌬️", label: "Respiration", color: "bg-cyan-50 dark:bg-cyan-950/30 border-cyan-100 dark:border-cyan-900/30" },
-            { href: "/urgences", emoji: "🚨", label: "Urgences", color: "bg-red-50 dark:bg-red-950/30 border-red-100 dark:border-red-900/30" },
-          ].map((item) => (
-            <button
-              key={item.href}
-              onClick={() => router.push(item.href)}
-              className={`${item.color} border rounded-2xl p-3 flex flex-col items-center gap-1.5 hover:scale-[1.03] transition-transform`}
-            >
-              <span className="text-2xl">{item.emoji}</span>
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-300">{item.label}</span>
-            </button>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Conseil de la semaine */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-3xl p-5 border border-pink-100 dark:border-pink-900/30"
-      >
-        <div className="flex items-start gap-3">
-          <span className="text-2xl">💡</span>
           <div>
-            <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100 text-sm mb-1">Conseil de la semaine</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{weekData.momTips}</p>
+            <div className="mt-section-title">
+              <h2>Votre bien-être, simplement</h2>
+              <Link href="/tracking" className="mt-link">
+                Tout voir <ArrowRight size={12} />
+              </Link>
+            </div>
+            <div className="mt-metrics">
+              {[
+                {
+                  href: "/tracking",
+                  Icon: Scale,
+                  label: "Dernier poids",
+                  value: weight ? `${weight.weight} kg` : "—",
+                  detail: weight
+                    ? "Votre dernière mesure"
+                    : "À renseigner quand vous le souhaitez",
+                },
+                {
+                  href: "/tracking",
+                  Icon: Droplets,
+                  label: "Hydratation aujourd’hui",
+                  value: `${water} ml`,
+                  detail: `Repère personnel : ${WATER_GOAL_ML} ml`,
+                },
+                {
+                  href: "/tracking",
+                  Icon: Activity,
+                  label: "Derniers ressentis",
+                  value: symptoms.length
+                    ? `${symptoms.length} notés`
+                    : "À votre rythme",
+                  detail: "Écouter votre corps, sans pression",
+                },
+                {
+                  href: "/agenda",
+                  Icon: CalendarDays,
+                  label: "Prochain rendez-vous",
+                  value: appointments[0]
+                    ? (parseCalendarDate(
+                        appointments[0].date,
+                      )?.toLocaleDateString("fr-FR", {
+                        day: "numeric",
+                        month: "short",
+                      }) ?? "—")
+                    : "—",
+                  detail: appointments[0]?.title ?? "Votre agenda est à vous",
+                },
+              ].map(({ href, Icon, label, value, detail }) => (
+                <Link href={href} key={label} className="mt-metric">
+                  <Icon size={19} className="text-foreground-muted" />
+                  <p className="mt-metric-label">{label}</p>
+                  <p className="mt-metric-value">{value}</p>
+                  <p className="mt-metric-detail">{detail}</p>
+                </Link>
+              ))}
+            </div>
           </div>
+          {weekData && (
+            <section className="mt-card">
+              <div className="mt-card-header">
+                <div>
+                  <p className="mt-eyebrow">Cette semaine</p>
+                  <h2 className="!mt-2">Une nouvelle petite découverte</h2>
+                </div>
+                <span className="mt-icon-soft">
+                  <SproutIcon />
+                </span>
+              </div>
+              <p className="text-sm leading-7 text-foreground-muted">
+                {weekData.babyDevelopment}
+              </p>
+              <div className="mt-progress">
+                <div style={{ width: `${Math.min(100, progress)}%` }} />
+              </div>
+              <div className="flex items-center justify-between text-[10px] text-foreground-muted">
+                <span>Votre parcours de grossesse</span>
+                <span>{Math.round(progress)} %</span>
+              </div>
+              <Link href="/baby" className="mt-link mt-5">
+                Découvrir cette semaine <ArrowRight size={13} />
+              </Link>
+            </section>
+          )}
+          <MedicalSources
+            sources={[
+              {
+                label: "Assurance Maladie · Suivi de grossesse",
+                url: "https://www.ameli.fr/assure/sante/themes/grossesse",
+              },
+            ]}
+          />
         </div>
-      </motion.div>
-
-      {/* Développement bébé aperçu */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.45 }}
-        className="bg-white dark:bg-gray-900 rounded-3xl p-5 shadow-sm border border-mint-100"
-        style={{ borderColor: "#d1fae5" }}
-      >
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-xl">👶</span>
-          <h3 className="font-semibold text-[#3d2b2b] dark:text-gray-100">Bébé cette semaine</h3>
-        </div>
-        <div className="flex gap-4 mb-3">
-          <div className="text-center">
-            <p className="text-lg font-bold text-[#3d2b2b] dark:text-gray-100">
-              {weekData.sizeMm >= 100
-                ? `${(weekData.sizeMm / 10).toFixed(0)} cm`
-                : `${weekData.sizeMm} mm`}
+        <aside className="mt-stack mt-stack-secondary">
+          <section className="mt-card">
+            <div className="mt-card-header">
+              <h2>À venir dans votre agenda</h2>
+              <CalendarDays size={18} className="text-foreground-muted" />
+            </div>
+            {appointments.length ? (
+              <div className="mt-timeline">
+                {appointments.map((item) => (
+                  <Link
+                    href="/agenda"
+                    className="mt-timeline-item"
+                    key={item.id}
+                  >
+                    <span className="mt-icon-soft !size-9">
+                      <CalendarDays size={15} />
+                    </span>
+                    <div>
+                      <p>{item.title}</p>
+                      <small>
+                        {parseCalendarDate(item.date)?.toLocaleDateString(
+                          "fr-FR",
+                          { day: "numeric", month: "long" },
+                        )}
+                      </small>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-empty">
+                Une visite, une échographie, un cours de préparation… Vos
+                prochains rendez-vous se retrouveront ici.
+              </p>
+            )}
+            <Link href="/agenda" className="mt-link mt-4">
+              Ouvrir l’agenda <ArrowRight size={13} />
+            </Link>
+          </section>
+          <section className="mt-care-card">
+            <Sparkles size={20} className="mb-4" />
+            <h2>
+              Vous n’avez pas à<br />
+              tout porter seul·e.
+            </h2>
+            <p>
+              Une question, un besoin d’organisation ou un moment de doute ?
+              Retrouvez votre assistant et vos ressources.
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">Taille</p>
-          </div>
-          <div className="text-center">
-            <p className="text-lg font-bold text-[#3d2b2b] dark:text-gray-100">
-              {weekData.weightG >= 1000
-                ? `${(weekData.weightG / 1000).toFixed(1)} kg`
-                : `${weekData.weightG} g`}
+            <Link href="/coach" className="mt-link">
+              Un peu d’aide <ArrowRight size={14} />
+            </Link>
+          </section>
+          <section className="mt-card">
+            <div className="mt-card-header">
+              <h2>Votre cercle de confiance</h2>
+              <Users size={19} className="text-foreground-muted" />
+            </div>
+            <p className="text-xs leading-6 text-foreground-muted">
+              Partagez les repères et les rendez-vous avec votre coparent. Les
+              petits moments sont encore plus beaux ensemble.
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">Poids</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl">{weekData.fruitEmoji}</p>
-            <p className="text-xs text-gray-400 dark:text-gray-500 truncate max-w-16">{weekData.fruit}</p>
-          </div>
-        </div>
-        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed line-clamp-3">
-          {weekData.babyDevelopment}
-        </p>
-      </motion.div>
-      {/* Sources officielles des contenus de la semaine (App Review 1.4.1) */}
-      <MedicalSources
-        intro="Les contenus « Conseil de la semaine » et « Bébé cette semaine » sont compilés à partir des recommandations publiques officielles ci-dessous. Ils sont informatifs et ne remplacent pas le suivi de ta sage-femme ou de ton médecin. En cas d'urgence, appelle le 15."
-        sources={[
-          { label: "Haute Autorité de Santé (HAS) — Comment mieux informer les femmes enceintes", url: "https://www.has-sante.fr/jcms/c_605178/fr/comment-mieux-informer-les-femmes-enceintes" },
-          { label: "Ameli (Assurance Maladie) — Votre grossesse mois par mois", url: "https://www.ameli.fr/assure/sante/themes/grossesse" },
-          { label: "Santé publique France — Périnatalité", url: "https://www.santepubliquefrance.fr/determinants-de-sante/perinatalite" },
-          { label: "OMS — Recommandations sur les soins prénatals", url: "https://www.who.int/publications/i/item/9789241549912" },
-          { label: "INSERM — Grossesse et périnatalité", url: "https://www.inserm.fr/dossier/perinatalite/" },
-        ]}
-      />
-      {/* Floating share button */}
-      <button
-        onClick={() => setShowShare(true)}
-        className="fixed bottom-24 right-4 z-40 w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
-      >
-        <Share2 className="w-5 h-5 text-white" />
-      </button>
+            <Link href="/duo" className="mt-link mt-4">
+              Inviter un proche <ArrowRight size={13} />
+            </Link>
+          </section>
+          <section className="mt-card">
+            <div className="mt-card-header">
+              <h2>À garder pour plus tard</h2>
+              <BookHeart size={19} className="text-foreground-muted" />
+            </div>
+            <div className="space-y-4">
+              <Link href="/bump" className="mt-link w-full">
+                Le journal photo de votre ventre <ArrowRight size={12} />
+              </Link>
+              <Link href="/prenoms" className="mt-link w-full">
+                Le prénom qui vous ressemble <ArrowRight size={12} />
+              </Link>
+              <Link href="/naissance" className="mt-link w-full">
+                Votre projet de naissance <ArrowRight size={12} />
+              </Link>
+              <button
+                onClick={() => setShowReport(true)}
+                className="mt-link w-full"
+              >
+                Votre bilan de la semaine <ArrowRight size={12} />
+              </button>
+            </div>
+          </section>
+          {moment === "expecting" && (
+            <Link href="/enfant/naissance" className="mt-note">
+              <strong>Bébé est déjà arrivé ?</strong>
+              <span className="block mt-1">
+                Son carnet vous attend, de la naissance aux 6 ans. →
+              </span>
+            </Link>
+          )}
+        </aside>
+      </div>
+      <ReminderBanner />
       {showShare && <ShareCard onClose={() => setShowShare(false)} />}
       {showReport && <WeeklyReport onClose={() => setShowReport(false)} />}
     </div>
   );
+}
+function SproutIcon() {
+  return <Heart size={19} />;
 }

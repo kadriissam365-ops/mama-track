@@ -1,6 +1,6 @@
 // Service worker source served by app/sw.js/route.ts
 // Keep this file in sync — do NOT reference public/sw.js (deleted to bypass Vercel edge cache).
-export const SW_SOURCE = `const CACHE_VERSION = 'v9';
+export const SW_SOURCE = `const CACHE_VERSION = 'v10';
 const STATIC_CACHE = \`mamatrack-static-\${CACHE_VERSION}\`;
 const DYNAMIC_CACHE = \`mamatrack-dynamic-\${CACHE_VERSION}\`;
 
@@ -21,7 +21,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(keys =>
       Promise.all(
-        keys.filter(k => k !== STATIC_CACHE && k !== DYNAMIC_CACHE)
+        keys.filter(k => k.startsWith('mamatrack-') && k !== STATIC_CACHE && k !== DYNAMIC_CACHE)
             .map(k => caches.delete(k))
       )
     )

@@ -1,5 +1,6 @@
+import { childAgeMonths } from "@/lib/family-journey";
 import { ModuleShell } from "@/components/enfant/ModuleShell";
-import { requireUserAndBaby, ageInDays } from "@/lib/enfant/baby";
+import { requireUserAndBaby } from "@/lib/enfant/baby";
 import {
   AGE_RANGES,
   ageRangeForMonths,
@@ -20,14 +21,12 @@ export default async function ConseilsPage({
   const { baby } = await requireUserAndBaby();
 
   // Default age range : prefer baby's range, else first
-  const babyMonths = baby
-    ? Math.floor(ageInDays(baby.birth_date) / 30.44)
-    : null;
+  const babyMonths = baby ? childAgeMonths(baby.birth_date) : null;
   const defaultRange =
-    (babyMonths !== null ? ageRangeForMonths(babyMonths) : null) ?? AGE_RANGES[0];
+    (babyMonths !== null ? ageRangeForMonths(babyMonths) : null) ??
+    AGE_RANGES[0];
 
-  const selectedAge =
-    AGE_RANGES.find((r) => r.slug === sp.age) ?? defaultRange;
+  const selectedAge = AGE_RANGES.find((r) => r.slug === sp.age) ?? defaultRange;
   const selectedCat = (sp.cat as ConseilCategory | undefined) ?? null;
 
   const conseils = selectedCat
@@ -52,7 +51,7 @@ export default async function ConseilsPage({
       subtitle={
         baby
           ? `Repères pour accompagner ${baby.name} au quotidien.`
-          : "Repères clés 0-36 mois — par tranche d'âge."
+          : "Repères de 0 à 6 ans — par tranche d'âge."
       }
     >
       <nav aria-label="Tranche d'âge" className="mb-6">
@@ -148,9 +147,26 @@ export default async function ConseilsPage({
       </ul>
 
       <p className="mt-10 text-center text-xs text-foreground-muted">
-        Sources : Santé publique France, Société française de pédiatrie, OMS,
-        mpedia.fr. Contenu indicatif — ne remplace jamais l&apos;avis d&apos;un
-        professionnel de santé.
+        Sources :{" "}
+        <a
+          href="https://www.cdc.gov/child-development/positive-parenting-tips/preschooler-3-5-years.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          CDC · Accompagner les 3–5 ans
+        </a>
+        ,{" "}
+        <a
+          href="https://www.ameli.fr/assure/sante/themes/suivi-medical-de-l-enfant-et-de-l-adolescent"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          Assurance Maladie
+        </a>
+        , Santé publique France, OMS et mpedia.fr. Contenu indicatif — ne
+        remplace jamais l&apos;avis d&apos;un professionnel de santé.
       </p>
     </ModuleShell>
   );

@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { childAgeLabel } from "@/lib/family-journey";
 import { createClient } from "@/lib/enfant/supabase/server";
 import type { UnitSystem } from "@/lib/enfant/units";
 import type { User } from "@supabase/supabase-js";
@@ -41,17 +42,25 @@ export async function requireUserAndBaby(prefetchedUser?: User) {
   const user = prefetchedUser ?? (await getCachedUser()) ?? undefined;
   if (!user) return { user: null, baby: null, supabase };
 
-  const { data: settings } = await supabase.from("family_settings")
-    .select("active_baby_id").eq("user_id", user.id).maybeSingle();
+  const { data: settings } = await supabase
+    .from("family_settings")
+    .select("active_baby_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
   if (settings?.active_baby_id) {
-    const { data: selected } = await supabase.from("babies")
-      .select("id,user_id,name,birth_date,sex,birth_weight_g,birth_height_cm,birth_head_cm,photo_url")
-      .eq("id", settings.active_baby_id).maybeSingle();
+    const { data: selected } = await supabase
+      .from("babies")
+      .select(
+        "id,user_id,name,birth_date,sex,birth_weight_g,birth_height_cm,birth_head_cm,photo_url",
+      )
+      .eq("id", settings.active_baby_id)
+      .maybeSingle();
     if (selected) return { user, baby: selected as Baby, supabase };
   }
 
   // Try owned first (RLS-aware, indexed on user_id), fallback to any accessible baby (collaborator)
-  const cols = "id, user_id, name, birth_date, sex, birth_weight_g, birth_height_cm, birth_head_cm, photo_url";
+  const cols =
+    "id, user_id, name, birth_date, sex, birth_weight_g, birth_height_cm, birth_head_cm, photo_url";
   const { data: owned } = await supabase
     .from("babies")
     .select(cols)
@@ -110,19 +119,5 @@ export function ageInDays(birthDate: string): number {
 }
 
 export function formatAge(birthDate: string): string {
-  const days = ageInDays(birthDate);
-  if (days < 0) return "à naître";
-  if (days < 7) return `${days} jour${days > 1 ? "s" : ""}`;
-  if (days < 31) {
-    const w = Math.floor(days / 7);
-    return `${w} semaine${w > 1 ? "s" : ""}`;
-  }
-  if (days < 365) {
-    const m = Math.floor(days / 30.44);
-    return `${m} mois`;
-  }
-  const years = Math.floor(days / 365.25);
-  const remMonths = Math.floor((days - years * 365.25) / 30.44);
-  if (remMonths === 0) return `${years} an${years > 1 ? "s" : ""}`;
-  return `${years} an${years > 1 ? "s" : ""} ${remMonths} mois`;
+  return childAgeLabel(birthDate);
 }

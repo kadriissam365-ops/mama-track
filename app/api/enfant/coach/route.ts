@@ -11,17 +11,22 @@
 // IMPORTANT : aucun diagnostic, ton bienveillant, sources FR (HAS / Santé.fr /
 // INPES). Si urgence détectée -> rappel d'appeler le 15.
 
-import { hasAiConsent, aiConsentRequiredResponse } from "@/lib/ai-consent-server";
+import {
+  hasAiConsent,
+  aiConsentRequiredResponse,
+} from "@/lib/ai-consent-server";
 import { consumeRateLimit, RATE_LIMITS } from "@/lib/rate-limit";
 import { readJsonBody } from "@/lib/request-json";
 import { requireUserAndBaby, getUserRole } from "@/lib/enfant/baby";
+import { childAgeMonths } from "@/lib/family-journey";
+import {
+  VACCINES_FR,
+  VACCINE_SOURCE,
+  vaccineRequirement,
+} from "@/lib/enfant/vaccines-fr";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/enfant/supabase/server";
-import {
-  ageInDays,
-  formatAge,
-  type Baby,
-} from "@/lib/enfant/baby";
+import { formatAge, type Baby } from "@/lib/enfant/baby";
 import { AGE_RANGES, ageRangeForMonths } from "@/lib/enfant/conseils-data";
 import {
   FOODS,
@@ -30,7 +35,10 @@ import {
   GUIDE_SECTIONS,
 } from "@/lib/enfant/diversification-data";
 import { HAS_VISITS } from "@/lib/enfant/checklist-data";
-import { EMERGENCY_NUMBERS, EMERGENCY_FICHES } from "@/lib/enfant/urgences-data";
+import {
+  EMERGENCY_NUMBERS,
+  EMERGENCY_FICHES,
+} from "@/lib/enfant/urgences-data";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -52,7 +60,18 @@ function detectTopics(text: string): Set<string> {
 
   if (has("sommeil", "dort", "dormir", "réveil", "sieste", "nuit", "endormir"))
     topics.add("sommeil");
-  if (has("repas", "biberon", "tétée", "tetee", "allait", "manger", "mange", "lait"))
+  if (
+    has(
+      "repas",
+      "biberon",
+      "tétée",
+      "tetee",
+      "allait",
+      "manger",
+      "mange",
+      "lait",
+    )
+  )
     topics.add("alimentation");
   if (
     has(
@@ -77,9 +96,29 @@ function detectTopics(text: string): Set<string> {
     )
   )
     topics.add("diversification");
-  if (has("couche", "selle", "pipi", "caca", "diarrhée", "diarrhee", "constipation"))
+  if (
+    has(
+      "couche",
+      "selle",
+      "pipi",
+      "caca",
+      "diarrhée",
+      "diarrhee",
+      "constipation",
+    )
+  )
     topics.add("couches");
-  if (has("vaccin", "rappel", "ror", "dtp", "pneumocoque", "méningocoque", "meningocoque"))
+  if (
+    has(
+      "vaccin",
+      "rappel",
+      "ror",
+      "dtp",
+      "pneumocoque",
+      "méningocoque",
+      "meningocoque",
+    )
+  )
     topics.add("vaccins");
   if (
     has(
@@ -100,7 +139,18 @@ function detectTopics(text: string): Set<string> {
     )
   )
     topics.add("urgences");
-  if (has("visite", "rdv", "rendez-vous", "pédiatre", "pediatre", "agenda", "checklist", "has"))
+  if (
+    has(
+      "visite",
+      "rdv",
+      "rendez-vous",
+      "pédiatre",
+      "pediatre",
+      "agenda",
+      "checklist",
+      "has",
+    )
+  )
     topics.add("agenda");
 
   return topics;
@@ -110,7 +160,7 @@ function buildKnowledgeContext(text: string, baby: Baby): string {
   const topics = detectTopics(text);
   if (topics.size === 0) return "";
 
-  const months = Math.floor(ageInDays(baby.birth_date) / 30.44);
+  const months = childAgeMonths(baby.birth_date);
   const out: string[] = [];
 
   // Conseils par âge filtrés sur les catégories concernées
@@ -120,7 +170,8 @@ function buildKnowledgeContext(text: string, baby: Baby): string {
     topics.has("urgences") ||
     topics.has("agenda")
   ) {
-    const range = ageRangeForMonths(months) ?? AGE_RANGES[AGE_RANGES.length - 1];
+    const range =
+      ageRangeForMonths(months) ?? AGE_RANGES[AGE_RANGES.length - 1];
     if (range) {
       const wantedCats: Set<string> = new Set();
       if (topics.has("sommeil")) wantedCats.add("sommeil");
@@ -181,13 +232,30 @@ function buildKnowledgeContext(text: string, baby: Baby): string {
     }
   }
 
-  // Visites HAS proches de l'âge actuel
+  if (topics.has("vaccins")) {
+    out.push(
+      `### Calendrier vaccinal français 2026, septembre. Source : ${VACCINE_SOURCE}`,
+    );
+    const relevant = VACCINES_FR.filter(
+      (v) =>
+        v.ageMonths >= Math.max(0, months - 2) &&
+        (months < 36 ? v.ageMonths <= 18 : v.ageMonths === 72),
+    );
+    for (const schedule of relevant)
+      out.push(
+        `${schedule.label} : ${schedule.vaccines.map((label) => `${label} (${vaccineRequirement(label, baby.birth_date)})`).join(" ; ")}`,
+      );
+    out.push(
+      "Un vaccin non renseigné n’est pas un vaccin manqué. Ne déduis aucun rattrapage : celui-ci dépend du carnet de santé et du médecin. Rotavirus : fenêtre d’âge limitée. Pour les enfants nés depuis 2023, rattrapage B/ACWY de 2 à moins de 5 ans à discuter avec le médecin.",
+    );
+  }
+  // Visites HAS proches de l’âge actuel
   if (topics.has("agenda") || topics.has("vaccins")) {
     const upcoming = HAS_VISITS.filter(
       (v) => v.ageMonths >= months - 1 && v.ageMonths <= months + 3,
     ).slice(0, 4);
     if (upcoming.length > 0) {
-      out.push(`### Visites HAS prochaines (calendrier officiel CNAM/HAS)`);
+      out.push(`### Examens de suivi proches (calendrier français 2026)`);
       out.push(
         upcoming
           .map((v) => `- ${v.label} (${v.ageMonths} mois) — ${v.exam}`)
@@ -245,7 +313,8 @@ async function buildSystemPrompt(
     .maybeSingle();
   if (measure) {
     const parts: string[] = [];
-    if (measure.weight_g) parts.push(`${(measure.weight_g / 1000).toFixed(2)} kg`);
+    if (measure.weight_g)
+      parts.push(`${(measure.weight_g / 1000).toFixed(2)} kg`);
     if (measure.height_cm) parts.push(`${measure.height_cm} cm`);
     if (measure.head_cm) parts.push(`PC ${measure.head_cm} cm`);
     if (parts.length > 0) {
@@ -256,7 +325,7 @@ async function buildSystemPrompt(
   const knowledge = buildKnowledgeContext(lastUserText, baby);
 
   return [
-    `Tu es **Coach Bébé**, l'assistant pédiatrique de l'app MamaTrack. Tu accompagnes des parents francophones avec des bébés de 0 à 36 mois.`,
+    `Tu es l’assistant parental de MamaTrack. Tu accompagnes des parents francophones avec des enfants de la naissance à 6 ans. Adapte les sujets et le vocabulaire à l’âge réel, sans supposer que chaque enfant est un nourrisson.`,
     ``,
     `## Règles absolues`,
     `- Tu **n'es pas médecin** : tu ne diagnostiques jamais, tu ne prescris jamais de médicament ni de dose précise.`,
@@ -294,7 +363,7 @@ async function buildSystemPrompt(
 export async function POST(request: Request) {
   let body: { messages?: ChatMessage[] } = {};
   try {
-    body = await readJsonBody(request) as typeof body;
+    body = (await readJsonBody(request)) as typeof body;
   } catch {
     return Response.json({ error: "invalid_json" }, { status: 400 });
   }
@@ -323,7 +392,10 @@ export async function POST(request: Request) {
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return Response.json(
-      { error: "missing_api_key", hint: "ANTHROPIC_API_KEY n'est pas configuré côté serveur." },
+      {
+        error: "missing_api_key",
+        hint: "ANTHROPIC_API_KEY n'est pas configuré côté serveur.",
+      },
       { status: 503 },
     );
   }
@@ -336,12 +408,21 @@ export async function POST(request: Request) {
     return Response.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  if (!await hasAiConsent(supabase, user.id)) return aiConsentRequiredResponse();
+  if (!(await hasAiConsent(supabase, user.id)))
+    return aiConsentRequiredResponse();
   const { baby } = await requireUserAndBaby(user);
   if (!baby) return Response.json({ error: "no_baby" }, { status: 400 });
   const role = await getUserRole(user, baby);
-  if (role !== "owner" && role !== "caregiver") return Response.json({ error: "Accès en lecture seule" }, { status: 403 });
-  if (!await consumeRateLimit(supabase, RATE_LIMITS.babyCoach)) return Response.json({ error: "daily_limit_reached", message: "Les 5 questions du jour ont été utilisées. Réessaie demain." }, { status: 429 });
+  if (role !== "owner" && role !== "caregiver")
+    return Response.json({ error: "Accès en lecture seule" }, { status: 403 });
+  if (!(await consumeRateLimit(supabase, RATE_LIMITS.babyCoach)))
+    return Response.json(
+      {
+        error: "daily_limit_reached",
+        message: "Les 5 questions du jour ont été utilisées. Réessaie demain.",
+      },
+      { status: 429 },
+    );
 
   // Persiste le dernier message utilisateur
   await supabase.from("coach_messages").insert({
@@ -388,11 +469,13 @@ export async function POST(request: Request) {
           });
         }
       } catch (err) {
-        console.error("[enfant/coach] upstream", err instanceof Error ? err.name : "unknown");
-        const msg = "Le service est momentanément indisponible. Réessaie plus tard.";
-        controller.enqueue(
-          encoder.encode(`\n\n[Erreur Coach IA] ${msg}`),
+        console.error(
+          "[enfant/coach] upstream",
+          err instanceof Error ? err.name : "unknown",
         );
+        const msg =
+          "Le service est momentanément indisponible. Réessaie plus tard.";
+        controller.enqueue(encoder.encode(`\n\n[Erreur Coach IA] ${msg}`));
       } finally {
         controller.close();
       }

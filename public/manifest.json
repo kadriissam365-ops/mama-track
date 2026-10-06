@@ -1,19 +1,15 @@
 {
-  "name": "MamaTrack - Suivi de Grossesse",
+  "name": "MamaTrack · Grossesse et enfance",
   "short_name": "MamaTrack",
-  "description": "Suivez votre grossesse semaine par semaine avec MamaTrack",
+  "description": "Votre carnet familial de la grossesse aux 6 ans : bien-être, repas, sommeil, routines et souvenirs.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fdf2f8",
-  "theme_color": "#f472b6",
+  "background_color": "#f8f5ed",
+  "theme_color": "#274c40",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "fr",
-  "categories": [
-    "health",
-    "lifestyle",
-    "medical"
-  ],
+  "categories": ["health", "lifestyle", "medical"],
   "icons": [
     {
       "src": "/icons/icon-48.webp",

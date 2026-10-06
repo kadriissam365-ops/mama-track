@@ -1,3 +1,4 @@
+import { calendarDate, parseCalendarDate } from "@/lib/family-journey";
 import { saveMutation } from "@/lib/enfant/mutations";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -6,7 +7,7 @@ import { ModuleShell } from "@/components/enfant/ModuleShell";
 import { requireUserAndBaby, getUserRole } from "@/lib/enfant/baby";
 import {
   HAS_VISITS,
-  visitDueDate,
+  scheduledVisitDate,
   visitStatus,
   type HASVisitStatus,
 } from "@/lib/enfant/checklist-data";
@@ -25,11 +26,23 @@ type Appointment = {
 const VALID_VIEWS = new Set(["calendar", "list", "checklist"]);
 const VALID_VISIT_CODES = new Set(HAS_VISITS.map((v) => v.code));
 
-async function addAppointment(formData: FormData) {
+async function writableContext(expectedBabyId: string) {
+  const context = await requireUserAndBaby();
+  if (!context.user) redirect("/auth/login");
+  if (!context.baby) redirect("/enfant/naissance");
+  if (context.baby.id !== expectedBabyId)
+    throw new Error(
+      "L’enfant sélectionné a changé. Revenez à son carnet avant d’enregistrer.",
+    );
+  const role = await getUserRole(context.user, context.baby);
+  if (role !== "owner" && role !== "caregiver")
+    throw new Error("Ce carnet est en lecture seule.");
+  return { ...context, user: context.user, baby: context.baby };
+}
+
+async function addAppointment(expectedBabyId: string, formData: FormData) {
   "use server";
-  const { user, baby, supabase } = await requireUserAndBaby();
-  if (!user) redirect("/auth/login");
-  if (!baby) redirect("/enfant/onboarding");
+  const { user, baby, supabase } = await writableContext(expectedBabyId);
 
   const occurredRaw = String(formData.get("occurred_at") ?? "");
   let occurred_at: string;
@@ -46,78 +59,85 @@ async function addAppointment(formData: FormData) {
   const descRaw = String(formData.get("description") ?? "").trim();
   const description = descRaw ? descRaw.slice(0, 500) : null;
 
-  await saveMutation(supabase.from("health_events").insert({
-    baby_id: baby.id,
-    user_id: user.id,
-    kind: "appointment",
-    occurred_at,
-    title,
-    description,
-  }));
+  await saveMutation(
+    supabase.from("health_events").insert({
+      baby_id: baby.id,
+      user_id: user.id,
+      kind: "appointment",
+      occurred_at,
+      title,
+      description,
+    }),
+  );
   revalidatePath("/enfant/agenda");
 }
 
-async function deleteAppointment(formData: FormData) {
+async function deleteAppointment(expectedBabyId: string, formData: FormData) {
   "use server";
-  const { user, supabase } = await requireUserAndBaby();
-  if (!user) redirect("/auth/login");
+  const { baby, supabase } = await writableContext(expectedBabyId);
   const id = String(formData.get("id") ?? "");
   if (!id) return;
-  await saveMutation(supabase
-    .from("health_events")
-    .delete()
-    .eq("id", id)
-    .eq("user_id", user.id));
+  await saveMutation(
+    supabase.from("health_events").delete().eq("id", id).eq("baby_id", baby.id),
+  );
   revalidatePath("/enfant/agenda");
 }
 
-async function markVisitDone(formData: FormData) {
+async function markVisitDone(expectedBabyId: string, formData: FormData) {
   "use server";
-  const { user, baby, supabase } = await requireUserAndBaby();
-  if (!user) redirect("/auth/login");
-  if (!baby) redirect("/enfant/onboarding");
+  const { user, baby, supabase } = await writableContext(expectedBabyId);
 
   const code = String(formData.get("code") ?? "");
   if (!VALID_VISIT_CODES.has(code)) return;
 
   const visit = HAS_VISITS.find((v) => v.code === code)!;
-  const dateRaw = String(formData.get("date") ?? "");
-  let occurred_at = new Date().toISOString();
-  if (dateRaw) {
-    const d = new Date(dateRaw);
-    if (!Number.isNaN(d.getTime())) occurred_at = d.toISOString();
-  }
-
-  // Upsert via insert + on conflict (unique index on (baby_id, checklist_code))
-  await saveMutation(supabase.from("health_events").upsert(
-    {
-      baby_id: baby.id,
-      user_id: user.id,
-      kind: "appointment",
-      occurred_at,
-      title: visit.label,
-      checklist_code: code,
-    },
-    { onConflict: "baby_id,checklist_code", ignoreDuplicates: false },
-  ));
+  const dateRaw = String(formData.get("date") ?? calendarDate());
+  const date = parseCalendarDate(dateRaw);
+  if (!date || dateRaw > calendarDate() || dateRaw < baby.birth_date)
+    throw new Error("Vérifiez la date réelle de l’examen.");
+  const existing = await supabase
+    .from("health_events")
+    .select("id")
+    .eq("baby_id", baby.id)
+    .eq("checklist_code", code)
+    .maybeSingle();
+  if (existing.error) throw existing.error;
+  if (existing.data)
+    await saveMutation(
+      supabase
+        .from("health_events")
+        .update({ occurred_at: date.toISOString(), title: visit.label })
+        .eq("id", existing.data.id)
+        .eq("baby_id", baby.id),
+    );
+  else
+    await saveMutation(
+      supabase.from("health_events").insert({
+        baby_id: baby.id,
+        user_id: user.id,
+        kind: "appointment",
+        occurred_at: date.toISOString(),
+        title: visit.label,
+        checklist_code: code,
+      }),
+    );
   revalidatePath("/enfant/agenda");
 }
 
-async function unmarkVisit(formData: FormData) {
+async function unmarkVisit(expectedBabyId: string, formData: FormData) {
   "use server";
-  const { user, baby, supabase } = await requireUserAndBaby();
-  if (!user) redirect("/auth/login");
-  if (!baby) redirect("/enfant/onboarding");
+  const { baby, supabase } = await writableContext(expectedBabyId);
 
   const code = String(formData.get("code") ?? "");
   if (!VALID_VISIT_CODES.has(code)) return;
 
-  await saveMutation(supabase
-    .from("health_events")
-    .delete()
-    .eq("baby_id", baby.id)
-    .eq("user_id", user.id)
-    .eq("checklist_code", code));
+  await saveMutation(
+    supabase
+      .from("health_events")
+      .delete()
+      .eq("baby_id", baby.id)
+      .eq("checklist_code", code),
+  );
   revalidatePath("/enfant/agenda");
 }
 
@@ -151,7 +171,7 @@ export default async function AgendaPage({
     monthDate = new Date(y, m - 1, 1);
   }
 
-  const { data: apptsRaw } = await supabase
+  const { data: apptsRaw, error: appointmentsError } = await supabase
     .from("health_events")
     .select("id, occurred_at, title, description, checklist_code")
     .eq("baby_id", baby.id)
@@ -159,6 +179,8 @@ export default async function AgendaPage({
     .order("occurred_at", { ascending: true })
     .limit(500);
 
+  if (appointmentsError)
+    throw new Error("Votre agenda est momentanément indisponible.");
   const appts = (apptsRaw as Appointment[] | null) ?? [];
   const doneCodes = new Set(
     appts.map((a) => a.checklist_code).filter(Boolean) as string[],
@@ -167,7 +189,7 @@ export default async function AgendaPage({
   const checklist = HAS_VISITS.map((v) => ({
     visit: v,
     done: doneCodes.has(v.code),
-    dueDate: visitDueDate(baby.birth_date, v.ageMonths),
+    dueDate: scheduledVisitDate(baby.birth_date, v),
     status: visitStatus(baby.birth_date, v, doneCodes.has(v.code), now),
   }));
 
@@ -175,9 +197,31 @@ export default async function AgendaPage({
     <ModuleShell
       slug="agenda"
       title="Agenda"
-      subtitle={`${baby.name} — RDV pédiatre + visites obligatoires HAS`}
+      subtitle={`${baby.name} — Rendez-vous et examens de suivi · 0–6 ans`}
       viewerBadge={role === "viewer"}
     >
+      <p className="mt-note mb-5">
+        Les dates sont des repères pour organiser les examens. Un examen non
+        renseigné ne signifie pas qu’il n’a pas été réalisé.{" "}
+        <a
+          href="https://www.service-public.gouv.fr/particuliers/vosdroits/F967"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          Calendrier officiel
+        </a>{" "}
+        ·{" "}
+        <a
+          href="https://www.ameli.fr/assure/sante/themes/suivi-medical-de-l-enfant-et-de-l-adolescent/suivi-medical-entre-4-et-10-ans"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          Suivi de 4 à 6 ans
+        </a>
+        .
+      </p>
       <ViewTabs current={view} month={monthYearStr(monthDate)} />
 
       {view === "calendar" && (
@@ -186,7 +230,9 @@ export default async function AgendaPage({
           now={now}
           appts={appts}
           checklist={checklist}
-          onDelete={canWrite ? deleteAppointment : undefined}
+          onDelete={
+            canWrite ? deleteAppointment.bind(null, baby.id) : undefined
+          }
         />
       )}
 
@@ -194,26 +240,28 @@ export default async function AgendaPage({
         <ListView
           appts={appts}
           now={nowMs}
-          onDelete={canWrite ? deleteAppointment : undefined}
+          onDelete={
+            canWrite ? deleteAppointment.bind(null, baby.id) : undefined
+          }
         />
       )}
 
       {view === "checklist" && (
         <ChecklistView
           checklist={checklist}
-          onMark={canWrite ? markVisitDone : undefined}
-          onUnmark={canWrite ? unmarkVisit : undefined}
+          onMark={canWrite ? markVisitDone.bind(null, baby.id) : undefined}
+          onUnmark={canWrite ? unmarkVisit.bind(null, baby.id) : undefined}
         />
       )}
 
       {canWrite && (
         <div className="mt-8">
-          <AddAppointmentForm action={addAppointment} />
+          <AddAppointmentForm action={addAppointment.bind(null, baby.id)} />
         </div>
       )}
 
       <p className="mt-10 text-center text-xs text-foreground-muted">
-        Les visites obligatoires HAS sont calculées à partir de la date de
+        Les examens du calendrier français sont calculées à partir de la date de
         naissance. Le calendrier reste indicatif — réfère-toi à ton pédiatre.
       </p>
     </ModuleShell>
@@ -227,7 +275,7 @@ function ViewTabs({ current, month }: { current: string; month: string }) {
   const tabs = [
     { key: "calendar", label: "Calendrier", emoji: "🗓️" },
     { key: "list", label: "Liste", emoji: "📋" },
-    { key: "checklist", label: "Checklist HAS", emoji: "✅" },
+    { key: "checklist", label: "Examens de suivi", emoji: "✅" },
   ];
   return (
     <nav className="mb-6 flex gap-2">
@@ -289,7 +337,13 @@ function CalendarView({
 
   const days: Date[] = [];
   for (let i = 0; i < 42; i++) {
-    days.push(new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + i));
+    days.push(
+      new Date(
+        gridStart.getFullYear(),
+        gridStart.getMonth(),
+        gridStart.getDate() + i,
+      ),
+    );
   }
 
   // Group events by YYYY-MM-DD
@@ -582,7 +636,7 @@ function ChecklistView({
       cls: "border-success/40 bg-success-soft",
     },
     overdue: {
-      label: "En retard",
+      label: "Non renseigné",
       cls: "border-danger/40 bg-danger-soft",
     },
     due: {
@@ -599,7 +653,11 @@ function ChecklistView({
     <div>
       <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
         <Stat label="Fait" value={`${doneCount} / ${checklist.length}`} />
-        <Stat label="En retard" value={overdueCount.toString()} alert={overdueCount > 0} />
+        <Stat
+          label="À vérifier"
+          value={overdueCount.toString()}
+          alert={overdueCount > 0}
+        />
         <Stat
           label="À venir"
           value={checklist
@@ -644,11 +702,7 @@ function ChecklistView({
                 <div className="shrink-0">
                   {e.done && onUnmark ? (
                     <form action={onUnmark}>
-                      <input
-                        type="hidden"
-                        name="code"
-                        value={e.visit.code}
-                      />
+                      <input type="hidden" name="code" value={e.visit.code} />
                       <button
                         type="submit"
                         className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs text-foreground-muted hover:text-foreground"
@@ -658,11 +712,7 @@ function ChecklistView({
                     </form>
                   ) : !e.done && onMark ? (
                     <form action={onMark} className="flex flex-col gap-2">
-                      <input
-                        type="hidden"
-                        name="code"
-                        value={e.visit.code}
-                      />
+                      <input type="hidden" name="code" value={e.visit.code} />
                       <input
                         type="date"
                         name="date"
