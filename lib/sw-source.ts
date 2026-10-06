@@ -1,6 +1,6 @@
-// Service worker source served by app/sw.js/route.ts
+// Service worker source served by app/service-worker.js/route.ts
 // Keep this file in sync — do NOT reference public/sw.js (deleted to bypass Vercel edge cache).
-export const SW_SOURCE = `const CACHE_VERSION = 'v10';
+export const SW_SOURCE = `const CACHE_VERSION = 'v11';
 const STATIC_CACHE = \`mamatrack-static-\${CACHE_VERSION}\`;
 const DYNAMIC_CACHE = \`mamatrack-dynamic-\${CACHE_VERSION}\`;
 

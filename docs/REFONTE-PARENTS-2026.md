@@ -73,3 +73,11 @@ Use case: stylized-concept. Asset type: original editorial hero artwork for Mama
 ## Incident indépendant déjà identifié
 
 La clé secrète et le mot de passe de base BabyTrack publiés dans un ancien fichier restent à renouveler. Aucune rotation n'est supposée réalisée sans preuve.
+
+## Correctif d’affichage du 6 octobre 2026
+
+La capture iPhone a révélé un mélange de versions en production : le nouvel accueil était chargé, mais la feuille `1lk_k2amne8yj.css` reçue ne contenait ni `.mt-brand-symbol` ni `.mt-landing-hero`, et utilisait encore les anciennes couleurs. Le défaut a été reproduit dans un navigateur mobile neuf ; le logo occupait presque toute la largeur et les liens n’avaient plus de mise en page.
+
+La commande de compilation utilise désormais explicitement Webpack, comme la compilation locale validée. La publication du correctif est reconstruite sans reprendre le cache de compilation. Le service worker passe en version 11 et purge les anciennes caches MamaTrack. Le SVG du logo possède aussi des dimensions intrinsèques de 40 × 40, afin de conserver une taille raisonnable avant le chargement des styles.
+
+La compilation neuve contient les styles de marque, d’accueil et de navigation. Le contrôle mobile de cette compilation mesure un logo de 34 px, une grille active et la typographie Georgia, sans débordement. Les 76 tests passent et le lint des fichiers modifiés ne signale aucune erreur.

@@ -3,6 +3,8 @@ import Link from "next/link";
 export function BrandSymbol({ className = "" }: { className?: string }) {
   return (
     <svg
+      width="40"
+      height="40"
       viewBox="0 0 40 40"
       fill="none"
       aria-hidden="true"
